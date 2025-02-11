@@ -5,7 +5,7 @@ const SYMBOLS = {
     SupabaseClient: Symbol.for(SYMBOL_NAMES.SUPABASE_CLIENT),
   },
   Providers: {
-    AuthProvider: Symbol.for(SYMBOL_NAMES.AUTH_PROVIDER),
+    ClientProvider: Symbol.for(SYMBOL_NAMES.CLIENT_PROVIDER),
   },
   Repositories: {
     AuthRepository: Symbol.for(SYMBOL_NAMES.AUTH_REPOSITORY),
@@ -19,7 +19,7 @@ const SYMBOLS = {
   },
   UseCases: {
     Auth: {
-      Container: Symbol.for(SYMBOL_NAMES.AUTH_USE_CASES),
+      Container: Symbol.for(SYMBOL_NAMES.AUTH_USE_CASE),
       LoginUseCase: Symbol.for(SYMBOL_NAMES.LOGIN_USE_CASE),
       LogoutUseCase: Symbol.for(SYMBOL_NAMES.LOGOUT_USE_CASE),
       RegisterUseCase: Symbol.for(SYMBOL_NAMES.REGISTER_USE_CASE),

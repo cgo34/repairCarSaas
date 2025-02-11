@@ -1,93 +1,118 @@
+# Nom du workflow affiché dans l'interface GitHub
 name: CI Pipeline
 
+# Déclencheurs du workflow
 on:
   push:
-    branches: [ main, develop ]
+    branches: [main, develop]
   pull_request:
-    branches: [ main, develop ]
+    branches: [main, develop]
+
+# Variables globales
+env:
+  DOCKER_IMAGE: 'app:test'
+  DEPLOY_ENV: 'dev'
 
 jobs:
+  # Job 1: Installation des dépendances via Docker
   dependencies:
     name: Install Dependencies
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: '18'
-          cache: 'npm'
-      - run: npm ci
-      - uses: actions/cache@v3
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+      - uses: actions/checkout@v4
 
+      # Configuration du cache Docker
+      - name: Cache Docker layers
+        uses: actions/cache@v3
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          restore-keys: ${{ runner.os }}-buildx-
+
+      # Setup Docker Buildx
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      # Build de l'image Docker avec les dépendances
+      - name: Build Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          load: true
+          tags: ${{ env.DOCKER_IMAGE }}
+          target: dependencies
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache-new
+
+  # Job 2: Vérification de la qualité du code
   lints:
-    name: Code Quality
+    name: Code Quality Checks
     needs: [dependencies]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: '18'
-      - uses: actions/cache@v3
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-      
-      # ESLint
-      - name: ESLint
-        run: npm run lint
-      
-      # TypeScript
+      # Vérification ESLint
+      - name: Run ESLint
+        run: docker run ${{ env.DOCKER_IMAGE }} npm run lint
+
+      # Vérification TypeScript
       - name: Type Check
-        run: npm run type-check
+        run: docker run ${{ env.DOCKER_IMAGE }} npm run type-check
 
+  # Job 3: Tests unitaires (optionnels)
   tests:
-    name: Tests (Optional)
-    needs: [lints]  # Dépend maintenant de lints
+    name: Unit Tests
+    needs: [lints]
     runs-on: ubuntu-latest
-    continue-on-error: true  # Non bloquant
+    continue-on-error: true # Ne bloque pas le pipeline si échec
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: '18'
-      - uses: actions/cache@v3
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-      - run: npm run test || true  # Continue même si pas de tests
+      - name: Run Tests
+        run: docker run ${{ env.DOCKER_IMAGE }} npm run test || true
 
+  # Job 4: Build de l'application
   build:
-    name: Build
-    needs: [tests]  # Dépend maintenant de tests
+    name: Build Application
+    needs: [tests]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: '18'
-      - uses: actions/cache@v3
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-      - run: npm run build
-      - uses: actions/upload-artifact@v3
+      # Build du projet
+      - name: Build Project
+        run: docker run ${{ env.DOCKER_IMAGE }} npm run build
+
+      # Copie des fichiers de build depuis le container
+      - name: Copy build files
+        run: |
+          container_id=$(docker create ${{ env.DOCKER_IMAGE }})
+          docker cp $container_id:/app/dist ./dist
+          docker rm $container_id
+
+      # Sauvegarde du build
+      - name: Upload Build Artifact
+        uses: actions/upload-artifact@v3
         with:
           name: dist
           path: dist/
+          retention-days: 1
 
+  # Job 5: Déploiement en développement
   deploy_dev:
-    name: Deploy to Dev
+    name: Deploy to Development
     needs: [build]
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/develop'
+    if: github.ref == 'refs/heads/develop' # Uniquement sur la branche develop
+    environment:
+      name: development
+      url: ${{ steps.deploy.outputs.url }}
     steps:
-      - uses: actions/download-artifact@v3
+      # Récupération du build
+      - name: Download Build
+        uses: actions/download-artifact@v3
         with:
           name: dist
-      # Ici vous pourriez ajouter des étapes pour déployer 
-      # vers un environnement de développement si nécessaire
-      - run: echo "Deployment would happen here"
+          path: dist
+
+      # Placeholder pour le déploiement
+      - name: Deploy
+        id: deploy
+        run: |
+          echo "Deployment would happen here"
+          echo "url=https://dev.example.com" >> $GITHUB_OUTPUT

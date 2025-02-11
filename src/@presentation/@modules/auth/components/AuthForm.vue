@@ -1,5 +1,8 @@
 <template>
-  <v-form @submit.prevent="$emit('submit')" class="mt-7 loginForm">
+  <v-form
+    class="mt-7 loginForm"
+    @submit.prevent="$emit('submit')"
+  >
     <v-text-field
       v-model="formData.email"
       :rules="emailRules"
@@ -10,7 +13,7 @@
       hide-details="auto"
       variant="outlined"
       color="primary"
-    ></v-text-field>
+    />
 
     <v-text-field
       v-model="formData.password"
@@ -23,18 +26,31 @@
       hide-details="auto"
       :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
       :type="showPassword ? 'text' : 'password'"
-      @click:append="showPassword = !showPassword"
       class="pwdInput"
-    ></v-text-field>
+      @click:append="showPassword = !showPassword"
+    />
 
-    <v-btn color="secondary" block class="mt-2" variant="flat" size="large" type="submit">
+    <v-btn
+      color="secondary"
+      block
+      class="mt-2"
+      variant="flat"
+      size="large"
+      type="submit"
+    >
       Sign In
     </v-btn>
   </v-form>
 
   <div class="mt-5 text-right">
     <v-divider />
-    <v-btn variant="plain" to="/register" class="mt-2 text-capitalize mr-n2">Don't have an account?</v-btn>
+    <v-btn
+      variant="plain"
+      to="/register"
+      class="mt-2 text-capitalize mr-n2"
+    >
+      Don't have an account?
+    </v-btn>
   </div>
 </template>
 

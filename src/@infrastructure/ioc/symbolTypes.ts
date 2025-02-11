@@ -2,7 +2,7 @@ export enum SYMBOL_NAMES {
     // Clients
     SUPABASE_CLIENT = 'SupabaseClient',
     // Providers
-    AUTH_PROVIDER = 'AuthProvider',
+    CLIENT_PROVIDER = 'ClientProvider',
     // Repositories
     AUTH_REPOSITORY = 'AuthRepository',
     USER_REPOSITORY = 'UserRepository',

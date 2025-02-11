@@ -1,7 +1,7 @@
 import type { ThemeTypes } from '@/types/themeTypes/ThemeType';
 
 const PurpleDarkTheme: ThemeTypes = {
-  name: 'PurpleDarkTheme',
+  name: 'dark',
   dark: true,
   variables: {
     'border-color': '#1e88e5',

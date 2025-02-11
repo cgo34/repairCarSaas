@@ -1,5 +1,5 @@
 import { Garage } from '@/@domain/entities/Garage';
-import { supabase } from '@/@infrastructure/db/SupabaseClient';
+import { supabase } from '@/@infrastructure/database/clients/SupabaseClient';
 
 export class GarageService {
   async getAllGarages(): Promise<Garage[]> {

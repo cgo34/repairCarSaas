@@ -5,21 +5,20 @@ import { ref } from 'vue';
 import { BellIcon, Menu2Icon, SearchIcon, SettingsIcon } from 'vue-tabler-icons';
 
 // dropdown imports
+import { VSwitch } from 'vuetify/lib/components/index.mjs';
 import NotificationDD from './NotificationDD.vue';
 import ProfileDD from './ProfileDD.vue';
-import Searchbar from './SearchBarPanel.vue';
+// import Searchbar from './SearchBarPanel.vue';
 
 const {
-    sidebarDrawer,
-    customizerDrawer,
     miniSidebar,
-    fontTheme,
-    inputBg,
     toggleSidebarDrawer,
     setMiniSidebar,
-    setCustomizerDrawer,
-    setFont
+    toggleTheme,
+    currentTheme,
+    themeLabel
   } = useCustomizerState();
+
 const showSearch = ref(false);
 function searchbox() {
   showSearch.value = !showSearch.value;
@@ -27,17 +26,23 @@ function searchbox() {
 </script>
 
 <template>
-  <v-app-bar elevation="0" height="80">
+  <v-app-bar
+    elevation="0"
+    height="80"
+  >
     <v-btn
       class="hidden-md-and-down text-secondary"
       color="lightsecondary"
       icon
       rounded="sm"
       variant="flat"
-      @click.stop="setMiniSidebar(!miniSidebar)"
       size="small"
+      @click.stop="setMiniSidebar(!miniSidebar)"
     >
-      <Menu2Icon size="20" stroke-width="1.5" />
+      <Menu2Icon
+        size="20"
+        stroke-width="1.5"
+      />
     </v-btn>
     <v-btn
       class="hidden-lg-and-up text-secondary ms-3"
@@ -45,10 +50,13 @@ function searchbox() {
       icon
       rounded="sm"
       variant="flat"
-      @click.stop="toggleSidebarDrawer"
       size="small"
+      @click.stop="toggleSidebarDrawer"
     >
-      <Menu2Icon size="20" stroke-width="1.5" />
+      <Menu2Icon
+        size="20"
+        stroke-width="1.5"
+      />
     </v-btn>
 
     <!-- search mobile -->
@@ -61,10 +69,16 @@ function searchbox() {
       size="small"
       @click="searchbox"
     >
-      <SearchIcon size="17" stroke-width="1.5" />
+      <SearchIcon
+        size="17"
+        stroke-width="1.5"
+      />
     </v-btn>
 
-    <v-sheet v-if="showSearch" class="search-sheet v-col-12">
+    <v-sheet
+      v-if="showSearch"
+      class="search-sheet v-col-12"
+    >
       <Searchbar :closesearch="searchbox" />
     </v-sheet>
 
@@ -82,16 +96,50 @@ function searchbox() {
     <!---right part -->
     <!-- ---------------------------------------------- -->
 
+    
+
+    <!-- Theme Switch -->
+    <v-btn
+      icon
+      class="text-secondary mx-3"
+      color="lightsecondary"
+      rounded="sm"
+      size="small"
+      variant="flat"
+      @click="toggleTheme"
+    />
+    
+    <VSwitch
+      :model-value="currentTheme === 'PurpleDarkTheme'"
+      :label="themeLabel"
+      @update:model-value="toggleTheme"
+    />
+
     <!-- ---------------------------------------------- -->
     <!-- Notification -->
     <!-- ---------------------------------------------- -->
     <v-menu :close-on-content-click="false">
-      <template v-slot:activator="{ props }">
-        <v-btn icon class="text-secondary mx-3" color="lightsecondary" rounded="sm" size="small" variant="flat" v-bind="props">
-          <BellIcon stroke-width="1.5" size="22" />
+      <template #activator="{ props }">
+        <v-btn
+          icon
+          class="text-secondary mx-3"
+          color="lightsecondary"
+          rounded="sm"
+          size="small"
+          variant="flat"
+          v-bind="props"
+        >
+          <BellIcon
+            stroke-width="1.5"
+            size="22"
+          />
         </v-btn>
       </template>
-      <v-sheet rounded="md" width="330" elevation="12">
+      <v-sheet
+        rounded="md"
+        width="330"
+        elevation="12"
+      >
         <NotificationDD />
       </v-sheet>
     </v-menu>
@@ -100,15 +148,31 @@ function searchbox() {
     <!-- User Profile -->
     <!-- ---------------------------------------------- -->
     <v-menu :close-on-content-click="false">
-      <template v-slot:activator="{ props }">
-        <v-btn class="profileBtn text-primary" color="lightprimary" variant="flat" rounded="pill" v-bind="props">
-          <v-avatar size="30" class="mr-2 py-2">
-            <img src="@/assets/images/profile/user-round.svg" alt="Julia" />
+      <template #activator="{ props }">
+        <v-btn
+          class="profileBtn text-primary"
+          color="lightprimary"
+          variant="flat"
+          rounded="pill"
+          v-bind="props"
+        >
+          <v-avatar
+            size="30"
+            class="mr-2 py-2"
+          >
+            <img
+              src="@/assets/images/profile/user-round.svg"
+              alt="Julia"
+            >
           </v-avatar>
           <SettingsIcon stroke-width="1.5" />
         </v-btn>
       </template>
-      <v-sheet rounded="md" width="330" elevation="12">
+      <v-sheet
+        rounded="md"
+        width="330"
+        elevation="12"
+      >
         <ProfileDD />
       </v-sheet>
     </v-menu>

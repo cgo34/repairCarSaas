@@ -1,13 +1,13 @@
 <template>
   <AuthLayout>
     <RegisterForm
-      v-model:formData="user"
-      :emailRules="emailRules"
-      :passwordRules="passwordRules"
+      v-model:form-data="user"
+      :email-rules="emailRules"
+      :password-rules="passwordRules"
       @submit="handleRegister"
     />
   </AuthLayout>
-  </template>
+</template>
   
   <script setup lang="ts">
 //   import Logo from '@/@ui/components/Logo.vue';
@@ -33,16 +33,16 @@ const handleRegister = async () => {
     console.log('Attempting to login:', user.value?.email, user.value?.password);
     await register();
     window.location.href = '/dashboard';
-  } catch (error: any) {
+  } catch (error: unknown) {
     alert(error.message);
   }
 };
   </script>
   
-  <style lang="scss">
+<style lang="scss">
   .registerBox {
     max-width: 475px;
     margin: 0 auto;
   }
-  </style>
+</style>
   

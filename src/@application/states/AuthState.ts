@@ -22,6 +22,7 @@ export class AuthState implements IAuthState {
   private subscribers = new Set<(state: IAuthStateSnapshot) => void>();
   private stateHistory: IAuthStateSnapshot[] = [];
   private readonly STORAGE_KEY = 'auth_state';
+  private _isAuthReady = false;
 
   constructor(
     @inject(SYMBOLS.UseCases.Auth.Container) private authUseCase: IAuthUseCase,
@@ -91,20 +92,33 @@ export class AuthState implements IAuthState {
 
   async login(email: string, password: string): Promise<void> {
     try {
-      const session = await this.authUseCase.login.execute(email, password);
+      console.log('[AuthState] login with credentials', email, password);
       
-      if (!session?.user) {
+      const user = await this.authUseCase.login.execute(email, password);
+      console.log('[AuthState] login session', user);
+      
+      if (!user) {
         throw new AuthError(
-          AuthErrorCode.INVALID_CREDENTIALS,
-          'Invalid credentials'
+          AuthErrorCode.AUTH_NO_USER_RETURNED,
+          'No user returned after login'
         );
       }
 
-      this.user.value = session.user;
+      this.user.value = user;
       this.isAuthenticated.value = true;
       this.pushState();
       
     } catch (error) {
+      console.error('AuthState login error:', error);
+      
+      // Réinitialisation de l'état en cas d'erreur
+      this.user.value = {
+        email: '',
+        password: '',
+        fullName: ''
+      };
+      this.isAuthenticated.value = false;
+
       throw new AuthError(
         AuthErrorCode.LOGIN_FAILED,
         'Login failed',
@@ -161,5 +175,13 @@ export class AuthState implements IAuthState {
         error
       );
     }
+  }
+
+  get isAuthReady() {
+    return this._isAuthReady;
+  }
+
+  setAuthReady(value: boolean) {
+    this._isAuthReady = value;
   }
 }

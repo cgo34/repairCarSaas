@@ -1,3 +1,4 @@
+import { User } from '@domain/entities/User';
 import { IAuthRepository } from '@domain/repositories/IAuthRepository';
 import { IAuthService } from '@domain/services/IAuthService';
 import { SYMBOLS } from '@infrastructure/ioc/symbols';
@@ -9,13 +10,30 @@ export class AuthService implements IAuthService {
     console.log('[AuthService] Initialized with AuthRepository:', authRepository);
   }
 
-  async login(email: string, password: string): Promise<any> {
-    console.log('[AuthService] login', email, password);
-    
-    return await this.authRepository.login(email, password);
+  // Type guard pour vérifier si c'est bien un User
+  private isUser(user: any): user is User {
+    return (
+      user &&
+      typeof user.id === 'string' &&
+      typeof user.email === 'string' &&
+      typeof user.role === 'string' &&
+      user.createdAt instanceof Date
+    );
   }
 
-  async register(email: string, password: string): Promise<any> {
+  async login(email: string, password: string): Promise<User> {
+    console.log('[AuthService] login with credentials', email, password);
+    const user = await this.authRepository.login(email, password);
+    console.log('[AuthService] login user', user);
+    
+    if (!this.isUser(user)) {
+      throw new Error('Invalid user data structure');
+    }
+
+    return user;
+  }
+
+  async register(email: string, password: string): Promise<void> {
     return await this.authRepository.register(email, password);
   }
 
@@ -23,11 +41,11 @@ export class AuthService implements IAuthService {
     return await this.authRepository.logout();
   }
 
-  async getCurrentUser(): Promise<any> {
+  async getCurrentUser(): Promise<User> {
     return await this.authRepository.getCurrentUser();
   }
 
-  onAuthStateChange(callback: (event: string, session: any) => void): void {
+  onAuthStateChange(callback: (event: string, session: unknown) => void): void {
     this.authRepository.onAuthStateChange(callback);
   }
 }

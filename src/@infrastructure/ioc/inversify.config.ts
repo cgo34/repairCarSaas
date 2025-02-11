@@ -2,14 +2,16 @@ import { SYMBOLS } from '@infrastructure/ioc/symbols';
 import { Container } from 'inversify';
 import 'reflect-metadata';
 
+import { IClient } from '@/@domain/clients/IClient';
+import { IClientProvider } from '@/@domain/providers/IClientProvider';
+import { SupabaseClient } from '@/@infrastructure/database/clients/SupabaseClient';
+import { AuthSupabaseRepository } from '@/@infrastructure/database/repositories/auth/AuthSupabaseRepository';
 import { AuthService } from '@application/services/auth/AuthService';
 import { AuthState } from '@application/states/AuthState';
 import { AuthUseCase } from '@application/useCases/auth/AuthUseCase';
 import { LoginUseCase } from '@application/useCases/auth/LoginUseCase';
 import { LogoutUseCase } from '@application/useCases/auth/LogoutUseCase';
 import { RegisterUseCase } from '@application/useCases/auth/RegisterUseCase';
-import { IAuthProvider } from '@domain/providers/IAuthProvider';
-import { ISupabaseClient } from '@domain/providers/ISupabaseClient';
 import { IAuthRepository } from '@domain/repositories/IAuthRepository';
 import { IAuthService } from '@domain/services/IAuthService';
 import { IAuthState } from '@domain/states/IAuthState';
@@ -17,20 +19,18 @@ import { IAuthUseCase } from '@domain/useCases/auth/IAuthUseCase';
 import { ILoginUseCase } from '@domain/useCases/auth/ILoginUseCase';
 import { ILogoutUseCase } from '@domain/useCases/auth/ILogoutUseCase';
 import { IRegisterUseCase } from '@domain/useCases/auth/IRegisterUseCase';
-import { SupabaseClient } from '@infrastructure/db/SupabaseClient';
-import { AuthProvider } from '@infrastructure/providers/AuthProvider';
-import { AuthRepository } from '@infrastructure/repositories/AuthRepository';
+import { SupabaseClientProvider } from '../database/providers/SupabaseClientProvider';
 
 const container = new Container({ defaultScope: 'Singleton' });
 
 // 1. Client
-container.bind<ISupabaseClient>(SYMBOLS.Clients.SupabaseClient).to(SupabaseClient).inSingletonScope();
+container.bind<IClient>(SYMBOLS.Clients.SupabaseClient).to(SupabaseClient).inSingletonScope();
 
 // 2. Provider
-container.bind<IAuthProvider>(SYMBOLS.Providers.AuthProvider).to(AuthProvider).inSingletonScope();
+container.bind<IClientProvider>(SYMBOLS.Providers.ClientProvider).to(SupabaseClientProvider).inSingletonScope();
 
 // 3. Repository
-container.bind<IAuthRepository>(SYMBOLS.Repositories.AuthRepository).to(AuthRepository).inSingletonScope();
+container.bind<IAuthRepository>(SYMBOLS.Repositories.AuthRepository).to(AuthSupabaseRepository).inSingletonScope();
 
 // 4. Service
 container.bind<IAuthService>(SYMBOLS.Services.AuthService).to(AuthService).inSingletonScope();
