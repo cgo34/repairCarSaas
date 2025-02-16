@@ -1,35 +1,36 @@
-import { IClient } from '@domain/clients/IClient';
+import { IClient } from '@/@domain/clients/IClient';
 import { Database } from '@infrastructure/database/database.types';
-import { createClient } from '@supabase/supabase-js';
+import { SupabaseClient as BaseSupabaseClient, createClient } from '@supabase/supabase-js';
 import { injectable } from 'inversify';
 
 @injectable()
 export class SupabaseClient implements IClient {
-  private static instance: SupabaseClient;
-  private readonly client = createClient<Database>(
-    process.env.VITE_SUPABASE_URL as string,
-    process.env.VITE_SUPABASE_KEY as string
-  )
+  private client: BaseSupabaseClient<Database>;
 
   constructor() {
-    if (SupabaseClient.instance) {
-      return SupabaseClient.instance;
-    }
-
-    SupabaseClient.instance = this;
+    this.client = createClient<Database>(
+      process.env.VITE_SUPABASE_URL as string,
+      process.env.VITE_SUPABASE_KEY as string
+    );
   }
 
-  from(table: string) {
-    return this.client.from(table);
-  }
-
-  fromSchema<T extends keyof Database[keyof Database]['Tables'], R = unknown>(
-    schema: keyof Database,
-    table: T
-  ) {
-    return this.client.schema(schema).from<T, R>(table);
+  // Retourne directement l'instance Supabase native
+  getClient(): BaseSupabaseClient<Database> {
+    return this.client;
   }
   
+  // Proxy methods to the underlying client
+  // from<T extends keyof Database['public']['Tables']>(table: T) {
+  //   return this.client.from(table);
+  // }
+
+  // from(table) {
+  //   return this.client.from(table);
+  // }
+
+  // fromSchema<S extends keyof Database, T extends keyof Database[S]['Tables']>(schema: S, table: T) {
+  //   return this.client.from<T>(table).schema(schema);
+  // }
 
   get auth() {
     return {

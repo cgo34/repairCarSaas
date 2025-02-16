@@ -5,13 +5,11 @@ import 'reflect-metadata';
 import { BodyPartService } from '@/@application/services/carRepair/BodyPartService';
 import { useBodyPartState } from '@/@application/states/carRepair/useBodyPartState';
 import { BodyPartUseCase } from '@/@application/useCases/carRepair/BodyPartUseCase';
-import { IClient } from '@/@domain/clients/IClient';
 import { IClientProvider } from '@/@domain/providers/IClientProvider';
 import { IBodyPartRepository } from '@/@domain/repositories/carRepair/IBodyPartRepository';
 import { IBodyPartService } from '@/@domain/services/carRepair/IBodyPartService';
 import { IBodyPartState } from '@/@domain/states/carRepair/IBodyPartState';
 import { IBodyPartUseCase } from '@/@domain/useCases/carRepair/IBodyPartUseCase';
-import { SupabaseClient } from '@/@infrastructure/database/clients/SupabaseClient';
 import { AuthSupabaseRepository } from '@/@infrastructure/database/repositories/auth/AuthSupabaseRepository';
 import { BodyPartRepository } from '@/@infrastructure/database/repositories/carRepair/BodyPartRepository';
 import { AuthService } from '@application/services/auth/AuthService';
@@ -32,7 +30,7 @@ import { SupabaseClientProvider } from '../database/providers/SupabaseClientProv
 const container = new Container({ defaultScope: 'Singleton' });
 
 // 1. Client
-container.bind<IClient>(SYMBOLS.Clients.SupabaseClient).to(SupabaseClient).inSingletonScope();
+// container.bind<IClient>(SYMBOLS.Clients.SupabaseClient).to(SupabaseClient).inSingletonScope();
 
 // 2. Provider
 container.bind<IClientProvider>(SYMBOLS.Providers.ClientProvider).to(SupabaseClientProvider).inSingletonScope();

@@ -1,4 +1,3 @@
-// TODO: (GCE) -> TO DELETE BUT FIRST NEED TO CHECK IF IT'S USED IN THE PROJECT
 import { IClient } from '@domain/clients/IClient';
 import { IClientProvider } from '@domain/providers/IClientProvider';
 

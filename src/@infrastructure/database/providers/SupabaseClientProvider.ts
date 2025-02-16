@@ -1,13 +1,16 @@
-import { ClientProvider } from '@/@infrastructure/providers/ClientProvider';
+import { IClientProvider } from '@/@domain/providers/IClientProvider';
 import { SupabaseClient } from '@infrastructure/database/clients/SupabaseClient';
 import { injectable } from 'inversify';
 
 @injectable()
-export class SupabaseClientProvider extends ClientProvider {
-  protected client: SupabaseClient;
+export class SupabaseClientProvider implements IClientProvider {
+  private client: SupabaseClient;
 
   constructor() {
-    super();
     this.client = new SupabaseClient();
+  }
+
+  getClient() {
+    return this.client.getClient();
   }
 }

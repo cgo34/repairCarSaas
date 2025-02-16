@@ -1,23 +1,23 @@
 // src/@infrastructure/mappers/BodyPartMapper.ts
-import { BodyPart } from '@domain/entities/carRepair/BodyPart';
-import { BodyPartDto } from '@infrastructure/database/dtos/carRepair/BodyPartDto';
+import { BodyPartDto } from '@/@domain/dtos/BodyPartDto';
+import { BodyPartApiModel } from '@/@infrastructure/database/api/carRepair/BodyPartApiModel';
 
 export class BodyPartMapper {
-  static toDomain(dto: BodyPartDto): BodyPart {
+  static apiToDomain(apiModel: BodyPartApiModel): BodyPartDto {
+    return {
+      id: apiModel.id,
+      name: apiModel.name,
+      code: apiModel.code,
+      color: apiModel.color ?? undefined,
+    };
+  }
+
+  static domainToApi(dto: BodyPartDto): BodyPartApiModel {
     return {
       id: dto.id,
       name: dto.name,
       code: dto.code,
-      color: dto.color,
-    };
-  }
-
-  static toDto(entity: BodyPart): BodyPartDto {
-    return {
-      id: entity.id,
-      name: entity.name,
-      code: entity.code,
-      color: entity.color,
+      color: dto.color ?? null,
     };
   }
 }

@@ -12,10 +12,10 @@ export class BodyPartRepository implements IBodyPartRepository {
   constructor(@inject(SYMBOLS.Providers.ClientProvider) private clientProvider: IClientProvider) {}
 
   async getAll(): Promise<BodyPart[]> {
-    const { data, error } = await this.clientProvider.getClient().fromSchema<BodyPartDto>('car_repair', 'body_parts').select('*');
+    const { data, error } = await this.clientProvider.getClient().schema('car_repair').from('body_parts').select('*');
 
     if (error) throw new Error('Error fetching body parts');
-    return data.map(BodyPartMapper.toDomain);
+    return data.map(BodyPartMapper.apiToDomain);
   }
 
   async getById(id: number): Promise<BodyPart | null> {
