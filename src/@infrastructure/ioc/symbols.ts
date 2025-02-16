@@ -12,10 +12,14 @@ const SYMBOLS = {
     UserRepository: Symbol.for(SYMBOL_NAMES.USER_REPOSITORY),
     InvoiceRepository: Symbol.for(SYMBOL_NAMES.INVOICE_REPOSITORY),
     QuoteRepository: Symbol.for(SYMBOL_NAMES.QUOTE_REPOSITORY),
+    // CarRepair Repositories
+    BodyPartRepository: Symbol.for(SYMBOL_NAMES.BODY_PART_REPOSITORY),
   },
   Services: {
     AuthService: Symbol.for(SYMBOL_NAMES.AUTH_SERVICE),
     NotificationService: Symbol.for(SYMBOL_NAMES.NOTIFICATION_SERVICE),
+    // CarRepair Services
+    BodyPartService: Symbol.for(SYMBOL_NAMES.BODY_PART_SERVICE),
   },
   UseCases: {
     Auth: {
@@ -23,10 +27,17 @@ const SYMBOLS = {
       LoginUseCase: Symbol.for(SYMBOL_NAMES.LOGIN_USE_CASE),
       LogoutUseCase: Symbol.for(SYMBOL_NAMES.LOGOUT_USE_CASE),
       RegisterUseCase: Symbol.for(SYMBOL_NAMES.REGISTER_USE_CASE),
-    }
+    },
+    CarRepair: {
+      BodyPartUseCase: Symbol.for(SYMBOL_NAMES.BODY_PART_USE_CASE),
+    },
   },
   States: {
     AuthState: Symbol.for(SYMBOL_NAMES.AUTH_STATE),
+    // CarRepair States
+    CarRepair: {
+      BodyPartState: Symbol.for(SYMBOL_NAMES.BODY_PART_STATE),
+    },
   },
 };
 

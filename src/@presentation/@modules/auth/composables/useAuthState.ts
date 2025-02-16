@@ -19,12 +19,10 @@ export function useAuthState() {
     error.value = null;
 
     if (!user.value?.email)
-        return new Error('Email is required');
+      return new Error('Email is required');
 
     if (!user.value.password)
-       return new Error('Password is required');
-      
-    console.log('useAuthState -> login', user.value?.email, user.value?.password);
+      return new Error('Password is required');
     
     try {
       await authState.login(user.value?.email, user.value?.password);

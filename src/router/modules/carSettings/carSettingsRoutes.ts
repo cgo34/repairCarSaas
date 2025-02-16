@@ -1,12 +1,20 @@
 // src/router/modules/carSettings/carSettingsRoutes.ts
 import DashboardPage from '@/@presentation/@modules/dashboard/pages/DashboardPage.vue';
+import CarBodyPartPage from '@/@presentation/@modules/settings/carRepair/pages/CarBodyPartPage.vue';
 import { RouteRecordRaw } from 'vue-router';
 
 export const carSettingsRoutes: RouteRecordRaw[] = [
   {
-    path: '/car-body-parts',
+    path: '/settings/car-body-parts',
     name: 'CarBodyPartsList',
-    component: DashboardPage,
+    component: CarBodyPartPage,
+    meta: {
+      breadcrumb: [
+        { title: 'Dashboard', href: '/dashboard' },
+        { title: 'Settings', href: '/settings' },
+        { title: 'Car Body Parts', href: '/car-body-parts' }
+      ]
+    }
   },
   {
     path: '/car-body-parts/:id',
@@ -16,7 +24,7 @@ export const carSettingsRoutes: RouteRecordRaw[] = [
   {
     path: '/car-body-materials',
     name: 'CarBodyMaterialsList',
-    component: DashboardPage,
+    component: CarBodyPartPage,
   },
   {
     path: '/car-body-materials/:id',

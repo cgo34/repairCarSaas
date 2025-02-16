@@ -15,8 +15,7 @@
 import RegisterForm from '@modules/auth/components/RegisterForm.vue';
 import AuthLayout from '@modules/auth/layouts/AuthLayout.vue';
 
-const { register, user } = useAuthState();  // Accès direct au user state
-console.log('user:', user.value);
+const { register, user } = useAuthState();
 
 const emailRules = [
   (v: string) => !!v || 'E-mail is required',
@@ -30,7 +29,6 @@ const passwordRules = [
 
 const handleRegister = async () => {
   try {
-    console.log('Attempting to login:', user.value?.email, user.value?.password);
     await register();
     window.location.href = '/dashboard';
   } catch (error: unknown) {

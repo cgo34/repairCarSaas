@@ -8,9 +8,6 @@ export class RegisterUseCase implements IRegisterUseCase {
   constructor(
     @inject(SYMBOLS.Services.AuthService) private authService: IAuthService
   ) {
-    console.log('LoginUseCase constructor - authService:', authService);
-    console.log('SYMBOLS.Services.AuthService:', SYMBOLS.Services.AuthService);
-    
     if (!authService) {
       throw new Error('AuthService injection failed in LoginUseCase');
     }

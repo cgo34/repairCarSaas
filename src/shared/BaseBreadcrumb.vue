@@ -51,7 +51,7 @@ const props = defineProps({
               <template #prepend>
                 <v-icon
                   size="small"
-                  icon="$home"
+                  icon="mdi-home"
                   class="text-secondary mr-2"
                 />
                 <div class="d-flex align-center">

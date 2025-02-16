@@ -1,19 +1,35 @@
 <script setup lang="ts">
 import { useCustomizerState } from '@/@presentation/composables/useCustomizerState';
-import { shallowRef } from 'vue';
-import sidebarItems from './sidebarItem';
 
+import { computed } from 'vue';
+import ExtraBox from './extrabox/ExtraBox.vue';
+import { adminMenu } from './menu/adminMenu';
 import NavCollapse from './NavCollapse/NavCollapse.vue';
 import NavGroup from './NavGroup/NavGroup.vue';
 import NavItem from './NavItem/NavItem.vue';
-import ExtraBox from './extrabox/ExtraBox.vue';
+// import sidebarItems from './sidebarItem';
 // import Logo from '../logo/LogoMain.vue';
 
 const {
     sidebarDrawer,
     miniSidebar
   } = useCustomizerState();
-const sidebarMenu = shallowRef(sidebarItems);
+
+// Assume we have a function to get the current user's role
+const userRole = 'admin'; // This should be dynamically determined
+
+const sidebarMenu = computed(() => {
+  switch (userRole) {
+    case 'admin':
+      return adminMenu;
+    // case 'garage':
+    //   return garageMenu;
+    // case 'user':
+    //   return userMenu;
+    default:
+      return [];
+  }
+});
 </script>
 
 <template>

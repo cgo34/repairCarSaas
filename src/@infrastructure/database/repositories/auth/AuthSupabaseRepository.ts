@@ -9,20 +9,17 @@ import { User } from '../../dtos/supabase/SupabaseUser';
 @injectable()
 export class AuthSupabaseRepository implements IAuthRepository {
   constructor(@inject(SYMBOLS.Providers.ClientProvider) private clientProvider: IClientProvider) {
-    console.log('[AuthRepository] Initialized with clientProvider:', clientProvider);
   }
 
   async login(email: string, password: string): Promise<User> {
     try {
       const { data } = await this.clientProvider.getClient().auth.signIn(email, password) as SupabaseAuthResponse;
-      console.log('[AuthRepository] login response', data);
 
       if (!data.user) {
         throw new Error('No user data in response');
       }
 
       const userDto: User = data.user;
-      console.log('[AuthRepository] login userDto', userDto);
 
       return UserMapper.toDomain(userDto);
     } catch (error) {

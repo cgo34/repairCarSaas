@@ -14,8 +14,7 @@ import { useAuthState } from '@/@presentation/@modules/auth/composables/useAuthS
 import AuthForm from '@modules/auth/components/AuthForm.vue';
 import AuthLayout from '@modules/auth/layouts/AuthLayout.vue';
 
-const { login, user } = useAuthState();  // Accès direct au user state
-console.log('user:', user.value);
+const { login, user } = useAuthState();
 
 const emailRules = [
   (v: string) => !!v || 'E-mail is required',
@@ -29,7 +28,6 @@ const passwordRules = [
 
 const handleLogin = async () => {
   try {
-    console.log('Attempting to login:', user.value?.email, user.value?.password);
     await login();
     window.location.href = '/dashboard';
   } catch (error: unknown) {

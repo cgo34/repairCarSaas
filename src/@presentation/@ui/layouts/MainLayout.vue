@@ -18,6 +18,10 @@
           fluid
           class="page-wrapper"
         >
+          <BaseBreadcrumb
+            :title="pageTitle"
+            :breadcrumbs="breadcrumbs"
+          />
           <div>
             <RouterView>
               <slot />
@@ -43,6 +47,25 @@
 import { useCustomizerState } from '@/@presentation/composables/useCustomizerState';
 import VerticalHeaderVue from '@ui/layouts/vertical-header/VerticalHeader.vue';
 import VerticalSidebarVue from '@ui/layouts/vertical-sidebar/VerticalSidebar.vue';
+import BaseBreadcrumb from '@/shared/BaseBreadcrumb.vue';
+import { ref, computed } from 'vue';
+import { useRoute } from 'vue-router';
+
+type Breadcrumb = {
+  title: string;
+  href: string;
+};
+
+const route = useRoute();
+
+const pageTitle = computed(() => {
+  const breadcrumbs = route.meta.breadcrumb as Breadcrumb[] || [];
+  return breadcrumbs[breadcrumbs.length - 1]?.title || 'Default Page Title';
+});
+
+const breadcrumbs = computed(() => {
+  return route.meta.breadcrumb || [];
+});
 
 const {
   miniSidebar,

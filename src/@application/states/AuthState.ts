@@ -92,10 +92,7 @@ export class AuthState implements IAuthState {
 
   async login(email: string, password: string): Promise<void> {
     try {
-      console.log('[AuthState] login with credentials', email, password);
-      
       const user = await this.authUseCase.login.execute(email, password);
-      console.log('[AuthState] login session', user);
       
       if (!user) {
         throw new AuthError(
