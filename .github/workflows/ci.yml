@@ -1,20 +1,15 @@
-# Nom du workflow affiché dans GitHub Actions
 name: CI Pipeline
 
-# Déclencheurs du workflow
 on:
   push:
     branches: [main, develop]
   pull_request:
     branches: [main, develop]
 
-# Variables globales
 env:
-  DOCKER_IMAGE: 'app:test'
   DEPLOY_ENV: 'dev'
 
 jobs:
-  # Job 1: Installation des dépendances
   install_dependencies:
     name: Install Dependencies
     runs-on: ubuntu-latest
@@ -31,10 +26,17 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-  # Job 2: Vérification Lint & TypeScript
+      - name: Cache dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
   lint_and_typecheck:
     name: Lint & Type Check
-    needs: [install_dependencies]
+    needs: install_dependencies
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -46,7 +48,7 @@ jobs:
           node-version: 18
           cache: 'npm'
 
-      - name: Install dependencies
+      - name: Install dependencies (cache used)
         run: npm ci
 
       - name: Run ESLint
@@ -55,7 +57,6 @@ jobs:
       - name: Run TypeScript Type Check
         run: npm run type-check
 
-  # Job 3: Build de l'application
   build:
     name: Build Application
     needs: [lint_and_typecheck]
@@ -70,13 +71,12 @@ jobs:
           node-version: 18
           cache: 'npm'
 
-      - name: Install dependencies
+      - name: Install dependencies (cache used)
         run: npm ci
 
       - name: Build Project
         run: npm run build
 
-      # Sauvegarde du build
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v3
         with:
@@ -84,24 +84,21 @@ jobs:
           path: dist/
           retention-days: 1
 
-  # Job 4: Déploiement en développement (optionnel)
   deploy_dev:
     name: Deploy to Development
     needs: [build]
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/develop' # Uniquement sur la branche develop
+    if: github.ref == 'refs/heads/develop'
     environment:
       name: development
       url: ${{ steps.deploy.outputs.url }}
     steps:
-      # Récupération du build
       - name: Download Build
         uses: actions/download-artifact@v3
         with:
           name: dist
           path: dist
 
-      # Placeholder pour le déploiement
       - name: Deploy
         id: deploy
         run: |
