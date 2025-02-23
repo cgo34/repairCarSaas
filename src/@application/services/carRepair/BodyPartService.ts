@@ -1,4 +1,4 @@
-import { BodyPart } from "@/@domain/entities/carRepair/BodyPart";
+import { BodyPartDto } from "@/@application/dtos/carRepair/BodyPartDto";
 import { IBodyPartRepository } from "@/@domain/repositories/carRepair/IBodyPartRepository";
 import { IBodyPartService } from "@/@domain/services/carRepair/IBodyPartService";
 import { SYMBOLS } from "@/@infrastructure/ioc/symbols";
@@ -10,19 +10,15 @@ export class BodyPartService implements IBodyPartService {
     console.log('[BodyPartService] Initialized with BodyPartRepository:', bodyPartRepository);
   }
 
-  async getAll(): Promise<BodyPart[]> {
+  async getAll(): Promise<BodyPartDto[]> {
     return await this.bodyPartRepository.getAll();
   }
 
-  async getById(id: number): Promise<BodyPart | null> {
-    return await this.bodyPartRepository.getById(id);
-  }
-
-  async create(bodyPart: BodyPart): Promise<BodyPart> {
+  async create(bodyPart: BodyPartDto): Promise<BodyPartDto> {
     return await this.bodyPartRepository.create(bodyPart);
   }
 
-  async update(bodyPart: BodyPart): Promise<BodyPart> {
+  async update(bodyPart: BodyPartDto): Promise<BodyPartDto> {
     return await this.bodyPartRepository.update(bodyPart);
   }
 

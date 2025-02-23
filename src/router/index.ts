@@ -5,11 +5,13 @@ import { authRoutes } from './modules/auth/authRoutes';
 import { authGuard } from './modules/auth/navigationGuards';
 import { carSettingsRoutes } from './modules/carSettings/carSettingsRoutes';
 import { dashboardRoutes } from './modules/dashboard/dashboardRoutes';
+import { garageRoutes } from './modules/garage/garageRoutes';
 
 const routes: RouteRecordRaw[] = [
   ...authRoutes,
   ...dashboardRoutes,
   ...carSettingsRoutes,
+  ...garageRoutes,
   // logoutRoute,
 ];
 

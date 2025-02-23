@@ -8,7 +8,8 @@
     "lint": "eslint \"src/**/*.{ts,tsx,vue,js,jsx}\"",
     "lint:fix": "eslint \"src/**/*.{ts,tsx,vue,js,jsx}\" --fix",
     "type-check": "vue-tsc --noEmit",
-    "test": "echo \"No tests specified\" && exit 0"
+    "test": "echo \"No tests specified\" && exit 0",
+    "supabase:gen:types": "supabase gen types typescript --project-id ombgvakpwmgtkimvrhzh --schema public,car_repair > src/@infrastructure/database/database.types.ts"
   },
   "dependencies": {
     "@mdi/font": "^7.4.47",
@@ -32,6 +33,8 @@
     "@typescript-eslint/eslint-plugin": "^6.13.0",
     "@typescript-eslint/parser": "^6.13.0",
     "@vitejs/plugin-vue": "^5.2.1",
+    "cross-env": "^7.0.3",
+    "dotenv-cli": "^8.0.0",
     "eslint": "^8.0.0",
     "eslint-plugin-vue": "^9.32.0",
     "postcss": "^8.5.1",

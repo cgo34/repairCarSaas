@@ -1,8 +1,8 @@
-import { BodyPart } from "@domain/entities/carRepair/BodyPart";
+import { BodyPartDto } from "@/@application/dtos/carRepair/BodyPartDto";
 
 export interface IBodyPartService {
-  getAll(): Promise<BodyPart[]>;
-  create(bodyPart: BodyPart): Promise<BodyPart>;
-  update(bodyPart: BodyPart): Promise<BodyPart>;
+  getAll(): Promise<BodyPartDto[]>;
+  create(bodyPart: BodyPartDto): Promise<BodyPartDto>;
+  update(bodyPart: BodyPartDto): Promise<BodyPartDto>;
   delete(id: string): Promise<void>;
 }

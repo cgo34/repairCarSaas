@@ -1,10 +1,13 @@
-import { IBodyPartUseCase } from '@domain/useCases/carRepair/IBodyPartUseCase';
+//TODO: (GCE) -> Not used, to remove it or use it in Ioc container
+
+import { IBodyPartUseCase } from '@/@application/useCases/interfaces/carRepair/IBodyPartUseCase';
+import { BodyPartViewModel } from '@/@presentation/types/models/carRepair/BodyPartViewModel';
 import { container } from '@infrastructure/ioc/inversify.config';
 import { SYMBOLS } from '@infrastructure/ioc/symbols';
 import { ref } from 'vue';
 
 const bodyPartUseCase = container.get<IBodyPartUseCase>(SYMBOLS.UseCases.CarRepair.BodyPartUseCase);
-const bodyParts = ref([]);
+const bodyParts = ref<BodyPartViewModel[]>([]);
 const loading = ref<boolean>(false);
 const error = ref(null);
 export function useBodyPartState() {

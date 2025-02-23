@@ -1,10 +1,9 @@
 // src/@domain/repositories/carRepair/IBodyPartRepository.ts
-import { BodyPart } from '@domain/entities/carRepair/BodyPart';
+import { BodyPartDto } from '@/@application/dtos/carRepair/BodyPartDto';
 
 export interface IBodyPartRepository {
-  getAll(): Promise<BodyPart[]>;
-  getById(id: number): Promise<BodyPart | null>;
-  create(bodyPart: BodyPart): Promise<BodyPart>;
-  update(bodyPart: BodyPart): Promise<BodyPart>;
+  getAll(): Promise<BodyPartDto[]>;
+  create(bodyPart: BodyPartDto): Promise<BodyPartDto>;
+  update(bodyPart: BodyPartDto): Promise<BodyPartDto>;
   delete(id: string): Promise<void>;
 }

@@ -28,7 +28,7 @@ export const adminMenu = [
       {
         title: 'Car Body Materials',
         icon: CircleIcon,
-        to: '/car-body-materials'
+        to: '/settings/car-body-materials'
       },
     ]
   },
@@ -40,15 +40,50 @@ export const adminMenu = [
       {
         title: 'Dent Repair Types',
         icon: CircleIcon,
-        to: '/admin/settings'
+        to: '/settings/dent-repair-types'
+      },
+    ]
+  },
+  {
+    title: 'Price',
+    icon: KeyIcon,
+    to: '/auth',
+    children: [
+      {
+        title: 'General Price Parameter',
+        icon: CircleIcon,
+        to: '/settings/price/general'
       },
       {
-        title: 'Dent Removal Pricing',
+        title: 'Impact Unit Time Price Parameter',
         icon: CircleIcon,
-        to: '/admin/settings'
+        to: '/settings/price/impact-unit-time'
+      },
+      {
+        title: 'Technicity Coefficient Price Parameter',
+        icon: CircleIcon,
+        to: '/settings/price/coefficient/technicity'
+      },
+      {
+        title: 'Variation Coefficient Price Parameter',
+        icon: CircleIcon,
+        to: '/settings/price/coefficient/variation'
+      },
+      {
+        title: 'Diameter Coefficient Price Parameter',
+        icon: CircleIcon,
+        to: '/settings/price/coefficient/diameter'
       }
     ]
   },
+  { divider: true },
+  { header: 'Garage' },
+  {
+    title: 'Garages',
+    icon: DashboardIcon,
+    to: '/garages',
+  },
+  { divider: true },
   {
     title: 'Logout',
     icon: LogoutIcon,

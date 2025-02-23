@@ -6,26 +6,66 @@ export enum SYMBOL_NAMES {
     // Repositories
     AUTH_REPOSITORY = 'AuthRepository',
     USER_REPOSITORY = 'UserRepository',
+    GARAGE_REPOSITORY = 'GarageRepository',
     INVOICE_REPOSITORY = 'InvoiceRepository',
     QUOTE_REPOSITORY = 'QuoteRepository',
-    // CarRepair Repositories
+    // Settings CarRepair Repositories
     BODY_PART_REPOSITORY = 'BodyPartRepository',
+    BODY_MATERIAL_REPOSITORY = 'BodyMaterialRepository',
+    DENT_REPAIR_TYPE_REPOSITORY = 'DentRepairTypeRepository',
+    // -- Settings Prices CarRepair Repositories
+    SETTING_PRICE_GENERAL_REPOSITORY = 'SettingPriceGeneralRepository',
+    SETTING_PRICE_IMPACT_COUNT_TO_UT_REPOSITORY = 'SettingPriceImpactCountToUtRepository',
+    SETTING_PRICE_BODY_MATERIAL_COEFFICIENT = 'SettingPriceBodyMaterialCoefficient',
+    SETTING_PRICE_BODY_PART_COEFFICIENT = 'SettingPriceBodyPartCoefficient',
+    SETTING_PRICE_DIAMETER_COEFFICIENT = 'SettingPriceDiameterCoefficient',
     // Services
     AUTH_SERVICE = 'AuthService',
+    GARAGE_SERVICE = 'GarageService',
     NOTIFICATION_SERVICE = 'NotificationService',
-    // CarRepair Services
+    // Settings CarRepair Services
     BODY_PART_SERVICE = 'BodyPartService',
+    BODY_MATERIAL_SERVICE = 'BodyMaterialService',
+    DENT_REPAIR_TYPE_SERVICE = 'DentRepairTypeService',
+    DENT_REMOVAL_PRICING_SERVICE = 'DentRemovalPricingService',
+    // -- Settings Prices CarRepair Services
+    SETTING_PRICE_GENERAL_SERVICE = 'SettingPriceGeneralService',
+    SETTING_PRICE_IMPACT_COUNT_TO_UT_SERVICE = 'SettingPriceImpactCountToUtService',
+    SETTING_PRICE_BODY_MATERIAL_COEFFICIENT_SERVICE = 'SettingPriceBodyMaterialCoefficientService',
+    SETTING_PRICE_BODY_PART_COEFFICIENT_SERVICE = 'SettingPriceBodyPartCoefficientService',
+    SETTING_PRICE_DIAMETER_COEFFICIENT_SERVICE = 'SettingPriceDiameterCoefficientService',
     // UseCases
     // -- Auth UseCases
     AUTH_USE_CASE = 'AuthUseCase',
     LOGIN_USE_CASE = 'LoginUseCase',
     LOGOUT_USE_CASE = 'LogoutUseCase',
     REGISTER_USE_CASE = 'RegisterUseCase',
-    // -- CarRepair UseCases
+    // -- Garage UseCases
+    GARAGE_USE_CASE = 'GarageUseCase',
+    // -- Settings CarRepair UseCases
     BODY_PART_USE_CASE = 'BodyPartUseCase',
+    BODY_MATERIAL_USE_CASE = 'BodyMaterialUseCase',
+    DENT_REPAIR_TYPE_USE_CASE = 'DentRepairTypeUseCase',
+    // -- Settings Prices CarRepair UseCases
+    SETTING_PRICE_GENERAL_USE_CASE = 'SettingPriceGeneralUseCase',
+    SETTING_PRICE_IMPACT_COUNT_TO_UT_USE_CASE = 'SettingPriceImpactCountToUtUseCase',
+    SETTING_PRICE_BODY_MATERIAL_COEFFICIENT_USE_CASE = 'SettingPriceBodyMaterialCoefficientUseCase',
+    SETTING_PRICE_BODY_PART_COEFFICIENT_USE_CASE = 'SettingPriceBodyPartCoefficientUseCase',
+    SETTING_PRICE_DIAMETER_COEFFICIENT_USE_CASE = 'SettingPriceDiameterCoefficientUseCase',
     // States
     AUTH_STATE = 'AuthState',
-    // -- CarRepair States
+    // -- Garage States
+    GARAGE_STATE = 'GarageState',
+    // -- Settings CarRepair States
     BODY_PART_STATE = 'BodyPartState',
+    BODY_MATERIAL_STATE = 'BodyMaterialState',
+    DENT_REPAIR_TYPE_STATE = 'DentRepairTypeState',
+    DENT_REMOVAL_PRICING_STATE = 'DentRemovalPricingState',
+    // -- Settings Prices CarRepair States
+    SETTING_PRICE_GENERAL_STATE = 'SettingPriceGeneralState',
+    SETTING_PRICE_IMPACT_COUNT_TO_UT_STATE = 'SettingPriceImpactCountToUtState',
+    SETTING_PRICE_BODY_MATERIAL_COEFFICIENT_STATE = 'SettingPriceBodyMaterialCoefficientState',
+    SETTING_PRICE_BODY_PART_COEFFICIENT_STATE = 'SettingPriceBodyPartCoefficientState',
+    SETTING_PRICE_DIAMETER_COEFFICIENT_STATE = 'SettingPriceDiameterCoefficientState',
   }
   

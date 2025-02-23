@@ -1,6 +1,6 @@
 // src/router/modules/auth/authRoutes.ts
-import { IClientProvider } from '@/@domain/providers/IClientProvider';
-import { IAuthState } from '@/@domain/states/IAuthState';
+import { IAuthState } from '@/@application/states/interfaces/IAuthState';
+import { IClientProvider } from '@/@infrastructure/interfaces/IClientProvider';
 import { container } from '@/@infrastructure/ioc/inversify.config';
 import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
 import LoginPage from '@/@presentation/@modules/auth/pages/LoginPage.vue';
@@ -29,6 +29,7 @@ export const authRoutes: RouteRecordRaw[] = [
     component: {},
     beforeEnter: async (_to, _from, next) => {
       try {
+        //TODO: (GCE) -> TO BE REPLACED WITH USE CASE
         const clientProvider = container.get<IClientProvider>(SYMBOLS.Providers.ClientProvider);
         const authState = container.get<IAuthState>(SYMBOLS.States.AuthState);
         

@@ -1,16 +1,18 @@
-import { IClientProvider } from '@/@domain/providers/IClientProvider';
+import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
+import { ClientProvider } from '@/@infrastructure/providers/ClientProvider';
 import { SupabaseClient } from '@infrastructure/database/clients/SupabaseClient';
-import { injectable } from 'inversify';
+import { inject, injectable } from 'inversify';
 
 @injectable()
-export class SupabaseClientProvider implements IClientProvider {
-  private client: SupabaseClient;
+export class SupabaseClientProvider extends ClientProvider<SupabaseClient> {
+  protected client: SupabaseClient;
 
-  constructor() {
-    this.client = new SupabaseClient();
+  constructor(@inject(SYMBOLS.Clients.SupabaseClient) client: SupabaseClient) {
+    super();
+    this.client = client; // Injection via Inversify
   }
 
-  getClient() {
-    return this.client.getClient();
-  }
+  // get auth() {
+  //   return this.client.auth;
+  // }
 }

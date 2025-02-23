@@ -11,15 +11,18 @@ export type Database = {
     Tables: {
       body_materials: {
         Row: {
-          id: number
+          code: string
+          id: string
           name: string
         }
         Insert: {
-          id?: number
+          code: string
+          id: string
           name: string
         }
         Update: {
-          id?: number
+          code?: string
+          id?: string
           name?: string
         }
         Relationships: []
@@ -45,18 +48,175 @@ export type Database = {
         }
         Relationships: []
       }
+      garages: {
+        Row: {
+          address: string | null
+          city: string | null
+          email: string | null
+          id: string
+          name: string | null
+          percentage_commission: number | null
+          phone: string | null
+          user_id: string
+          zip_code: string | null
+        }
+        Insert: {
+          address?: string | null
+          city?: string | null
+          email?: string | null
+          id?: string
+          name?: string | null
+          percentage_commission?: number | null
+          phone?: string | null
+          user_id: string
+          zip_code?: string | null
+        }
+        Update: {
+          address?: string | null
+          city?: string | null
+          email?: string | null
+          id?: string
+          name?: string | null
+          percentage_commission?: number | null
+          phone?: string | null
+          user_id?: string
+          zip_code?: string | null
+        }
+        Relationships: []
+      }
       repair_types: {
         Row: {
+          code: string
           id: number
           name: string
         }
         Insert: {
+          code: string
           id?: number
           name: string
         }
         Update: {
+          code?: string
           id?: number
           name?: string
+        }
+        Relationships: []
+      }
+      setting_price_body_material_coefficient: {
+        Row: {
+          body_material_id: string
+          material_coefficient: number
+          user_id: string
+        }
+        Insert: {
+          body_material_id: string
+          material_coefficient: number
+          user_id: string
+        }
+        Update: {
+          body_material_id?: string
+          material_coefficient?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "setting_price_body_material_coefficient_body_material_id_fkey"
+            columns: ["body_material_id"]
+            isOneToOne: true
+            referencedRelation: "body_materials"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      setting_price_body_part_coefficient: {
+        Row: {
+          body_part_id: string
+          difficulty_coefficient: number
+          user_id: string
+        }
+        Insert: {
+          body_part_id: string
+          difficulty_coefficient: number
+          user_id: string
+        }
+        Update: {
+          body_part_id?: string
+          difficulty_coefficient?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "setting_price_body_part_coefficient_body_part_id_fkey"
+            columns: ["body_part_id"]
+            isOneToOne: true
+            referencedRelation: "body_parts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      setting_price_diameter_coefficient: {
+        Row: {
+          coefficient: number
+          diameter: number
+          id: string
+          user_id: string
+        }
+        Insert: {
+          coefficient: number
+          diameter: number
+          id: string
+          user_id: string
+        }
+        Update: {
+          coefficient?: number
+          diameter?: number
+          id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      setting_price_general: {
+        Row: {
+          hourly_rate: number
+          id: string
+          unit_time: number
+          user_id: string
+        }
+        Insert: {
+          hourly_rate: number
+          id: string
+          unit_time?: number
+          user_id: string
+        }
+        Update: {
+          hourly_rate?: number
+          id?: string
+          unit_time?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
+      setting_price_impact_count_to_ut: {
+        Row: {
+          id: string
+          impact_count_max: number
+          impact_count_min: number
+          unit_time: number
+          user_id: string
+        }
+        Insert: {
+          id: string
+          impact_count_max: number
+          impact_count_min: number
+          unit_time: number
+          user_id: string
+        }
+        Update: {
+          id?: string
+          impact_count_max?: number
+          impact_count_min?: number
+          unit_time?: number
+          user_id?: string
         }
         Relationships: []
       }

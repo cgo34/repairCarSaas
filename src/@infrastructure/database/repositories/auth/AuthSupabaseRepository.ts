@@ -1,14 +1,16 @@
-import { IClientProvider } from '@domain/providers/IClientProvider';
+import { IClientProvider } from '@/@infrastructure/interfaces/IClientProvider';
 import { IAuthRepository } from '@domain/repositories/IAuthRepository';
 import { SupabaseAuthResponse } from '@infrastructure/database/dtos/supabase/SupabaseAuthResponse';
 import { SYMBOLS } from '@infrastructure/ioc/symbols';
+import { AuthError } from '@supabase/supabase-js';
 import { inject, injectable } from 'inversify';
 import { UserMapper } from '../../../mappers/UserMapper';
+import { SupabaseClient } from '../../clients/SupabaseClient';
 import { User } from '../../dtos/supabase/SupabaseUser';
 
 @injectable()
 export class AuthSupabaseRepository implements IAuthRepository {
-  constructor(@inject(SYMBOLS.Providers.ClientProvider) private clientProvider: IClientProvider) {
+  constructor(@inject(SYMBOLS.Providers.ClientProvider) private clientProvider: IClientProvider<SupabaseClient>) {
   }
 
   async login(email: string, password: string): Promise<User> {
@@ -29,18 +31,22 @@ export class AuthSupabaseRepository implements IAuthRepository {
   }
 
   async register(email: string, password: string): Promise<any> {
-    return await this.authProvider.signUp(email, password);
+    return await this.clientProvider.getClient().auth.signUp(email, password);
   }
 
-  async logout(): Promise<void> {
-    return await this.authProvider.signOut();
+  async logout(): Promise<{ error: AuthError | null }> {
+    return await this.clientProvider.getClient().auth.signOut();
   }
 
   async getCurrentUser(): Promise<any> {
-    return await this.authProvider.getSession();
+    return await this.clientProvider.getClient().auth.user();
+  }
+
+  async getUserSession(): Promise<any> {
+    return await this.clientProvider.getClient().auth.session();
   }
 
   onAuthStateChange(callback: (event: string, session: any) => void): void {
-    this.authProvider.onAuthStateChange(callback);
+    this.clientProvider.getClient().auth.onAuthStateChange(callback);
   }
 }

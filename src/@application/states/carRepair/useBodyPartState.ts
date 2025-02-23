@@ -1,11 +1,14 @@
-import { BodyPart } from '@/@domain/entities/carRepair/BodyPart';
-import { IBodyPartState } from '@/@domain/states/carRepair/IBodyPartState';
-import { IBodyPartUseCase } from '@domain/useCases/carRepair/IBodyPartUseCase';
+import { IBodyPartState } from '@/@application/states/interfaces/carRepair/IBodyPartState';
+import { IBodyPartUseCase } from '@/@application/useCases/interfaces/carRepair/IBodyPartUseCase';
+import { container } from '@/@infrastructure/ioc/inversify.config';
+import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
+import { BodyPartViewModel } from '@/@presentation/types/models/carRepair/BodyPartViewModel';
 import { computed, ref } from 'vue';
 
-export function useBodyPartState(bodyPartUseCase: IBodyPartUseCase): IBodyPartState {
-  const _bodyParts = ref<BodyPart[]>([]);
-  const _selectedBodyPart = ref<BodyPart>({
+export function useBodyPartState(): IBodyPartState {
+  const bodyPartUseCase = container.get<IBodyPartUseCase>(SYMBOLS.UseCases.CarRepair.BodyPartUseCase);
+  const _bodyParts = ref<BodyPartViewModel[]>([]);
+  const _selectedBodyPart = ref<BodyPartViewModel>({
     id: undefined,
     name: '',
     code: '',
@@ -20,7 +23,7 @@ export function useBodyPartState(bodyPartUseCase: IBodyPartUseCase): IBodyPartSt
     })
   }
 
-  const fetchBodyParts = async (): Promise<BodyPart[]> => {
+  const fetchBodyParts = async (): Promise<BodyPartViewModel[]> => {
     loading.value = true;
     try {
       return bodyPartUseCase.executeGetAll().then((data) => {
@@ -35,7 +38,7 @@ export function useBodyPartState(bodyPartUseCase: IBodyPartUseCase): IBodyPartSt
     }
   };
 
-  const selectBodyPart = (bodyPart: BodyPart | null): void => {    
+  const selectBodyPart = (bodyPart: BodyPartViewModel | null): void => {    
     if (!bodyPart)
       return resetSelectedBodyPart();
 
@@ -57,7 +60,7 @@ export function useBodyPartState(bodyPartUseCase: IBodyPartUseCase): IBodyPartSt
     };
   }
 
-  const addBodyPart = async (bodyPart: BodyPart): Promise<BodyPart> => {
+  const addBodyPart = async (bodyPart: BodyPartViewModel): Promise<BodyPartViewModel> => {
     loading.value = true;
     try {
       return bodyPartUseCase.executeCreate(bodyPart).then((data) => {
@@ -73,7 +76,7 @@ export function useBodyPartState(bodyPartUseCase: IBodyPartUseCase): IBodyPartSt
     }
   }
 
-  const updateBodyPart = async (bodyPart: BodyPart): Promise<BodyPart> => {
+  const updateBodyPart = async (bodyPart: BodyPartViewModel): Promise<BodyPartViewModel> => {
     if (!bodyPart.id)
       throw new Error('Body part does not exist');
 

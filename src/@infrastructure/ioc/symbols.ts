@@ -10,16 +10,42 @@ const SYMBOLS = {
   Repositories: {
     AuthRepository: Symbol.for(SYMBOL_NAMES.AUTH_REPOSITORY),
     UserRepository: Symbol.for(SYMBOL_NAMES.USER_REPOSITORY),
+    GarageRepository: Symbol.for(SYMBOL_NAMES.GARAGE_REPOSITORY),
     InvoiceRepository: Symbol.for(SYMBOL_NAMES.INVOICE_REPOSITORY),
     QuoteRepository: Symbol.for(SYMBOL_NAMES.QUOTE_REPOSITORY),
-    // CarRepair Repositories
+    // -- Settings CarRepair Repositories
     BodyPartRepository: Symbol.for(SYMBOL_NAMES.BODY_PART_REPOSITORY),
+    BodyMaterialRepository: Symbol.for(SYMBOL_NAMES.BODY_MATERIAL_REPOSITORY),
+    DentRepairTypeRepository: Symbol.for(SYMBOL_NAMES.DENT_REPAIR_TYPE_REPOSITORY),
+    // -- Settings Prices CarRepair Repositories
+    Setting: {
+      Price: {
+        SettingPriceGeneralRepository: Symbol.for(SYMBOL_NAMES.SETTING_PRICE_GENERAL_REPOSITORY),
+        SettingPriceImpactCountToUtRepository: Symbol.for(SYMBOL_NAMES.SETTING_PRICE_IMPACT_COUNT_TO_UT_REPOSITORY),
+        SettingPriceBodyMaterialCoefficient: Symbol.for(SYMBOL_NAMES.SETTING_PRICE_BODY_MATERIAL_COEFFICIENT),
+        SettingPriceBodyPartCoefficient: Symbol.for(SYMBOL_NAMES.SETTING_PRICE_BODY_PART_COEFFICIENT),
+        SettingPriceDiameterCoefficient: Symbol.for(SYMBOL_NAMES.SETTING_PRICE_DIAMETER_COEFFICIENT),
+      }
+    }
   },
   Services: {
     AuthService: Symbol.for(SYMBOL_NAMES.AUTH_SERVICE),
+    GarageService: Symbol.for(SYMBOL_NAMES.GARAGE_SERVICE),
     NotificationService: Symbol.for(SYMBOL_NAMES.NOTIFICATION_SERVICE),
-    // CarRepair Services
+    // -- Settings CarRepair Services
     BodyPartService: Symbol.for(SYMBOL_NAMES.BODY_PART_SERVICE),
+    BodyMaterialService: Symbol.for(SYMBOL_NAMES.BODY_MATERIAL_SERVICE),
+    DentRepairTypeService: Symbol.for(SYMBOL_NAMES.DENT_REPAIR_TYPE_SERVICE),
+    // -- Settings Prices CarRepair Services
+    Setting: {
+      Price: {
+        SettingPriceGeneralService: Symbol.for(SYMBOL_NAMES.SETTING_PRICE_GENERAL_SERVICE),
+        SettingPriceImpactCountToUtService: Symbol.for(SYMBOL_NAMES.SETTING_PRICE_IMPACT_COUNT_TO_UT_SERVICE),
+        SettingPriceBodyMaterialCoefficientService: Symbol.for(SYMBOL_NAMES.SETTING_PRICE_BODY_MATERIAL_COEFFICIENT_SERVICE),
+        SettingPriceBodyPartCoefficientService: Symbol.for(SYMBOL_NAMES.SETTING_PRICE_BODY_PART_COEFFICIENT_SERVICE),
+        SettingPriceDiameterCoefficientService: Symbol.for(SYMBOL_NAMES.SETTING_PRICE_DIAMETER_COEFFICIENT_SERVICE),
+      }
+    }
   },
   UseCases: {
     Auth: {
@@ -28,15 +54,43 @@ const SYMBOLS = {
       LogoutUseCase: Symbol.for(SYMBOL_NAMES.LOGOUT_USE_CASE),
       RegisterUseCase: Symbol.for(SYMBOL_NAMES.REGISTER_USE_CASE),
     },
+    Garage: Symbol.for(SYMBOL_NAMES.GARAGE_USE_CASE),
     CarRepair: {
       BodyPartUseCase: Symbol.for(SYMBOL_NAMES.BODY_PART_USE_CASE),
+      BodyMaterialUseCase: Symbol.for(SYMBOL_NAMES.BODY_MATERIAL_USE_CASE),
+      DentRepairTypeUseCase: Symbol.for(SYMBOL_NAMES.DENT_REPAIR_TYPE_USE_CASE),
+    },
+    // -- Settings Prices CarRepair UseCases
+    Setting: {
+      Price: {
+        GeneralUseCase: Symbol.for(SYMBOL_NAMES.SETTING_PRICE_GENERAL_USE_CASE),
+        ImpactCountToUtUseCase: Symbol.for(SYMBOL_NAMES.SETTING_PRICE_IMPACT_COUNT_TO_UT_USE_CASE),
+        BodyMaterialCoefficientUseCase: Symbol.for(SYMBOL_NAMES.SETTING_PRICE_BODY_MATERIAL_COEFFICIENT_USE_CASE),
+        BodyPartCoefficientUseCase: Symbol.for(SYMBOL_NAMES.SETTING_PRICE_BODY_PART_COEFFICIENT_USE_CASE),
+        DiameterCoefficientUseCase: Symbol.for(SYMBOL_NAMES.SETTING_PRICE_DIAMETER_COEFFICIENT_USE_CASE),
+      }
     },
   },
   States: {
     AuthState: Symbol.for(SYMBOL_NAMES.AUTH_STATE),
-    // CarRepair States
+    // -- Garage States
+    GarageState: Symbol.for(SYMBOL_NAMES.GARAGE_STATE),
+    // -- Settings CarRepair States
     CarRepair: {
       BodyPartState: Symbol.for(SYMBOL_NAMES.BODY_PART_STATE),
+      BodyMaterialState: Symbol.for(SYMBOL_NAMES.BODY_MATERIAL_STATE),
+      DentRepairTypeState: Symbol.for(SYMBOL_NAMES.DENT_REPAIR_TYPE_STATE),
+      DentRemovalPricingState: Symbol.for(SYMBOL_NAMES.DENT_REMOVAL_PRICING_STATE),
+    },
+    // -- Settings Prices CarRepair States
+    Setting: {
+      Price: {
+        GeneralState: Symbol.for(SYMBOL_NAMES.SETTING_PRICE_GENERAL_STATE),
+        ImpactCountToUtState: Symbol.for(SYMBOL_NAMES.SETTING_PRICE_IMPACT_COUNT_TO_UT_STATE),
+        BodyMaterialCoefficientState: Symbol.for(SYMBOL_NAMES.SETTING_PRICE_BODY_MATERIAL_COEFFICIENT_STATE),
+        BodyPartCoefficientState: Symbol.for(SYMBOL_NAMES.SETTING_PRICE_BODY_PART_COEFFICIENT_STATE),
+        DiameterCoefficientState: Symbol.for(SYMBOL_NAMES.SETTING_PRICE_DIAMETER_COEFFICIENT_STATE),
+      }
     },
   },
 };

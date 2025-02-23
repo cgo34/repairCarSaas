@@ -1,0 +1,91 @@
+import { IAuthState } from '@/@application/states/interfaces/IAuthState';
+import { IGarageUseCase } from '@/@application/useCases/interfaces/IGarageUseCase';
+import { container } from '@/@infrastructure/ioc/inversify.config';
+import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
+import { IUseGarageState } from '@/@presentation/types/composables/IUseGarageState';
+import { GarageViewModel } from '@/@presentation/types/models/GarageViewModel';
+import { computed, ref } from 'vue';
+
+export function useGarageState(): IUseGarageState {
+  const authState = container.get<IAuthState>(SYMBOLS.States.AuthState);
+  const garageUseCase = container.get<IGarageUseCase>(SYMBOLS.UseCases.Garage);
+  
+  const _garages = ref<GarageViewModel[]>([]);
+  const _selectedGarage = ref<GarageViewModel | null>(null);
+  const loading = ref<boolean>(false);
+  const error = ref<unknown>(null);
+
+  const init = async () => {
+    return fetchGarages().then(() => {
+      return;
+    });
+  };
+
+  const fetchGarages = async (): Promise<GarageViewModel[]> => {
+    loading.value = true;
+    try {
+      if (!authState.user?.value?.id) throw new Error('User does not exist');
+
+      return garageUseCase.getByUserId(authState.user?.value?.id).then((data) => {
+        _garages.value = data;
+        return data;
+      });
+    } catch (e) {
+      throw e;
+    } finally {
+      loading.value = false;
+    }
+  };
+
+  const selectGarage = (garage: GarageViewModel | null): void => {
+    _selectedGarage.value = garage;
+  };
+
+  const addGarage = async (garage: GarageViewModel) => {
+    loading.value = true;
+    try {
+      return garageUseCase.create(garage).then((data) => {
+        _garages.value.push(data);
+        return data;
+      });
+    } finally {
+      loading.value = false;
+    }
+  };
+
+  const updateGarage = async (garage: GarageViewModel) => {
+    loading.value = true;
+    try {
+      return garageUseCase.update(garage).then((data) => {
+        _garages.value = _garages.value.map((g) => (g.id === garage.id ? data : g));
+        return data;
+      });
+    } finally {
+      loading.value = false;
+    }
+  };
+
+  const deleteGarage = async (id: string) => {
+    loading.value = true;
+    try {
+      return garageUseCase.delete(id).then(() => {
+        _garages.value = _garages.value.filter((g) => g.id !== id);
+      });
+    } finally {
+      loading.value = false;
+    }
+  };
+
+  return {
+    garages: computed(() => _garages.value),
+    selectedGarage: computed(() => _selectedGarage.value),
+    loading,
+    error,
+    init,
+    fetchGarages,
+    selectGarage,
+    addGarage,
+    updateGarage,
+    deleteGarage,
+  };
+}

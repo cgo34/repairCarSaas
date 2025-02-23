@@ -1,5 +1,5 @@
-import { IAuthProvider } from '@domain/providers/IAuthProvider';
-import { IAuthState } from '@domain/states/IAuthState';
+import { IAuthState } from '@/@application/states/interfaces/IAuthState';
+import { IAuthProvider } from '@/@infrastructure/interfaces/providers/IAuthProvider';
 import { container } from '@infrastructure/ioc/inversify.config';
 import { SYMBOLS } from '@infrastructure/ioc/symbols';
 

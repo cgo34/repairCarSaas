@@ -127,9 +127,9 @@
 </template>
   
 <script setup lang="ts">
-import { BodyPart } from '@/@domain/entities/carRepair/BodyPart';
-import { IBodyPartState } from '@/@domain/states/carRepair/IBodyPartState';
+import { IBodyPartState } from '@/@application/states/interfaces/carRepair/IBodyPartState';
 import MainLayout from '@/@presentation/@ui/layouts/MainLayout.vue';
+import { BodyPartViewModel } from '@/@presentation/types/models/carRepair/BodyPartViewModel';
 import { container } from '@infrastructure/ioc/inversify.config';
 import { SYMBOLS } from '@infrastructure/ioc/symbols';
 import { computed, onMounted, ref } from 'vue';
@@ -149,12 +149,12 @@ const headers = [
 
 const formTitle = computed(() => selectedBodyPart.value === null ? 'New Item' : 'Edit Item');
 
-const onEditBtnClick = (item: BodyPart) => {
+const onEditBtnClick = (item: BodyPartViewModel) => {
   selectBodyPart(item);
   dialog.value = true;
 }
 
-const onDeleteBtnClick = (item: BodyPart) => {
+const onDeleteBtnClick = (item: BodyPartViewModel) => {
   if (!item.id)
     return;
 

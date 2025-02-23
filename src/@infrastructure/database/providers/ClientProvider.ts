@@ -1,10 +1,15 @@
-import { IClient } from '@domain/clients/IClient';
-import { IClientProvider } from '@domain/providers/IClientProvider';
+import { IClient } from '@/@infrastructure/interfaces/IClient';
+import { IClientProvider } from '@/@infrastructure/interfaces/IClientProvider';
 
-export abstract class ClientProvider implements IClientProvider {
-  protected abstract client: IClient;
 
-  getClient(): IClient {
+export abstract class ClientProvider<TClient extends IClient> implements IClientProvider<TClient> {
+  protected abstract client: TClient;
+
+  getClient(): TClient {
     return this.client;
   }
+
+  // abstract auth() {
+  //   // return this.client.auth; // Expose auth pour éviter l'erreur
+  // }
 }

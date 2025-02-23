@@ -1,51 +1,70 @@
 // src/@infrastructure/database/repositories/BodyPartSupabaseRepository.ts
-import { IClientProvider } from '@/@domain/providers/IClientProvider';
+import { BodyPartDto } from '@/@application/dtos/carRepair/BodyPartDto';
+import { IClientProvider } from '@/@infrastructure/interfaces/IClientProvider';
 import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
-import { BodyPart } from '@domain/entities/carRepair/BodyPart';
+import { BodyPartMapper } from '@/@infrastructure/mappers/carRepair/BodyPartMapper';
 import { IBodyPartRepository } from '@domain/repositories/carRepair/IBodyPartRepository';
-import { BodyPartDto } from '@infrastructure/database/dtos/carRepair/BodyPartDto';
-import { BodyPartMapper } from '@infrastructure/mappers/carRepair/BodyPartMapper';
 import { inject, injectable } from 'inversify';
+import { BodyPartApiModel } from '../../api/carRepair/BodyPartApiModel';
+import { SupabaseClient } from '../../clients/SupabaseClient';
 
 @injectable()
 export class BodyPartRepository implements IBodyPartRepository {
-  constructor(@inject(SYMBOLS.Providers.ClientProvider) private clientProvider: IClientProvider) {}
+  constructor(@inject(SYMBOLS.Providers.ClientProvider) private clientProvider: IClientProvider<SupabaseClient>) {}
 
-  async getAll(): Promise<BodyPart[]> {
-    const { data, error } = await this.clientProvider.getClient().schema('car_repair').from('body_parts').select('*');
-
-    if (error) throw new Error('Error fetching body parts');
-    return data.map(BodyPartMapper.apiToDomain);
-  }
-
-  async getById(id: number): Promise<BodyPart | null> {
-    const { data, error } = await this.clientProvider.getClient().from<BodyPartDto>('car_repair.body_parts').select('*').eq('id', id).single();
-    if (error) throw new Error('Error fetching body part');
-    return data ? BodyPartMapper.toDomain(data) : null;
-  }
-
-  async create(bodyPart: BodyPart): Promise<BodyPart> {
-    console.log('BodyPartRepository.create', bodyPart);
+  async getAll(): Promise<BodyPartDto[]> {
     
     const { data, error } = await this.clientProvider.getClient()
-      .fromSchema('car_repair', 'body_parts')
-      .insert(BodyPartMapper.toDto(bodyPart))
-      .select('*')  // <--- Force Supabase à retourner tous les champs
-      .single();
-    console.log('BodyPartRepository.create', data, error);
-    
-    if (error) throw new Error('Error creating body part');
-    return BodyPartMapper.toDomain(data);
+      .fromSchema<'car_repair', 'body_parts'>('car_repair', 'body_parts')
+      .select('*')
+      .returns<BodyPartApiModel[]>();
+
+    if (error)
+      throw new Error('Error fetching body parts');
+
+    return data.map(BodyPartMapper.apiToDto);
   }
 
-  async update(bodyPart: BodyPart): Promise<BodyPart> {
-    const { data, error } = await this.clientProvider.getClient().from<BodyPartDto>('car_repair.body_parts').update(BodyPartMapper.toDto(bodyPart)).eq('id', bodyPart.id).single();
-    if (error) throw new Error('Error updating body part');
-    return BodyPartMapper.toDomain(data);
+  async create(bodyPart: BodyPartDto): Promise<BodyPartDto> {
+    const bodyPartApi = BodyPartMapper.dtoToApi(bodyPart);
+    
+    const { data, error } = await this.clientProvider.getClient()
+      .fromSchema<'car_repair', 'body_parts'>('car_repair', 'body_parts')
+      .insert(bodyPartApi)
+      .select('*')
+      .single<BodyPartApiModel>();
+    
+    if (error)
+      throw new Error('Error creating body part');
+
+    return BodyPartMapper.apiToDto(data);
+  }
+
+  async update(bodyPart: BodyPartDto): Promise<BodyPartDto> {
+    const bodyPartApi = BodyPartMapper.dtoToApi(bodyPart);
+
+    if (!bodyPartApi.id)
+      throw new Error('Body part id is required');
+
+    const { data, error } = await this.clientProvider.getClient()
+      .fromSchema<'car_repair', 'body_parts'>('car_repair', 'body_parts')
+      .update(bodyPartApi)
+      .eq('id', bodyPartApi.id)
+      .single<BodyPartApiModel>();
+
+    if (error)
+      throw new Error('Error updating body part');
+
+    return BodyPartMapper.apiToDto(data);
   }
 
   async delete(id: string): Promise<void> {
-    const { error } = await this.clientProvider.getClient().fromSchema<BodyPartDto>('car_repair', 'body_parts').delete().eq('id', id);
-    if (error) throw new Error('Error deleting body part');
+    const { error } = await this.clientProvider.getClient()
+      .fromSchema<'car_repair', 'body_parts'>('car_repair', 'body_parts')
+      .delete()
+      .eq('id', id);
+      
+    if (error)
+      throw new Error('Error deleting body part');
   }
 }
