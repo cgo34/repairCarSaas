@@ -1,5 +1,5 @@
 import { User } from '@/@domain/entities/User';
-import { supabase } from '@/@infrastructure/db/SupabaseClient';
+import { supabase } from '@/@infrastructure/database/clients/SupabaseClient';
 
 export class UserService {
   async getAllUsers(): Promise<User[]> {

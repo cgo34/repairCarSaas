@@ -1,23 +1,12 @@
-import { IAuthProvider } from '@domain/providers/IAuthProvider';
-import { IAuthState } from '@domain/states/IAuthState';
+import { IAuthState } from '@/@application/states/interfaces/IAuthState';
+import { IAuthProvider } from '@/@infrastructure/interfaces/providers/IAuthProvider';
 import { container } from '@infrastructure/ioc/inversify.config';
 import { SYMBOLS } from '@infrastructure/ioc/symbols';
 
 export async function initAuth() {
   try {
-    const authProvider = container.get<IAuthProvider>(SYMBOLS.Providers.AuthProvider);
+    const authProvider = container.get<IAuthProvider>(SYMBOLS.Providers.ClientProvider);
     const authState = container.get<IAuthState>(SYMBOLS.States.AuthState);
-    
-    const { user, session } = await authProvider.getSession();
-
-    if (session) {
-      authState.user.value = user;
-      authState.isAuthenticated.value = true;
-      console.log('Auth initialized with session:', { user, isAuthenticated: true });
-    } else {
-      authState.isAuthenticated.value = false;
-      console.log('Auth initialized without session');
-    }
 
     // Configurer l'écouteur d'état d'authentification
     authProvider.onAuthStateChange((event, session) => {

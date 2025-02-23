@@ -3,41 +3,42 @@
 ## 1. Architecture
 ```
 src/
-│-- @domain/                   # Contient les règles métier et les interfaces
-│   ├── entities/
-│   ├── repositories/
-│   ├── services/
-│   ├── providers/
-│   ├── useCases/             # Interfaces des Use Cases
-│   └── events/               # (Optionnel) Gestion des événements
+│-- @domain/                   # Business rules and interfaces
+│   ├── entities/              # Domain entities
+│   ├── repositories/          # Repository interfaces
+│   ├── services/              # Service interfaces
+│   ├── providers/             # Provider interfaces
+│   ├── useCases/              # Use case interfaces
+│   └── events/                # (Optional) Event management
 │
-│-- @application/             # Contient les implémentations des use cases et services
-│   ├── useCases/
-│   │   ├── auth/
-│   │   │   ├── LoginUseCase.ts
-│   │   │   ├── RegisterUseCase.ts
+│-- @application/              # Use case and service implementations
+│   ├── useCases/              # Use case implementations
+│   │   ├── auth/              # Authentication use cases
 │   │   └── ...
-│   ├── services/
-│   └── dtos/                 # (Optionnel) Objets de transfert de données
+│   ├── services/              # Service implementations
+│   ├── states/                # Application state management
+│   └── dtos/                  # (Optional) Data Transfer Objects
 │
-│-- @infrastructure/          # Contient les implémentations des repositories et providers
-│   ├── db/
-│   ├── providers/
-│   ├── repositories/
-│   ├── ioc/
-│   └── config/
+│-- @infrastructure/           # Repository and provider implementations
+│   ├── database/              # Database clients and repositories
+│   │   ├── clients/           # Database client implementations
+│   │   ├── repositories/      # Repository implementations
+│   │   ├── providers/         # Database provider implementations
+│   │   └── dtos/              # Data Transfer Objects for database
+│   ├── providers/             # General provider implementations
+│   ├── ioc/                   # Inversion of Control configuration
+│   └── config/                # Configuration files
 │
-│-- @presentation/           # Couche de présentation
-│   ├── modules/            # Modules métier (Vue.js)
-│   │   ├── auth/
-│   │   ├── quotes/
-│   │   ├── invoices/
+│-- @presentation/             # Presentation layer
+│   ├── modules/               # Business modules (e.g., Vue.js)
+│   │   ├── auth/              # Authentication module
+│   │   ├── quotes/            # Quotes module
+│   │   ├── invoices/          # Invoices module
 │   │   └── ...
-│   │
-│   └── ui/                # Composants UI partagés
-│       ├── components/
-│       ├── layouts/
-│       └── styles/
+│   └── ui/                    # Shared UI components
+│       ├── components/        # UI components
+│       ├── layouts/           # Layout components
+│       └── styles/            # Stylesheets
 ```
 
 ## 2. Nomenclature des branches

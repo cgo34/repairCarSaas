@@ -1,5 +1,5 @@
 import { Quote } from '@/@domain/entities/Quote';
-import { supabase } from '@/@infrastructure/db/SupabaseClient';
+import { supabase } from '@/@infrastructure/database/clients/SupabaseClient';
 
 export class QuoteService {
   async getAllQuotes(): Promise<Quote[]> {

@@ -1,15 +1,33 @@
-import { Garage } from '@/@domain/entities/Garage';
-import { supabase } from '@/@infrastructure/db/SupabaseClient';
+import { GarageDto } from '@/@application/dtos/GarageDto';
+import { IGarageRepository } from '@/@domain/repositories/IGarageRepository';
+import { IGarageService } from '@/@domain/services/IGarageService';
+import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
+import { inject, injectable } from 'inversify';
 
-export class GarageService {
-  async getAllGarages(): Promise<Garage[]> {
-    const { data, error } = await supabase.from('garages').select('*');
-    if (error) throw new Error(error.message);
-    return data;
+@injectable()
+export class GarageService implements IGarageService {
+  constructor(
+    @inject(SYMBOLS.Repositories.GarageRepository)
+    private readonly garageRepository: IGarageRepository
+  ) {}
+
+  async getByUserId(userId: string): Promise<GarageDto[]> {
+    return await this.garageRepository.getByUserId(userId);
   }
 
-  async createGarage(garage: Garage) {
-    const { error } = await supabase.from('garages').insert(garage);
-    if (error) throw new Error(error.message);
+  async getById(id: string): Promise<GarageDto | null> {
+    return await this.garageRepository.getById(id);
+  }
+
+  async create(garage: GarageDto): Promise<GarageDto> {
+    return await this.garageRepository.create(garage);
+  }
+
+  async update(garage: GarageDto): Promise<GarageDto> {
+    return await this.garageRepository.update(garage);
+  }
+
+  async delete(id: string): Promise<void> {
+    return await this.garageRepository.delete(id);
   }
 }

@@ -4,9 +4,20 @@ const props = defineProps({ item: Object, level: Number });
 
 <template>
   <template v-if="props.level > 0">
-    <component :is="props.item" size="5" fill="currentColor" stroke-width="1.5" class="iconClass"></component>
+    <component
+      :is="props.item"
+      size="5"
+      fill="currentColor"
+      stroke-width="1.5"
+      class="iconClass"
+    />
   </template>
   <template v-else>
-    <component :is="props.item" size="20" stroke-width="1.5" class="iconClass"></component>
+    <component
+      :is="props.item"
+      size="20"
+      stroke-width="1.5"
+      class="iconClass"
+    />
   </template>
 </template>

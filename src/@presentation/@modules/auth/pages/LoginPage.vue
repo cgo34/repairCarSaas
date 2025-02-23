@@ -1,21 +1,20 @@
 <template>
   <AuthLayout>
     <AuthForm
-      v-model:formData="user"
-      :emailRules="emailRules"
-      :passwordRules="passwordRules"
+      v-model:form-data="user"
+      :email-rules="emailRules"
+      :password-rules="passwordRules"
       @submit="handleLogin"
     />
   </AuthLayout>
 </template>
 
 <script setup lang="ts">
-import AuthForm from '@modules/auth/components/AuthForm.vue';
 import { useAuthState } from '@/@presentation/@modules/auth/composables/useAuthState';
+import AuthForm from '@modules/auth/components/AuthForm.vue';
 import AuthLayout from '@modules/auth/layouts/AuthLayout.vue';
 
-const { login, user } = useAuthState();  // Accès direct au user state
-console.log('user:', user.value);
+const { login, user } = useAuthState();
 
 const emailRules = [
   (v: string) => !!v || 'E-mail is required',
@@ -29,10 +28,9 @@ const passwordRules = [
 
 const handleLogin = async () => {
   try {
-    console.log('Attempting to login:', user.value?.email, user.value?.password);
     await login();
     window.location.href = '/dashboard';
-  } catch (error: any) {
+  } catch (error: unknown) {
     alert(error.message);
   }
 };

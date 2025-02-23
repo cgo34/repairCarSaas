@@ -1,0 +1,69 @@
+import { SettingPriceImpactCountToUtDto } from '@/@application/dtos/settings/price/SettingPriceImpactCountToUtDto';
+import { ISettingPriceImpactCountToUtRepository } from '@/@domain/repositories/settings/price/ISettingPriceImpactCountToUtRepository';
+import { SettingPriceImpactCountToUtApiModel } from '@/@infrastructure/database/api/settings/price/SettingPriceImpactCountToUtApiModel';
+import { SupabaseClient } from '@/@infrastructure/database/clients/SupabaseClient';
+import { IClientProvider } from '@/@infrastructure/interfaces/IClientProvider';
+import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
+import { SettingPriceImpactCountToUtMapper } from '@/@infrastructure/mappers/settings/price/SettingPriceImpactCountToUtMapper';
+import { inject, injectable } from 'inversify';
+
+@injectable()
+export class SettingPriceImpactCountToUtRepository implements ISettingPriceImpactCountToUtRepository {
+  constructor(@inject(SYMBOLS.Providers.ClientProvider) private clientProvider: IClientProvider<SupabaseClient>) {}
+
+  async getByUserId(userId: string): Promise<SettingPriceImpactCountToUtDto[]> {
+    const { data, error } = await this.clientProvider.getClient()
+      .fromSchema<'car_repair', 'setting_price_impact_count_to_ut'>('car_repair', 'setting_price_impact_count_to_ut')
+      .select('*')
+      .eq('user_id', userId)
+      .returns<SettingPriceImpactCountToUtApiModel[]>();
+
+    if (error)
+      throw new Error('Error fetching impact count to UT settings');
+
+    return data.map(SettingPriceImpactCountToUtMapper.apiToDto);
+  }
+
+  async create(setting: SettingPriceImpactCountToUtDto): Promise<SettingPriceImpactCountToUtDto> {
+    const apiModel = SettingPriceImpactCountToUtMapper.dtoToApi(setting);
+
+    const { data, error } = await this.clientProvider.getClient()
+      .fromSchema<'car_repair', 'setting_price_impact_count_to_ut'>('car_repair', 'setting_price_impact_count_to_ut')
+      .insert(apiModel)
+      .select('*')
+      .single<SettingPriceImpactCountToUtApiModel>();
+
+    if (error)
+      throw new Error('Error creating impact count to UT setting');
+
+    return SettingPriceImpactCountToUtMapper.apiToDto(data);
+  }
+
+  async update(setting: SettingPriceImpactCountToUtDto): Promise<SettingPriceImpactCountToUtDto> {
+    const apiModel = SettingPriceImpactCountToUtMapper.dtoToApi(setting);
+
+    if (!apiModel.id)
+      throw new Error('Setting ID is required');
+
+    const { data, error } = await this.clientProvider.getClient()
+      .fromSchema<'car_repair', 'setting_price_impact_count_to_ut'>('car_repair', 'setting_price_impact_count_to_ut')
+      .update(apiModel)
+      .eq('id', apiModel.id)
+      .single<SettingPriceImpactCountToUtApiModel>();
+
+    if (error)
+      throw new Error('Error updating impact count to UT setting');
+
+    return SettingPriceImpactCountToUtMapper.apiToDto(data);
+  }
+
+  async delete(id: string): Promise<void> {
+    const { error } = await this.clientProvider.getClient()
+      .fromSchema<'car_repair', 'setting_price_impact_count_to_ut'>('car_repair', 'setting_price_impact_count_to_ut')
+      .delete()
+      .eq('id', id);
+
+    if (error)
+      throw new Error('Error deleting impact count to UT setting');
+  }
+}
