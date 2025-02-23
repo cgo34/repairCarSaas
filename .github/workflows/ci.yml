@@ -35,28 +35,24 @@ jobs:
 
       # Build de l'image Docker avec les dépendances
       - name: Build Docker image
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          load: true
-          tags: ${{ env.DOCKER_IMAGE }}
-          target: dependencies
-          cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache-new
-
+        run: docker build -t ${{ env.DOCKER_IMAGE }} .
+  
   # Job 2: Vérification de la qualité du code
   lints:
     name: Code Quality Checks
     needs: [dependencies]
     runs-on: ubuntu-latest
     steps:
+      - name: Build Docker Image
+        run: docker build -t ${{ env.DOCKER_IMAGE }} .
+
       # Vérification ESLint
       - name: Run ESLint
-        run: docker run ${{ env.DOCKER_IMAGE }} npm run lint
+        run: docker run --rm ${{ env.DOCKER_IMAGE }} npm run lint
 
       # Vérification TypeScript
       - name: Type Check
-        run: docker run ${{ env.DOCKER_IMAGE }} npm run type-check
+        run: docker run --rm ${{ env.DOCKER_IMAGE }} npm run type-check
 
   # Job 3: Tests unitaires (optionnels)
   tests:
@@ -65,8 +61,11 @@ jobs:
     runs-on: ubuntu-latest
     continue-on-error: true # Ne bloque pas le pipeline si échec
     steps:
+      - name: Build Docker Image
+        run: docker build -t ${{ env.DOCKER_IMAGE }} .
+
       - name: Run Tests
-        run: docker run ${{ env.DOCKER_IMAGE }} npm run test || true
+        run: docker run --rm ${{ env.DOCKER_IMAGE }} npm run test || true
 
   # Job 4: Build de l'application
   build:
@@ -74,9 +73,12 @@ jobs:
     needs: [tests]
     runs-on: ubuntu-latest
     steps:
+      - name: Build Docker Image
+        run: docker build -t ${{ env.DOCKER_IMAGE }} .
+
       # Build du projet
       - name: Build Project
-        run: docker run ${{ env.DOCKER_IMAGE }} npm run build
+        run: docker run --rm ${{ env.DOCKER_IMAGE }} npm run build
 
       # Copie des fichiers de build depuis le container
       - name: Copy build files

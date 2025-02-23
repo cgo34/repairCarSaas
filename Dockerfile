@@ -12,6 +12,12 @@ COPY . .
 FROM dependencies AS build
 RUN npm run build
 
-# Stage de production (optionnel)
-FROM nginx:alpine AS production
-COPY --from=build /app/dist /usr/share/nginx/html
+# ✅ Stage de test/lint
+FROM build AS test
+RUN npm run lint
+
+# ✅ Stage final (production) basé sur Node.js (pas nginx)
+FROM node:18-alpine AS production
+WORKDIR /app
+COPY --from=build /app /app
+CMD ["npm", "run", "serve"]
