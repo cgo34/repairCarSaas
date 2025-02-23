@@ -16,16 +16,25 @@ const props = defineProps({ item: Object, level: Number });
     :target="item.type === 'external' ? '_blank' : ''"
   >
     <!---If icon-->
-    <template v-slot:prepend>
-      <Icon :item="props.item.icon" :level="props.level" />
+    <template #prepend>
+      <Icon
+        :item="props.item.icon"
+        :level="props.level"
+      />
     </template>
     <v-list-item-title>{{ item.title }}</v-list-item-title>
     <!---If Caption-->
-    <v-list-item-subtitle v-if="item.subCaption" class="text-caption mt-n1 hide-menu">
+    <v-list-item-subtitle
+      v-if="item.subCaption"
+      class="text-caption mt-n1 hide-menu"
+    >
       {{ item.subCaption }}
     </v-list-item-subtitle>
     <!---If any chip or label-->
-    <template v-slot:append v-if="item.chip">
+    <template
+      v-if="item.chip"
+      #append
+    >
       <v-chip
         :color="item.chipColor"
         class="sidebarchip hide-menu"

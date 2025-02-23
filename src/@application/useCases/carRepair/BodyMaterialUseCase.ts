@@ -1,0 +1,36 @@
+import { BodyMaterialDto } from "@/@application/dtos/carRepair/BodyMaterialDto";
+import { IBodyMaterialUseCase } from "@/@application/useCases/interfaces/carRepair/IBodyMaterialUseCase";
+import { IBodyMaterialService } from "@/@domain/services/carRepair/IBodyMaterialService";
+import { SYMBOLS } from "@/@infrastructure/ioc/symbols";
+import { inject, injectable } from "inversify";
+
+@injectable()
+export class BodyMaterialUseCase implements IBodyMaterialUseCase {
+  constructor(
+    @inject(SYMBOLS.Services.BodyMaterialService) private bodyMaterialService: IBodyMaterialService
+  ) {
+    if (!bodyMaterialService) {
+      throw new Error('bodyMaterialService injection failed in BodyMaterialUseCase');
+    }
+  }
+
+  async executeGetAll(): Promise<BodyMaterialDto[]> {
+    console.log('[BodyMaterialUseCase] Executing getAll');
+    return this.bodyMaterialService.getAll();
+  }
+
+  async executeCreate(bodyMaterial: BodyMaterialDto): Promise<BodyMaterialDto> {
+    console.log('[BodyMaterialUseCase] Executing with:', bodyMaterial);
+    return this.bodyMaterialService.create(bodyMaterial);
+  }
+
+  async executeUpdate(bodyMaterial: BodyMaterialDto): Promise<BodyMaterialDto> {
+    console.log('[BodyMaterialUseCase] Executing with:', bodyMaterial);
+    return this.bodyMaterialService.update(bodyMaterial);
+  }
+
+  async executeDelete(id: string): Promise<void> {
+    console.log('[BodyMaterialUseCase] Executing with:', id);
+    return this.bodyMaterialService.delete(id);
+  }
+}

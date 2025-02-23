@@ -10,10 +10,10 @@ const props = defineProps({
     <v-card-item>
       <div class="d-sm-flex align-center justify-space-between">
         <v-card-title>{{ props.title }}</v-card-title>
-        <slot name="action"></slot>
+        <slot name="action" />
       </div>
     </v-card-item>
-    <v-divider></v-divider>
+    <v-divider />
     <v-card-text>
       <slot />
     </v-card-text>

@@ -1,10 +1,10 @@
 import { PurpleDarkTheme } from '@/theme/PurpleDarkTheme';
 import { PurpleLightTheme } from '@/theme/PurpleLightTheme';
-import { icons } from '@plugins/mdi-icon'; // Import icons from separate file
 import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
-import { aliases, mdi } from 'vuetify/iconsets/mdi-svg';
+import { aliases } from 'vuetify/iconsets/mdi-svg';
+import { icons } from './mdi-icon'; // Import icons from separate file
 
 export default createVuetify({
   components,
@@ -15,9 +15,6 @@ export default createVuetify({
       ...aliases,
       ...icons
     },
-    sets: {
-      mdi
-    }
   },
   theme: {
     defaultTheme: 'PurpleDarkTheme',
