@@ -13,7 +13,12 @@ export function useSettingPriceDiameterCoefficientState(): IUseSettingPriceDiame
   );
 
   const _settings = ref<SettingPriceDiameterCoefficientViewModel[]>([]);
-  const _selectedSetting = ref<SettingPriceDiameterCoefficientViewModel | null>(null);
+  const _selectedSetting = ref<SettingPriceDiameterCoefficientViewModel>({
+    id: undefined,
+    userId: '',
+    diameter: 0,
+    coefficient: 0,
+  });
   const loading = ref<boolean>(false);
   const error = ref<unknown>(null);
 
@@ -46,6 +51,7 @@ export function useSettingPriceDiameterCoefficientState(): IUseSettingPriceDiame
   const addSetting = async (setting: SettingPriceDiameterCoefficientViewModel) => {
     loading.value = true;
     try {
+      setting.userId = authState.user?.value?.id || '';
       return useCase.create(setting).then((data) => {
         _settings.value.push(data);
         return data;

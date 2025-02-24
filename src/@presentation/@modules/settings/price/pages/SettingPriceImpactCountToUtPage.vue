@@ -166,7 +166,13 @@ const onDeleteBtnClick = (item: SettingPriceImpactCountToUtViewModel) => {
 };
 
 const onCloseEditDialogBtnClick = () => {
-  selectSetting(null);
+  selectSetting({
+    impactCountMin: 0,
+    impactCountMax: 0,
+    unitTime: 0,
+    id: undefined,
+    userId: ''
+  });
   dialog.value = false;
 };
 

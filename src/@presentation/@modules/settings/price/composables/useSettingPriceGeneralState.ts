@@ -11,7 +11,7 @@ export function useSettingPriceGeneralState(): IUseSettingPriceGeneralState {
   const settingPriceGeneralUseCase = container.get<ISettingPriceGeneralUseCase>(SYMBOLS.UseCases.Setting.Price.GeneralUseCase);
   const _settings = ref<SettingPriceGeneralViewModel[]>([]);
   const _selectedSetting = ref<SettingPriceGeneralViewModel>({
-    id: '',
+    id: undefined,
     userId: '',
     hourlyRate: 0,
     unitTime: 0,
@@ -68,6 +68,7 @@ export function useSettingPriceGeneralState(): IUseSettingPriceGeneralState {
   const addSetting = async (settingPriceGeneral: SettingPriceGeneralViewModel): Promise<SettingPriceGeneralViewModel> => {
     loading.value = true;
     try {
+      settingPriceGeneral.userId = authState.user?.value?.id || '';
       return settingPriceGeneralUseCase.create(settingPriceGeneral).then((data) => {
         _settings.value.push(data);
         resetSelectedSetting();

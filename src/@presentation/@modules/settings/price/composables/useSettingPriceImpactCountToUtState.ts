@@ -10,7 +10,13 @@ export function useSettingPriceImpactCountToUtState(): IUseSettingPriceImpactCou
   const authState = container.get<IAuthState>(SYMBOLS.States.AuthState);
   const useCase = container.get<ISettingPriceImpactCountToUtUseCase>(SYMBOLS.UseCases.Setting.Price.ImpactCountToUtUseCase);
   const _settings = ref<SettingPriceImpactCountToUtViewModel[]>([]);
-  const _selectedSetting = ref<SettingPriceImpactCountToUtViewModel | null>(null);
+  const _selectedSetting = ref<SettingPriceImpactCountToUtViewModel>({
+    id: undefined,
+    userId: '',
+    impactCountMin: 0,
+    impactCountMax: 0,
+    unitTime: 0,
+  });
   const loading = ref<boolean>(false);
   const error = ref<unknown>(null);
 
@@ -36,13 +42,14 @@ export function useSettingPriceImpactCountToUtState(): IUseSettingPriceImpactCou
     }
   };
 
-  const selectSetting = (setting: SettingPriceImpactCountToUtViewModel | null): void => {
+  const selectSetting = (setting: SettingPriceImpactCountToUtViewModel): void => {
     _selectedSetting.value = setting;
   };
 
   const addSetting = async (setting: SettingPriceImpactCountToUtViewModel) => {
     loading.value = true;
     try {
+      setting.userId = authState.user?.value?.id || '';
       return useCase.create(setting).then((data) => {
         _settings.value.push(data);
         return data;

@@ -44,6 +44,7 @@ export function useGarageState(): IUseGarageState {
   const addGarage = async (garage: GarageViewModel) => {
     loading.value = true;
     try {
+      garage.userId = authState.user?.value?.id;
       return garageUseCase.create(garage).then((data) => {
         _garages.value.push(data);
         return data;

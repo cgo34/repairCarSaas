@@ -184,7 +184,7 @@ export type Database = {
         }
         Insert: {
           hourly_rate: number
-          id: string
+          id?: string
           unit_time?: number
           user_id: string
         }

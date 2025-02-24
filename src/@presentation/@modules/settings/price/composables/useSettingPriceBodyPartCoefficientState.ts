@@ -45,6 +45,7 @@ export function useSettingPriceBodyPartCoefficientState(): IUseSettingPriceBodyP
   const addSetting = async (setting: SettingPriceBodyPartCoefficientViewModel) => {
     loading.value = true;
     try {
+      setting.userId = authState.user?.value?.id || '';
       return useCase.create(setting).then((data) => {
         _settings.value.push(data);
         return data;

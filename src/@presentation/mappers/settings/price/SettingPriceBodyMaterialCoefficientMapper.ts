@@ -4,7 +4,6 @@ import { SettingPriceBodyMaterialCoefficientViewModel } from '@/@presentation/ty
 export class SettingPriceBodyMaterialCoefficientMapper {
   static viewToDto(viewModel: SettingPriceBodyMaterialCoefficientViewModel): SettingPriceBodyMaterialCoefficientDto {
     return {
-      id: viewModel.id,
       userId: viewModel.userId,
       bodyMaterialId: viewModel.bodyMaterialId,
       coefficient: viewModel.coefficient
@@ -13,7 +12,6 @@ export class SettingPriceBodyMaterialCoefficientMapper {
 
   static dtoToView(dto: SettingPriceBodyMaterialCoefficientDto): SettingPriceBodyMaterialCoefficientViewModel {
     return {
-      id: dto.id,
       userId: dto.userId,
       bodyMaterialId: dto.bodyMaterialId,
       coefficient: dto.coefficient

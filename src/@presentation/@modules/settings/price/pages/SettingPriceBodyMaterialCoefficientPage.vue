@@ -46,7 +46,7 @@
                           sm="6"
                         >
                           <v-text-field
-                            v-model="selectedSetting.bodyMaterialName"
+                            v-model="selectedSetting.bodyMaterialId"
                             label="Nom du Matériau"
                           />
                         </v-col>
@@ -153,7 +153,11 @@ const onDeleteBtnClick = (item: SettingPriceBodyMaterialCoefficientViewModel) =>
 };
 
 const onCloseEditDialogBtnClick = () => {
-  selectSetting(null);
+  selectSetting({
+    userId: '',
+    bodyMaterialId: undefined,
+    coefficient: 0
+  });
   dialog.value = false;
 };
 

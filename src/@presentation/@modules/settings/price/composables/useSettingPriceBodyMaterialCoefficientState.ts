@@ -13,7 +13,11 @@ export function useSettingPriceBodyMaterialCoefficientState(): IUseSettingPriceB
   );
 
   const _settings = ref<SettingPriceBodyMaterialCoefficientViewModel[]>([]);
-  const _selectedSetting = ref<SettingPriceBodyMaterialCoefficientViewModel | null>(null);
+  const _selectedSetting = ref<SettingPriceBodyMaterialCoefficientViewModel>({
+    userId: '',
+    bodyMaterialId: undefined,
+    coefficient: 0,
+  });
   const loading = ref<boolean>(false);
   const error = ref<unknown>(null);
 
@@ -39,13 +43,16 @@ export function useSettingPriceBodyMaterialCoefficientState(): IUseSettingPriceB
     }
   };
 
-  const selectSetting = (setting: SettingPriceBodyMaterialCoefficientViewModel | null): void => {
+  const selectSetting = (setting: SettingPriceBodyMaterialCoefficientViewModel): void => {
+    console.log('useSettingPriceBodyMaterialCoefficient.selectSetting', setting);
+    
     _selectedSetting.value = setting;
   };
 
   const addSetting = async (setting: SettingPriceBodyMaterialCoefficientViewModel) => {
     loading.value = true;
     try {
+      setting.userId = authState.user?.value?.id || '';
       return useCase.create(setting).then((data) => {
         _settings.value.push(data);
         return data;

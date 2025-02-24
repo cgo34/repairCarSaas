@@ -8,7 +8,8 @@ import NavCollapse from './NavCollapse/NavCollapse.vue';
 import NavGroup from './NavGroup/NavGroup.vue';
 import NavItem from './NavItem/NavItem.vue';
 // import sidebarItems from './sidebarItem';
-// import Logo from '../logo/LogoMain.vue';
+// import Logo from '@presentation/@ui/layouts/logo/LogoMain.vue';
+import Logo from '../logo/LogoMain.vue';
 
 const {
     sidebarDrawer,
@@ -47,7 +48,7 @@ const sidebarMenu = computed(() => {
     <!---Logo part -->
 
     <div class="pa-5">
-      <!-- <Logo /> -->
+      <Logo />
     </div>
     <!-- ---------------------------------------------- -->
     <!---Navigation -->
