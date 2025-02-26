@@ -45,9 +45,18 @@
                           md="6"
                           sm="6"
                         >
-                          <v-text-field
-                            v-model="selectedSetting.bodyMaterialId"
+                          <!-- <v-text-field
+                            v-model="selectedSetting.bodyMaterials.name"
                             label="Nom du Matériau"
+                          /> -->
+                          <v-select
+                            v-model="selectedSetting.bodyMaterials"
+                            label="Select"
+                            :items="bodyMaterials"
+                            item-title="name"
+                            item-value="id"
+                            :item-props="true"
+                            return-object
                           />
                         </v-col>
                         <v-col
@@ -125,19 +134,28 @@ const useSettingPriceBodyMaterialCoefficientState = container.get<IUseSettingPri
   SYMBOLS.States.Setting.Price.BodyMaterialCoefficientState
 );
 
-const { settings, selectedSetting, init, selectSetting, addSetting, updateSetting, deleteSetting } =
-  useSettingPriceBodyMaterialCoefficientState;
+const {
+  settings,
+  selectedSetting,
+  init,
+  selectSetting,
+  addSetting,
+  updateSetting,
+  deleteSetting,
+  resetSelectedSetting,
+  bodyMaterials
+} = useSettingPriceBodyMaterialCoefficientState;
 
 const dialog = ref<boolean>(false);
 
 const headers = [
-  { title: 'Matériau', align: 'start', key: 'bodyMaterialName' },
+  { title: 'Matériau', align: 'start', key: 'bodyMaterials.name' },
   { title: 'Coefficient', key: 'coefficient' },
   { title: 'Actions', sortable: false, key: 'actions' }
 ] as const;
 
 const formTitle = computed(() =>
-  selectedSetting.value?.id ? 'Modifier le paramètre' : 'Nouveau paramètre'
+  selectedSetting.value?.bodyMaterialId ? 'Modifier le paramètre' : 'Nouveau paramètre'
 );
 
 const onEditBtnClick = (item: SettingPriceBodyMaterialCoefficientViewModel) => {
@@ -146,23 +164,19 @@ const onEditBtnClick = (item: SettingPriceBodyMaterialCoefficientViewModel) => {
 };
 
 const onDeleteBtnClick = (item: SettingPriceBodyMaterialCoefficientViewModel) => {
-  if (!item.id) return;
+  if (!item.bodyMaterialId) return;
 
   // TODO: Ajouter un dialogue de confirmation avant suppression
-  deleteSetting(item.id);
+  deleteSetting(item.bodyMaterialId);
 };
 
 const onCloseEditDialogBtnClick = () => {
-  selectSetting({
-    userId: '',
-    bodyMaterialId: undefined,
-    coefficient: 0
-  });
+  resetSelectedSetting();
   dialog.value = false;
 };
 
 const onSaveEditDialogBtnClick = async () => {
-  if (selectedSetting.value?.id) {
+  if (selectedSetting.value?.bodyMaterialId) {    
     await updateSetting(selectedSetting.value);
   } else {
     await addSetting(selectedSetting.value);

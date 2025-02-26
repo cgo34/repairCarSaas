@@ -46,6 +46,16 @@ export function useSettingPriceImpactCountToUtState(): IUseSettingPriceImpactCou
     _selectedSetting.value = setting;
   };
 
+  const resetSelectedSetting = (): void => {
+    _selectedSetting.value = {
+      id: undefined,
+      userId: '',
+      impactCountMin: 0,
+      impactCountMax: 0,
+      unitTime: 0,
+    };
+  }
+
   const addSetting = async (setting: SettingPriceImpactCountToUtViewModel) => {
     loading.value = true;
     try {
@@ -93,5 +103,6 @@ export function useSettingPriceImpactCountToUtState(): IUseSettingPriceImpactCou
     addSetting,
     updateSetting,
     deleteSetting,
+    resetSelectedSetting
   };
 }

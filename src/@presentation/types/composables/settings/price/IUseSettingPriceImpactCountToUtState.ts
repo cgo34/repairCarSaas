@@ -9,8 +9,9 @@ export interface IUseSettingPriceImpactCountToUtState {
 
   init(): Promise<void>;
   fetchSettings(): Promise<SettingPriceImpactCountToUtViewModel[]>;
-  selectSetting(setting: SettingPriceImpactCountToUtViewModel | null): void;
+  selectSetting(setting: SettingPriceImpactCountToUtViewModel): void;
   addSetting(setting: SettingPriceImpactCountToUtViewModel): Promise<SettingPriceImpactCountToUtViewModel>;
   updateSetting(setting: SettingPriceImpactCountToUtViewModel): Promise<SettingPriceImpactCountToUtViewModel>;
   deleteSetting(id: string): Promise<void>;
+  resetSelectedSetting(): void;
 }

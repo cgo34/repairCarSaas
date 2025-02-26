@@ -11,10 +11,6 @@ import { SettingPriceBodyPartCoefficientService } from '@/@application/services/
 import { SettingPriceDiameterCoefficientService } from '@/@application/services/settings/price/SettingPriceDiameterCoefficientService';
 import { SettingPriceGeneralService } from '@/@application/services/settings/price/SettingPriceGeneralService';
 import { SettingPriceImpactCountToUtService } from '@/@application/services/settings/price/SettingPriceImpactCountToUtService';
-import { useBodyPartState } from '@/@application/states/carRepair/useBodyPartState';
-import { IBodyMaterialState } from '@/@application/states/interfaces/carRepair/IBodyMaterialState';
-import { IBodyPartState } from '@/@application/states/interfaces/carRepair/IBodyPartState';
-import { IDentRepairTypeState } from '@/@application/states/interfaces/carRepair/IDentRepairTypeState';
 import { IAuthState } from '@/@application/states/interfaces/IAuthState';
 import { BodyMaterialUseCase } from '@/@application/useCases/carRepair/BodyMaterialUseCase';
 import { BodyPartUseCase } from '@/@application/useCases/carRepair/BodyPartUseCase';
@@ -61,12 +57,16 @@ import { BodyPartRepository } from '@/@infrastructure/database/repositories/carR
 import { IClientProvider } from '@/@infrastructure/interfaces/IClientProvider';
 import { useGarageState } from '@/@presentation/@modules/garages/composables/useGarageState';
 import { useBodyMaterialState } from '@/@presentation/@modules/settings/carRepair/composables/useBodyMaterialState';
+import { useBodyPartState } from '@/@presentation/@modules/settings/carRepair/composables/useBodyPartState';
 import { useDentRepairTypeState } from '@/@presentation/@modules/settings/carRepair/composables/useDentRepairTypeState';
 import { useSettingPriceBodyMaterialCoefficientState } from '@/@presentation/@modules/settings/price/composables/useSettingPriceBodyMaterialCoefficientState';
 import { useSettingPriceBodyPartCoefficientState } from '@/@presentation/@modules/settings/price/composables/useSettingPriceBodyPartCoefficientState';
 import { useSettingPriceDiameterCoefficientState } from '@/@presentation/@modules/settings/price/composables/useSettingPriceDiameterCoefficientState';
 import { useSettingPriceGeneralState } from '@/@presentation/@modules/settings/price/composables/useSettingPriceGeneralState';
 import { useSettingPriceImpactCountToUtState } from '@/@presentation/@modules/settings/price/composables/useSettingPriceImpactCountToUtState';
+import { IBodyMaterialState } from '@/@presentation/types/composables/IBodyMaterialState';
+import { IBodyPartState } from '@/@presentation/types/composables/IBodyPartState';
+import { IDentRepairTypeState } from '@/@presentation/types/composables/IDentRepairTypeState';
 import { IUseGarageState } from '@/@presentation/types/composables/IUseGarageState';
 import { IUseSettingPriceBodyMaterialCoefficientState } from '@/@presentation/types/composables/settings/price/IUseSettingPriceBodyMaterialCoefficientState';
 import { IUseSettingPriceBodyPartCoefficientState } from '@/@presentation/types/composables/settings/price/IUseSettingPriceBodyPartCoefficientState';

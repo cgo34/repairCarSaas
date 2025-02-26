@@ -137,8 +137,16 @@ const useSettingPriceImpactCountToUtState = container.get<IUseSettingPriceImpact
   SYMBOLS.States.Setting.Price.ImpactCountToUtState
 );
 
-const { settings, selectedSetting, init, selectSetting, addSetting, updateSetting, deleteSetting } =
-  useSettingPriceImpactCountToUtState;
+const {
+  settings,
+  selectedSetting,
+  init,
+  selectSetting,
+  addSetting,
+  updateSetting,
+  deleteSetting,
+  resetSelectedSetting
+} = useSettingPriceImpactCountToUtState;
 
 const dialog = ref<boolean>(false);
 
@@ -166,13 +174,7 @@ const onDeleteBtnClick = (item: SettingPriceImpactCountToUtViewModel) => {
 };
 
 const onCloseEditDialogBtnClick = () => {
-  selectSetting({
-    impactCountMin: 0,
-    impactCountMax: 0,
-    unitTime: 0,
-    id: undefined,
-    userId: ''
-  });
+  resetSelectedSetting();
   dialog.value = false;
 };
 

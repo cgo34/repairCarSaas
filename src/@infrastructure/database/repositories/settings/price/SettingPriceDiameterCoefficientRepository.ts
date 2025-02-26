@@ -47,6 +47,8 @@ export class SettingPriceDiameterCoefficientRepository implements ISettingPriceD
       .fromSchema<'car_repair', 'setting_price_diameter_coefficient'>('car_repair', 'setting_price_diameter_coefficient')
       .update(settingApi)
       .eq('id', settingApi.id)
+      .eq('user_id', settingApi.user_id)
+      .select('*')
       .single<SettingPriceDiameterCoefficientApiModel>();
 
     if (error) throw new Error('Error updating diameter coefficient setting');

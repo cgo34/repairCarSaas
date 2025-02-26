@@ -17,7 +17,7 @@ export type Database = {
         }
         Insert: {
           code: string
-          id: string
+          id?: string
           name: string
         }
         Update: {
@@ -87,17 +87,17 @@ export type Database = {
       repair_types: {
         Row: {
           code: string
-          id: number
+          id: string
           name: string
         }
         Insert: {
           code: string
-          id?: number
+          id?: string
           name: string
         }
         Update: {
           code?: string
-          id?: number
+          id?: string
           name?: string
         }
         Relationships: []
@@ -109,7 +109,7 @@ export type Database = {
           user_id: string
         }
         Insert: {
-          body_material_id: string
+          body_material_id?: string
           material_coefficient: number
           user_id: string
         }
@@ -122,7 +122,7 @@ export type Database = {
           {
             foreignKeyName: "setting_price_body_material_coefficient_body_material_id_fkey"
             columns: ["body_material_id"]
-            isOneToOne: true
+            isOneToOne: false
             referencedRelation: "body_materials"
             referencedColumns: ["id"]
           },
@@ -135,7 +135,7 @@ export type Database = {
           user_id: string
         }
         Insert: {
-          body_part_id: string
+          body_part_id?: string
           difficulty_coefficient: number
           user_id: string
         }
@@ -164,7 +164,7 @@ export type Database = {
         Insert: {
           coefficient: number
           diameter: number
-          id: string
+          id?: string
           user_id: string
         }
         Update: {
@@ -205,7 +205,7 @@ export type Database = {
           user_id: string
         }
         Insert: {
-          id: string
+          id?: string
           impact_count_max: number
           impact_count_min: number
           unit_time: number

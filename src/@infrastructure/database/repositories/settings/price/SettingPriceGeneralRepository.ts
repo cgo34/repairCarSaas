@@ -48,6 +48,7 @@ export class SettingPriceGeneralRepository implements ISettingPriceGeneralReposi
       .fromSchema<'car_repair', 'setting_price_general'>('car_repair', 'setting_price_general')
       .update(settingApi)
       .eq('id', settingApi.id)
+      .select('*')
       .single<SettingPriceGeneralApiModel>();
 
     if (error) throw new Error('Error updating general setting');

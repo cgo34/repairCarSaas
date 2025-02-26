@@ -7,6 +7,7 @@ export class SettingPriceBodyMaterialCoefficientMapper {
       userId: apiModel.user_id,
       bodyMaterialId: apiModel.body_material_id,
       coefficient: apiModel.material_coefficient,
+      bodyMaterials: apiModel.body_materials,
     };
   }
 
@@ -15,6 +16,7 @@ export class SettingPriceBodyMaterialCoefficientMapper {
       user_id: dto.userId,
       body_material_id: dto.bodyMaterialId,
       material_coefficient: dto.coefficient,
+      body_materials: dto.bodyMaterials
     };
   }
 }

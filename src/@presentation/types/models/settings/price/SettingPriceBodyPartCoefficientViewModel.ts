@@ -1,6 +1,8 @@
+import { BodyPartViewModel } from "../../carRepair/BodyPartViewModel";
+
 export interface SettingPriceBodyPartCoefficientViewModel {
-  id?: string;
   userId: string;
-  bodyPartId: string; // Référence vers BodyPart
+  bodyPartId?: string; // Référence vers BodyPart
   coefficient: number; // Multiplicateur de difficulté
+  bodyParts: BodyPartViewModel;
 }

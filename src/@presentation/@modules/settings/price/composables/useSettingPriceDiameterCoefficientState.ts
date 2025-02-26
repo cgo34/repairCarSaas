@@ -44,9 +44,18 @@ export function useSettingPriceDiameterCoefficientState(): IUseSettingPriceDiame
     }
   };
 
-  const selectSetting = (setting: SettingPriceDiameterCoefficientViewModel | null): void => {
+  const selectSetting = (setting: SettingPriceDiameterCoefficientViewModel): void => {
     _selectedSetting.value = setting;
   };
+
+  const resetSelectedSetting = (): void => {
+    _selectedSetting.value = {
+      id: undefined,
+      userId: '',
+      diameter: 0,
+      coefficient: 0,
+    };
+  }
 
   const addSetting = async (setting: SettingPriceDiameterCoefficientViewModel) => {
     loading.value = true;
@@ -95,5 +104,6 @@ export function useSettingPriceDiameterCoefficientState(): IUseSettingPriceDiame
     addSetting,
     updateSetting,
     deleteSetting,
+    resetSelectedSetting
   };
 }

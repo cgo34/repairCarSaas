@@ -136,5 +136,6 @@ export function useSettingPriceGeneralState(): IUseSettingPriceGeneralState {
     addSetting,
     updateSetting,
     deleteSetting,
+    resetSelectedSetting
   };
 }
