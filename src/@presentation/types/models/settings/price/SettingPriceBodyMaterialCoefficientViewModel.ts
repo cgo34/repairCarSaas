@@ -1,6 +1,8 @@
+import { BodyMaterialViewModel } from "../../carRepair/BodyMaterialViewModel";
+
 export interface SettingPriceBodyMaterialCoefficientViewModel {
-  id: string;
   userId: string;
-  bodyMaterialId: string; // Référence vers BodyMaterial
-  coefficient: number; // Multiplicateur de technicité
+  bodyMaterialId?: string; // Référence vers BodyMaterial
+  coefficient: number; // Multiplicateur de technicité,
+  bodyMaterials: BodyMaterialViewModel;
 }

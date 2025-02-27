@@ -26,7 +26,8 @@ export class SettingPriceGeneralRepository implements ISettingPriceGeneralReposi
 
   async create(setting: SettingPriceGeneralDto): Promise<SettingPriceGeneralDto> {
     const settingApi = SettingPriceGeneralMapper.dtoToApi(setting);
-
+    console.log(settingApi);
+    
     const { data, error } = await this.clientProvider.getClient()
       .fromSchema<'car_repair', 'setting_price_general'>('car_repair', 'setting_price_general')
       .insert(settingApi)
@@ -47,6 +48,7 @@ export class SettingPriceGeneralRepository implements ISettingPriceGeneralReposi
       .fromSchema<'car_repair', 'setting_price_general'>('car_repair', 'setting_price_general')
       .update(settingApi)
       .eq('id', settingApi.id)
+      .select('*')
       .single<SettingPriceGeneralApiModel>();
 
     if (error) throw new Error('Error updating general setting');

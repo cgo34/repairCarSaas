@@ -9,8 +9,9 @@ export interface IUseSettingPriceDiameterCoefficientState {
 
   init(): Promise<void>;
   fetchSettings(): Promise<SettingPriceDiameterCoefficientViewModel[]>;
-  selectSetting(setting: SettingPriceDiameterCoefficientViewModel | null): void;
+  selectSetting(setting: SettingPriceDiameterCoefficientViewModel): void;
   addSetting(setting: SettingPriceDiameterCoefficientViewModel): Promise<SettingPriceDiameterCoefficientViewModel>;
   updateSetting(setting: SettingPriceDiameterCoefficientViewModel): Promise<SettingPriceDiameterCoefficientViewModel>;
   deleteSetting(id: string): Promise<void>;
+  resetSelectedSetting(): void;
 }

@@ -1,6 +1,8 @@
+import { BodyPartDto } from "../../carRepair/BodyPartDto";
+
 export interface SettingPriceBodyPartCoefficientDto {
-  id: string; // UUID
   userId: string;
-  bodyPartId: string;
+  bodyPartId?: string;
   coefficient: number;
+  bodyParts?: BodyPartDto
 }

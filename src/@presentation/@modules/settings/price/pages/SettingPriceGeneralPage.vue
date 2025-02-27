@@ -126,8 +126,16 @@ const useSettingPriceGeneralState = container.get<IUseSettingPriceGeneralState>(
   SYMBOLS.States.Setting.Price.GeneralState
 );
 
-const { settings, selectedSetting, init, selectSetting, addSetting, updateSetting, deleteSetting } =
-  useSettingPriceGeneralState;
+const {
+  settings,
+  selectedSetting,
+  init,
+  selectSetting,
+  addSetting,
+  updateSetting,
+  deleteSetting,
+  resetSelectedSetting
+} = useSettingPriceGeneralState;
 
 const dialog = ref<boolean>(false);
 
@@ -154,7 +162,7 @@ const onDeleteBtnClick = (item: SettingPriceGeneralViewModel) => {
 };
 
 const onCloseEditDialogBtnClick = () => {
-  selectSetting(null);
+  resetSelectedSetting();
   dialog.value = false;
 };
 

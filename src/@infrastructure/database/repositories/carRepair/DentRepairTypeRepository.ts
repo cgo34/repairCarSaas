@@ -44,11 +44,17 @@ export class DentRepairTypeRepository implements IDentRepairTypeRepository {
 
     if (!dentRepairTypeApi.id)
       throw new Error('Dent repair type id is required');
+
+    const { id, ...updateDentRepairTypeApi } = dentRepairTypeApi;
+
+    console.log("Objet envoyé à Supabase :", updateDentRepairTypeApi);
+    console.log("ID utilisé pour la mise à jour :", id);
     
     const { data, error } = await this.clientProvider.getClient()
       .fromSchema<'car_repair', 'repair_types'>('car_repair', 'repair_types')
-      .update(dentRepairTypeApi)
-      .eq('id', dentRepairTypeApi.id)
+      .update(updateDentRepairTypeApi)
+      .eq('id', id)
+      .select('*')
       .single<DentRepairTypeApiModel>();
 
     if (error)

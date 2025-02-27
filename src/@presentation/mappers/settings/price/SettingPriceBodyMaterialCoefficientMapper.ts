@@ -4,19 +4,27 @@ import { SettingPriceBodyMaterialCoefficientViewModel } from '@/@presentation/ty
 export class SettingPriceBodyMaterialCoefficientMapper {
   static viewToDto(viewModel: SettingPriceBodyMaterialCoefficientViewModel): SettingPriceBodyMaterialCoefficientDto {
     return {
-      id: viewModel.id,
       userId: viewModel.userId,
       bodyMaterialId: viewModel.bodyMaterialId,
+      bodyMaterials: {
+        id: viewModel.bodyMaterials.id,
+        name: viewModel.bodyMaterials.name,
+        code: viewModel.bodyMaterials.code,
+      },
       coefficient: viewModel.coefficient
     };
   }
 
   static dtoToView(dto: SettingPriceBodyMaterialCoefficientDto): SettingPriceBodyMaterialCoefficientViewModel {
     return {
-      id: dto.id,
       userId: dto.userId,
       bodyMaterialId: dto.bodyMaterialId,
-      coefficient: dto.coefficient
+      coefficient: dto.coefficient,
+      bodyMaterials: {
+        id: dto.bodyMaterials?.id ?? '',
+        name: dto.bodyMaterials?.name ?? '',
+        code: dto.bodyMaterials?.code ?? '',
+      }
     };
   }
 }

@@ -1,7 +1,7 @@
-import { IBodyPartState } from '@/@application/states/interfaces/carRepair/IBodyPartState';
 import { IBodyPartUseCase } from '@/@application/useCases/interfaces/carRepair/IBodyPartUseCase';
 import { container } from '@/@infrastructure/ioc/inversify.config';
 import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
+import { IBodyPartState } from '@/@presentation/types/composables/IBodyPartState';
 import { BodyPartViewModel } from '@/@presentation/types/models/carRepair/BodyPartViewModel';
 import { computed, ref } from 'vue';
 

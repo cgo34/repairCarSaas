@@ -5,7 +5,7 @@ import { DentRepairTypeApiModel } from '@/@infrastructure/database/api/carRepair
 export class DentRepairTypeMapper {
   static apiToDto(apiModel: DentRepairTypeApiModel): DentRepairTypeDto {
     return {
-      id: apiModel.id,
+      id: apiModel.id || undefined,
       name: apiModel.name,
       code: apiModel.code,
     };
@@ -13,7 +13,7 @@ export class DentRepairTypeMapper {
 
   static dtoToApi(dto: DentRepairTypeDto): DentRepairTypeApiModel {
     return {
-      id: dto.id,
+      id: dto.id || undefined,
       name: dto.name,
       code: dto.code,
     };

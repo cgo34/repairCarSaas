@@ -1,7 +1,8 @@
 export interface GarageDto {
-  id: string;
+  id?: string;
   userId: string;
   name: string;
+  code: string;
   address: string;
   zipCode: string;
   city: string;

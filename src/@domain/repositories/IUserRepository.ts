@@ -1,9 +1,9 @@
-import { User } from '@/@domain/entities/User';
+import { UserDto } from "@/@application/dtos/UserDto";
 
 export interface IUserRepository {
-  getAll(): Promise<User[]>;
-  getById(id: string): Promise<User | null>;
-  create(user: User): Promise<void>;
-  update(user: User): Promise<void>;
-  delete(id: string): Promise<void>;
+  getAll(): Promise<UserDto[]>;
+  // getById(id: string): Promise<User | null>;
+  // create(user: UserDto): Promise<UserDto>;
+  // update(user: UserDto): Promise<UserDto>;
+  // delete(id: string): Promise<void>;
 }

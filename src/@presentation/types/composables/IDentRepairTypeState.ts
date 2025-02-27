@@ -12,4 +12,5 @@ export interface IDentRepairTypeState {
   addDentRepairType(dentRepairType: DentRepairTypeViewModel): Promise<DentRepairTypeViewModel>;
   updateDentRepairType(dentRepairType: DentRepairTypeViewModel): Promise<DentRepairTypeViewModel>;
   deleteDentRepairType(id: string): Promise<void>;
+  resetSelectedDentRepairType(): void;
 }

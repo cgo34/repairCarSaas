@@ -20,14 +20,14 @@ export function useAdminDashboardState() {
     loading.value = true;
     try {
       // Récupérer le nombre total d'utilisateurs
-      const { count: usersCount, error: usersError } = await supabase
+      const { data: users, error } = await supabase
         .from('users')
         .select('*', { count: 'exact', head: true });
 
-      if (usersError) throw usersError;
-      console.log('usersCount', usersCount);
+      if (error) throw error;
+      console.log('usersCount', users);
       
-      totalUsers.value = usersCount ?? 0;
+      totalUsers.value = users.length ?? 0;
 
       // Récupérer le nombre total de garages
       const { count: garagesCount, error: garagesError } = await supabase

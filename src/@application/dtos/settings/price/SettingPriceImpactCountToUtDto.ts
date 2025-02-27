@@ -1,5 +1,5 @@
 export interface SettingPriceImpactCountToUtDto {
-  id: string;
+  id?: string;
   impactCountMin: number;
   impactCountMax: number;
   unitTime: number;

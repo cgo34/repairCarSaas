@@ -52,6 +52,7 @@ export class BodyMaterialRepository implements IBodyMaterialRepository {
       .fromSchema<'car_repair', 'body_materials'>('car_repair', 'body_materials')
       .update(bodyMaterialApi)
       .eq('id', bodyMaterialApi.id)
+      .select('*')
       .single<BodyMaterialApiModel>();
 
     if (error)

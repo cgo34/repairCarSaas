@@ -4,19 +4,19 @@ import { SettingPriceBodyMaterialCoefficientApiModel } from '@/@infrastructure/d
 export class SettingPriceBodyMaterialCoefficientMapper {
   static apiToDto(apiModel: SettingPriceBodyMaterialCoefficientApiModel): SettingPriceBodyMaterialCoefficientDto {
     return {
-      id: apiModel.id,
       userId: apiModel.user_id,
       bodyMaterialId: apiModel.body_material_id,
       coefficient: apiModel.material_coefficient,
+      bodyMaterials: apiModel.body_materials,
     };
   }
 
   static dtoToApi(dto: SettingPriceBodyMaterialCoefficientDto): SettingPriceBodyMaterialCoefficientApiModel {
     return {
-      id: dto.id,
       user_id: dto.userId,
       body_material_id: dto.bodyMaterialId,
       material_coefficient: dto.coefficient,
+      body_materials: dto.bodyMaterials
     };
   }
 }

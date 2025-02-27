@@ -13,7 +13,7 @@ export class SettingPriceGeneralMapper {
 
   static dtoToApi(dto: SettingPriceGeneralDto): SettingPriceGeneralApiModel {
     return {
-      id: dto.id,
+      id: dto.id ?? undefined,
       user_id: dto.userId,
       hourly_rate: dto.hourlyRate,
       unit_time: dto.unitTime,
