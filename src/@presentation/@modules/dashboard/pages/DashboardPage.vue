@@ -42,7 +42,7 @@ import { onMounted } from 'vue';
 // import { BuildingStoreIcon, UserIcon } from 'lucide-vue-next';
 
 // Récupération des statistiques du dashboard
-const { totalUsers, totalGarages, fetchDashboardStats, loading } = useAdminDashboardState();
+const { totalUsers, totalGarages, fetchDashboardStats, loading, authState } = useAdminDashboardState();
 
 // Chargement des données au montage du composant
 onMounted(async () => {

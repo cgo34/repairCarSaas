@@ -48,26 +48,15 @@
                         </v-col>
                         <v-col cols="12">
                           <v-text-field
-                            v-model="selectedGarage.address"
-                            label="Adresse"
+                            v-model="selectedGarage.code"
+                            label="Code du garage"
                           />
                         </v-col>
-                        <v-col
-                          cols="12"
-                          md="6"
-                        >
+                        <v-col cols="12">
                           <v-text-field
-                            v-model="selectedGarage.zip_code"
-                            label="Code Postal"
-                          />
-                        </v-col>
-                        <v-col
-                          cols="12"
-                          md="6"
-                        >
-                          <v-text-field
-                            v-model="selectedGarage.city"
-                            label="Ville"
+                            v-model="selectedGarage.percentageCommission"
+                            label="Commission (%)"
+                            type="number"
                           />
                         </v-col>
                         <v-col
@@ -90,9 +79,26 @@
                         </v-col>
                         <v-col cols="12">
                           <v-text-field
-                            v-model="selectedGarage.percentage_commission"
-                            label="Commission (%)"
-                            type="number"
+                            v-model="selectedGarage.address"
+                            label="Adresse"
+                          />
+                        </v-col>
+                        <v-col
+                          cols="12"
+                          md="6"
+                        >
+                          <v-text-field
+                            v-model="selectedGarage.zipCode"
+                            label="Code Postal"
+                          />
+                        </v-col>
+                        <v-col
+                          cols="12"
+                          md="6"
+                        >
+                          <v-text-field
+                            v-model="selectedGarage.city"
+                            label="Ville"
                           />
                         </v-col>
                       </v-row>
@@ -157,18 +163,28 @@ import { computed, onMounted, ref } from 'vue';
 // Injection du state depuis Inversify
 const useGarageState = container.get<IUseGarageState>(SYMBOLS.States.GarageState);
 
-const { garages, selectedGarage, init, selectGarage, addGarage, updateGarage, deleteGarage } =
-  useGarageState;
+const {
+    garages,
+    selectedGarage,
+    init,
+    selectGarage,
+    addGarage,
+    updateGarage,
+    deleteGarage,
+    resetSelectedGarage
+} = useGarageState;
 
 const dialog = ref<boolean>(false);
 
 const headers = [
   { title: 'Nom', align: 'start', key: 'name' },
-  { title: 'Adresse', key: 'address' },
-  { title: 'Ville', key: 'city' },
+  { title: 'Code', align: 'start', key: 'code' },
+  { title: 'Commission (%)', key: 'percentageCommission' },
   { title: 'Téléphone', key: 'phone' },
   { title: 'Email', key: 'email' },
-  { title: 'Commission (%)', key: 'percentage_commission' },
+  { title: 'Adresse', key: 'address' },
+  { title: 'Code postal', key: 'zipCode' },
+  { title: 'Ville', key: 'city' },
   { title: 'Actions', sortable: false, key: 'actions' }
 ] as const;
 
@@ -180,7 +196,7 @@ const onEditBtnClick = (item: GarageViewModel) => {
 };
 
 const onCloseEditDialogBtnClick = () => {
-  selectGarage(null);
+  resetSelectedGarage();
   dialog.value = false;
 };
 

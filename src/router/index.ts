@@ -6,12 +6,14 @@ import { authGuard } from './modules/auth/navigationGuards';
 import { carSettingsRoutes } from './modules/carSettings/carSettingsRoutes';
 import { dashboardRoutes } from './modules/dashboard/dashboardRoutes';
 import { garageRoutes } from './modules/garage/garageRoutes';
+import { quoteRoutes } from './modules/quote/quoteRoutes';
 
 const routes: RouteRecordRaw[] = [
   ...authRoutes,
   ...dashboardRoutes,
   ...carSettingsRoutes,
   ...garageRoutes,
+  ...quoteRoutes,
   // logoutRoute,
 ];
 

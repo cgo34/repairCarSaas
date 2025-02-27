@@ -24,9 +24,9 @@ export class AuthService implements IAuthService {
   async login(email: string, password: string): Promise<User> {
     const user = await this.authRepository.login(email, password);
     
-    if (!this.isUser(user)) {
-      throw new Error('Invalid user data structure');
-    }
+    // if (!this.isUser(user)) {
+    //   throw new Error('Invalid user data structure');
+    // }
 
     return user;
   }

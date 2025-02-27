@@ -3,8 +3,10 @@ import { IAuthState } from '@/@application/states/interfaces/IAuthState';
 import { IClientProvider } from '@/@infrastructure/interfaces/IClientProvider';
 import { container } from '@/@infrastructure/ioc/inversify.config';
 import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
+import ForgotPasswordPage from '@/@presentation/@modules/auth/pages/ForgotPasswordPage.vue';
 import LoginPage from '@/@presentation/@modules/auth/pages/LoginPage.vue';
 import RegisterPage from '@/@presentation/@modules/auth/pages/RegisterPage.vue';
+import ResetPasswordPage from '@/@presentation/@modules/auth/pages/ResetPasswordPage.vue';
 import { RouteRecordRaw } from 'vue-router';
 
 export const authRoutes: RouteRecordRaw[] = [
@@ -24,6 +26,17 @@ export const authRoutes: RouteRecordRaw[] = [
     component: RegisterPage,
     meta: { requiresGuest: true },
   },
+  {
+    path: '/forgot-password',
+    name: 'ForgotPassword',
+    component: ForgotPasswordPage
+  },
+  {
+    path: '/reset-password',
+    name: 'ResetPassword',
+    component: ResetPasswordPage,
+    props: route => ({ token: route.query.token }) // 🔥 Important pour garder le token
+  },  
   {
     path: '/logout',
     component: {},

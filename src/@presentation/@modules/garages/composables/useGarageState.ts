@@ -2,8 +2,10 @@ import { IAuthState } from '@/@application/states/interfaces/IAuthState';
 import { IGarageUseCase } from '@/@application/useCases/interfaces/IGarageUseCase';
 import { container } from '@/@infrastructure/ioc/inversify.config';
 import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
+import { GarageMapper } from '@/@presentation/mappers/GarageMapper';
 import { IUseGarageState } from '@/@presentation/types/composables/IUseGarageState';
 import { GarageViewModel } from '@/@presentation/types/models/GarageViewModel';
+import { JsonHelper } from '@/helpers/jsonHelper';
 import { computed, ref } from 'vue';
 
 export function useGarageState(): IUseGarageState {
@@ -11,7 +13,17 @@ export function useGarageState(): IUseGarageState {
   const garageUseCase = container.get<IGarageUseCase>(SYMBOLS.UseCases.Garage);
   
   const _garages = ref<GarageViewModel[]>([]);
-  const _selectedGarage = ref<GarageViewModel | null>(null);
+  const _selectedGarage = ref<GarageViewModel>({
+    userId: '',
+    name: '',
+    code: '',
+    address: '',
+    zipCode: '',
+    city: '',
+    phone: '',
+    email: '',
+    percentageCommission: 0,
+  });
   const loading = ref<boolean>(false);
   const error = ref<unknown>(null);
 
@@ -37,17 +49,33 @@ export function useGarageState(): IUseGarageState {
     }
   };
 
-  const selectGarage = (garage: GarageViewModel | null): void => {
-    _selectedGarage.value = garage;
+  const selectGarage = (garage: GarageViewModel): void => {
+    _selectedGarage.value = JsonHelper.clone(garage);
+  };
+
+  const resetSelectedGarage = (): void => {
+    _selectedGarage.value = {
+      userId: '',
+      name: '',
+      code: '',
+      address: '',
+      zipCode: '',
+      city: '',
+      phone: '',
+      email: '',
+      percentageCommission: 0,
+    };
   };
 
   const addGarage = async (garage: GarageViewModel) => {
     loading.value = true;
     try {
-      garage.userId = authState.user?.value?.id;
-      return garageUseCase.create(garage).then((data) => {
-        _garages.value.push(data);
-        return data;
+      garage.userId = authState.user?.value?.id ?? '';
+      return garageUseCase.create(GarageMapper.viewToDto(garage)).then((data) => {
+        const dataViewModel = GarageMapper.dtoToView(data);
+        _garages.value.push(dataViewModel);
+        resetSelectedGarage();
+        return dataViewModel;
       });
     } finally {
       loading.value = false;
@@ -57,9 +85,10 @@ export function useGarageState(): IUseGarageState {
   const updateGarage = async (garage: GarageViewModel) => {
     loading.value = true;
     try {
-      return garageUseCase.update(garage).then((data) => {
-        _garages.value = _garages.value.map((g) => (g.id === garage.id ? data : g));
-        return data;
+      return garageUseCase.update(GarageMapper.viewToDto(garage)).then((data) => {
+        const dataViewModel = GarageMapper.dtoToView(data);
+        _garages.value = _garages.value.map((g) => (g.id === garage.id ? dataViewModel : g));
+        return dataViewModel;
       });
     } finally {
       loading.value = false;
@@ -88,5 +117,6 @@ export function useGarageState(): IUseGarageState {
     addGarage,
     updateGarage,
     deleteGarage,
+    resetSelectedGarage,
   };
 }

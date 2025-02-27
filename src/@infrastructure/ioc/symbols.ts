@@ -30,6 +30,7 @@ const SYMBOLS = {
   },
   Services: {
     AuthService: Symbol.for(SYMBOL_NAMES.AUTH_SERVICE),
+    UserService: Symbol.for(SYMBOL_NAMES.USER_SERVICE),
     GarageService: Symbol.for(SYMBOL_NAMES.GARAGE_SERVICE),
     NotificationService: Symbol.for(SYMBOL_NAMES.NOTIFICATION_SERVICE),
     // -- Settings CarRepair Services
@@ -54,6 +55,8 @@ const SYMBOLS = {
       LogoutUseCase: Symbol.for(SYMBOL_NAMES.LOGOUT_USE_CASE),
       RegisterUseCase: Symbol.for(SYMBOL_NAMES.REGISTER_USE_CASE),
     },
+    // -- User UseCases
+    UserUseCase: Symbol.for(SYMBOL_NAMES.USER_USE_CASE),
     Garage: Symbol.for(SYMBOL_NAMES.GARAGE_USE_CASE),
     CarRepair: {
       BodyPartUseCase: Symbol.for(SYMBOL_NAMES.BODY_PART_USE_CASE),
@@ -73,6 +76,8 @@ const SYMBOLS = {
   },
   States: {
     AuthState: Symbol.for(SYMBOL_NAMES.AUTH_STATE),
+    // -- User States
+    UserState: Symbol.for(SYMBOL_NAMES.USER_STATE),
     // -- Garage States
     GarageState: Symbol.for(SYMBOL_NAMES.GARAGE_STATE),
     // -- Settings CarRepair States

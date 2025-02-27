@@ -84,6 +84,25 @@ export const adminMenu = [
     to: '/garages',
   },
   { divider: true },
+  { header: 'Quotes' },
+  {
+    title: 'Quotes',
+    icon: DashboardIcon,
+    to: '/quotes',
+    children: [
+      {
+        title: 'New',
+        icon: CircleIcon,
+        to: '/quotes/new'
+      },
+      {
+        title: 'List',
+        icon: CircleIcon,
+        to: '/quotes'
+      },
+    ]
+  },
+  { divider: true },
   {
     title: 'Logout',
     icon: LogoutIcon,

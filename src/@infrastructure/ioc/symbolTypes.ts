@@ -21,6 +21,7 @@ export enum SYMBOL_NAMES {
     SETTING_PRICE_DIAMETER_COEFFICIENT = 'SettingPriceDiameterCoefficient',
     // Services
     AUTH_SERVICE = 'AuthService',
+    USER_SERVICE = 'UserService',
     GARAGE_SERVICE = 'GarageService',
     NOTIFICATION_SERVICE = 'NotificationService',
     // Settings CarRepair Services
@@ -40,6 +41,8 @@ export enum SYMBOL_NAMES {
     LOGIN_USE_CASE = 'LoginUseCase',
     LOGOUT_USE_CASE = 'LogoutUseCase',
     REGISTER_USE_CASE = 'RegisterUseCase',
+    // -- User UseCases
+    USER_USE_CASE = 'UserUseCase',
     // -- Garage UseCases
     GARAGE_USE_CASE = 'GarageUseCase',
     // -- Settings CarRepair UseCases
@@ -54,6 +57,8 @@ export enum SYMBOL_NAMES {
     SETTING_PRICE_DIAMETER_COEFFICIENT_USE_CASE = 'SettingPriceDiameterCoefficientUseCase',
     // States
     AUTH_STATE = 'AuthState',
+    // -- User States
+    USER_STATE = 'UserState',
     // -- Garage States
     GARAGE_STATE = 'GarageState',
     // -- Settings CarRepair States

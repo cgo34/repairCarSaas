@@ -58,6 +58,7 @@ export class GarageRepository implements IGarageRepository {
       .fromSchema<'car_repair', 'garages'>('car_repair', 'garages')
       .update(garageApi)
       .eq('id', garageApi.id)
+      .select('*')
       .single<GarageApiModel>();
 
     if (error) throw new Error('Error updating garage');

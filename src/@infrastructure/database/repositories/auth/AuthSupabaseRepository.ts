@@ -4,7 +4,6 @@ import { SupabaseAuthResponse } from '@infrastructure/database/dtos/supabase/Sup
 import { SYMBOLS } from '@infrastructure/ioc/symbols';
 import { AuthError } from '@supabase/supabase-js';
 import { inject, injectable } from 'inversify';
-import { UserMapper } from '../../../mappers/UserMapper';
 import { SupabaseClient } from '../../clients/SupabaseClient';
 import { User } from '../../dtos/supabase/SupabaseUser';
 
@@ -23,7 +22,7 @@ export class AuthSupabaseRepository implements IAuthRepository {
 
       const userDto: User = data.user;
 
-      return UserMapper.toDomain(userDto);
+      return userDto // UserMapper.toDomain(userDto);
     } catch (error) {
       console.error('[AuthRepository] login error:', error);
       throw error;

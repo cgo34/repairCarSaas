@@ -40,6 +40,9 @@ export class SupabaseClient implements IClient {
       onAuthStateChange: (callback: (event: string, session: any) => void) => this.client.auth.onAuthStateChange(callback),
       user: () => this.client.auth.getUser(),
       session: () => this.client.auth.getSession(),
+      resetPasswordForEmail: (email: string, redirectTo?: string) =>
+        this.client.auth.resetPasswordForEmail(email, { redirectTo }), // 🔥 Ajout ici !
+      updateUser: (user: any) => this.client.auth.updateUser(user),
     };
   }
 
