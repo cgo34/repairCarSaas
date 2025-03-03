@@ -11,6 +11,10 @@ export class GarageUseCase implements IGarageUseCase {
     private readonly garageService: IGarageService
   ) {}
 
+  async getGarages(): Promise<GarageDto[]> {
+    return await this.garageService.getGarages();
+  }
+
   async getByUserId(userId: string): Promise<GarageDto[]> {
     return await this.garageService.getByUserId(userId);
   }
