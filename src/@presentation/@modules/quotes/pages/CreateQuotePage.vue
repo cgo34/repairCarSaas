@@ -8,7 +8,7 @@
         <v-card-title class="text-h5">
           Créer un Devis
         </v-card-title>
-        
+
         <v-card-text>
           <!-- Informations du devis -->
           <v-row>
@@ -46,7 +46,7 @@
               />
             </v-col>
           </v-row>
-          
+
           <!-- Informations du Technicien et du Garage -->
           <v-row>
             <v-col md="6">
@@ -85,7 +85,7 @@
                 </div>
               </v-card>
             </v-col>
-            
+
             <v-col md="6">
               <v-card
                 outlined
@@ -124,9 +124,9 @@
             </v-col>
           </v-row>
         </v-card-text>
-        
+
         <v-divider class="my-4" />
-        
+
         <!-- Tableau des éléments du devis -->
         <v-card-text>
           <v-data-table
@@ -134,46 +134,62 @@
             :items="quote.items"
             class="elevation-1"
           >
-            <template #item.name="{ item }">
+            <template #[`item.bodyPart.name`]="{ item }">
               <v-text-field
-                v-model="item.name"
+                v-model="item.bodyPart.name"
                 placeholder="Nom de l'élément"
                 dense
                 outlined
               />
             </template>
-            <template #item.description="{ item }">
+            <template #[`item.impactSize`]="{ item }">
               <v-text-field
-                v-model="item.description"
-                placeholder="Description"
+                v-model="item.impactSize"
+                placeholder="Taille impact"
                 dense
                 outlined
               />
             </template>
-            <template #item.qty="{ item }">
+            <template #[`item.impactCount`]="{ item }">
               <v-text-field
-                v-model.number="item.qty"
+                v-model="item.impactCount"
                 type="number"
-                placeholder="Quantité"
+                placeholder="Nombre impact"
                 dense
                 outlined
               />
             </template>
-            <template #item.price="{ item }">
+            <template #[`item.bodyMaterial.name`]="{ item }">
+              <v-text-field
+                v-model="item.bodyMaterial.name"
+                placeholder="Matériau"
+                dense
+                outlined
+              />
+            </template>
+            <template #[`item.repairType.name`]="{ item }">
+              <v-text-field
+                v-model="item.repairType.name"
+                placeholder="Type de réparation"
+                dense
+                outlined
+              />
+            </template>
+            <template #[`item.price`]="{ item }">
               <v-text-field
                 v-model.number="item.price"
                 type="number"
-                placeholder="Prix Unitaire"
+                placeholder="Prix HT (€)"
                 dense
                 outlined
               />
             </template>
-            <template #item.total="{ item }">
+            <template #[`item.total`]="{ item }">
               <p class="text-right">
                 {{ (item.qty * item.price).toFixed(2) }} €
               </p>
             </template>
-            <template #item.actions="{ item }">
+            <template #[`item.actions`]="{ item }">
               <v-icon
                 class="me-2"
                 size="small"
@@ -191,9 +207,9 @@
             + Ajouter un élément
           </v-btn>
         </v-card-text>
-        
+
         <v-divider class="my-4" />
-        
+
         <!-- Bloc des Totaux -->
         <v-sheet class="rounded-sm bg-lightprimary pa-2 pa-sm-6">
           <v-row justify="end">
@@ -246,20 +262,33 @@
 import MainLayout from '@/@presentation/@ui/layouts/MainLayout.vue';
 import { computed, ref } from 'vue';
 
+type QuoteItem = {
+  id: number;
+  bodyPart: { name: string };
+  impactSize: string;
+  impactCount: number;
+  bodyMaterial: { name: string };
+  repairType: { name: string };
+  price: number;
+  qty: number;
+};
+
 const quote = ref({
   quoteNumber: `Q-${Date.now()}`,
   date: new Date().toISOString().split('T')[0],
   validUntil: '',
   technician: null,
   garage: null,
-  items: [],
+  items: [] as QuoteItem[],
 });
 
 const headers = [
-  { title: 'Nom', key: 'name', align: 'start' },
-  { title: 'Description', key: 'description' },
-  { title: 'Quantité', key: 'qty' },
-  { title: 'Prix Unitaire (€)', key: 'price' },
+  { title: 'Element', key: 'bodyPart.name' },
+  { title: 'Taille impact', key: 'impactSize' },
+  { title: 'Nombre impact', key: 'impactCount' },
+  { title: 'Matériau', key: 'bodyMaterial.name' },
+  { title: 'Type de réparation', key: 'repairType.name' },
+  { title: 'Prix HT (€)', key: 'price' },
   { title: 'Total (€)', key: 'total' },
   { title: 'Actions', key: 'actions', sortable: false }
 ];
@@ -270,18 +299,10 @@ const discount = computed(() => subtotal.value * 0.05);
 const total = computed(() => subtotal.value + tax.value - discount.value);
 
 const addItem = () => {
-  quote.value.items.push({ name: '', description: '', qty: 1, price: 0 });
+  quote.value.items.push({ id: Date.now(), bodyPart: { name: '' }, impactSize: '', impactCount: 0, bodyMaterial: { name: '' }, repairType: { name: '' }, price: 0, qty: 1 });
 };
 
-const removeItem = (item) => {
-  quote.value.items = quote.value.items.filter(i => i !== item);
-};
-
-const selectTechnician = () => {
-  console.log('Sélectionner un technicien');
-};
-
-const selectGarage = () => {
-  console.log('Sélectionner un garage');
+const removeItem = (item: QuoteItem) => {
+  quote.value.items = quote.value.items.filter(i => i.id !== item.id);
 };
 </script>

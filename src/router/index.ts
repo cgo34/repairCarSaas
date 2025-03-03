@@ -7,11 +7,13 @@ import { carSettingsRoutes } from './modules/carSettings/carSettingsRoutes';
 import { dashboardRoutes } from './modules/dashboard/dashboardRoutes';
 import { garageRoutes } from './modules/garage/garageRoutes';
 import { quoteRoutes } from './modules/quote/quoteRoutes';
+import { usersRoutes } from './modules/user/userRoutes';
 
 const routes: RouteRecordRaw[] = [
   ...authRoutes,
   ...dashboardRoutes,
   ...carSettingsRoutes,
+  ...usersRoutes,
   ...garageRoutes,
   ...quoteRoutes,
   // logoutRoute,

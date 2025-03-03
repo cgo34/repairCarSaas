@@ -1,9 +1,15 @@
 // src/@presentation/@ui/layouts/vertical-sidebar/menus/adminMenu.ts
 import {
+  BuildingWarehouseIcon,
+  CarIcon,
   CircleIcon,
   DashboardIcon,
-  KeyIcon,
-  LogoutIcon
+  FileEuroIcon,
+  FileInvoiceIcon,
+  ListIcon,
+  LogoutIcon,
+  ToolIcon,
+  UserIcon
 } from 'vue-tabler-icons';
 
 export const adminMenu = [
@@ -17,7 +23,7 @@ export const adminMenu = [
   { header: 'Settings' },
   {
     title: 'Car',
-    icon: KeyIcon,
+    icon: CarIcon,
     to: '/auth',
     children: [
       {
@@ -34,19 +40,19 @@ export const adminMenu = [
   },
   {
     title: 'Dent',
-    icon: KeyIcon,
+    icon: ToolIcon,
     to: '/auth',
     children: [
       {
         title: 'Dent Repair Types',
-        icon: CircleIcon,
+        icon: ToolIcon,
         to: '/settings/dent-repair-types'
       },
     ]
   },
   {
     title: 'Price',
-    icon: KeyIcon,
+    icon: FileEuroIcon,
     to: '/auth',
     children: [
       {
@@ -77,32 +83,57 @@ export const adminMenu = [
     ]
   },
   { divider: true },
+  { header: 'User' },
+  {
+    title: 'Users',
+    icon: UserIcon,
+    to: '/Users',
+  },
+  { divider: true },
   { header: 'Garage' },
   {
     title: 'Garages',
-    icon: DashboardIcon,
+    icon: BuildingWarehouseIcon,
     to: '/garages',
   },
   { divider: true },
-  { header: 'Quotes' },
+  { header: 'Billing' },
   {
     title: 'Quotes',
-    icon: DashboardIcon,
     to: '/quotes',
+    icon: FileInvoiceIcon,
     children: [
       {
         title: 'New',
-        icon: CircleIcon,
+        icon: FileInvoiceIcon,
         to: '/quotes/new'
       },
       {
         title: 'List',
-        icon: CircleIcon,
+        icon: ListIcon,
         to: '/quotes'
       },
     ]
   },
+  {
+    title: 'Invoices',
+    to: '/invoices',
+    icon: FileInvoiceIcon,
+    children: [
+      {
+        title: 'New',
+        icon: FileInvoiceIcon,
+        to: '/invoices/new'
+      },
+      {
+        title: 'List',
+        icon: ListIcon,
+        to: '/invoices'
+      },
+    ]
+  },
   { divider: true },
+  { header: 'Account' },
   {
     title: 'Logout',
     icon: LogoutIcon,
