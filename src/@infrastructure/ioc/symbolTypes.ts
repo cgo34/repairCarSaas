@@ -50,6 +50,7 @@ export enum SYMBOL_NAMES {
     BODY_MATERIAL_USE_CASE = 'BodyMaterialUseCase',
     DENT_REPAIR_TYPE_USE_CASE = 'DentRepairTypeUseCase',
     // -- Settings Prices CarRepair UseCases
+    SETTING_PRICE_USE_CASE = 'SettingPriceUseCase',
     SETTING_PRICE_GENERAL_USE_CASE = 'SettingPriceGeneralUseCase',
     SETTING_PRICE_IMPACT_COUNT_TO_UT_USE_CASE = 'SettingPriceImpactCountToUtUseCase',
     SETTING_PRICE_BODY_MATERIAL_COEFFICIENT_USE_CASE = 'SettingPriceBodyMaterialCoefficientUseCase',
@@ -67,10 +68,16 @@ export enum SYMBOL_NAMES {
     DENT_REPAIR_TYPE_STATE = 'DentRepairTypeState',
     DENT_REMOVAL_PRICING_STATE = 'DentRemovalPricingState',
     // -- Settings Prices CarRepair States
+    SETTING_PRICE_STATE = 'SettingPriceState',
     SETTING_PRICE_GENERAL_STATE = 'SettingPriceGeneralState',
     SETTING_PRICE_IMPACT_COUNT_TO_UT_STATE = 'SettingPriceImpactCountToUtState',
     SETTING_PRICE_BODY_MATERIAL_COEFFICIENT_STATE = 'SettingPriceBodyMaterialCoefficientState',
     SETTING_PRICE_BODY_PART_COEFFICIENT_STATE = 'SettingPriceBodyPartCoefficientState',
     SETTING_PRICE_DIAMETER_COEFFICIENT_STATE = 'SettingPriceDiameterCoefficientState',
+    // -- Quote States
+    QUOTE_STATE = 'QuoteState',
+    CREATE_QUOTE_STATE = 'CreateQuoteState',
+    // -- Invoice States
+    INVOICE_STATE = 'InvoiceState',
   }
   
