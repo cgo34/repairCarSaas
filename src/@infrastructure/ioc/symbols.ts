@@ -66,6 +66,7 @@ const SYMBOLS = {
     // -- Settings Prices CarRepair UseCases
     Setting: {
       Price: {
+        AllUseCase: Symbol.for(SYMBOL_NAMES.SETTING_PRICE_USE_CASE),
         GeneralUseCase: Symbol.for(SYMBOL_NAMES.SETTING_PRICE_GENERAL_USE_CASE),
         ImpactCountToUtUseCase: Symbol.for(SYMBOL_NAMES.SETTING_PRICE_IMPACT_COUNT_TO_UT_USE_CASE),
         BodyMaterialCoefficientUseCase: Symbol.for(SYMBOL_NAMES.SETTING_PRICE_BODY_MATERIAL_COEFFICIENT_USE_CASE),
@@ -90,6 +91,7 @@ const SYMBOLS = {
     // -- Settings Prices CarRepair States
     Setting: {
       Price: {
+        All: Symbol.for(SYMBOL_NAMES.SETTING_PRICE_STATE),
         GeneralState: Symbol.for(SYMBOL_NAMES.SETTING_PRICE_GENERAL_STATE),
         ImpactCountToUtState: Symbol.for(SYMBOL_NAMES.SETTING_PRICE_IMPACT_COUNT_TO_UT_STATE),
         BodyMaterialCoefficientState: Symbol.for(SYMBOL_NAMES.SETTING_PRICE_BODY_MATERIAL_COEFFICIENT_STATE),
@@ -97,6 +99,11 @@ const SYMBOLS = {
         DiameterCoefficientState: Symbol.for(SYMBOL_NAMES.SETTING_PRICE_DIAMETER_COEFFICIENT_STATE),
       }
     },
+    // -- Quotes States
+    Quote: {
+      QuoteState: Symbol.for(SYMBOL_NAMES.QUOTE_STATE),
+      CreateQuoteState: Symbol.for(SYMBOL_NAMES.CREATE_QUOTE_STATE),
+    }
   },
 };
 

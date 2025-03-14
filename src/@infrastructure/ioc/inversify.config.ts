@@ -31,11 +31,13 @@ import { ISettingPriceBodyPartCoefficientUseCase } from '@/@application/useCases
 import { ISettingPriceDiameterCoefficientUseCase } from '@/@application/useCases/interfaces/settings/price/ISettingPriceDiameterCoefficientUseCase';
 import { ISettingPriceGeneralUseCase } from '@/@application/useCases/interfaces/settings/price/ISettingPriceGeneralUseCase';
 import { ISettingPriceImpactCountToUtUseCase } from '@/@application/useCases/interfaces/settings/price/ISettingPriceImpactCountToUtUseCase';
+import { ISettingPriceUseCase } from '@/@application/useCases/interfaces/settings/price/ISettingPriceUseCase';
 import { SettingPriceBodyMaterialCoefficientUseCase } from '@/@application/useCases/settings/price/SettingPriceBodyMaterialCoefficientUseCase';
 import { SettingPriceBodyPartCoefficientUseCase } from '@/@application/useCases/settings/price/SettingPriceBodyPartCoefficientUseCase';
 import { SettingPriceDiameterCoefficientUseCase } from '@/@application/useCases/settings/price/SettingPriceDiameterCoefficientUseCase';
 import { SettingPriceGeneralUseCase } from '@/@application/useCases/settings/price/SettingPriceGeneralUseCase';
 import { SettingPriceImpactCountToUtUseCase } from '@/@application/useCases/settings/price/SettingPriceImpactCountToUtUseCase';
+import { SettingPriceUseCase } from '@/@application/useCases/settings/price/SettingPriceUseCase';
 import { UserUseCase } from '@/@application/useCases/users/UserUseCase';
 import { IBodyMaterialRepository } from '@/@domain/repositories/carRepair/IBodyMaterialRepository';
 import { IBodyPartRepository } from '@/@domain/repositories/carRepair/IBodyPartRepository';
@@ -61,6 +63,7 @@ import { AuthSupabaseRepository } from '@/@infrastructure/database/repositories/
 import { BodyPartRepository } from '@/@infrastructure/database/repositories/carRepair/BodyPartRepository';
 import { IClientProvider } from '@/@infrastructure/interfaces/IClientProvider';
 import { useGarageState } from '@/@presentation/@modules/garages/composables/useGarageState';
+import { useCreateQuoteState } from '@/@presentation/@modules/quotes/composables/useCreateQuoteState';
 import { useBodyMaterialState } from '@/@presentation/@modules/settings/carRepair/composables/useBodyMaterialState';
 import { useBodyPartState } from '@/@presentation/@modules/settings/carRepair/composables/useBodyPartState';
 import { useDentRepairTypeState } from '@/@presentation/@modules/settings/carRepair/composables/useDentRepairTypeState';
@@ -156,6 +159,7 @@ container.bind<IBodyPartUseCase>(SYMBOLS.UseCases.CarRepair.BodyPartUseCase).to(
 container.bind<IBodyMaterialUseCase>(SYMBOLS.UseCases.CarRepair.BodyMaterialUseCase).to(BodyMaterialUseCase).inSingletonScope();
 container.bind<IDentRepairTypeUseCase>(SYMBOLS.UseCases.CarRepair.DentRepairTypeUseCase).to(DentRepairTypeUseCase).inSingletonScope();
 /** 5.3. -- Settings Prices CarRepair UseCases */
+container.bind<ISettingPriceUseCase>(SYMBOLS.UseCases.Setting.Price.AllUseCase).to(SettingPriceUseCase).inSingletonScope();
 container.bind<ISettingPriceGeneralUseCase>(SYMBOLS.UseCases.Setting.Price.GeneralUseCase).to(SettingPriceGeneralUseCase).inSingletonScope();
 container.bind<ISettingPriceBodyMaterialCoefficientUseCase>(SYMBOLS.UseCases.Setting.Price.BodyMaterialCoefficientUseCase).to(SettingPriceBodyMaterialCoefficientUseCase).inSingletonScope();
 container.bind<ISettingPriceBodyPartCoefficientUseCase>(SYMBOLS.UseCases.Setting.Price.BodyPartCoefficientUseCase).to(SettingPriceBodyPartCoefficientUseCase).inSingletonScope();
@@ -201,6 +205,10 @@ container.bind<IUseSettingPriceDiameterCoefficientState>(SYMBOLS.States.Setting.
 });
 container.bind<IUseSettingPriceImpactCountToUtState>(SYMBOLS.States.Setting.Price.ImpactCountToUtState).toDynamicValue(() => {
   return useSettingPriceImpactCountToUtState();
+});
+/** 6.3. -- Quote States */
+container.bind<IUseCreateQuoteState>(SYMBOLS.States.Quote.CreateQuoteState).toDynamicValue(() => {
+  return useCreateQuoteState();
 });
 
 export { container };
