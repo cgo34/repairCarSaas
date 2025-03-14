@@ -15,7 +15,7 @@ export class SettingPriceBodyPartCoefficientRepository implements ISettingPriceB
   async getByUserId(userId: string): Promise<SettingPriceBodyPartCoefficientDto[]> {
     const { data, error } = await this.clientProvider.getClient()
       .fromSchema<'car_repair', 'setting_price_body_part_coefficient'>('car_repair', 'setting_price_body_part_coefficient')
-      .select('*')
+      .select('*, body_parts(*)')
       .eq('user_id', userId)
       .returns<SettingPriceBodyPartCoefficientApiModel[]>();
 
@@ -29,8 +29,12 @@ export class SettingPriceBodyPartCoefficientRepository implements ISettingPriceB
 
     const { data, error } = await this.clientProvider.getClient()
       .fromSchema<'car_repair', 'setting_price_body_part_coefficient'>('car_repair', 'setting_price_body_part_coefficient')
-      .insert(settingApi)
-      .select('*')
+      .insert({
+        difficulty_coefficient: settingApi.difficulty_coefficient,
+        body_part_id: settingApi.body_parts?.id,
+        user_id: settingApi.user_id
+      })
+      .select('*, body_parts(*)')
       .single<SettingPriceBodyPartCoefficientApiModel>();
 
     if (error) throw new Error('Error creating body part coefficient setting');
@@ -41,12 +45,18 @@ export class SettingPriceBodyPartCoefficientRepository implements ISettingPriceB
   async update(setting: SettingPriceBodyPartCoefficientDto): Promise<SettingPriceBodyPartCoefficientDto> {
     const settingApi = SettingPriceBodyPartCoefficientMapper.dtoToApi(setting);
 
-    if (!settingApi.id) throw new Error('Setting ID is required');
+    if (!settingApi.body_part_id) throw new Error('Setting ID is required');
 
     const { data, error } = await this.clientProvider.getClient()
       .fromSchema<'car_repair', 'setting_price_body_part_coefficient'>('car_repair', 'setting_price_body_part_coefficient')
-      .update(settingApi)
-      .eq('id', settingApi.id)
+      .update({
+        coefficient: settingApi.difficulty_coefficient,
+        body_part_id: settingApi.body_parts?.id,
+        user_id: settingApi.user_id
+      })
+      .eq('body_part_id', settingApi.body_part_id)
+      .eq('user_id', settingApi.user_id)
+      .select('*, body_parts(*)')
       .single<SettingPriceBodyPartCoefficientApiModel>();
 
     if (error) throw new Error('Error updating body part coefficient setting');

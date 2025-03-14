@@ -3,5 +3,5 @@ export interface BodyPartApiModel {
   id?: string;
   name: string;
   code: string;
-  color?: string | null;
+  color?: string;
 }

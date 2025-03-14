@@ -1,18 +1,34 @@
-import { UserDto } from '@/@infrastructure/database/dtos/supabase/SupabaseUserDto';
+import { UserDto } from '@/@application/dtos/UserDto';
 import { User } from '@domain/entities/User';
+import { UserApiModel } from '../database/api/UserApiModel';
 import { RoleMapper } from './RoleMapper';
 
 export class UserMapper {
-  static toDomain(dto: UserDto): User {
+  static apiToDto(dto: UserApiModel): UserDto {
     if (!dto) throw new Error('Invalid DTO');
     
     return {
       id: dto.id,
       email: dto.email,
+      fullName: dto.full_name,
       // firstName: dto.user_metadata?.firstName,
       // lastName: dto.user_metadata?.lastName,
-      role: RoleMapper.toDomain(dto.role),
+      // role: RoleMapper.toDomain(dto.role),
       createdAt: new Date(dto.created_at)
+    };
+  }
+
+  static dtoToApi(user: UserDto): UserApiModel {
+    return {
+      id: user.id,
+      email: user.email,
+      full_name: user.fullName,
+      // user_metadata: {
+      //   firstName: user.firstName,
+      //   lastName: user.lastName
+      // },
+      // role: RoleMapper.toDto(user.role),
+      created_at: user.createdAt.toISOString()
     };
   }
 

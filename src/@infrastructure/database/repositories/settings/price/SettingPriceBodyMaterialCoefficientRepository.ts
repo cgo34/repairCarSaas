@@ -15,7 +15,7 @@ export class SettingPriceBodyMaterialCoefficientRepository implements ISettingPr
   async getByUserId(userId: string): Promise<SettingPriceBodyMaterialCoefficientDto[]> {
     const { data, error } = await this.clientProvider.getClient()
       .fromSchema<'car_repair', 'setting_price_body_material_coefficient'>('car_repair', 'setting_price_body_material_coefficient')
-      .select('*')
+      .select('*, body_materials(*)')
       .eq('user_id', userId)
       .returns<SettingPriceBodyMaterialCoefficientApiModel[]>();
 
@@ -29,8 +29,12 @@ export class SettingPriceBodyMaterialCoefficientRepository implements ISettingPr
 
     const { data, error } = await this.clientProvider.getClient()
       .fromSchema<'car_repair', 'setting_price_body_material_coefficient'>('car_repair', 'setting_price_body_material_coefficient')
-      .insert(settingApi)
-      .select('*')
+      .insert({
+        material_coefficient: settingApi.material_coefficient,
+        body_material_id: settingApi.body_materials?.id,
+        user_id: settingApi.user_id
+      })
+      .select('*, body_materials(*)')
       .single<SettingPriceBodyMaterialCoefficientApiModel>();
 
     if (error) throw new Error('Error creating body material coefficient setting');
@@ -41,12 +45,18 @@ export class SettingPriceBodyMaterialCoefficientRepository implements ISettingPr
   async update(setting: SettingPriceBodyMaterialCoefficientDto): Promise<SettingPriceBodyMaterialCoefficientDto> {
     const settingApi = SettingPriceBodyMaterialCoefficientMapper.dtoToApi(setting);
 
-    if (!settingApi.id) throw new Error('Setting ID is required');
+    if (!settingApi.body_material_id) throw new Error('Setting ID is required');
 
     const { data, error } = await this.clientProvider.getClient()
       .fromSchema<'car_repair', 'setting_price_body_material_coefficient'>('car_repair', 'setting_price_body_material_coefficient')
-      .update(settingApi)
-      .eq('id', settingApi.id)
+      .update({
+        material_coefficient: settingApi.material_coefficient,
+        body_material_id: settingApi.body_materials?.id,
+        user_id: settingApi.user_id
+      })
+      .eq('body_material_id', settingApi.body_material_id)
+      .eq('user_id', settingApi.user_id)
+      .select('*, body_materials(*)')
       .single<SettingPriceBodyMaterialCoefficientApiModel>();
 
     if (error) throw new Error('Error updating body material coefficient setting');
@@ -54,11 +64,12 @@ export class SettingPriceBodyMaterialCoefficientRepository implements ISettingPr
     return SettingPriceBodyMaterialCoefficientMapper.apiToDto(data);
   }
 
-  async delete(id: string): Promise<void> {
+  async delete(bodyMaterialId: string, userId: string): Promise<void> {
     const { error } = await this.clientProvider.getClient()
       .fromSchema<'car_repair', 'setting_price_body_material_coefficient'>('car_repair', 'setting_price_body_material_coefficient')
       .delete()
-      .eq('id', id);
+      .eq('id', bodyMaterialId)
+      .eq('user_id', userId);
 
     if (error) throw new Error('Error deleting body material coefficient setting');
   }

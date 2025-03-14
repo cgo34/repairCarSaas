@@ -1,8 +1,9 @@
-import { IDentRepairTypeState } from '@/@application/states/interfaces/carRepair/IDentRepairTypeState';
 import { IDentRepairTypeUseCase } from '@/@application/useCases/interfaces/carRepair/IDentRepairTypeUseCase';
 import { container } from '@/@infrastructure/ioc/inversify.config';
 import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
+import { IDentRepairTypeState } from '@/@presentation/types/composables/IDentRepairTypeState';
 import { DentRepairTypeViewModel } from '@/@presentation/types/models/carRepair/DentRepairTypeViewModel';
+import { JsonHelper } from '@/helpers/jsonHelper';
 import { computed, ref } from 'vue';
 
 export function useDentRepairTypeState(): IDentRepairTypeState {
@@ -39,17 +40,12 @@ export function useDentRepairTypeState(): IDentRepairTypeState {
     }
   };
 
-  const selectDentRepairType = (dentRepairType: DentRepairTypeViewModel | null): void => {    
-    if (!dentRepairType)
-      return resetSelectedDentRepairType();
-
+  const selectDentRepairType = (dentRepairType: DentRepairTypeViewModel): void => {
     const exists = _dentRepairTypes.value.find((drt) => drt.id === dentRepairType.id);
     if (!exists)
       throw new Error('Dent repair type does not exist');
-
-    console.log('useDentRepairType.selectDentRepairType', dentRepairType);
-
-    _selectedDentRepairType.value = dentRepairType;
+    
+    _selectedDentRepairType.value = JsonHelper.clone(dentRepairType);
   }
 
   const resetSelectedDentRepairType = (): void => {
@@ -130,5 +126,6 @@ export function useDentRepairTypeState(): IDentRepairTypeState {
     addDentRepairType,
     updateDentRepairType,
     deleteDentRepairType,
+    resetSelectedDentRepairType
   };
 }

@@ -21,6 +21,7 @@ export enum SYMBOL_NAMES {
     SETTING_PRICE_DIAMETER_COEFFICIENT = 'SettingPriceDiameterCoefficient',
     // Services
     AUTH_SERVICE = 'AuthService',
+    USER_SERVICE = 'UserService',
     GARAGE_SERVICE = 'GarageService',
     NOTIFICATION_SERVICE = 'NotificationService',
     // Settings CarRepair Services
@@ -40,6 +41,8 @@ export enum SYMBOL_NAMES {
     LOGIN_USE_CASE = 'LoginUseCase',
     LOGOUT_USE_CASE = 'LogoutUseCase',
     REGISTER_USE_CASE = 'RegisterUseCase',
+    // -- User UseCases
+    USER_USE_CASE = 'UserUseCase',
     // -- Garage UseCases
     GARAGE_USE_CASE = 'GarageUseCase',
     // -- Settings CarRepair UseCases
@@ -47,6 +50,7 @@ export enum SYMBOL_NAMES {
     BODY_MATERIAL_USE_CASE = 'BodyMaterialUseCase',
     DENT_REPAIR_TYPE_USE_CASE = 'DentRepairTypeUseCase',
     // -- Settings Prices CarRepair UseCases
+    SETTING_PRICE_USE_CASE = 'SettingPriceUseCase',
     SETTING_PRICE_GENERAL_USE_CASE = 'SettingPriceGeneralUseCase',
     SETTING_PRICE_IMPACT_COUNT_TO_UT_USE_CASE = 'SettingPriceImpactCountToUtUseCase',
     SETTING_PRICE_BODY_MATERIAL_COEFFICIENT_USE_CASE = 'SettingPriceBodyMaterialCoefficientUseCase',
@@ -54,6 +58,8 @@ export enum SYMBOL_NAMES {
     SETTING_PRICE_DIAMETER_COEFFICIENT_USE_CASE = 'SettingPriceDiameterCoefficientUseCase',
     // States
     AUTH_STATE = 'AuthState',
+    // -- User States
+    USER_STATE = 'UserState',
     // -- Garage States
     GARAGE_STATE = 'GarageState',
     // -- Settings CarRepair States
@@ -62,10 +68,16 @@ export enum SYMBOL_NAMES {
     DENT_REPAIR_TYPE_STATE = 'DentRepairTypeState',
     DENT_REMOVAL_PRICING_STATE = 'DentRemovalPricingState',
     // -- Settings Prices CarRepair States
+    SETTING_PRICE_STATE = 'SettingPriceState',
     SETTING_PRICE_GENERAL_STATE = 'SettingPriceGeneralState',
     SETTING_PRICE_IMPACT_COUNT_TO_UT_STATE = 'SettingPriceImpactCountToUtState',
     SETTING_PRICE_BODY_MATERIAL_COEFFICIENT_STATE = 'SettingPriceBodyMaterialCoefficientState',
     SETTING_PRICE_BODY_PART_COEFFICIENT_STATE = 'SettingPriceBodyPartCoefficientState',
     SETTING_PRICE_DIAMETER_COEFFICIENT_STATE = 'SettingPriceDiameterCoefficientState',
+    // -- Quote States
+    QUOTE_STATE = 'QuoteState',
+    CREATE_QUOTE_STATE = 'CreateQuoteState',
+    // -- Invoice States
+    INVOICE_STATE = 'InvoiceState',
   }
   

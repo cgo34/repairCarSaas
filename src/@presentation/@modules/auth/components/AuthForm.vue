@@ -45,6 +45,13 @@
   <div class="mt-5 text-right">
     <v-divider />
     <v-btn
+      variant="text"
+      color="primary"
+      @click="$router.push('/forgot-password')"
+    >
+      Mot de passe oublié ?
+    </v-btn>
+    <v-btn
       variant="plain"
       to="/register"
       class="mt-2 text-capitalize mr-n2"

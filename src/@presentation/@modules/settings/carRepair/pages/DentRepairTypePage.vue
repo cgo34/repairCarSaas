@@ -69,16 +69,16 @@
                     <v-btn
                       color="blue-darken-1"
                       variant="text"
-                      @click="onCloseEditDialogBtnClick"
+                      @click="onCancelDentRepairBtnClick"
                     >
                       Cancel
                     </v-btn>
                     <v-btn
                       color="blue-darken-1"
                       variant="text"
-                      @click="onSaveEditDialogBtnClick"
+                      @click="onValidEditBtnClick"
                     >
-                      Save
+                      Valider
                     </v-btn>
                   </v-card-actions>
                 </v-card>
@@ -90,21 +90,16 @@
 
           <!-- #REGION -> ITEM ACTIONS -->
           <template #item.actions="{ item }">
-            <Icon
-              class="icon-tabler icon-tabler-key iconClass me-2"
-              size="small"
-              @click="onEditBtnClick(item)"
-            />
             <v-icon
               class="me-2"
               size="small"
-              @click="onEditBtnClick(item)"
+              @click="onEditDentRepairBtnClick(item)"
             >
               mdi-pencil
             </v-icon>
             <v-icon
               size="small"
-              @click="onDeleteBtnClick(item)"
+              @click="onDeleteDentRepairBtnClick(item)"
             >
               mdi-delete
             </v-icon>
@@ -117,16 +112,25 @@
 </template>
   
 <script setup lang="ts">
-import { IDentRepairTypeState } from '@/@application/states/interfaces/carRepair/IDentRepairTypeState';
-import { DentRepairType } from '@/@domain/entities/carRepair/DentRepairType';
 import MainLayout from '@/@presentation/@ui/layouts/MainLayout.vue';
+import { IDentRepairTypeState } from '@/@presentation/types/composables/IDentRepairTypeState';
+import { DentRepairTypeViewModel } from '@/@presentation/types/models/carRepair/DentRepairTypeViewModel';
 import { container } from '@infrastructure/ioc/inversify.config';
 import { SYMBOLS } from '@infrastructure/ioc/symbols';
 import { computed, onMounted, ref } from 'vue';
 
 const useDentRepairTypeState  = container.get<IDentRepairTypeState>(SYMBOLS.States.CarRepair.DentRepairTypeState);
 
-const { dentRepairTypes, selectedDentRepairType, init, selectDentRepairType, addDentRepairType, deleteDentRepairType } = useDentRepairTypeState;
+const {
+  dentRepairTypes,
+  selectedDentRepairType,
+  init,
+  selectDentRepairType,
+  addDentRepairType,
+  updateDentRepairType,
+  deleteDentRepairType,
+  resetSelectedDentRepairType
+} = useDentRepairTypeState;
 
 const dialog = ref<boolean>(false);
 
@@ -138,28 +142,32 @@ const headers = [
 
 const formTitle = computed(() => selectedDentRepairType.value === null ? 'New Item' : 'Edit Item');
 
-const onEditBtnClick = (item: DentRepairType) => {
+const onEditDentRepairBtnClick = (item: DentRepairTypeViewModel) => {
   selectDentRepairType(item);
   dialog.value = true;
 }
 
-const onDeleteBtnClick = (item: DentRepairType) => {
+// TODO: Use a confirmation delete dialog
+const onDeleteDentRepairBtnClick = (item: DentRepairTypeViewModel) => {
   if (!item.id)
     return;
 
-  // TODO: Use a confirmation delete dialog
   deleteDentRepairType(item.id);
 }
 
-const onCloseEditDialogBtnClick = () => {
-  selectDentRepairType(null);
+const onCancelDentRepairBtnClick = () => {
+  resetSelectedDentRepairType();
   dialog.value = false;
 }
 
-const onSaveEditDialogBtnClick = () => {
-  addDentRepairType(selectedDentRepairType.value)
+const onValidEditBtnClick = async () => {
+  if (selectedDentRepairType.value?.id) {
+    await updateDentRepairType(selectedDentRepairType.value);
+  } else {
+    await addDentRepairType(selectedDentRepairType.value);
+  }
   dialog.value = false;
-}
+};
 
 onMounted(async () => {
   await init();

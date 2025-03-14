@@ -4,6 +4,8 @@ import { BodyPartApiModel } from '@/@infrastructure/database/api/carRepair/BodyP
 
 export class BodyPartMapper {
   static apiToDto(apiModel: BodyPartApiModel): BodyPartDto {
+    console.log('BodyPartMapper.apiToDto', apiModel);
+    
     return {
       id: apiModel.id,
       name: apiModel.name,
@@ -14,10 +16,10 @@ export class BodyPartMapper {
 
   static dtoToApi(dto: BodyPartDto): BodyPartApiModel {
     return {
-      id: dto.id,
+      id: dto.id ?? undefined,
       name: dto.name,
       code: dto.code,
-      color: dto.color ?? null,
+      color: dto.color ?? undefined,
     };
   }
 }

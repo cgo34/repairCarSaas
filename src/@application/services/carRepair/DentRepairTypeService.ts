@@ -19,6 +19,8 @@ export class DentRepairTypeService implements IDentRepairTypeService {
   // }
 
   async create(dentRepairType: DentRepairTypeDto): Promise<DentRepairTypeDto> {
+    console.log('[DentRepairTypeService.create] dentRepairType:', dentRepairType);
+    
     return await this.dentRepairTypeRepository.create(dentRepairType);
   }
 

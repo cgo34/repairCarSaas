@@ -23,7 +23,7 @@ export class SettingPriceBodyMaterialCoefficientUseCase implements ISettingPrice
     return await this.service.update(dto);
   }
 
-  async delete(id: string): Promise<void> {
-    return await this.service.delete(id);
+  async delete(bodyMaterialId: string, userId): Promise<void> {
+    return await this.service.delete(bodyMaterialId, userId);
   }
 }

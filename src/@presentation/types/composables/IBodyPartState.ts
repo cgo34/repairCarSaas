@@ -8,8 +8,9 @@ export interface IBodyPartState {
   error: Ref<unknown>;
   init(): Promise<void>;
   fetchBodyParts(): Promise<BodyPartViewModel[]>;
-  selectBodyPart(bodyPart: BodyPartViewModel | null): void;
+  selectBodyPart(bodyPart: BodyPartViewModel): void;
   addBodyPart(bodyPart: BodyPartViewModel): Promise<BodyPartViewModel>;
   updateBodyPart(bodyPart: BodyPartViewModel): Promise<BodyPartViewModel>;
   deleteBodyPart(id: string): Promise<void>;
+  resetSelectedBodyPart(): void;
 }

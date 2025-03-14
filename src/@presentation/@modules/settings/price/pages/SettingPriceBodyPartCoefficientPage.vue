@@ -45,9 +45,18 @@
                           md="6"
                           sm="6"
                         >
-                          <v-text-field
+                          <!-- <v-text-field
                             v-model="selectedSetting.bodyPartName"
                             label="Nom de l'Élément"
+                          /> -->
+                          <v-select
+                            v-model="selectedSetting.bodyParts"
+                            label="Select body part"
+                            :items="bodyParts"
+                            item-title="name"
+                            item-value="id"
+                            :item-props="true"
+                            return-object
                           />
                         </v-col>
                         <v-col
@@ -125,19 +134,28 @@ const useSettingPriceBodyPartCoefficientState = container.get<IUseSettingPriceBo
   SYMBOLS.States.Setting.Price.BodyPartCoefficientState
 );
 
-const { settings, selectedSetting, init, selectSetting, addSetting, updateSetting, deleteSetting } =
-  useSettingPriceBodyPartCoefficientState;
+const {
+  settings,
+  selectedSetting,
+  init,
+  selectSetting,
+  addSetting,
+  updateSetting,
+  deleteSetting,
+  resetSelectedSetting,
+  bodyParts
+} = useSettingPriceBodyPartCoefficientState;
 
 const dialog = ref<boolean>(false);
 
 const headers = [
-  { title: 'Élément de Carrosserie', align: 'start', key: 'bodyPartName' },
-  { title: 'Coefficient', key: 'coefficient' },
+  { title: 'Élément de Carrosserie', align: 'start', key: 'bodyParts.name' },
+  { title: 'Coefficient de difficulté', key: 'coefficient' },
   { title: 'Actions', sortable: false, key: 'actions' }
 ] as const;
 
 const formTitle = computed(() =>
-  selectedSetting.value?.id ? 'Modifier le paramètre' : 'Nouveau paramètre'
+  selectedSetting.value?.bodyPartId ? 'Modifier le paramètre' : 'Nouveau paramètre'
 );
 
 const onEditBtnClick = (item: SettingPriceBodyPartCoefficientViewModel) => {
@@ -146,19 +164,19 @@ const onEditBtnClick = (item: SettingPriceBodyPartCoefficientViewModel) => {
 };
 
 const onDeleteBtnClick = (item: SettingPriceBodyPartCoefficientViewModel) => {
-  if (!item.id) return;
+  if (!item.bodyPartId) return;
 
   // TODO: Ajouter un dialogue de confirmation avant suppression
-  deleteSetting(item.id);
+  deleteSetting(item.bodyPartId);
 };
 
 const onCloseEditDialogBtnClick = () => {
-  selectSetting(null);
+  resetSelectedSetting();
   dialog.value = false;
 };
 
 const onSaveEditDialogBtnClick = async () => {
-  if (selectedSetting.value?.id) {
+  if (selectedSetting.value?.bodyPartId) {
     await updateSetting(selectedSetting.value);
   } else {
     await addSetting(selectedSetting.value);

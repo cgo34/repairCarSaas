@@ -13,4 +13,5 @@ export interface IBodyMaterialState {
   addBodyMaterial(bodyPart: BodyMaterialViewModel): Promise<BodyMaterialViewModel>;
   updateBodyMaterial(bodyPart: BodyMaterialViewModel): Promise<BodyMaterialViewModel>;
   deleteBodyMaterial(id: string): Promise<void>;
+  resetSelectedBodyMaterial(): void;
 }

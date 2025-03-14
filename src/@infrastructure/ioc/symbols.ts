@@ -30,6 +30,7 @@ const SYMBOLS = {
   },
   Services: {
     AuthService: Symbol.for(SYMBOL_NAMES.AUTH_SERVICE),
+    UserService: Symbol.for(SYMBOL_NAMES.USER_SERVICE),
     GarageService: Symbol.for(SYMBOL_NAMES.GARAGE_SERVICE),
     NotificationService: Symbol.for(SYMBOL_NAMES.NOTIFICATION_SERVICE),
     // -- Settings CarRepair Services
@@ -54,6 +55,8 @@ const SYMBOLS = {
       LogoutUseCase: Symbol.for(SYMBOL_NAMES.LOGOUT_USE_CASE),
       RegisterUseCase: Symbol.for(SYMBOL_NAMES.REGISTER_USE_CASE),
     },
+    // -- User UseCases
+    UserUseCase: Symbol.for(SYMBOL_NAMES.USER_USE_CASE),
     Garage: Symbol.for(SYMBOL_NAMES.GARAGE_USE_CASE),
     CarRepair: {
       BodyPartUseCase: Symbol.for(SYMBOL_NAMES.BODY_PART_USE_CASE),
@@ -63,6 +66,7 @@ const SYMBOLS = {
     // -- Settings Prices CarRepair UseCases
     Setting: {
       Price: {
+        AllUseCase: Symbol.for(SYMBOL_NAMES.SETTING_PRICE_USE_CASE),
         GeneralUseCase: Symbol.for(SYMBOL_NAMES.SETTING_PRICE_GENERAL_USE_CASE),
         ImpactCountToUtUseCase: Symbol.for(SYMBOL_NAMES.SETTING_PRICE_IMPACT_COUNT_TO_UT_USE_CASE),
         BodyMaterialCoefficientUseCase: Symbol.for(SYMBOL_NAMES.SETTING_PRICE_BODY_MATERIAL_COEFFICIENT_USE_CASE),
@@ -73,6 +77,8 @@ const SYMBOLS = {
   },
   States: {
     AuthState: Symbol.for(SYMBOL_NAMES.AUTH_STATE),
+    // -- User States
+    UserState: Symbol.for(SYMBOL_NAMES.USER_STATE),
     // -- Garage States
     GarageState: Symbol.for(SYMBOL_NAMES.GARAGE_STATE),
     // -- Settings CarRepair States
@@ -85,6 +91,7 @@ const SYMBOLS = {
     // -- Settings Prices CarRepair States
     Setting: {
       Price: {
+        All: Symbol.for(SYMBOL_NAMES.SETTING_PRICE_STATE),
         GeneralState: Symbol.for(SYMBOL_NAMES.SETTING_PRICE_GENERAL_STATE),
         ImpactCountToUtState: Symbol.for(SYMBOL_NAMES.SETTING_PRICE_IMPACT_COUNT_TO_UT_STATE),
         BodyMaterialCoefficientState: Symbol.for(SYMBOL_NAMES.SETTING_PRICE_BODY_MATERIAL_COEFFICIENT_STATE),
@@ -92,6 +99,11 @@ const SYMBOLS = {
         DiameterCoefficientState: Symbol.for(SYMBOL_NAMES.SETTING_PRICE_DIAMETER_COEFFICIENT_STATE),
       }
     },
+    // -- Quotes States
+    Quote: {
+      QuoteState: Symbol.for(SYMBOL_NAMES.QUOTE_STATE),
+      CreateQuoteState: Symbol.for(SYMBOL_NAMES.CREATE_QUOTE_STATE),
+    }
   },
 };
 

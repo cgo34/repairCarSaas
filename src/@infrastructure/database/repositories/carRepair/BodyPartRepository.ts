@@ -50,6 +50,7 @@ export class BodyPartRepository implements IBodyPartRepository {
       .fromSchema<'car_repair', 'body_parts'>('car_repair', 'body_parts')
       .update(bodyPartApi)
       .eq('id', bodyPartApi.id)
+      .select('*')
       .single<BodyPartApiModel>();
 
     if (error)

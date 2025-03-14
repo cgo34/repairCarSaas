@@ -126,8 +126,16 @@ const useSettingPriceDiameterCoefficientState = container.get<IUseSettingPriceDi
   SYMBOLS.States.Setting.Price.DiameterCoefficientState
 );
 
-const { settings, selectedSetting, init, selectSetting, addSetting, updateSetting, deleteSetting } =
-  useSettingPriceDiameterCoefficientState;
+const {
+  settings,
+  selectedSetting,
+  init,
+  selectSetting,
+  addSetting,
+  updateSetting,
+  deleteSetting,
+  resetSelectedSetting
+} = useSettingPriceDiameterCoefficientState;
 
 const dialog = ref<boolean>(false);
 

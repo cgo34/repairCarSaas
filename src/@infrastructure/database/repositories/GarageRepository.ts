@@ -11,6 +11,17 @@ import { inject, injectable } from 'inversify';
 export class GarageRepository implements IGarageRepository {
   constructor(@inject(SYMBOLS.Providers.ClientProvider) private clientProvider: IClientProvider<SupabaseClient>) {}
 
+  async getGarages(): Promise<GarageDto[]> {
+    const { data, error } = await this.clientProvider.getClient()
+      .fromSchema<'car_repair', 'garages'>('car_repair', 'garages')
+      .select('*')
+      .returns<GarageApiModel[]>();
+
+    if (error) throw new Error('Error fetching garages');
+
+    return data.map(GarageMapper.apiToDto);
+  }
+  
   async getByUserId(userId: string): Promise<GarageDto[]> {
     const { data, error } = await this.clientProvider.getClient()
       .fromSchema<'car_repair', 'garages'>('car_repair', 'garages')
@@ -58,6 +69,7 @@ export class GarageRepository implements IGarageRepository {
       .fromSchema<'car_repair', 'garages'>('car_repair', 'garages')
       .update(garageApi)
       .eq('id', garageApi.id)
+      .select('*')
       .single<GarageApiModel>();
 
     if (error) throw new Error('Error updating garage');
