@@ -1,5 +1,5 @@
 import { IAuthState } from '@/@application/states/interfaces/IAuthState';
-import { IUserUseCase } from '@/@application/useCases/interfaces/IUserUseCase';
+import { IUserUseCase } from '@/@domain/useCases/IUserUseCase';
 import { container } from '@/@infrastructure/ioc/inversify.config';
 import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
 import { UserMapper } from '@/@presentation/mappers/UserMapper';

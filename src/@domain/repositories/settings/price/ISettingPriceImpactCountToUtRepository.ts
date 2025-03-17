@@ -1,4 +1,4 @@
-import { SettingPriceImpactCountToUtDto } from '@/@application/dtos/settings/price/SettingPriceImpactCountToUtDto';
+import { SettingPriceImpactCountToUtDto } from '@/@infrastructure/dtos/settings/price/SettingPriceImpactCountToUtDto';
 
 export interface ISettingPriceImpactCountToUtRepository {
   getByUserId(userId: string): Promise<SettingPriceImpactCountToUtDto[]>;

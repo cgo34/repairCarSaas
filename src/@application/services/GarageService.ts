@@ -1,6 +1,6 @@
-import { GarageDto } from '@/@application/dtos/GarageDto';
 import { IGarageRepository } from '@/@domain/repositories/IGarageRepository';
 import { IGarageService } from '@/@domain/services/IGarageService';
+import { GarageDto } from '@/@infrastructure/dtos/GarageDto';
 import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
 import { inject, injectable } from 'inversify';
 

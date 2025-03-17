@@ -1,6 +1,6 @@
-import { BodyMaterialDto } from "@/@application/dtos/carRepair/BodyMaterialDto";
-import { IBodyMaterialUseCase } from "@/@application/useCases/interfaces/carRepair/IBodyMaterialUseCase";
 import { IBodyMaterialService } from "@/@domain/services/carRepair/IBodyMaterialService";
+import { IBodyMaterialUseCase } from "@/@domain/useCases/carRepair/IBodyMaterialUseCase";
+import { BodyMaterialDto } from "@/@infrastructure/dtos/carRepair/BodyMaterialDto";
 import { SYMBOLS } from "@/@infrastructure/ioc/symbols";
 import { inject, injectable } from "inversify";
 

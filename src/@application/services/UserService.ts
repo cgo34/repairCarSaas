@@ -1,6 +1,6 @@
-import { UserDto } from '@/@application/dtos/UserDto';
 import { IUserRepository } from '@/@domain/repositories/IUserRepository';
 import { IUserService } from '@/@domain/services/IUserService';
+import { UserDto } from '@/@infrastructure/dtos/UserDto';
 import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
 import { inject, injectable } from 'inversify';
 

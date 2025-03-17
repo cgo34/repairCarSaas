@@ -1,7 +1,7 @@
 import { IUserService } from '@/@domain/services/IUserService';
 import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
 import { inject, injectable } from 'inversify';
-import { IUserUseCase } from '../interfaces/IUserUseCase';
+import { IUserUseCase } from '../../../@domain/useCases/IUserUseCase';
 
 @injectable()
 export class UserUseCase implements IUserUseCase {

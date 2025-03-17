@@ -1,6 +1,6 @@
-import { UserDto } from '@/@application/dtos/UserDto';
 import { IUserRepository } from '@/@domain/repositories/IUserRepository';
 import { SupabaseClient } from '@/@infrastructure/database/clients/SupabaseClient';
+import { UserDto } from '@/@infrastructure/dtos/UserDto';
 import { IClientProvider } from "@/@infrastructure/interfaces/IClientProvider";
 import { SYMBOLS } from "@/@infrastructure/ioc/symbols";
 import { UserMapper } from '@/@infrastructure/mappers/UserMapper';

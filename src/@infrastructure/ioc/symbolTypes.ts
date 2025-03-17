@@ -1,9 +1,11 @@
 export enum SYMBOL_NAMES {
     // Clients
     SUPABASE_CLIENT = 'SupabaseClient',
+
     // Providers
     CLIENT_PROVIDER = 'ClientProvider',
-    // Repositories
+
+    // #region -> REPOSITORIES
     AUTH_REPOSITORY = 'AuthRepository',
     USER_REPOSITORY = 'UserRepository',
     GARAGE_REPOSITORY = 'GarageRepository',
@@ -19,11 +21,14 @@ export enum SYMBOL_NAMES {
     SETTING_PRICE_BODY_MATERIAL_COEFFICIENT = 'SettingPriceBodyMaterialCoefficient',
     SETTING_PRICE_BODY_PART_COEFFICIENT = 'SettingPriceBodyPartCoefficient',
     SETTING_PRICE_DIAMETER_COEFFICIENT = 'SettingPriceDiameterCoefficient',
-    // Services
+    // #endregion
+
+    // #region -> SERVICES
     AUTH_SERVICE = 'AuthService',
     USER_SERVICE = 'UserService',
     GARAGE_SERVICE = 'GarageService',
     NOTIFICATION_SERVICE = 'NotificationService',
+    COST_CALCULATOR_SERVICE = 'CostCalculatorService',
     // Settings CarRepair Services
     BODY_PART_SERVICE = 'BodyPartService',
     BODY_MATERIAL_SERVICE = 'BodyMaterialService',
@@ -35,7 +40,9 @@ export enum SYMBOL_NAMES {
     SETTING_PRICE_BODY_MATERIAL_COEFFICIENT_SERVICE = 'SettingPriceBodyMaterialCoefficientService',
     SETTING_PRICE_BODY_PART_COEFFICIENT_SERVICE = 'SettingPriceBodyPartCoefficientService',
     SETTING_PRICE_DIAMETER_COEFFICIENT_SERVICE = 'SettingPriceDiameterCoefficientService',
-    // UseCases
+    // #endregion
+  
+    // #region -> USE CASES
     // -- Auth UseCases
     AUTH_USE_CASE = 'AuthUseCase',
     LOGIN_USE_CASE = 'LoginUseCase',
@@ -56,7 +63,20 @@ export enum SYMBOL_NAMES {
     SETTING_PRICE_BODY_MATERIAL_COEFFICIENT_USE_CASE = 'SettingPriceBodyMaterialCoefficientUseCase',
     SETTING_PRICE_BODY_PART_COEFFICIENT_USE_CASE = 'SettingPriceBodyPartCoefficientUseCase',
     SETTING_PRICE_DIAMETER_COEFFICIENT_USE_CASE = 'SettingPriceDiameterCoefficientUseCase',
-    // States
+    // -- Cost Calculator UseCases
+    CALCULATE_TOTAL_COST_USE_CASE = 'CalculateTotalCostUseCase',
+    CALCULATE_LINE_COST_USE_CASE = 'CalculateLineCostUseCase',
+    // -- Quote UseCases
+    QUOTE_USE_CASE = 'QuoteUseCase',
+    GET_QUOTE_USE_CASE = 'GetQuoteUseCase',
+    GET_QUOTE_DETAILS_USE_CASE = 'GetQuoteDetailsUseCase',
+    CREATE_QUOTE_USE_CASE = 'CreateQuoteUseCase',
+    ADD_QUOTE_LINE_ITEM_USE_CASE = 'AddQuoteLineItemUseCase',
+    SAVE_QUOTE_USE_CASE = 'SaveQuoteUseCase',
+    DELETE_QUOTE_USE_CASE = 'DeleteQuoteUseCase',
+    // #endregion
+
+    // #region -> STATES
     AUTH_STATE = 'AuthState',
     // -- User States
     USER_STATE = 'UserState',
@@ -79,5 +99,6 @@ export enum SYMBOL_NAMES {
     CREATE_QUOTE_STATE = 'CreateQuoteState',
     // -- Invoice States
     INVOICE_STATE = 'InvoiceState',
+    // #endregion
   }
   

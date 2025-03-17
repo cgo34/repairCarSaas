@@ -277,6 +277,251 @@ export type Database = {
       [_ in never]: never
     }
   }
+  quoting: {
+    Tables: {
+      invoice_details: {
+        Row: {
+          body_material_id: string | null
+          body_part_id: string | null
+          id: string
+          impact_count_25: number | null
+          impact_count_35: number | null
+          invoice_id: string | null
+          price: number
+          quote_detail_id: string | null
+          repair_type_id: string | null
+          stripping_percentage: number | null
+        }
+        Insert: {
+          body_material_id?: string | null
+          body_part_id?: string | null
+          id?: string
+          impact_count_25?: number | null
+          impact_count_35?: number | null
+          invoice_id?: string | null
+          price: number
+          quote_detail_id?: string | null
+          repair_type_id?: string | null
+          stripping_percentage?: number | null
+        }
+        Update: {
+          body_material_id?: string | null
+          body_part_id?: string | null
+          id?: string
+          impact_count_25?: number | null
+          impact_count_35?: number | null
+          invoice_id?: string | null
+          price?: number
+          quote_detail_id?: string | null
+          repair_type_id?: string | null
+          stripping_percentage?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "invoice_details_invoice_id_fkey"
+            columns: ["invoice_id"]
+            isOneToOne: false
+            referencedRelation: "invoices"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "invoice_details_quote_detail_id_fkey"
+            columns: ["quote_detail_id"]
+            isOneToOne: false
+            referencedRelation: "quote_details"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      invoices: {
+        Row: {
+          car_brand: string | null
+          car_date: number | null
+          car_id: string | null
+          country: string
+          currency: string
+          end_date: string | null
+          forfait_amount: number | null
+          garage_id: string | null
+          id: string
+          invoice_number: string
+          is_forfait: boolean | null
+          is_sent: boolean | null
+          quote_number: string | null
+          sent_at: string | null
+          start_date: string | null
+          status: string | null
+          technician_id: string | null
+          user_id: string | null
+        }
+        Insert: {
+          car_brand?: string | null
+          car_date?: number | null
+          car_id?: string | null
+          country: string
+          currency: string
+          end_date?: string | null
+          forfait_amount?: number | null
+          garage_id?: string | null
+          id?: string
+          invoice_number: string
+          is_forfait?: boolean | null
+          is_sent?: boolean | null
+          quote_number?: string | null
+          sent_at?: string | null
+          start_date?: string | null
+          status?: string | null
+          technician_id?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          car_brand?: string | null
+          car_date?: number | null
+          car_id?: string | null
+          country?: string
+          currency?: string
+          end_date?: string | null
+          forfait_amount?: number | null
+          garage_id?: string | null
+          id?: string
+          invoice_number?: string
+          is_forfait?: boolean | null
+          is_sent?: boolean | null
+          quote_number?: string | null
+          sent_at?: string | null
+          start_date?: string | null
+          status?: string | null
+          technician_id?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "invoices_quote_number_fkey"
+            columns: ["quote_number"]
+            isOneToOne: false
+            referencedRelation: "quotes"
+            referencedColumns: ["quote_number"]
+          },
+        ]
+      }
+      quote_details: {
+        Row: {
+          body_material_id: string | null
+          body_part_id: string | null
+          id: string
+          impact_count_25: number | null
+          impact_count_35: number | null
+          price: number
+          quote_id: string | null
+          repair_type_id: string | null
+          stripping_percentage: number | null
+        }
+        Insert: {
+          body_material_id?: string | null
+          body_part_id?: string | null
+          id?: string
+          impact_count_25?: number | null
+          impact_count_35?: number | null
+          price: number
+          quote_id?: string | null
+          repair_type_id?: string | null
+          stripping_percentage?: number | null
+        }
+        Update: {
+          body_material_id?: string | null
+          body_part_id?: string | null
+          id?: string
+          impact_count_25?: number | null
+          impact_count_35?: number | null
+          price?: number
+          quote_id?: string | null
+          repair_type_id?: string | null
+          stripping_percentage?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "quote_details_quote_id_fkey"
+            columns: ["quote_id"]
+            isOneToOne: false
+            referencedRelation: "quotes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      quotes: {
+        Row: {
+          car_brand: string | null
+          car_date: number | null
+          car_id: string | null
+          country: string
+          currency: string
+          end_date: string | null
+          forfait_amount: number | null
+          garage_id: string | null
+          id: string
+          is_forfait: boolean | null
+          is_sent: boolean | null
+          quote_number: string
+          sent_at: string | null
+          start_date: string | null
+          status: string | null
+          technician_id: string | null
+          user_id: string | null
+        }
+        Insert: {
+          car_brand?: string | null
+          car_date?: number | null
+          car_id?: string | null
+          country: string
+          currency: string
+          end_date?: string | null
+          forfait_amount?: number | null
+          garage_id?: string | null
+          id?: string
+          is_forfait?: boolean | null
+          is_sent?: boolean | null
+          quote_number: string
+          sent_at?: string | null
+          start_date?: string | null
+          status?: string | null
+          technician_id?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          car_brand?: string | null
+          car_date?: number | null
+          car_id?: string | null
+          country?: string
+          currency?: string
+          end_date?: string | null
+          forfait_amount?: number | null
+          garage_id?: string | null
+          id?: string
+          is_forfait?: boolean | null
+          is_sent?: boolean | null
+          quote_number?: string
+          sent_at?: string | null
+          start_date?: string | null
+          status?: string | null
+          technician_id?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+    }
+    Views: {
+      [_ in never]: never
+    }
+    Functions: {
+      [_ in never]: never
+    }
+    Enums: {
+      [_ in never]: never
+    }
+    CompositeTypes: {
+      [_ in never]: never
+    }
+  }
 }
 
 type PublicSchema = Database[Extract<keyof Database, "public">]

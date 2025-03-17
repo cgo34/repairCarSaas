@@ -1,5 +1,5 @@
 import { IAuthState } from '@/@application/states/interfaces/IAuthState';
-import { ISettingPriceGeneralUseCase } from '@/@application/useCases/interfaces/settings/price/ISettingPriceGeneralUseCase';
+import { ISettingPriceGeneralUseCase } from '@/@domain/useCases/settings/price/ISettingPriceGeneralUseCase';
 import { container } from '@/@infrastructure/ioc/inversify.config';
 import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
 import { IUseSettingPriceGeneralState } from '@/@presentation/types/composables/settings/price/IUseSettingPriceGeneralState';

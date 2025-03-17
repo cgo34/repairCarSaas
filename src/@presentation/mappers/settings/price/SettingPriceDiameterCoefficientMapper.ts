@@ -1,4 +1,4 @@
-import { SettingPriceDiameterCoefficientDto } from '@/@application/dtos/settings/price/SettingPriceDiameterCoefficientDto';
+import { SettingPriceDiameterCoefficientDto } from '@/@infrastructure/dtos/settings/price/SettingPriceDiameterCoefficientDto';
 import { SettingPriceDiameterCoefficientViewModel } from '@/@presentation/types/models/settings/price/SettingPriceDiameterCoefficientViewModel';
 
 export class SettingPriceDiameterCoefficientMapper {

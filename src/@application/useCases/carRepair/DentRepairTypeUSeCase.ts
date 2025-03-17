@@ -1,6 +1,6 @@
-import { DentRepairTypeDto } from "@/@application/dtos/carRepair/DentRepairTypeDto";
-import { IDentRepairTypeUseCase } from "@/@application/useCases/interfaces/carRepair/IDentRepairTypeUseCase";
 import { IDentRepairTypeService } from "@/@domain/services/carRepair/IDentRepairTypeService";
+import { IDentRepairTypeUseCase } from "@/@domain/useCases/carRepair/IDentRepairTypeUseCase";
+import { DentRepairTypeDto } from "@/@infrastructure/dtos/carRepair/DentRepairTypeDto";
 import { SYMBOLS } from "@/@infrastructure/ioc/symbols";
 import { inject, injectable } from "inversify";
 

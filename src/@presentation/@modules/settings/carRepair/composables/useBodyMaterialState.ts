@@ -1,4 +1,4 @@
-import { IBodyMaterialUseCase } from '@/@application/useCases/interfaces/carRepair/IBodyMaterialUseCase';
+import { IBodyMaterialUseCase } from '@/@domain/useCases/carRepair/IBodyMaterialUseCase';
 import { IBodyMaterialState } from '@/@presentation/types/composables/IBodyMaterialState';
 import { BodyMaterialViewModel } from '@/@presentation/types/models/carRepair/BodyMaterialViewModel';
 import { JsonHelper } from '@/helpers/jsonHelper';

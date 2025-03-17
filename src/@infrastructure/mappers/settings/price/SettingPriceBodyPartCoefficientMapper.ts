@@ -1,5 +1,5 @@
-import { SettingPriceBodyPartCoefficientDto } from '@/@application/dtos/settings/price/SettingPriceBodyPartCoefficientDto';
 import { SettingPriceBodyPartCoefficientApiModel } from '@/@infrastructure/database/api/settings/price/SettingPriceBodyPartCoefficientApiModel';
+import { SettingPriceBodyPartCoefficientDto } from '@/@infrastructure/dtos/settings/price/SettingPriceBodyPartCoefficientDto';
 
 export class SettingPriceBodyPartCoefficientMapper {
   static apiToDto(apiModel: SettingPriceBodyPartCoefficientApiModel): SettingPriceBodyPartCoefficientDto {

@@ -1,11 +1,12 @@
 // region -> IMPORTS
 import { IAuthState } from '@/@application/states/interfaces/IAuthState';
-import { IGarageUseCase } from '@/@application/useCases/interfaces/IGarageUseCase';
-import { IUserUseCase } from '@/@application/useCases/interfaces/IUserUseCase';
-import { IBodyMaterialUseCase } from '@/@application/useCases/interfaces/carRepair/IBodyMaterialUseCase';
-import { IBodyPartUseCase } from '@/@application/useCases/interfaces/carRepair/IBodyPartUseCase';
-import { IDentRepairTypeUseCase } from '@/@application/useCases/interfaces/carRepair/IDentRepairTypeUseCase';
-import { ISettingPriceUseCase } from '@/@application/useCases/interfaces/settings/price/ISettingPriceUseCase';
+import { IGarageUseCase } from '@/@domain/useCases/IGarageUseCase';
+import { IUserUseCase } from '@/@domain/useCases/IUserUseCase';
+import { IBodyMaterialUseCase } from '@/@domain/useCases/carRepair/IBodyMaterialUseCase';
+import { IBodyPartUseCase } from '@/@domain/useCases/carRepair/IBodyPartUseCase';
+import { IDentRepairTypeUseCase } from '@/@domain/useCases/carRepair/IDentRepairTypeUseCase';
+import { ICreateQuoteUseCase } from '@/@domain/useCases/quotes/ICreateQuoteUseCase';
+import { ISettingPriceUseCase } from '@/@domain/useCases/settings/price/ISettingPriceUseCase';
 import { container } from '@/@infrastructure/ioc/inversify.config';
 import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
 import { GarageMapper } from '@/@presentation/mappers/GarageMapper';
@@ -26,6 +27,7 @@ import { computed, ref } from 'vue';
 export function useCreateQuoteState() {
   // region -> DEPENDENCIES
   const authState = container.get<IAuthState>(SYMBOLS.States.AuthState);
+  const createQuoteUseCase = container.get<ICreateQuoteUseCase>(SYMBOLS.UseCases.Quote.CreateQuoteUseCase);
   const garageUseCase = container.get<IGarageUseCase>(SYMBOLS.UseCases.Garage);
   const technicianUseCase = container.get<IUserUseCase>(SYMBOLS.UseCases.UserUseCase);
   const bodyPartUseCase = container.get<IBodyPartUseCase>(SYMBOLS.UseCases.CarRepair.BodyPartUseCase);
@@ -58,6 +60,16 @@ export function useCreateQuoteState() {
         throw new Error('User not found');
 
       resetQuote();
+      const quote = {
+        quoteDate: new Date().toISOString(),
+        status: 'draft',
+        garage: _selectedGarage.value,
+        technician: _selectedTechnician.value,
+        quoteLines: _quoteLines.value,
+      }
+      const quoteDto = await createQuoteUseCase.execute(quote, authState.user.value.id);
+      console.log('quoteDto', quoteDto);
+      
 
       const [garageData, technicianData, bodyPartData, bodyMaterialData, repairTypeData, priceParamsData] =
         await Promise.all([

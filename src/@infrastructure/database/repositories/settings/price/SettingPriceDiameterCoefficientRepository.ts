@@ -1,8 +1,8 @@
 // src/@infrastructure/database/repositories/settings/price/SettingPriceDiameterCoefficientRepository.ts
-import { SettingPriceDiameterCoefficientDto } from '@/@application/dtos/settings/price/SettingPriceDiameterCoefficientDto';
 import { ISettingPriceDiameterCoefficientRepository } from '@/@domain/repositories/settings/price/ISettingPriceDiameterCoefficientRepository';
 import { SettingPriceDiameterCoefficientApiModel } from '@/@infrastructure/database/api/settings/price/SettingPriceDiameterCoefficientApiModel';
 import { SupabaseClient } from '@/@infrastructure/database/clients/SupabaseClient';
+import { SettingPriceDiameterCoefficientDto } from '@/@infrastructure/dtos/settings/price/SettingPriceDiameterCoefficientDto';
 import { IClientProvider } from '@/@infrastructure/interfaces/IClientProvider';
 import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
 import { SettingPriceDiameterCoefficientMapper } from '@/@infrastructure/mappers/settings/price/SettingPriceDiameterCoefficientMapper';

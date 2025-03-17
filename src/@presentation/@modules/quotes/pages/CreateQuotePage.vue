@@ -244,26 +244,26 @@
               /> -->
             </template>
             <template #[`item.impactSize`]="{ item }">
-              <!-- <v-text-field
+              <v-text-field
                 v-model="item.impactSize"
-                placeholder="Taille impact"
+                placeholder="Nombre impact Taille 25"
                 dense
                 outlined
-              /> -->
+              />
             </template>
             <template #[`item.impactCount`]="{ item }">
-              <!-- <v-text-field
+              <v-text-field
                 v-model="item.impactCount"
                 type="number"
-                placeholder="Nombre impact"
+                placeholder="Nombre impact Taille 25"
                 dense
                 outlined
-              /> -->
+              />
             </template>
             <template #[`item.bodyMaterial.name`]="{ item }">
               <BodyMaterialSelect
                 :model-value="item.bodyMaterial"
-                :body-parts="bodyMaterials"
+                :body-materials="bodyMaterials"
                 @select="onSelectBodyMaterial($event, item.id)"
               />
               <!-- <v-text-field
@@ -366,7 +366,9 @@
 import { container } from '@/@infrastructure/ioc/inversify.config';
 import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
 import MainLayout from '@/@presentation/@ui/layouts/MainLayout.vue';
+import BodyMaterialSelect from '@/@presentation/components/BodyMaterialSelect.vue';
 import BodyPartSelect from '@/@presentation/components/BodyPartSelect.vue';
+import RepairTypeSelect from '@/@presentation/components/RepairTypeSelect.vue';
 import { IUseCreateQuoteState } from '@/@presentation/types/composables/IUseCreateQuoteState';
 import { BodyMaterialViewModel } from '@/@presentation/types/models/carRepair/BodyMaterialViewModel';
 import { BodyPartViewModel } from '@/@presentation/types/models/carRepair/BodyPartViewModel';
@@ -421,8 +423,8 @@ const quote = ref({
 
 const headers = [
   { title: 'Element', key: 'bodyPart' },
-  { title: 'Taille impact', key: 'impactSize' },
-  { title: 'Nombre impact', key: 'impactCount' },
+  { title: 'Nombre impact Taille 25', key: 'impactSize' },
+  { title: 'Nombre impact Taille 35', key: 'impactCount' },
   { title: 'Matériau', key: 'bodyMaterial.name' },
   { title: 'Type de réparation', key: 'repairType.name' },
   { title: 'Prix HT (€)', key: 'price', align: 'end' },
@@ -502,5 +504,7 @@ const onSelectRepairType = (repairType: DentRepairTypeViewModel) => {
   
 onMounted(async () => {
   await init();
+  techniciansList.value = technicians.value;
+  garagesList.value = garages.value;
 });
 </script>

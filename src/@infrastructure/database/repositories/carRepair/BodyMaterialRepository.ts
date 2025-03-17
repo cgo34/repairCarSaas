@@ -1,5 +1,5 @@
 // src/@infrastructure/database/repositories/BodyMaterialSupabaseRepository.ts
-import { BodyMaterialDto } from '@/@application/dtos/carRepair/BodyMaterialDto';
+import { BodyMaterialDto } from '@/@infrastructure/dtos/carRepair/BodyMaterialDto';
 import { IClientProvider } from '@/@infrastructure/interfaces/IClientProvider';
 import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
 import { IBodyMaterialRepository } from '@domain/repositories/carRepair/IBodyMaterialRepository';

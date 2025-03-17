@@ -1,5 +1,5 @@
-import { SettingPriceGeneralDto } from '@/@application/dtos/settings/price/SettingPriceGeneralDto';
 import { SettingPriceGeneralApiModel } from '@/@infrastructure/database/api/settings/price/SettingPriceGeneralApiModel';
+import { SettingPriceGeneralDto } from '@/@infrastructure/dtos/settings/price/SettingPriceGeneralDto';
 
 export class SettingPriceGeneralMapper {
   static apiToDto(apiModel: SettingPriceGeneralApiModel): SettingPriceGeneralDto {

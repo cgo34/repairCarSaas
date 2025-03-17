@@ -13,8 +13,8 @@ export interface IUseCreateQuoteState {
   init(): Promise<void>;
   technicians: Ref<UserViewModel[]>;
   garages: Ref<GarageViewModel[]>;
-  selectedTechnician: Ref<UserViewModel>;
-  selectedGarage: Ref<GarageViewModel>;
+  selectedTechnician: Ref<UserViewModel | undefined>;
+  selectedGarage: Ref<GarageViewModel | undefined>;
   selectTechnician(technician: UserViewModel): void;
   selectGarage(garage: GarageViewModel): void;
   bodyParts: Ref<BodyPartViewModel[]>;

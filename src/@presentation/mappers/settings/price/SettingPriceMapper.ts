@@ -1,4 +1,4 @@
-import { SettingPriceDto } from "@/@application/dtos/settings/price/SettingPriceDto";
+import { SettingPriceDto } from "@/@infrastructure/dtos/settings/price/SettingPriceDto";
 import { SettingPriceViewModel } from "@/@presentation/types/models/settings/price/SettingPriceViewModel";
 import { SettingPriceBodyMaterialCoefficientMapper } from "./SettingPriceBodyMaterialCoefficientMapper";
 import { SettingPriceBodyPartCoefficientMapper } from "./SettingPriceBodyPartCoefficientMapper";

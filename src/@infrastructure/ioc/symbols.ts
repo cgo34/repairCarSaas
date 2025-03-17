@@ -33,6 +33,7 @@ const SYMBOLS = {
     UserService: Symbol.for(SYMBOL_NAMES.USER_SERVICE),
     GarageService: Symbol.for(SYMBOL_NAMES.GARAGE_SERVICE),
     NotificationService: Symbol.for(SYMBOL_NAMES.NOTIFICATION_SERVICE),
+    CostCalculatorService: Symbol.for(SYMBOL_NAMES.COST_CALCULATOR_SERVICE),
     // -- Settings CarRepair Services
     BodyPartService: Symbol.for(SYMBOL_NAMES.BODY_PART_SERVICE),
     BodyMaterialService: Symbol.for(SYMBOL_NAMES.BODY_MATERIAL_SERVICE),
@@ -46,7 +47,7 @@ const SYMBOLS = {
         SettingPriceBodyPartCoefficientService: Symbol.for(SYMBOL_NAMES.SETTING_PRICE_BODY_PART_COEFFICIENT_SERVICE),
         SettingPriceDiameterCoefficientService: Symbol.for(SYMBOL_NAMES.SETTING_PRICE_DIAMETER_COEFFICIENT_SERVICE),
       }
-    }
+    },
   },
   UseCases: {
     Auth: {
@@ -74,6 +75,19 @@ const SYMBOLS = {
         DiameterCoefficientUseCase: Symbol.for(SYMBOL_NAMES.SETTING_PRICE_DIAMETER_COEFFICIENT_USE_CASE),
       }
     },
+    CostCalculator: {
+      CalculateTotalCostUseCase: Symbol.for(SYMBOL_NAMES.CALCULATE_TOTAL_COST_USE_CASE),
+      CalculateLineCostUseCase: Symbol.for(SYMBOL_NAMES.CALCULATE_LINE_COST_USE_CASE),
+    },
+    Quote: {
+      QuoteUseCase: Symbol.for(SYMBOL_NAMES.QUOTE_USE_CASE),
+      GetQuoteUseCase: Symbol.for(SYMBOL_NAMES.GET_QUOTE_USE_CASE),
+      GetQuoteDetailsUseCase: Symbol.for(SYMBOL_NAMES.GET_QUOTE_DETAILS_USE_CASE),
+      CreateQuoteUseCase: Symbol.for(SYMBOL_NAMES.CREATE_QUOTE_USE_CASE),
+      AddLineItemUseCase: Symbol.for(SYMBOL_NAMES.ADD_QUOTE_LINE_ITEM_USE_CASE),
+      SaveQuoteUseCase: Symbol.for(SYMBOL_NAMES.SAVE_QUOTE_USE_CASE),
+      DeleteQuoteUseCase: Symbol.for(SYMBOL_NAMES.DELETE_QUOTE_USE_CASE),
+    }
   },
   States: {
     AuthState: Symbol.for(SYMBOL_NAMES.AUTH_STATE),

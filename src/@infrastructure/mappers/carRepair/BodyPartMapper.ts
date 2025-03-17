@@ -1,6 +1,6 @@
 // src/@infrastructure/mappers/BodyPartMapper.ts
-import { BodyPartDto } from '@/@application/dtos/carRepair/BodyPartDto';
 import { BodyPartApiModel } from '@/@infrastructure/database/api/carRepair/BodyPartApiModel';
+import { BodyPartDto } from '@/@infrastructure/dtos/carRepair/BodyPartDto';
 
 export class BodyPartMapper {
   static apiToDto(apiModel: BodyPartApiModel): BodyPartDto {

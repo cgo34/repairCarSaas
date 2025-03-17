@@ -1,4 +1,4 @@
-import { UserDto } from "@/@application/dtos/UserDto";
+import { UserDto } from "@/@infrastructure/dtos/UserDto";
 import { UserViewModel } from "@/@presentation/types/models/UserViewModel";
 
 export class UserMapper {

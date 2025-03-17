@@ -1,4 +1,4 @@
-import { IBodyPartUseCase } from '@/@application/useCases/interfaces/carRepair/IBodyPartUseCase';
+import { IBodyPartUseCase } from '@/@domain/useCases/carRepair/IBodyPartUseCase';
 import { container } from '@/@infrastructure/ioc/inversify.config';
 import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
 import { IBodyPartState } from '@/@presentation/types/composables/IBodyPartState';

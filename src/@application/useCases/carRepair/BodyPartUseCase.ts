@@ -1,7 +1,7 @@
-import { BodyPartDto } from "@/@application/dtos/carRepair/BodyPartDto";
 import { BodyPartService } from "@/@application/services/carRepair/BodyPartService";
-import { IBodyPartUseCase } from "@/@application/useCases/interfaces/carRepair/IBodyPartUseCase";
 import { IBodyPartService } from "@/@domain/services/carRepair/IBodyPartService";
+import { IBodyPartUseCase } from "@/@domain/useCases/carRepair/IBodyPartUseCase";
+import { BodyPartDto } from "@/@infrastructure/dtos/carRepair/BodyPartDto";
 import { SYMBOLS } from "@/@infrastructure/ioc/symbols";
 import { inject, injectable } from "inversify";
 

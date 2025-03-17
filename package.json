@@ -9,7 +9,7 @@
     "lint:fix": "eslint \"src/**/*.{ts,tsx,vue,js,jsx}\" --fix",
     "type-check": "vue-tsc --noEmit",
     "test": "echo \"No tests specified\" && exit 0",
-    "supabase:gen:types": "supabase gen types typescript --project-id ombgvakpwmgtkimvrhzh --schema public,car_repair > src/@infrastructure/database/database.types.ts"
+    "supabase:gen:types": "supabase gen types typescript --project-id ombgvakpwmgtkimvrhzh --schema public,car_repair,quoting > src/@infrastructure/database/database.types.ts"
   },
   "dependencies": {
     "@mdi/font": "^7.4.47",

@@ -1,4 +1,4 @@
-import { GarageDto } from '@/@application/dtos/GarageDto';
+import { GarageDto } from '@/@infrastructure/dtos/GarageDto';
 
 export interface IGarageRepository {
   getByUserId(userId: string): Promise<GarageDto[]>;
