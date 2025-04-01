@@ -10,7 +10,8 @@ export class SupabaseClient implements IClient {
   constructor() {
     this.client = createClient<Database>(
       process.env.VITE_SUPABASE_URL as string,
-      process.env.VITE_SUPABASE_KEY as string
+      process.env.VITE_SUPABASE_KEY as string,
+      { db: { schema: 'public, quoting, car_repair' } }
     );
   }
   
@@ -19,7 +20,10 @@ export class SupabaseClient implements IClient {
     return this.client.from(table);
   }
 
-  fromSchema<S extends keyof Database, T extends keyof Database[S]['Tables']>(schema: S, table: T) {
+  fromSchema<
+    S extends keyof Database,
+    T extends Extract<keyof Database[S]['Tables'], string>
+  >(schema: S, table: T) {
     return this.client.schema(schema).from(table);
   }
 

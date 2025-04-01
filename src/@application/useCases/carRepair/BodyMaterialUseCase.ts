@@ -15,22 +15,18 @@ export class BodyMaterialUseCase implements IBodyMaterialUseCase {
   }
 
   async executeGetAll(): Promise<BodyMaterialDto[]> {
-    console.log('[BodyMaterialUseCase] Executing getAll');
     return this.bodyMaterialService.getAll();
   }
 
   async executeCreate(bodyMaterial: BodyMaterialDto): Promise<BodyMaterialDto> {
-    console.log('[BodyMaterialUseCase] Executing with:', bodyMaterial);
     return this.bodyMaterialService.create(bodyMaterial);
   }
 
   async executeUpdate(bodyMaterial: BodyMaterialDto): Promise<BodyMaterialDto> {
-    console.log('[BodyMaterialUseCase] Executing with:', bodyMaterial);
     return this.bodyMaterialService.update(bodyMaterial);
   }
 
   async executeDelete(id: string): Promise<void> {
-    console.log('[BodyMaterialUseCase] Executing with:', id);
     return this.bodyMaterialService.delete(id);
   }
 }

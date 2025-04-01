@@ -1,8 +1,8 @@
-import { SettingPriceImpactCountToUtDto } from '@/@infrastructure/dtos/settings/price/SettingPriceImpactCountToUtDto';
+import { SettingPriceImpactCountToUtViewDto } from "@/@application/dtos/settings/SettingPriceImpactCountToUtViewDto";
 
 export interface ISettingPriceImpactCountToUtUseCase {
-  getByUserId(userId: string): Promise<SettingPriceImpactCountToUtDto[]>;
-  create(dto: SettingPriceImpactCountToUtDto): Promise<SettingPriceImpactCountToUtDto>;
-  update(dto: SettingPriceImpactCountToUtDto): Promise<SettingPriceImpactCountToUtDto>;
+  getByUserId(userId: string): Promise<SettingPriceImpactCountToUtViewDto[]>;
+  create(dto: SettingPriceImpactCountToUtViewDto): Promise<SettingPriceImpactCountToUtViewDto>;
+  update(dto: SettingPriceImpactCountToUtViewDto): Promise<SettingPriceImpactCountToUtViewDto>;
   delete(id: string): Promise<void>;
 }

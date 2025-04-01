@@ -22,7 +22,6 @@
             :title="pageTitle"
             :breadcrumbs="breadcrumbs"
           />
-          <div>
             <RouterView>
               <slot />
             </RouterView>
@@ -36,7 +35,6 @@
             >
               <SettingsIcon class="icon" />
             </v-btn>
-          </div>
         </v-container>
       </v-main>
     </v-app>

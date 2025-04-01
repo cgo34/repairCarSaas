@@ -1,10 +1,10 @@
-import { SettingPriceImpactCountToUtDto } from '@/@infrastructure/dtos/settings/price/SettingPriceImpactCountToUtDto';
+import { SettingPriceImpactCountToUtViewDto } from '@/@application/dtos/settings/SettingPriceImpactCountToUtViewDto';
 import { SettingPriceImpactCountToUtViewModel } from '@/@presentation/types/models/settings/price/SettingPriceImpactCountToUtViewModel';
 
 export class SettingPriceImpactCountToUtMapper {
-  static viewToDto(viewModel: SettingPriceImpactCountToUtViewModel): SettingPriceImpactCountToUtDto {
+  static viewToDto(viewModel: SettingPriceImpactCountToUtViewModel): SettingPriceImpactCountToUtViewDto {
     return {
-      id: viewModel.id,
+      id: viewModel.id ?? '',
       userId: viewModel.userId,
       impactCountMin: viewModel.impactCountMin,
       impactCountMax: viewModel.impactCountMax,
@@ -12,7 +12,7 @@ export class SettingPriceImpactCountToUtMapper {
     };
   }
 
-  static dtoToView(dto: SettingPriceImpactCountToUtDto): SettingPriceImpactCountToUtViewModel {
+  static dtoToView(dto: SettingPriceImpactCountToUtViewDto): SettingPriceImpactCountToUtViewModel {
     return {
       id: dto.id,
       userId: dto.userId,

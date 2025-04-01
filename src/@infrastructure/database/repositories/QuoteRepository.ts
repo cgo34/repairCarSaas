@@ -2,10 +2,13 @@ import { Quote } from '@/@domain/entities/Quote';
 import { IQuoteRepository } from '@/@domain/repositories/IQuoteRepository';
 import { QuoteApiModel } from '@/@infrastructure/database/api/QuoteApiModel';
 import { SupabaseClient } from '@/@infrastructure/database/clients/SupabaseClient';
+import { LineItemDto } from '@/@infrastructure/dtos/LineItemDto';
+import { QuoteDto } from '@/@infrastructure/dtos/QuoteDto';
 import { QuoteLineItemDto } from '@/@infrastructure/dtos/QuoteLineItemDto';
 import { QuoteStatusDto } from '@/@infrastructure/dtos/QuoteStatusDto';
 import { IClientProvider } from '@/@infrastructure/interfaces/IClientProvider';
 import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
+import { LineItemMapper } from '@/@infrastructure/mappers/LineItemMapper';
 import { QuoteMapper } from '@/@infrastructure/mappers/QuoteMapper';
 import { inject, injectable } from 'inversify';
 import { QuoteDetailApiModel } from '../api/QuoteDetailApiModel';
@@ -18,13 +21,9 @@ export class QuoteRepository implements IQuoteRepository {
    * Génère un numéro de devis unique.
    */
   async generateQuoteNumber(): Promise<string> {
-    console.log('QuoteRepository.generateQuoteNumber');
-    
     const { count, error } = await this.clientProvider.getClient()
     .fromSchema<'quoting', 'quotes'>('quoting', 'quotes')
     .select('*', { count: 'exact', head: true }); // ⚡ Optimisé pour éviter un gros dataset
-
-    console.log('count', count);
     
     if (error) throw new Error('Error generating quote number');
 
@@ -51,16 +50,18 @@ export class QuoteRepository implements IQuoteRepository {
   /**
    * Récupère tous les devis d'un utilisateur.
    */
-  async getAllByUserId(userId: string): Promise<Quote[]> {
+  async getAllByUserId(userId: string): Promise<QuoteDto[]> {
     const { data, error } = await this.clientProvider.getClient()
       .fromSchema<'quoting', 'quotes'>('quoting', 'quotes')
-      .select('*')
+      .select('*, users:quotes_user_id_fkey(*), garages(*), technicians:quotes_technician_id_fkey(*)')
       .eq('user_id', userId)
+      .with('users', { id: 'user_id' })
+      .with('garages', { id: 'garage_id' })
       .returns<QuoteApiModel[]>();
 
     if (error) throw new Error('Error fetching user quotes');
 
-    return data.map(QuoteMapper.apiToDomain);
+    return data.map(QuoteMapper.apiToDto);
   }
 
   /**
@@ -78,7 +79,7 @@ export class QuoteRepository implements IQuoteRepository {
     return data ? QuoteMapper.apiToDomain(data) : null;
   }
 
-  async getDetails(quoteId: string): Promise<QuoteDetail[]> {
+  async getDetails(quoteId: string): Promise<LineItemDto[]> {
     const { data, error } = await this.clientProvider.getClient()
       .fromSchema<'quoting', 'quote_details'>('quoting', 'quote_details')
       .select('*')
@@ -87,21 +88,28 @@ export class QuoteRepository implements IQuoteRepository {
   
     if (error) throw new Error(`Error fetching quote details: ${error.message}`);
   
-    return data.map(QuoteDetailMapper.apiToDomain);
+    return data.map(LineItemMapper.apiToDto);
   }
   
 
   /**
    * Crée un devis.
    */
-  async create(quote: Quote): Promise<void> {
-    const quoteApi = QuoteMapper.domainToApi(quote);
+  async create(quote: QuoteDto): Promise<QuoteDto> {
+    const quoteApi = QuoteMapper.dtoToApi(quote);
 
-    const { error } = await this.clientProvider.getClient()
+    const { data, error } = await this.clientProvider.getClient()
       .fromSchema<'quoting', 'quotes'>('quoting', 'quotes')
-      .insert(quoteApi);
+      .insert(quoteApi)
+      .select('*')
+      .single<QuoteApiModel>();
+
+      console.log('quoteApi', quoteApi);
+      
 
     if (error) throw new Error('Error creating quote');
+
+    return QuoteMapper.apiToDto(data);
   }
 
   /**
@@ -141,7 +149,7 @@ export class QuoteRepository implements IQuoteRepository {
       repair_type_id: lineItem.repairTypeId,
       impact_count_25: lineItem.impactCount25,
       impact_count_35: lineItem.impactCount35,
-      stripping_percentage: lineItem.strippingPercentage,
+      dent_removal_price: lineItem.strippingPercentage,
       price: lineItem.price,
     };
 
@@ -161,7 +169,7 @@ export class QuoteRepository implements IQuoteRepository {
       repair_type_id: lineItem.repairTypeId,
       impact_count_25: lineItem.impactCount25,
       impact_count_35: lineItem.impactCount35,
-      stripping_percentage: lineItem.strippingPercentage,
+      dent_removal_price: lineItem.strippingPercentage,
       price: lineItem.price,
     };
 

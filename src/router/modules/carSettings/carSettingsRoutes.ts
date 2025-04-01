@@ -8,6 +8,7 @@ import SettingPriceBodyPartCoefficientPage from '@/@presentation/@modules/settin
 import SettingPriceDiameterCoefficientPage from '@/@presentation/@modules/settings/price/pages/SettingPriceDiameterCoefficientPage.vue';
 import SettingPriceGeneralPage from '@/@presentation/@modules/settings/price/pages/SettingPriceGeneralPage.vue';
 import SettingPriceImpactCountToUtPage from '@/@presentation/@modules/settings/price/pages/SettingPriceImpactCountToUtPage.vue';
+import SettingPriceRepairTypeCoefficientPage from '@/@presentation/@modules/settings/price/pages/SettingPriceRepairTypeCoefficientPage.vue';
 import { RouteRecordRaw } from 'vue-router';
 
 export const carSettingsRoutes: RouteRecordRaw[] = [
@@ -136,6 +137,21 @@ export const carSettingsRoutes: RouteRecordRaw[] = [
         { title: 'Prices', href: '/price' },
         { title: 'Coefficient', href: '/coefficent' },
         { title: 'Diameter', href: '/diameter' }
+      ]
+    }
+  },
+  {
+    path: '/settings/price/coefficient/repair-type',
+    name: 'SettingPriceRepairTypeCoefficientList',
+    component: SettingPriceRepairTypeCoefficientPage,
+    meta: {
+      requiresAuth: true,
+      breadcrumb: [
+        { title: 'Dashboard', href: '/dashboard' },
+        { title: 'Settings', href: '/settings' },
+        { title: 'Prices', href: '/price' },
+        { title: 'Coefficient', href: '/coefficent' },
+        { title: 'Repair Type', href: '/repair-type' }
       ]
     }
   },

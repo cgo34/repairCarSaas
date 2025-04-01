@@ -1,8 +1,8 @@
-import { SettingPriceBodyPartCoefficientDto } from '@/@infrastructure/dtos/settings/price/SettingPriceBodyPartCoefficientDto';
+import { SettingPriceBodyPartCoefficientViewDto } from "@/@application/dtos/settings/SettingPriceBodyPartCoefficientViewType";
 
 export interface ISettingPriceBodyPartCoefficientUseCase {
-  getByUserId(userId: string): Promise<SettingPriceBodyPartCoefficientDto[]>;
-  create(dto: SettingPriceBodyPartCoefficientDto): Promise<SettingPriceBodyPartCoefficientDto>;
-  update(dto: SettingPriceBodyPartCoefficientDto): Promise<SettingPriceBodyPartCoefficientDto>;
+  getByUserId(userId: string): Promise<SettingPriceBodyPartCoefficientViewDto[]>;
+  create(dto: SettingPriceBodyPartCoefficientViewDto): Promise<SettingPriceBodyPartCoefficientViewDto>;
+  update(dto: SettingPriceBodyPartCoefficientViewDto): Promise<SettingPriceBodyPartCoefficientViewDto>;
   delete(id: string): Promise<void>;
 }

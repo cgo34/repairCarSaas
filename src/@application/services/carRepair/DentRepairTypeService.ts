@@ -6,9 +6,7 @@ import { inject, injectable } from "inversify";
 
 @injectable()
 export class DentRepairTypeService implements IDentRepairTypeService {
-  constructor(@inject(SYMBOLS.Repositories.DentRepairTypeRepository) private dentRepairTypeRepository: IDentRepairTypeRepository) {
-    console.log('[DentRepairTypeService] Initialized with DentRepairTypeRepository:', dentRepairTypeRepository);
-  }
+  constructor(@inject(SYMBOLS.Repositories.DentRepairTypeRepository) private dentRepairTypeRepository: IDentRepairTypeRepository) {}
 
   async getAll(): Promise<DentRepairTypeDto[]> {
     return await this.dentRepairTypeRepository.getAll();
@@ -19,8 +17,6 @@ export class DentRepairTypeService implements IDentRepairTypeService {
   // }
 
   async create(dentRepairType: DentRepairTypeDto): Promise<DentRepairTypeDto> {
-    console.log('[DentRepairTypeService.create] dentRepairType:', dentRepairType);
-    
     return await this.dentRepairTypeRepository.create(dentRepairType);
   }
 

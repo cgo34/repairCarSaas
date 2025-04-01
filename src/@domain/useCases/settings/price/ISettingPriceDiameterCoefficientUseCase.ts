@@ -1,8 +1,8 @@
-import { SettingPriceDiameterCoefficientDto } from '@/@infrastructure/dtos/settings/price/SettingPriceDiameterCoefficientDto';
+import { SettingPriceDiameterCoefficientViewDto } from "@/@application/dtos/settings/SettingPriceDiameterCoefficientViewType";
 
 export interface ISettingPriceDiameterCoefficientUseCase {
-  getByUserId(userId: string): Promise<SettingPriceDiameterCoefficientDto[]>;
-  create(dto: SettingPriceDiameterCoefficientDto): Promise<SettingPriceDiameterCoefficientDto>;
-  update(dto: SettingPriceDiameterCoefficientDto): Promise<SettingPriceDiameterCoefficientDto>;
+  getByUserId(userId: string): Promise<SettingPriceDiameterCoefficientViewDto[]>;
+  create(dto: SettingPriceDiameterCoefficientViewDto): Promise<SettingPriceDiameterCoefficientViewDto>;
+  update(dto: SettingPriceDiameterCoefficientViewDto): Promise<SettingPriceDiameterCoefficientViewDto>;
   delete(id: string): Promise<void>;
 }

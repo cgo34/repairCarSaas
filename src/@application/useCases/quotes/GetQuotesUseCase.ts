@@ -1,13 +1,13 @@
-import { QuoteService } from '@/@application/services/QuoteService';
+import { IQuoteRepository } from '@/@domain/repositories/IQuoteRepository';
+import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
+import { inject, injectable } from 'inversify';
 
+@injectable()
 export class GetQuotesUseCase {
-  private quoteService: QuoteService;
+  constructor(@inject(SYMBOLS.Repositories.QuoteRepository) private quoteRepository: IQuoteRepository) {}
 
-  constructor(quoteService: QuoteService) {
-    this.quoteService = quoteService;
-  }
 
-  async execute() {
-    return await this.quoteService.getAllQuotes();
+  async execute(userId: string) {
+    return await this.quoteRepository.getAllByUserId(userId);
   }
 }

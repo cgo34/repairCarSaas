@@ -1,14 +1,14 @@
-import { SettingPriceBodyPartCoefficientDto } from '@/@infrastructure/dtos/settings/price/SettingPriceBodyPartCoefficientDto';
+import { SettingPriceBodyPartCoefficientViewDto } from '@/@application/dtos/settings/SettingPriceBodyPartCoefficientViewType';
 import { SettingPriceBodyPartCoefficientViewModel } from '@/@presentation/types/models/settings/price/SettingPriceBodyPartCoefficientViewModel';
 
 export class SettingPriceBodyPartCoefficientMapper {
-  static viewToDto(viewModel: SettingPriceBodyPartCoefficientViewModel): SettingPriceBodyPartCoefficientDto {
+  static viewToDto(viewModel: SettingPriceBodyPartCoefficientViewModel): SettingPriceBodyPartCoefficientViewDto {
     return {
       userId: viewModel.userId,
-      bodyPartId: viewModel.bodyPartId,
+      bodyPartId: viewModel.bodyPartId ?? '',
       coefficient: viewModel.coefficient,
       bodyParts: {
-        id: viewModel.bodyParts.id,
+        id: viewModel.bodyParts.id ?? '',
         name: viewModel.bodyParts.name,
         code: viewModel.bodyParts.code,
         color: viewModel.bodyParts.color
@@ -16,7 +16,7 @@ export class SettingPriceBodyPartCoefficientMapper {
     };
   }
 
-  static dtoToView(dto: SettingPriceBodyPartCoefficientDto): SettingPriceBodyPartCoefficientViewModel {
+  static dtoToView(dto: SettingPriceBodyPartCoefficientViewDto): SettingPriceBodyPartCoefficientViewModel {
     return {
       userId: dto.userId,
       bodyPartId: dto.bodyPartId,

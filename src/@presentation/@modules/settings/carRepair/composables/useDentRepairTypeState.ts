@@ -18,8 +18,6 @@ export function useDentRepairTypeState(): IDentRepairTypeState {
   const error = ref<unknown>(null);
 
   const init = async () => {
-    console.log('useDentRepairType.init');
-    
     return fetchDentRepairTypes().then(() => {
       return
     })

@@ -46,8 +46,6 @@ export function useBodyPartState(): IBodyPartState {
     if (!exists)
       throw new Error('Body part does not exist');
 
-    console.log('useBodyPart.selectBodyPart', bodyPart);
-
     _selectedBodyPart.value = bodyPart;
   }
 

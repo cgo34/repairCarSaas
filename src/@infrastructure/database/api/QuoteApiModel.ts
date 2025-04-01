@@ -1,8 +1,10 @@
 export interface QuoteApiModel {
-  id: string;
+  id?: string;
   quote_number: string;
   is_forfait: boolean;
   forfait_amount: number | null;
+  is_display_unit_price: boolean;
+  is_compute_commission_without_dent_removal: boolean;
   start_date: string; // Stocké en format ISO (YYYY-MM-DDTHH:mm:ss.sssZ)
   end_date: string;
   status: 'pending' | 'cancel' | 'draft' | 'validated' | 'accepted' | 'signed' | 'sent';

@@ -11,7 +11,7 @@ export class QuoteLineItemMapper {
       dto.repairTypeId,
       dto.impactCount25,
       dto.impactCount35,
-      dto.strippingPercentage,
+      dto.dentRemovalPrice,
       dto.price
     );
   }
@@ -25,7 +25,7 @@ export class QuoteLineItemMapper {
       repairTypeId: domain.repairTypeId,
       impactCount25: domain.impactCount25,
       impactCount35: domain.impactCount35,
-      strippingPercentage: domain.strippingPercentage,
+      degarnissagePrice: domain.degarnissagePrice,
       price: domain.price
     };
   }

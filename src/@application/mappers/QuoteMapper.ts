@@ -7,14 +7,14 @@ export class QuoteMapper {
    */
   static dtoToDomain(dto: QuoteDto): Quote {
     return new Quote(
-      dto.id,
+      dto.id ?? '',
       dto.quoteNumber,
       dto.isForfait,
-      dto.forfaitAmount,
+      dto.forfaitAmount ?? null,
       new Date(dto.startDate),
       new Date(dto.endDate),
       dto.status,
-      dto.country,
+      dto.country ?? '',
       dto.currency,
       dto.isSent,
       dto.sentAt ? new Date(dto.sentAt) : null,
@@ -31,11 +31,13 @@ export class QuoteMapper {
    * Convertit un `Quote` (Entité Domain Model) en `QuoteDto`
    */
   static domainToDto(quote: Quote): QuoteDto {
+    console.log('QuoteMapper.domainToDto', quote);
+    
     return {
       id: quote.id,
       quoteNumber: quote.quoteNumber,
       isForfait: quote.isForfait,
-      forfaitAmount: quote.forfaitAmount,
+      forfaitAmount: quote.forfaitAmount ?? undefined,
       startDate: quote.startDate.toISOString(),
       endDate: quote.endDate.toISOString(),
       status: quote.status,

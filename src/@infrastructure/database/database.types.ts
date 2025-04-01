@@ -223,6 +223,32 @@ export type Database = {
         }
         Relationships: []
       }
+      setting_price_repair_type_coefficient: {
+        Row: {
+          repair_type_coefficient: number
+          repair_type_id: string | null
+          user_id: string
+        }
+        Insert: {
+          repair_type_coefficient: number
+          repair_type_id?: string | null
+          user_id: string
+        }
+        Update: {
+          repair_type_coefficient?: number
+          repair_type_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "setting_price_repair_type_coefficient_repair_type_id_fkey"
+            columns: ["repair_type_id"]
+            isOneToOne: false
+            referencedRelation: "repair_types"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -408,35 +434,35 @@ export type Database = {
         Row: {
           body_material_id: string | null
           body_part_id: string | null
+          dent_removal_price: number | null
           id: string
           impact_count_25: number | null
           impact_count_35: number | null
           price: number
           quote_id: string | null
           repair_type_id: string | null
-          stripping_percentage: number | null
         }
         Insert: {
           body_material_id?: string | null
           body_part_id?: string | null
+          dent_removal_price?: number | null
           id?: string
           impact_count_25?: number | null
           impact_count_35?: number | null
           price: number
           quote_id?: string | null
           repair_type_id?: string | null
-          stripping_percentage?: number | null
         }
         Update: {
           body_material_id?: string | null
           body_part_id?: string | null
+          dent_removal_price?: number | null
           id?: string
           impact_count_25?: number | null
           impact_count_35?: number | null
           price?: number
           quote_id?: string | null
           repair_type_id?: string | null
-          stripping_percentage?: number | null
         }
         Relationships: [
           {
@@ -454,11 +480,14 @@ export type Database = {
           car_date: number | null
           car_id: string | null
           country: string
+          created_at: string | null
           currency: string
           end_date: string | null
           forfait_amount: number | null
           garage_id: string | null
           id: string
+          is_compute_commission_without_dent_removal: boolean | null
+          is_display_unit_price: boolean | null
           is_forfait: boolean | null
           is_sent: boolean | null
           quote_number: string
@@ -466,6 +495,7 @@ export type Database = {
           start_date: string | null
           status: string | null
           technician_id: string | null
+          updated_at: string | null
           user_id: string | null
         }
         Insert: {
@@ -473,11 +503,14 @@ export type Database = {
           car_date?: number | null
           car_id?: string | null
           country: string
+          created_at?: string | null
           currency: string
           end_date?: string | null
           forfait_amount?: number | null
           garage_id?: string | null
           id?: string
+          is_compute_commission_without_dent_removal?: boolean | null
+          is_display_unit_price?: boolean | null
           is_forfait?: boolean | null
           is_sent?: boolean | null
           quote_number: string
@@ -485,6 +518,7 @@ export type Database = {
           start_date?: string | null
           status?: string | null
           technician_id?: string | null
+          updated_at?: string | null
           user_id?: string | null
         }
         Update: {
@@ -492,11 +526,14 @@ export type Database = {
           car_date?: number | null
           car_id?: string | null
           country?: string
+          created_at?: string | null
           currency?: string
           end_date?: string | null
           forfait_amount?: number | null
           garage_id?: string | null
           id?: string
+          is_compute_commission_without_dent_removal?: boolean | null
+          is_display_unit_price?: boolean | null
           is_forfait?: boolean | null
           is_sent?: boolean | null
           quote_number?: string
@@ -504,9 +541,32 @@ export type Database = {
           start_date?: string | null
           status?: string | null
           technician_id?: string | null
+          updated_at?: string | null
           user_id?: string | null
         }
-        Relationships: []
+                Relationships: [
+          {
+            foreignKeyName: "quotes_garage_id_fkey",
+            columns: ["garage_id"],
+            isOneToOne: false,
+            referencedRelation: "garages",
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "quotes_user_id_fkey",
+            columns: ["user_id"],
+            isOneToOne: false,
+            referencedRelation: "users",
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "quotes_technician_id_fkey",
+            columns: ["technician_id"],
+            isOneToOne: false,
+            referencedRelation: "users",
+            referencedColumns: ["id"]
+          }
+        ]
       }
     }
     Views: {

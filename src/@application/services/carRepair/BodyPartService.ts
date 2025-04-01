@@ -6,9 +6,7 @@ import { inject, injectable } from "inversify";
 
 @injectable()
 export class BodyPartService implements IBodyPartService {
-  constructor(@inject(SYMBOLS.Repositories.BodyPartRepository) private bodyPartRepository: IBodyPartRepository) {
-    console.log('[BodyPartService] Initialized with BodyPartRepository:', bodyPartRepository);
-  }
+  constructor(@inject(SYMBOLS.Repositories.BodyPartRepository) private bodyPartRepository: IBodyPartRepository) {}
 
   async getAll(): Promise<BodyPartDto[]> {
     return await this.bodyPartRepository.getAll();

@@ -1,19 +1,33 @@
+import { CountryDto } from "@/@application/dtos/CountryDto";
+import { GarageDto } from "./GarageDto";
+import { UserDto } from "./UserDto";
+
 export interface QuoteDto {
-  id: string;
+  id?: string;
   quoteNumber: string;
-  isForfait: boolean;
-  forfaitAmount: number | null;
+  status: 'pending' | 'cancel' | 'draft' | 'validated' | 'accepted' | 'signed' | 'sent' | 'draft';
+  
+  userId: string; // 🔹 Ajout pour suivre le créateur du devis
+  
   startDate: string; // 🔹 ISO String (format pour le stockage en BDD et transmission API)
   endDate: string; // 🔹 ISO String (idem)
-  status: 'pending' | 'cancel' | 'draft' | 'validated' | 'accepted' | 'signed' | 'sent' | 'draft';
-  country: string;
+
+  carId: string;
+  carBrand: string;
+  carDate: string;
+  
+  technicianId?: string;
+  technician?: UserDto; // 🔹 Ajout pour le nom du technicien
+  garageId?: string;
+  garage?: GarageDto; // 🔹 Ajout pour le nom du garage
+
+  isForfait: boolean;
+  isDisplayUnitPrice: boolean;
+  isComputeCommissionWithoutDentRemoval: boolean;
+  forfaitAmount?: number;
+  country?: CountryDto | string;
   currency: string;
+  
   isSent: boolean;
   sentAt: string | null; // 🔹 Peut être null
-  carBrand: string;
-  carId: string;
-  carDate: number;
-  technicianId: string;
-  garageId: string;
-  userId: string; // 🔹 Ajout pour suivre le créateur du devis
 }

@@ -7,12 +7,9 @@ import { inject, injectable } from "inversify";
 @injectable()
 export class BodyMaterialService implements IBodyMaterialService {
   constructor(@inject(SYMBOLS.Repositories.BodyMaterialRepository) private bodyMaterialRepository: IBodyMaterialRepository) {
-    console.log('[BodyMaterialService] Initialized with BodyMaterialRepository:', bodyMaterialRepository);
   }
 
   async getAll(): Promise<BodyMaterialDto[]> {
-    console.log('[BodyMaterialService] Executing getAll');
-    
     return await this.bodyMaterialRepository.getAll();
   }
 

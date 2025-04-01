@@ -19,10 +19,12 @@ export class CreateQuoteUseCase {
     const quote = QuoteMapper.dtoToDomain({
       ...quoteDto,
       id: crypto.randomUUID(),
-      quoteNumber,
+      quoteNumber: quoteNumber,
+      endDate: '', // 🔹 La date de fin est calculée par le système
       status: 'draft',
       userId, // L’utilisateur qui crée le devis
     });
+  console.log('quote', quote);
   
     // 🔹 3. Appliquer d'éventuelles règles métier
     if (quote.isExpired()) throw new Error("Impossible de créer un devis expiré");
@@ -31,7 +33,11 @@ export class CreateQuoteUseCase {
     // await this.quoteRepository.create(QuoteMapper.domainToDto(quote));
   
     // 🔹 5. Retourner un DTO pour la couche Présentation
-    return quoteNumber;
+    // console.log('quote DTO aferter generete number', QuoteMapper.domainToDto(quote));
+
+    quoteDto.quoteNumber = quoteNumber;
+    
+    return quoteDto;
   }
   
 }

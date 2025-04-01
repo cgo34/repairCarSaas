@@ -1,8 +1,8 @@
-import { SettingPriceGeneralDto } from '@/@infrastructure/dtos/settings/price/SettingPriceGeneralDto';
+import { SettingPriceGeneralViewDto } from "@/@application/dtos/settings/SettingPriceGeneralViewDto";
 
 export interface ISettingPriceGeneralUseCase {
-  getByUserId(userId: string): Promise<SettingPriceGeneralDto[]>;
-  create(dto: SettingPriceGeneralDto): Promise<SettingPriceGeneralDto>;
-  update(dto: SettingPriceGeneralDto): Promise<SettingPriceGeneralDto>;
+  getByUserId(userId: string): Promise<SettingPriceGeneralViewDto[]>;
+  create(dto: SettingPriceGeneralViewDto): Promise<SettingPriceGeneralViewDto>;
+  update(dto: SettingPriceGeneralViewDto): Promise<SettingPriceGeneralViewDto>;
   delete(id: string): Promise<void>;
 }

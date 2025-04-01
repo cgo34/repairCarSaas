@@ -6,6 +6,6 @@ export interface QuoteLineItemDto {
   repairTypeId: string;
   impactCount25: number;
   impactCount35: number;
-  strippingPercentage: number;
+  dentRemovalPrice: number;
   price: number;
 }

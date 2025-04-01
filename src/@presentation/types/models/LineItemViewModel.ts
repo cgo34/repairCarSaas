@@ -11,6 +11,7 @@ export interface LineItemViewModel {
   impactCount35?: number;
   bodyMaterial?: BodyMaterialViewModel;
   repairType?: DentRepairTypeViewModel;
-  strippingPercentage?: number;
+  dentRemovalPrice?: number;
   lineItemType: LineItemType;
+  price: number;
 };

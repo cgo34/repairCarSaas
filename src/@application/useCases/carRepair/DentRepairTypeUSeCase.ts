@@ -15,22 +15,18 @@ export class DentRepairTypeUseCase implements IDentRepairTypeUseCase {
   }
 
   async executeGetAll(): Promise<DentRepairTypeDto[]> {
-    console.log('[DentRepairTypeUseCase] Executing getAll');
     return this.dentRepairTypeService.getAll();
   }
 
   async executeCreate(DentRepairType: DentRepairTypeDto): Promise<DentRepairTypeDto> {
-    console.log('[DentRepairTypeUseCase] Executing with:', DentRepairType);
     return this.dentRepairTypeService.create(DentRepairType);
   }
 
   async executeUpdate(DentRepairType: DentRepairTypeDto): Promise<DentRepairTypeDto> {
-    console.log('[DentRepairTypeUseCase] Executing with:', DentRepairType);
     return this.dentRepairTypeService.update(DentRepairType);
   }
 
   async executeDelete(id: string): Promise<void> {
-    console.log('[DentRepairTypeUseCase] Executing with:', id);
     return this.dentRepairTypeService.delete(id);
   }
 }

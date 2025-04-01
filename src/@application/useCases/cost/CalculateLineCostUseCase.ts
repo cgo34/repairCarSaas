@@ -1,4 +1,4 @@
-import { QuoteLineItem } from '@/@domain/entities/QuoteLineItem';
+import { LineItemViewDto } from '@/@application/dtos/LineItemViewDto';
 import { SettingPrice } from '@/@domain/models/settings/price/SettingPrice';
 import { ICostCalculatorService } from '@/@domain/services/ICostCalculatorService';
 import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
@@ -10,7 +10,9 @@ export class CalculateLineCostUseCase {
     @inject(SYMBOLS.Services.CostCalculatorService) private costCalculatorService: ICostCalculatorService
   ) {}
 
-  execute(lineItem: QuoteLineItem, priceParams: SettingPrice): number {
+  execute(lineItem: LineItemViewDto, priceParams: SettingPrice): number {
+    console.log('Calculating line cost *************************', lineItem);
+    
     return this.costCalculatorService.calculateLinePrice(lineItem, priceParams);
   }
 }

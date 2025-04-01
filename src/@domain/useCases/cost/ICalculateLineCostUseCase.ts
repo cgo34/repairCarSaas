@@ -1,6 +1,6 @@
-import { QuoteLineItem } from "@/@domain/entities/QuoteLineItem";
-import { SettingPrice } from "@/@domain/models/settings/price/SettingPrice";
+import { LineItemViewDto } from "@/@application/dtos/LineItemViewDto";
+import { SettingPriceViewDto } from "@/@application/dtos/settings/SettingPriceViewDto";
 
 export interface ICalculateLineCostUseCase {
-  execute(lineItem: QuoteLineItem, priceParams: SettingPrice): void;
+  execute(lineItem: LineItemViewDto, priceParams: SettingPriceViewDto): number;
 }

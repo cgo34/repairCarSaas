@@ -13,6 +13,6 @@ export interface QuoteDetailApiModel {
   repair_types?: DentRepairTypeApiModel
   impact_count_25: number;
   impact_count_35: number;
-  stripping_percentage: number;
+  dent_removal_price: number;
   price: number;
 }

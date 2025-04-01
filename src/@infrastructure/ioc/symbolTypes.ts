@@ -21,6 +21,7 @@ export enum SYMBOL_NAMES {
     SETTING_PRICE_BODY_MATERIAL_COEFFICIENT = 'SettingPriceBodyMaterialCoefficient',
     SETTING_PRICE_BODY_PART_COEFFICIENT = 'SettingPriceBodyPartCoefficient',
     SETTING_PRICE_DIAMETER_COEFFICIENT = 'SettingPriceDiameterCoefficient',
+    SETTING_PRICE_REPAIR_TYPE_COEFFICIENT = 'SettingPriceRepairTypeCoefficient',
     // #endregion
 
     // #region -> SERVICES
@@ -63,14 +64,17 @@ export enum SYMBOL_NAMES {
     SETTING_PRICE_BODY_MATERIAL_COEFFICIENT_USE_CASE = 'SettingPriceBodyMaterialCoefficientUseCase',
     SETTING_PRICE_BODY_PART_COEFFICIENT_USE_CASE = 'SettingPriceBodyPartCoefficientUseCase',
     SETTING_PRICE_DIAMETER_COEFFICIENT_USE_CASE = 'SettingPriceDiameterCoefficientUseCase',
+    SETTING_PRICE_REPAIR_TYPE_COEFFICIENT_USE_CASE = 'SettingPriceRepairTypeCoefficientUseCase',
     // -- Cost Calculator UseCases
     CALCULATE_TOTAL_COST_USE_CASE = 'CalculateTotalCostUseCase',
     CALCULATE_LINE_COST_USE_CASE = 'CalculateLineCostUseCase',
     // -- Quote UseCases
     QUOTE_USE_CASE = 'QuoteUseCase',
     GET_QUOTE_USE_CASE = 'GetQuoteUseCase',
+    GET_QUOTES_USE_CASE = 'GetQuotesUseCase',
     GET_QUOTE_DETAILS_USE_CASE = 'GetQuoteDetailsUseCase',
     CREATE_QUOTE_USE_CASE = 'CreateQuoteUseCase',
+    INSERT_QUOTE_USE_CASE = 'InsertQuoteUseCase',
     ADD_QUOTE_LINE_ITEM_USE_CASE = 'AddQuoteLineItemUseCase',
     SAVE_QUOTE_USE_CASE = 'SaveQuoteUseCase',
     DELETE_QUOTE_USE_CASE = 'DeleteQuoteUseCase',
@@ -94,9 +98,11 @@ export enum SYMBOL_NAMES {
     SETTING_PRICE_BODY_MATERIAL_COEFFICIENT_STATE = 'SettingPriceBodyMaterialCoefficientState',
     SETTING_PRICE_BODY_PART_COEFFICIENT_STATE = 'SettingPriceBodyPartCoefficientState',
     SETTING_PRICE_DIAMETER_COEFFICIENT_STATE = 'SettingPriceDiameterCoefficientState',
+    SETTING_PRICE_REPAIR_TYPE_COEFFICIENT_STATE = 'SettingPriceRepairTypeCoefficientState',
     // -- Quote States
     QUOTE_STATE = 'QuoteState',
     CREATE_QUOTE_STATE = 'CreateQuoteState',
+    GET_QUOTES_STATE = 'GetQuotesState',
     // -- Invoice States
     INVOICE_STATE = 'InvoiceState',
     // #endregion

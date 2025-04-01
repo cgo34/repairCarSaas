@@ -25,6 +25,7 @@ const SYMBOLS = {
         SettingPriceBodyMaterialCoefficient: Symbol.for(SYMBOL_NAMES.SETTING_PRICE_BODY_MATERIAL_COEFFICIENT),
         SettingPriceBodyPartCoefficient: Symbol.for(SYMBOL_NAMES.SETTING_PRICE_BODY_PART_COEFFICIENT),
         SettingPriceDiameterCoefficient: Symbol.for(SYMBOL_NAMES.SETTING_PRICE_DIAMETER_COEFFICIENT),
+        RepairTypeCoefficient: Symbol.for(SYMBOL_NAMES.SETTING_PRICE_REPAIR_TYPE_COEFFICIENT),
       }
     }
   },
@@ -73,6 +74,7 @@ const SYMBOLS = {
         BodyMaterialCoefficientUseCase: Symbol.for(SYMBOL_NAMES.SETTING_PRICE_BODY_MATERIAL_COEFFICIENT_USE_CASE),
         BodyPartCoefficientUseCase: Symbol.for(SYMBOL_NAMES.SETTING_PRICE_BODY_PART_COEFFICIENT_USE_CASE),
         DiameterCoefficientUseCase: Symbol.for(SYMBOL_NAMES.SETTING_PRICE_DIAMETER_COEFFICIENT_USE_CASE),
+        RepairTypeCoefficientUseCase: Symbol.for(SYMBOL_NAMES.SETTING_PRICE_REPAIR_TYPE_COEFFICIENT_USE_CASE),
       }
     },
     CostCalculator: {
@@ -82,8 +84,10 @@ const SYMBOLS = {
     Quote: {
       QuoteUseCase: Symbol.for(SYMBOL_NAMES.QUOTE_USE_CASE),
       GetQuoteUseCase: Symbol.for(SYMBOL_NAMES.GET_QUOTE_USE_CASE),
+      GetQuotesUseCase: Symbol.for(SYMBOL_NAMES.GET_QUOTES_USE_CASE),
       GetQuoteDetailsUseCase: Symbol.for(SYMBOL_NAMES.GET_QUOTE_DETAILS_USE_CASE),
       CreateQuoteUseCase: Symbol.for(SYMBOL_NAMES.CREATE_QUOTE_USE_CASE),
+      InsertQuoteUseCase: Symbol.for(SYMBOL_NAMES.INSERT_QUOTE_USE_CASE),
       AddLineItemUseCase: Symbol.for(SYMBOL_NAMES.ADD_QUOTE_LINE_ITEM_USE_CASE),
       SaveQuoteUseCase: Symbol.for(SYMBOL_NAMES.SAVE_QUOTE_USE_CASE),
       DeleteQuoteUseCase: Symbol.for(SYMBOL_NAMES.DELETE_QUOTE_USE_CASE),
@@ -111,11 +115,13 @@ const SYMBOLS = {
         BodyMaterialCoefficientState: Symbol.for(SYMBOL_NAMES.SETTING_PRICE_BODY_MATERIAL_COEFFICIENT_STATE),
         BodyPartCoefficientState: Symbol.for(SYMBOL_NAMES.SETTING_PRICE_BODY_PART_COEFFICIENT_STATE),
         DiameterCoefficientState: Symbol.for(SYMBOL_NAMES.SETTING_PRICE_DIAMETER_COEFFICIENT_STATE),
+        RepairTypeCoefficientState: Symbol.for(SYMBOL_NAMES.SETTING_PRICE_REPAIR_TYPE_COEFFICIENT_STATE),
       }
     },
     // -- Quotes States
     Quote: {
       QuoteState: Symbol.for(SYMBOL_NAMES.QUOTE_STATE),
+      GetQuotesUseCase: Symbol.for(SYMBOL_NAMES.GET_QUOTES_STATE),
       CreateQuoteState: Symbol.for(SYMBOL_NAMES.CREATE_QUOTE_STATE),
     }
   },

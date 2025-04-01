@@ -12,6 +12,8 @@ export class SettingPriceBodyPartCoefficientMapper {
   }
 
   static dtoToApi(dto: SettingPriceBodyPartCoefficientDto): SettingPriceBodyPartCoefficientApiModel {
+    console.log('dto to api body part', dto);
+    
     return {
       user_id: dto.userId,
       body_part_id: dto.bodyPartId,

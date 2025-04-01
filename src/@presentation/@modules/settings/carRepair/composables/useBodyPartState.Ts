@@ -21,7 +21,6 @@ export function useBodyPartState(): IBodyPartState {
   const error = ref<unknown>(null);
 
   const init = async () => {
-    console.log('useBodyPartState.init');
     return fetchBodyParts().then(() => {
       return;
     });
@@ -48,9 +47,7 @@ export function useBodyPartState(): IBodyPartState {
     _selectedBodyPart.value = JsonHelper.clone(bodyPart);
   };
 
-  const resetSelectedBodyPart = (): void => {
-    console.log('useBodyPartState.resetSelectedBodyPart');
-    
+  const resetSelectedBodyPart = (): void => {    
     _selectedBodyPart.value = {
       id: undefined,
       name: '',
@@ -59,12 +56,9 @@ export function useBodyPartState(): IBodyPartState {
     };
   };
 
-  const addBodyPart = async (bodyPart: BodyPartViewModel): Promise<BodyPartViewModel> => {
-    console.log('useBodyPartState.addBodyPart', bodyPart);
-    
+  const addBodyPart = async (bodyPart: BodyPartViewModel): Promise<BodyPartViewModel> => {    
     loading.value = true;
     try {
-      console.log('useBodyPartState.addBodyPart', bodyPart);
       bodyPart.code = slugify(bodyPart.name);
       return bodyPartUseCase.executeCreate(bodyPart).then((data) => {
         _bodyParts.value.push(data);

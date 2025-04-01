@@ -2,7 +2,7 @@
   <GenericSelect
     :model-value="model"
     :items="repairTypes"
-    label="Sélectionner un type de réparation"
+    label="Réparation"
     @update:model-value="onSelectRepairType"
     @select="onSelectRepairType"
   />

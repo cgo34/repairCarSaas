@@ -46,7 +46,6 @@ export function useSettingPriceBodyPartCoefficientState(): IUseSettingPriceBodyP
     try {
       return bodyPartUseCase.executeGetAll().then((data) => {
         _bodyParts.value = data;
-        console.log('useSettingPriceBodyMaterialCoefficient.fetchBodyParts', data);
         
         return data;
       });

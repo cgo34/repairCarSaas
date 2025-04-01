@@ -51,8 +51,6 @@ export function useSettingPriceGeneralState(): IUseSettingPriceGeneralState {
     if (!exists)
       throw new Error('Body part does not exist');
 
-    console.log('useSettingPriceGeneral.selectSettingPriceGeneral', settingPriceGeneral);
-
     _selectedSetting.value = settingPriceGeneral;
   }
 

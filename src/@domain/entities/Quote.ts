@@ -18,7 +18,7 @@ export class Quote {
     public sentAt: Date | null,
     public carBrand: string,
     public carId: string,
-    public carDate: number,
+    public carDate: string,
     public technicianId: string,
     public garageId: string,
     public userId: string, // 🔹 ID du créateur du devis
@@ -64,7 +64,11 @@ export class Quote {
    * 🔹 Vérifie si le devis est expiré.
    */
   isExpired(): boolean {
-    return new Date() > this.endDate;
+    console.log('isExpired', this.endDate);
+    const endDate = new Date(this.endDate);
+    console.log('isExpired', new Date() > endDate);
+    
+    return new Date() > endDate;
   }
 
   /**
