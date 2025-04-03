@@ -1,5 +1,6 @@
 import { CountryDto } from "@/@application/dtos/CountryDto";
 import { GarageDto } from "./GarageDto";
+import { LineItemDto } from "./LineItemDto";
 import { UserDto } from "./UserDto";
 
 export interface QuoteDto {
@@ -8,6 +9,7 @@ export interface QuoteDto {
   status: 'pending' | 'cancel' | 'draft' | 'validated' | 'accepted' | 'signed' | 'sent' | 'draft';
   
   userId: string; // 🔹 Ajout pour suivre le créateur du devis
+  user?: UserDto; // 🔹 Ajout pour le nom du créateur du devis
   
   startDate: string; // 🔹 ISO String (format pour le stockage en BDD et transmission API)
   endDate: string; // 🔹 ISO String (idem)
@@ -27,6 +29,8 @@ export interface QuoteDto {
   forfaitAmount?: number;
   country?: CountryDto | string;
   currency: string;
+
+  lineItems?: LineItemDto[];
   
   isSent: boolean;
   sentAt: string | null; // 🔹 Peut être null

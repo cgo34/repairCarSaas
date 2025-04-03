@@ -11,7 +11,7 @@ export class SupabaseClient implements IClient {
     this.client = createClient<Database>(
       process.env.VITE_SUPABASE_URL as string,
       process.env.VITE_SUPABASE_KEY as string,
-      { db: { schema: 'public, quoting, car_repair' } }
+      { db: { schema: 'public' } }
     );
   }
   

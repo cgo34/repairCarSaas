@@ -1,3 +1,4 @@
+// TODO: (GCE) -> NOT USE FOR THE MOMENT
 import { IQuoteRepository } from "@/@domain/repositories/IQuoteRepository";
 import { SYMBOLS } from "@/@infrastructure/ioc/symbols";
 import { inject, injectable } from "inversify";

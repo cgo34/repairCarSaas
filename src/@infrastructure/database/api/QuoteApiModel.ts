@@ -1,3 +1,6 @@
+import { GarageApiModel } from "./GarageApiModel";
+import { UserApiModel } from "./UserApiModel";
+
 export interface QuoteApiModel {
   id?: string;
   quote_number: string;
@@ -16,6 +19,9 @@ export interface QuoteApiModel {
   car_id: string;
   car_date: number;
   technician_id: string;
+  technician?: UserApiModel
   garage_id: string;
+  garage?: GarageApiModel
   user_id: string; // 🔹 ID du créateur du devis
+  user?: UserApiModel;
 }

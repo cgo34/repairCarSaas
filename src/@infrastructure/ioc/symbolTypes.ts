@@ -11,6 +11,7 @@ export enum SYMBOL_NAMES {
     GARAGE_REPOSITORY = 'GarageRepository',
     INVOICE_REPOSITORY = 'InvoiceRepository',
     QUOTE_REPOSITORY = 'QuoteRepository',
+    QUOTE_DETAIL_REPOSITORY = 'QuoteDetailRepository',
     // Settings CarRepair Repositories
     BODY_PART_REPOSITORY = 'BodyPartRepository',
     BODY_MATERIAL_REPOSITORY = 'BodyMaterialRepository',
@@ -41,6 +42,9 @@ export enum SYMBOL_NAMES {
     SETTING_PRICE_BODY_MATERIAL_COEFFICIENT_SERVICE = 'SettingPriceBodyMaterialCoefficientService',
     SETTING_PRICE_BODY_PART_COEFFICIENT_SERVICE = 'SettingPriceBodyPartCoefficientService',
     SETTING_PRICE_DIAMETER_COEFFICIENT_SERVICE = 'SettingPriceDiameterCoefficientService',
+    // -- Pdf Generator Services
+    PDF_GENERATOR_SERVICE = 'PdfGeneratorService',
+    DOWNLOAD_SERVICE = 'DownloadService',
     // #endregion
   
     // #region -> USE CASES
@@ -72,12 +76,17 @@ export enum SYMBOL_NAMES {
     QUOTE_USE_CASE = 'QuoteUseCase',
     GET_QUOTE_USE_CASE = 'GetQuoteUseCase',
     GET_QUOTES_USE_CASE = 'GetQuotesUseCase',
-    GET_QUOTE_DETAILS_USE_CASE = 'GetQuoteDetailsUseCase',
+    VIEW_QUOTE_USE_CASE = 'ViewQuoteUseCase',
     CREATE_QUOTE_USE_CASE = 'CreateQuoteUseCase',
     INSERT_QUOTE_USE_CASE = 'InsertQuoteUseCase',
-    ADD_QUOTE_LINE_ITEM_USE_CASE = 'AddQuoteLineItemUseCase',
     SAVE_QUOTE_USE_CASE = 'SaveQuoteUseCase',
     DELETE_QUOTE_USE_CASE = 'DeleteQuoteUseCase',
+    // -- Quote Details UseCases
+    GET_QUOTE_DETAILS_USE_CASE = 'GetQuoteDetailsUseCase',
+    ADD_QUOTE_DETAILS_USE_CASE = 'AddQuoteDetailsUseCase',
+    ADD_QUOTE_LINE_ITEM_USE_CASE = 'AddQuoteLineItemUseCase',
+    // -- Pdf UseCases
+    GENERATE_QUOTE_PDF_USE_CASE = 'GenerateQuotePdfUseCase',
     // #endregion
 
     // #region -> STATES
@@ -101,7 +110,9 @@ export enum SYMBOL_NAMES {
     SETTING_PRICE_REPAIR_TYPE_COEFFICIENT_STATE = 'SettingPriceRepairTypeCoefficientState',
     // -- Quote States
     QUOTE_STATE = 'QuoteState',
+    VIEW_QUOTE_STATE = 'ViewQuoteState',
     CREATE_QUOTE_STATE = 'CreateQuoteState',
+    EDIT_QUOTE_STATE = 'EditQuoteState',
     GET_QUOTES_STATE = 'GetQuotesState',
     // -- Invoice States
     INVOICE_STATE = 'InvoiceState',

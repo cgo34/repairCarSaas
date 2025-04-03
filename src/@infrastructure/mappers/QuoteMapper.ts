@@ -1,11 +1,15 @@
 import { QuoteApiModel } from '@/@infrastructure/database/api/QuoteApiModel';
 import { QuoteDto } from '@/@infrastructure/dtos/QuoteDto';
+import { GarageMapper } from './GarageMapper';
+import { UserMapper } from './UserMapper';
 
 export class QuoteMapper {
   /**
    * Convertit un `QuoteApiModel` (BDD) en `QuoteDto` (Application)
    */
   static apiToDto(api: QuoteApiModel): QuoteDto {
+    console.log('api', api);
+    
     return {
       id: api.id,
       quoteNumber: api.quote_number,
@@ -24,8 +28,11 @@ export class QuoteMapper {
       carId: api.car_id,
       carDate: api.car_date.toString(),
       technicianId: api.technician_id,
+      technician: api.technician ? UserMapper.apiToDto(api.technician) : undefined, // Ajouté si nécessaire
       garageId: api.garage_id,
-      userId: api.user_id // Ajouté si nécessaire
+      garage: api.garage ? GarageMapper.apiToDto(api.garage) : undefined, // Aj
+      userId: api.user_id, // Ajouté si nécessaire
+      user: api.user ? UserMapper.apiToDto(api.user) : undefined // Ajouté si nécessaire
     };
   }
 

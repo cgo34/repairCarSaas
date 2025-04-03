@@ -8,12 +8,9 @@ import { inject, injectable } from 'inversify';
 export class CreateQuoteUseCase {
   constructor(@inject(SYMBOLS.Repositories.QuoteRepository) private quoteRepository: IQuoteRepository) {}
 
-  async execute(quoteDto: QuoteDto, userId: string): Promise<QuoteDto> {
-    console.log('CreateQuoteUseCase.execute', quoteDto, userId);
-    
+  async execute(quoteDto: QuoteDto, userId: string): Promise<QuoteDto> {    
     // 🔹 1. Générer un numéro unique
     const quoteNumber = await this.quoteRepository.generateQuoteNumber();
-    console.log('quoteNumber', quoteNumber);
     
     // 🔹 2. Convertir le DTO en Entité pour appliquer les règles métiers
     const quote = QuoteMapper.dtoToDomain({
@@ -24,10 +21,10 @@ export class CreateQuoteUseCase {
       status: 'draft',
       userId, // L’utilisateur qui crée le devis
     });
-  console.log('quote', quote);
   
     // 🔹 3. Appliquer d'éventuelles règles métier
-    if (quote.isExpired()) throw new Error("Impossible de créer un devis expiré");
+    if (quote.isExpired())
+      throw new Error("Impossible de créer un devis expiré");
   
     // 🔹 4. Sauvegarder l’entité convertie en DTO
     // await this.quoteRepository.create(QuoteMapper.domainToDto(quote));

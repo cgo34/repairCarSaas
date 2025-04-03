@@ -1,6 +1,5 @@
-import { LineItemViewDto } from '@/@application/dtos/LineItemViewDto';
-import { QuoteDto } from '@/@infrastructure/dtos/QuoteDto';
+import { LineItemDto } from '@/@infrastructure/dtos/LineItemDto';
 
 export interface IAddQuoteLineItemUseCase {
-  execute(quoteId: string, lineItem: LineItemViewDto): Promise<QuoteDto>;
+  executeQuote(quoteId: string, lineItem: LineItemDto[]): Promise<LineItemDto[]>;
 }

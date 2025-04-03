@@ -19,6 +19,7 @@
     "apexcharts": "^4.4.0",
     "bcryptjs": "^2.4.3",
     "dotenv": "^16.4.7",
+    "html2pdf.js": "^0.10.3",
     "inversify": "^6.2.1",
     "reflect-metadata": "^0.2.2",
     "vee-validate": "^4.15.0",

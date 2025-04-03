@@ -21,10 +21,15 @@ import { CalculateLineCostUseCase } from '@/@application/useCases/cost/Calculate
 import { CalculateTotalCostUseCase } from '@/@application/useCases/cost/CalculateTotalCostUseCase';
 import { GarageUseCase } from '@/@application/useCases/GarageUseCase';
 import { ILoginUseCase } from '@/@application/useCases/interfaces/auth/ILoginUseCase';
-import { AddLineItemUseCase } from '@/@application/useCases/quotes/AddLineItemUseCase';
+import { AddQuoteLineItemUseCase } from '@/@application/useCases/quotes/AddQuoteLineItemUseCase';
 import { CreateQuoteUseCase } from '@/@application/useCases/quotes/CreateQuoteUseCase';
+import { DeleteQuoteUseCase } from '@/@application/useCases/quotes/DeleteQuoteUseCase';
+import { GenerateQuotePdfUseCase } from '@/@application/useCases/quotes/GenerateQuotePdfUseCase';
+import { GetQuoteDetailUseCase } from '@/@application/useCases/quotes/GetQuoteDetailUseCase';
 import { GetQuotesUseCase } from '@/@application/useCases/quotes/GetQuotesUseCase';
+import { GetQuoteUseCase } from '@/@application/useCases/quotes/GetQuoteUseCase';
 import { InsertQuoteUseCase } from '@/@application/useCases/quotes/InsertQuoteUseCase';
+import { ViewQuoteUseCase } from '@/@application/useCases/quotes/ViewQuoteUseCase';
 import { SettingPriceBodyMaterialCoefficientUseCase } from '@/@application/useCases/settings/price/SettingPriceBodyMaterialCoefficientUseCase';
 import { SettingPriceBodyPartCoefficientUseCase } from '@/@application/useCases/settings/price/SettingPriceBodyPartCoefficientUseCase';
 import { SettingPriceDiameterCoefficientUseCase } from '@/@application/useCases/settings/price/SettingPriceDiameterCoefficientUseCase';
@@ -37,6 +42,7 @@ import { IBodyMaterialRepository } from '@/@domain/repositories/carRepair/IBodyM
 import { IBodyPartRepository } from '@/@domain/repositories/carRepair/IBodyPartRepository';
 import { IDentRepairTypeRepository } from '@/@domain/repositories/carRepair/IDentRepairTypeRepository';
 import { IGarageRepository } from '@/@domain/repositories/IGarageRepository';
+import { IQuoteDetailRepository } from '@/@domain/repositories/IQuoteDetailRepository';
 import { IQuoteRepository } from '@/@domain/repositories/IQuoteRepository';
 import { IUserRepository } from '@/@domain/repositories/IUserRepository';
 import { ISettingPriceBodyMaterialCoefficientRepository } from '@/@domain/repositories/settings/price/ISettingPriceBodyMaterialCoefficientRepository';
@@ -49,7 +55,9 @@ import { IBodyMaterialService } from '@/@domain/services/carRepair/IBodyMaterial
 import { IBodyPartService } from '@/@domain/services/carRepair/IBodyPartService';
 import { IDentRepairTypeService } from '@/@domain/services/carRepair/IDentRepairTypeService';
 import { ICostCalculatorService } from '@/@domain/services/ICostCalculatorService';
+import { IDownloadService } from '@/@domain/services/IDownloadService';
 import { IGarageService } from '@/@domain/services/IGarageService';
+import { IPdfGenerator } from '@/@domain/services/IPdfGenerator';
 import { IUserService } from '@/@domain/services/IUserService';
 import { ISettingPriceBodyMaterialCoefficientService } from '@/@domain/services/settings/price/ISettingPriceBodyMaterialCoefficientService';
 import { ISettingPriceBodyPartCoefficientService } from '@/@domain/services/settings/price/ISettingPriceBodyPartCoefficientService';
@@ -68,8 +76,13 @@ import { IGarageUseCase } from '@/@domain/useCases/IGarageUseCase';
 import { IUserUseCase } from '@/@domain/useCases/IUserUseCase';
 import { IAddQuoteLineItemUseCase } from '@/@domain/useCases/quotes/IAddQuoteLineItemUseCase';
 import { ICreateQuoteUseCase } from '@/@domain/useCases/quotes/ICreateQuoteUseCase';
+import { IDeleteQuoteUseCase } from '@/@domain/useCases/quotes/IDeleteQuoteUseCase';
+import { IGenerateQuotePdfUseCase } from '@/@domain/useCases/quotes/IGenerateQuotePdfUseCase';
+import { IGetQuoteDetailUseCase } from '@/@domain/useCases/quotes/IGetQuoteDetailUseCase';
+import { IGetQuoteUseCase } from '@/@domain/useCases/quotes/IGetQuoteUseCase';
 import { IInsertQuoteUseCase } from '@/@domain/useCases/quotes/IInsertQuoteUseCase';
 import { IQuotesUseCase } from '@/@domain/useCases/quotes/IQuotesUseCase';
+import { IViewQuoteUseCase } from '@/@domain/useCases/quotes/IViewQuoteUseCase';
 import { ISettingPriceBodyMaterialCoefficientUseCase } from '@/@domain/useCases/settings/price/ISettingPriceBodyMaterialCoefficientUseCase';
 import { ISettingPriceBodyPartCoefficientUseCase } from '@/@domain/useCases/settings/price/ISettingPriceBodyPartCoefficientUseCase';
 import { ISettingPriceDiameterCoefficientUseCase } from '@/@domain/useCases/settings/price/ISettingPriceDiameterCoefficientUseCase';
@@ -82,7 +95,9 @@ import { BodyPartRepository } from '@/@infrastructure/database/repositories/carR
 import { IClientProvider } from '@/@infrastructure/interfaces/IClientProvider';
 import { useGarageState } from '@/@presentation/@modules/garages/composables/useGarageState';
 import { useCreateQuoteState } from '@/@presentation/@modules/quotes/composables/useCreateQuoteState';
+import { useEditQuoteState } from '@/@presentation/@modules/quotes/composables/useEditQuoteState';
 import { useQuotesState } from '@/@presentation/@modules/quotes/composables/useQuotesState';
+import { useViewQuoteState } from '@/@presentation/@modules/quotes/composables/useViewQuoteState';
 import { useBodyMaterialState } from '@/@presentation/@modules/settings/carRepair/composables/useBodyMaterialState';
 import { useBodyPartState } from '@/@presentation/@modules/settings/carRepair/composables/useBodyPartState';
 import { useDentRepairTypeState } from '@/@presentation/@modules/settings/carRepair/composables/useDentRepairTypeState';
@@ -97,9 +112,11 @@ import { IBodyMaterialState } from '@/@presentation/types/composables/IBodyMater
 import { IBodyPartState } from '@/@presentation/types/composables/IBodyPartState';
 import { IDentRepairTypeState } from '@/@presentation/types/composables/IDentRepairTypeState';
 import { IUseCreateQuoteState } from '@/@presentation/types/composables/IUseCreateQuoteState';
+import { IUseEditQuoteState } from '@/@presentation/types/composables/IUseEditQuoteState';
 import { IUseGarageState } from '@/@presentation/types/composables/IUseGarageState';
 import { IUseQuotesState } from '@/@presentation/types/composables/IUseQuotesState';
 import { IUseUserState } from '@/@presentation/types/composables/IUseUserState';
+import { IUseViewQuoteState } from '@/@presentation/types/composables/IUseViewQuoteState';
 import { IUseSettingPriceBodyMaterialCoefficientState } from '@/@presentation/types/composables/settings/price/IUseSettingPriceBodyMaterialCoefficientState';
 import { IUseSettingPriceBodyPartCoefficientState } from '@/@presentation/types/composables/settings/price/IUseSettingPriceBodyPartCoefficientState';
 import { IUseSettingPriceDiameterCoefficientState } from '@/@presentation/types/composables/settings/price/IUseSettingPriceDiameterCoefficientState';
@@ -119,6 +136,7 @@ import { SupabaseClientProvider } from '../database/providers/SupabaseClientProv
 import { BodyMaterialRepository } from '../database/repositories/carRepair/BodyMaterialRepository';
 import { DentRepairTypeRepository } from '../database/repositories/carRepair/DentRepairTypeRepository';
 import { GarageRepository } from '../database/repositories/GarageRepository';
+import { QuoteDetailRepository } from '../database/repositories/QuoteDetailRepository';
 import { QuoteRepository } from '../database/repositories/QuoteRepository';
 import { SettingPriceBodyMaterialCoefficientRepository } from '../database/repositories/settings/price/SettingPriceBodyMaterialCoefficientRepository';
 import { SettingPriceBodyPartCoefficientRepository } from '../database/repositories/settings/price/SettingPriceBodyPartCoefficientRepository';
@@ -127,7 +145,9 @@ import { SettingPriceGeneralRepository } from '../database/repositories/settings
 import { SettingPriceImpactCountToUtRepository } from '../database/repositories/settings/price/SettingPriceImpactCountToUtRepository';
 import { SettingPriceRepairTypeCoefficientRepository } from '../database/repositories/settings/price/SettingPriceRepairTypeCoefficientRepository';
 import { UserRepository } from '../database/repositories/UserRepository';
+import { BrowserDownloadService } from '../download/BrowserDownloadService';
 import { IClient } from '../interfaces/IClient';
+import { Html2PdfGenerator } from '../pdf/Html2PdfGenerator';
 
 const container = new Container({ defaultScope: 'Singleton' });
 
@@ -156,6 +176,8 @@ container.bind<ISettingPriceRepairTypeCoefficientRepository>(SYMBOLS.Repositorie
 container.bind<IUserRepository>(SYMBOLS.Repositories.UserRepository).to(UserRepository).inSingletonScope();
 /** 3.5. -- Quote Repositories */
 container.bind<IQuoteRepository>(SYMBOLS.Repositories.QuoteRepository).to(QuoteRepository).inSingletonScope();
+/** 3.6. -- Quote Detail Repositories */
+container.bind<IQuoteDetailRepository>(SYMBOLS.Repositories.QuoteDetailRepository).to(QuoteDetailRepository).inSingletonScope();
 
 /** 4 - SERVICES */
 container.bind<IAuthService>(SYMBOLS.Services.AuthService).to(AuthService).inSingletonScope();
@@ -175,6 +197,10 @@ container.bind<ISettingPriceImpactCountToUtService>(SYMBOLS.Services.Setting.Pri
 container.bind<IUserService>(SYMBOLS.Services.UserService).to(UserService).inSingletonScope();
 /** 4.5. -- Cost Calculator Services */
 container.bind<ICostCalculatorService>(SYMBOLS.Services.CostCalculatorService).to(CostCalculatorService).inSingletonScope();
+/** 4.6. -- Quote Services */
+/** 4.7. -- Pdf Generator Services */
+container.bind<IPdfGenerator>(SYMBOLS.Services.PdfGeneratorService).to(Html2PdfGenerator).inSingletonScope();
+container.bind<IDownloadService>(SYMBOLS.Services.DownloadService).to(BrowserDownloadService);
 
 
 /** 5 - USE CASES */
@@ -204,13 +230,15 @@ container.bind<ICalculateTotalCostUseCase>(SYMBOLS.UseCases.CostCalculator.Calcu
 /** 5.6. -- Quote UseCases */
 // container.bind<IQuoteUseCase>(SYMBOLS.UseCases.Quote.QuoteUseCase).to(QuoteUseCase).inSingletonScope();
 container.bind<IQuotesUseCase>(SYMBOLS.UseCases.Quote.GetQuotesUseCase).to(GetQuotesUseCase).inSingletonScope();
+container.bind<IViewQuoteUseCase>(SYMBOLS.UseCases.Quote.ViewQuoteUseCase).to(ViewQuoteUseCase).inSingletonScope();
 container.bind<ICreateQuoteUseCase>(SYMBOLS.UseCases.Quote.CreateQuoteUseCase).to(CreateQuoteUseCase).inSingletonScope();
 container.bind<IInsertQuoteUseCase>(SYMBOLS.UseCases.Quote.InsertQuoteUseCase).to(InsertQuoteUseCase).inSingletonScope();
-// container.bind<IGetQuoteUseCase>(SYMBOLS.UseCases.Quote.GetQuoteUseCase).to(GetQuoteUseCase).inSingletonScope();
-// container.bind<IGetQuoteDetailsUseCase>(SYMBOLS.UseCases.Quote.GetQuoteDetailsUseCase).to(GetQuoteDetailsUseCase).inSingletonScope();
-container.bind<IAddQuoteLineItemUseCase>(SYMBOLS.UseCases.Quote.AddLineItemUseCase).to(AddLineItemUseCase).inSingletonScope();
+container.bind<IDeleteQuoteUseCase>(SYMBOLS.UseCases.Quote.DeleteQuoteUseCase).to(DeleteQuoteUseCase).inSingletonScope();
+container.bind<IGetQuoteUseCase>(SYMBOLS.UseCases.Quote.GetQuoteUseCase).to(GetQuoteUseCase).inSingletonScope();
+container.bind<IGetQuoteDetailUseCase>(SYMBOLS.UseCases.Quote.GetQuoteDetailsUseCase).to(GetQuoteDetailUseCase).inSingletonScope();
 // container.bind<ISaveQuoteUseCase>(SYMBOLS.UseCases.Quote.SaveQuoteUseCase).to(SaveQuoteUseCase).inSingletonScope();
-// container.bind<IDeleteQuoteUseCase>(SYMBOLS.UseCases.Quote.DeleteQuoteUseCase).to(DeleteQuoteUseCase).inSingletonScope();
+container.bind<IAddQuoteLineItemUseCase>(SYMBOLS.UseCases.Quote.AddLineItemUseCase).to(AddQuoteLineItemUseCase).inSingletonScope();
+container.bind<IGenerateQuotePdfUseCase>(SYMBOLS.UseCases.Quote.GenerateQuotePdfUseCase).to(GenerateQuotePdfUseCase).inSingletonScope();
 
 
 /** 6 - STATES */
@@ -256,6 +284,12 @@ container.bind<IUseSettingPriceRepairTypeCoefficientState>(SYMBOLS.States.Settin
 /** 6.3. -- Quote States */
 container.bind<IUseCreateQuoteState>(SYMBOLS.States.Quote.CreateQuoteState).toDynamicValue(() => {
   return useCreateQuoteState();
+});
+container.bind<IUseViewQuoteState>(SYMBOLS.States.Quote.ViewQuoteState).toDynamicValue(() => {
+  return useViewQuoteState();
+});
+container.bind<IUseEditQuoteState>(SYMBOLS.States.Quote.EditQuoteState).toDynamicValue(() => {
+  return useEditQuoteState();
 });
 container.bind<IUseQuotesState>(SYMBOLS.States.Quote.GetQuotesUseCase).toDynamicValue(() => {
   return useQuotesState();

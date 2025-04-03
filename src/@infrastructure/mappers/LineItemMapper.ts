@@ -18,7 +18,7 @@ export class LineItemMapper {
 
   static dtoToApi(dto: LineItemDto): LineItemApiModel {
     return {
-      id: dto.id,
+      ...(dto.id && { id: dto.id }),
       quote_id: dto.quoteId,
       body_part_id: dto.bodyPartId,
       body_material_id: dto.bodyMaterialId,

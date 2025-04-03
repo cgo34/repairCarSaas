@@ -13,6 +13,7 @@ const SYMBOLS = {
     GarageRepository: Symbol.for(SYMBOL_NAMES.GARAGE_REPOSITORY),
     InvoiceRepository: Symbol.for(SYMBOL_NAMES.INVOICE_REPOSITORY),
     QuoteRepository: Symbol.for(SYMBOL_NAMES.QUOTE_REPOSITORY),
+    QuoteDetailRepository: Symbol.for(SYMBOL_NAMES.QUOTE_DETAIL_REPOSITORY),
     // -- Settings CarRepair Repositories
     BodyPartRepository: Symbol.for(SYMBOL_NAMES.BODY_PART_REPOSITORY),
     BodyMaterialRepository: Symbol.for(SYMBOL_NAMES.BODY_MATERIAL_REPOSITORY),
@@ -49,6 +50,8 @@ const SYMBOLS = {
         SettingPriceDiameterCoefficientService: Symbol.for(SYMBOL_NAMES.SETTING_PRICE_DIAMETER_COEFFICIENT_SERVICE),
       }
     },
+    PdfGeneratorService: Symbol.for(SYMBOL_NAMES.PDF_GENERATOR_SERVICE),
+    DownloadService: Symbol.for(SYMBOL_NAMES.DOWNLOAD_SERVICE),
   },
   UseCases: {
     Auth: {
@@ -85,13 +88,18 @@ const SYMBOLS = {
       QuoteUseCase: Symbol.for(SYMBOL_NAMES.QUOTE_USE_CASE),
       GetQuoteUseCase: Symbol.for(SYMBOL_NAMES.GET_QUOTE_USE_CASE),
       GetQuotesUseCase: Symbol.for(SYMBOL_NAMES.GET_QUOTES_USE_CASE),
-      GetQuoteDetailsUseCase: Symbol.for(SYMBOL_NAMES.GET_QUOTE_DETAILS_USE_CASE),
+      ViewQuoteUseCase: Symbol.for(SYMBOL_NAMES.VIEW_QUOTE_USE_CASE),
       CreateQuoteUseCase: Symbol.for(SYMBOL_NAMES.CREATE_QUOTE_USE_CASE),
       InsertQuoteUseCase: Symbol.for(SYMBOL_NAMES.INSERT_QUOTE_USE_CASE),
-      AddLineItemUseCase: Symbol.for(SYMBOL_NAMES.ADD_QUOTE_LINE_ITEM_USE_CASE),
       SaveQuoteUseCase: Symbol.for(SYMBOL_NAMES.SAVE_QUOTE_USE_CASE),
       DeleteQuoteUseCase: Symbol.for(SYMBOL_NAMES.DELETE_QUOTE_USE_CASE),
-    }
+      
+      GetQuoteDetailsUseCase: Symbol.for(SYMBOL_NAMES.GET_QUOTE_DETAILS_USE_CASE),
+      // AddQuoteDetailsUseCase: Symbol.for(SYMBOL_NAMES.ADD_QUOTE_DETAILS_USE_CASE),
+      AddLineItemUseCase: Symbol.for(SYMBOL_NAMES.ADD_QUOTE_LINE_ITEM_USE_CASE),
+      // -- Pdf UseCases
+      GenerateQuotePdfUseCase: Symbol.for(SYMBOL_NAMES.GENERATE_QUOTE_PDF_USE_CASE),
+    },
   },
   States: {
     AuthState: Symbol.for(SYMBOL_NAMES.AUTH_STATE),
@@ -121,8 +129,10 @@ const SYMBOLS = {
     // -- Quotes States
     Quote: {
       QuoteState: Symbol.for(SYMBOL_NAMES.QUOTE_STATE),
-      GetQuotesUseCase: Symbol.for(SYMBOL_NAMES.GET_QUOTES_STATE),
+      ViewQuoteState: Symbol.for(SYMBOL_NAMES.VIEW_QUOTE_STATE),
       CreateQuoteState: Symbol.for(SYMBOL_NAMES.CREATE_QUOTE_STATE),
+      EditQuoteState: Symbol.for(SYMBOL_NAMES.EDIT_QUOTE_STATE),
+      GetQuotesUseCase: Symbol.for(SYMBOL_NAMES.GET_QUOTES_STATE),
     }
   },
 };

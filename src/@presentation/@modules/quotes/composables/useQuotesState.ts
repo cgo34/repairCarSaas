@@ -1,28 +1,41 @@
 import { IAuthState } from "@/@application/states/interfaces/IAuthState";
 import { IQuotesUseCase } from "@/@domain/useCases/quotes/IQuotesUseCase";
-import { QuoteDto } from "@/@infrastructure/dtos/QuoteDto";
 import { container } from "@/@infrastructure/ioc/inversify.config";
 import { SYMBOLS } from "@/@infrastructure/ioc/symbols";
+import { QuoteMapper } from "@/@presentation/mappers/QuoteMapper";
+import { QuoteViewModel } from "@/@presentation/types/models/QuoteViewModel";
 import { computed, ref } from "vue";
 
 export function useQuotesState() {
   // #region -> DEPENDENCIES
   const authState = container.get<IAuthState>(SYMBOLS.States.AuthState);
   const getQuotesUseCase = container.get<IQuotesUseCase>(SYMBOLS.UseCases.Quote.GetQuotesUseCase);
-  const _quotes = ref<QuoteDto[]>([]);
+  const deleteQuoteUseCase = container.get<IQuotesUseCase>(SYMBOLS.UseCases.Quote.DeleteQuoteUseCase);
   // #endregion
 
+  // #region -> REFS
+  const _quotes = ref<QuoteViewModel[]>([]);
+  // #endregion
+
+  // #region -> METHODS
   const init = async () => {
-    console.log('useQuotesState.init');
     
     if (authState.isAuthenticated && authState.user.value) {
-      _quotes.value = await getQuotesUseCase.execute(authState.user.value?.id);
+      const quotesDto = await getQuotesUseCase.execute(authState.user.value?.id);
+      _quotes.value = quotesDto.map(quote => QuoteMapper.dtoToView(quote));
     }
   }
+
+  const deleteQuote = async (quoteId: string) => {
+    deleteQuoteUseCase.execute(quoteId);
+    _quotes.value = _quotes.value.filter(quote => quote.id !== quoteId);
+  }
+  // #endregion
 
   return {
     init,
 
-    quotes: computed(() => _quotes.value)
+    quotes: computed(() => _quotes.value),
+    deleteQuote
   }
 }

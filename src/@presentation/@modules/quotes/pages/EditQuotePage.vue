@@ -1,13 +1,65 @@
 <template>
   <MainLayout>
     <v-container fluid class="px-0 py-0">
+      
+      <!-- Actions du devis -->
+      <v-toolbar title="" color="transparent">
+        <template v-slot:prepend>
+          
+          <BackButton fallbackPath="/quotes" />
+        </template>
+        <template v-slot:append>
+
+          <GenericButton
+            class="me-2 text-none"
+            color="success"
+            prepend-icon="mdi-check-bold"
+            variant="flat"
+            @click="onFinalizeBtnClick"
+          >
+            Finalize
+          </GenericButton>
+
+          <GenericButton
+            class="me-2 text-none"
+            color="secondary"
+            prepend-icon="mdi-file-pdf-box"
+            variant="flat"
+            @click="onViewPdfBtnClick"
+          >
+            Preview
+          </GenericButton>
+
+          <GenericButton
+            class="me-2 text-none"
+            color="primary"
+            prepend-icon="mdi-send"
+            variant="flat"
+            @click="onSendBtnClick"
+          >
+            Send
+          </GenericButton>
+
+          <GenericButton
+            class="me-2 text-none"
+            color="error"
+            prepend-icon="mdi-delete"
+            variant="flat"
+            @click="onDeleteBtnClick"
+          >
+            Delete
+          </GenericButton>
+        </template>
+
+      </v-toolbar>
+      
       <v-form ref="form">
         <v-card
           class="rounded-lg"
           outlined
         >
           <v-card-title class="text-h5">
-            Créer un Devis
+            Modifier un Devis
           </v-card-title>
 
           <v-card-text>
@@ -223,7 +275,7 @@
           </v-card-text>
           <v-card-text v-if="isForfait">
             <v-text-field
-              v-model="forfaitAmount"
+              :modelValue="forfaitAmount"
               placeholder="Montant du forfait"
               dense
               outlined
@@ -283,7 +335,6 @@
                   placeholder="Montant"
                   dense
                   outlined
-                  @update:model-value="onUpdateDentRemovalPrice($event, item.lineId)"
                 />
               </template>
               <template #[`item.price`]="{ item }">
@@ -364,22 +415,12 @@
           
           <v-card-actions>
               <v-spacer></v-spacer>
-
               <v-btn
-                v-if="quoteInformations.status === 'draft'"
-                class="mt-3"
-                color="primary"
-                @click="onSaveBtnClick"
-              >
-                Sauvegarder
-              </v-btn>
-              <v-btn
-                v-else
                 class="mt-3"
                 color="primary"
                 @click="onUpdateBtnClick"
               >
-                Mettre à jour
+                Enregistrer
               </v-btn>
           </v-card-actions>
         </v-card>
@@ -391,12 +432,14 @@
 <script setup lang="ts">
 import { container } from '@/@infrastructure/ioc/inversify.config';
 import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
+import BackButton from '@/@presentation/@ui/components/buttons/BackButton.vue';
+import GenericButton from '@/@presentation/@ui/components/buttons/GenericButton.vue';
 import MainLayout from '@/@presentation/@ui/layouts/MainLayout.vue';
 import BodyMaterialSelect from '@/@presentation/components/BodyMaterialSelect.vue';
 import BodyPartSelect from '@/@presentation/components/BodyPartSelect.vue';
 import CountrySelect from '@/@presentation/components/CountrySelect.vue';
 import RepairTypeSelect from '@/@presentation/components/RepairTypeSelect.vue';
-import { IUseCreateQuoteState } from '@/@presentation/types/composables/IUseCreateQuoteState';
+import { IUseEditQuoteState } from '@/@presentation/types/composables/IUseEditQuoteState';
 import { BodyMaterialViewModel } from '@/@presentation/types/models/carRepair/BodyMaterialViewModel';
 import { BodyPartViewModel } from '@/@presentation/types/models/carRepair/BodyPartViewModel';
 import { DentRepairTypeViewModel } from '@/@presentation/types/models/carRepair/DentRepairTypeViewModel';
@@ -404,16 +447,15 @@ import { CountryViewModel } from '@/@presentation/types/models/CountryViewModel'
 import { GarageViewModel } from '@/@presentation/types/models/GarageViewModel';
 import { LineItemViewModel } from '@/@presentation/types/models/LineItemViewModel';
 import { UserViewModel } from '@/@presentation/types/models/UserViewModel';
-import router from '@/router';
 import { computed, onMounted, ref } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 
 // Injection du state depuis Inversify
-const useCreateQuoteState = container.get<IUseCreateQuoteState>(SYMBOLS.States.Quote.CreateQuoteState);
+const useEditQuoteState = container.get<IUseEditQuoteState>(SYMBOLS.States.Quote.EditQuoteState);
 
 const {
   init,
 
-  quote,
   quoteInformations,
   expirationDate,
 
@@ -451,8 +493,6 @@ const {
   selectBodyPart,
   selectBodyMaterial,
   selectRepairType,
-  setDentRemovalPrice,
-
   
   subtotal,
   totalDegarnissage,
@@ -460,9 +500,13 @@ const {
   totalTaxRate,
   total,
 
-  saveQuote
-} = useCreateQuoteState;
+  updateQuote
+} = useEditQuoteState;
 
+const router = useRouter();
+const route = useRoute();
+
+const quoteId = route.params.id as string;
 const techniciansList = ref<UserViewModel[]>(technicians.value);
 const garagesList = ref<GarageViewModel[]>(garages.value);
 
@@ -483,6 +527,10 @@ const headers = computed(()=> {
 })
 
 // #region -> METHODS
+const onBackBtnClick = () => {
+  router.back();
+};
+
 const onSearchTechnician = (event: InputEvent) => {
   const search = (event.target as HTMLInputElement).value;
   if (search) {
@@ -492,6 +540,10 @@ const onSearchTechnician = (event: InputEvent) => {
   }
 };
 
+const onSelectTechnician = (technician: UserViewModel) => {
+  selectTechnician(technician);
+};
+
 const onSearchGarage = (event: InputEvent) => {
   const search = (event.target as HTMLInputElement).value;
   if (search) {
@@ -499,10 +551,6 @@ const onSearchGarage = (event: InputEvent) => {
   } else {
     garagesList.value = garages.value;
   }
-};
-
-const onSelectTechnician = (technician: UserViewModel) => {
-  selectTechnician(technician);
 };
 
 const onSelectGarage = (garage: GarageViewModel) => {
@@ -525,8 +573,8 @@ const onUpdateIsForfait = (value: boolean) => {
   setIsForfait(value);
 };
 
-const onUpdateForfaitAmount = (value: string) => {
-  setForfaitAmount(Number(value));
+const onUpdateForfaitAmount = (value: number) => {
+  setForfaitAmount(value);
 };
 
 const onUpdateIsDisplayUnitPrice = (value: boolean) => {
@@ -538,9 +586,7 @@ const onUpdateIsComputeCommissionWithoutDentRemoval = (value: boolean) => {
 };
 
 const onSelectCountry = (country: CountryViewModel | undefined) => {
-  if (!country)
-    return;
-
+  console.log('onSelectCountry -> country', country);
   selectCountry(country);
 };
 
@@ -549,11 +595,9 @@ const onAddItemBtnClick = () => {
 };
 
 const onRemoveItemBtnClick = (item: LineItemViewModel) => {
-  if (!item.lineId)
-    return;
-
   removeLine(item.lineId);
 };
+
 
 const onSelectBodyPart = (bodyPart: BodyPartViewModel | undefined, lineId: number) => {
   if (!bodyPart)
@@ -575,24 +619,34 @@ const onSelectRepairType = (repairType: DentRepairTypeViewModel | undefined, lin
 
   selectRepairType(lineId, repairType);
 };
+// #endregion
 
-const onUpdateDentRemovalPrice = (value: string, lineId: number) => {
-  setDentRemovalPrice(lineId, Number(value));
+// #REGION -> ACTION METHODS
+const onFinalizeBtnClick = () => {
+  console.log('onFinalizeBtnClick -> finalize quote');
 };
 
-const onSaveBtnClick = () => {
-  saveQuote().then(() => {
-    router.push(`/quotes/edit/${quote.value.id}`);
-  });
+const onSendBtnClick = () => {
+  console.log('onSendBtnClick -> send quote');
+};
+
+const onViewPdfBtnClick = () => {
+  console.log('onViewPdfBtnClick -> pdf visualization');
+  router.push(`/quotes/view/${route.params.id}`);
+};
+
+const onDeleteBtnClick = () => {
+  console.log('onDeleteBtnClick -> delete quote');
 };
 
 const onUpdateBtnClick = () => {
   console.log('onUpdateBtnClick -> quoteInformations', quoteInformations.value);
+  updateQuote();
 };
 // #endregion
   
 onMounted(async () => {
-  await init();
+  await init(route.params.id);
   techniciansList.value = technicians.value;
   garagesList.value = garages.value;
 });

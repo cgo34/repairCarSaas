@@ -1,5 +1,6 @@
 import { QuoteDto } from "@/@infrastructure/dtos/QuoteDto";
 import { QuoteViewModel } from "../types/models/QuoteViewModel";
+import { LineItemMapper } from "./LineItemMapper";
 
 export class QuoteMapper {
   static viewToDto(view: QuoteViewModel): QuoteDto {
@@ -28,6 +29,8 @@ export class QuoteMapper {
       forfaitAmount: view.forfaitAmount ?? undefined,
       country: view.country ?? undefined,
       currency: view.currency,
+
+      lineItems: view.lineItems?.map((line) => LineItemMapper.viewToDto(line)) ?? [],
 
       isSent: view.isSent,
       sentAt: view.sentAt ? view.sentAt.toISOString() : null

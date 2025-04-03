@@ -7,8 +7,8 @@ import { IBodyPartUseCase } from '@/@domain/useCases/carRepair/IBodyPartUseCase'
 import { IDentRepairTypeUseCase } from '@/@domain/useCases/carRepair/IDentRepairTypeUseCase';
 import { ICalculateLineCostUseCase } from '@/@domain/useCases/cost/ICalculateLineCostUseCase';
 import { IAddQuoteLineItemUseCase } from '@/@domain/useCases/quotes/IAddQuoteLineItemUseCase';
-import { ICreateQuoteUseCase } from '@/@domain/useCases/quotes/ICreateQuoteUseCase';
-import { IInsertQuoteUseCase } from '@/@domain/useCases/quotes/IInsertQuoteUseCase';
+import { IGetQuoteDetailUseCase } from '@/@domain/useCases/quotes/IGetQuoteDetailUseCase';
+import { IGetQuoteUseCase } from '@/@domain/useCases/quotes/IGetQuoteUseCase';
 import { ISettingPriceUseCase } from '@/@domain/useCases/settings/price/ISettingPriceUseCase';
 import { container } from '@/@infrastructure/ioc/inversify.config';
 import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
@@ -31,11 +31,11 @@ import { SettingPriceViewModel } from '@/@presentation/types/models/settings/pri
 import { computed, ref } from 'vue';
 // endregion
 
-export function useCreateQuoteState() {
+export function useEditQuoteState() {
   // #region -> DEPENDENCIES
   const authState = container.get<IAuthState>(SYMBOLS.States.AuthState);
-  const createQuoteUseCase = container.get<ICreateQuoteUseCase>(SYMBOLS.UseCases.Quote.CreateQuoteUseCase);
-  const insertQuoteUseCase = container.get<IInsertQuoteUseCase>(SYMBOLS.UseCases.Quote.InsertQuoteUseCase);
+  const getQuoteUseCase = container.get<IGetQuoteUseCase>(SYMBOLS.UseCases.Quote.GetQuoteUseCase);
+  const getQuoteDetailUseCase = container.get<IGetQuoteDetailUseCase>(SYMBOLS.UseCases.Quote.GetQuoteDetailsUseCase);
   const garageUseCase = container.get<IGarageUseCase>(SYMBOLS.UseCases.Garage);
   const technicianUseCase = container.get<IUserUseCase>(SYMBOLS.UseCases.UserUseCase);
   const bodyPartUseCase = container.get<IBodyPartUseCase>(SYMBOLS.UseCases.CarRepair.BodyPartUseCase);
@@ -85,41 +85,39 @@ export function useCreateQuoteState() {
   const _forfaitAmount = ref<number | undefined>(undefined);
 
   const _quoteLines = ref<LineItemViewModel[]>([]);
+  const _quoteId = ref<string>('');
 
   const loading = ref(false);
   const error = ref(undefined);
 // #endregion
 
   // #region -> INIT
-  const init = async () => {
+  const init = async (id: string) => {
     loading.value = true;
     try {
       if (!authState.user.value)
         throw new Error('User not found');
 
-      resetQuote();
-
-      _quote.value = {
-        quoteNumber: '',
-        isForfait: false,
-        status: 'draft',
-        country: 'FR',
-        currency: 'EUR',
-        isSent: false,
-        sentAt: undefined,
-        userId: '',
-    
-        startDate: new Date().toISOString(),
-        endDate: '',
-    
-        garage: _selectedGarage.value,
-        technician: _selectedTechnician.value,
-    
-        lineItems: _quoteLines.value,
-      }
+      // resetQuote();
+      _quoteId.value = id;     
       
-      const quoteDto = await createQuoteUseCase.execute(QuoteMapper.viewToDto(_quote.value), authState.user.value.id);
+      const quoteDto = await getQuoteUseCase.execute(id);
+      // console.log('QuoteDto', quoteDto);
+      const quoteDetailDto = await getQuoteDetailUseCase.execute(id);
+      // console.log('quoteDetailDto', quoteDetailDto);
+      
       _quote.value = QuoteMapper.dtoToView(quoteDto);
+      // console.log('_quote', _quote.value);
+      
+      _quoteLines.value = quoteDetailDto?.map((line, idx) => {
+        
+        return {
+          ...LineItemMapper.dtoToView(line),
+          lineId: idx + 1,
+        }
+      }) ?? [];
+      console.log('_quoteLines', _quoteLines.value);
+      
       
       // TODO: (gce) -> MOVE TO MAPPER
       _quoteInformations.value.number = _quote.value.quoteNumber;
@@ -131,6 +129,13 @@ export function useCreateQuoteState() {
       // expirationDate.setMonth(expirationDate.getMonth() + 1);
       // _quoteInformations.value.expirationDate = expirationDate.toISOString().split('T')[0];
       _quoteInformations.value.status = _quote.value.status;
+
+      _selectedTechnician.value = _quote.value.technician;
+      _selectedGarage.value = _quote.value.garage;
+
+      _carInformations.value.immatriculation = _quote.value.carImmatriculation ?? '';
+      _carInformations.value.brand = _quote.value.carBrand ?? '';
+      _carInformations.value.dateEntryCirculation = _quote.value.carDateEntryCirculation ?? '';
 
       const [garageData, technicianData, bodyPartData, bodyMaterialData, repairTypeData, priceParamsData] =
         await Promise.all([
@@ -337,10 +342,15 @@ export function useCreateQuoteState() {
   }
 
   
-  const subtotal = computed(() => 
-    _quoteLines.value.reduce((sum, item) => {
-      return sum + item.price; // 👈 Évite undefined en mettant `?? 0`
-    }, 0) // 👈 Ajoute la valeur initiale ici
+  const subtotal = computed(() => {
+    if (!_isForfait.value) {
+      return _quoteLines.value.reduce((sum, item) => {
+        return sum + item.price; // 👈 Évite undefined en mettant `?? 0`
+      }, 0) // 👈 Ajoute la valeur initiale ici
+    }
+
+    return _forfaitAmount.value ?? 0;
+  }
   );
 
   const totalDegarnissage = computed(() => 
@@ -369,7 +379,14 @@ export function useCreateQuoteState() {
   });
 
   const total = computed(() => {
-    return subTotalWithDegarnissage.value + totalTaxRate.value;
+    if (!_isForfait.value) {
+      return subTotalWithDegarnissage.value + totalTaxRate.value;
+    }
+    
+    if (!_forfaitAmount.value)
+      return 0;
+
+    return _forfaitAmount.value + totalTaxRate.value;
   });
 
   const saveQuote = async () => {

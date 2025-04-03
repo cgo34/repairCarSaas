@@ -8,7 +8,7 @@ const customizerDrawer = ref(config.Customizer_drawer);
 const miniSidebar = ref(config.mini_sidebar);
 const fontTheme = ref(config.fontTheme);
 const inputBg = ref(config.inputBg);
-const currentTheme = ref('PurpleDarkTheme');
+const currentTheme = ref('PurpleLightTheme');
 
 export function useCustomizerState() {
   const theme = useTheme();

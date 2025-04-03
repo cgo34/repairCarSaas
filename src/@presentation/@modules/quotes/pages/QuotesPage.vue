@@ -28,6 +28,12 @@
           </template>
           <!-- #ENDREGION -->
 
+          <!-- #REGION -> BODY : TOTAL -->
+          <template #item.total="{ item }">
+            {{ item.isForfait ? `${ item.forfaitAmount } €` : `${ item.total ?? 0 } €` }}
+          </template>
+
+
           <!-- #REGION -> ITEM ACTIONS -->
           <template #item.actions="{ item }">
             <v-icon
@@ -58,6 +64,7 @@ import { container } from '@/@infrastructure/ioc/inversify.config';
 import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
 import MainLayout from '@/@presentation/@ui/layouts/MainLayout.vue';
 import { IUseQuotesState } from '@/@presentation/types/composables/IUseQuotesState';
+import { QuoteViewModel } from '@/@presentation/types/models/QuoteViewModel';
 import { onMounted } from 'vue';
 // import { IUseQuoteState } from '@/@presentation/types/composables/IUseQuoteState';
 // import { onMounted } from 'vue';
@@ -65,7 +72,7 @@ import { useRouter } from 'vue-router';
 
 // Injection du state depuis Inversify
 const useQuoteState = container.get<IUseQuotesState>(SYMBOLS.States.Quote.GetQuotesUseCase);
-const { init, quotes } = useQuoteState;
+const { init, quotes, deleteQuote } = useQuoteState;
 
 const router = useRouter();
 
@@ -73,10 +80,10 @@ const headers = [
   { title: 'Numéro de devis', align: 'start', key: 'quoteNumber' },
   { title: 'Statut', align: 'start', key: 'status' },
   { title: 'Date', align: 'start', key: 'startDate' },
-  { title: 'Technicien', key: 'technicianId' },
-  { title: 'Garage', key: 'garageId' },
+  { title: 'Technicien', key: 'technician.fullName' },
+  { title: 'Garage', key: 'garage.name' },
   { title: 'Forfait', key: 'isForfait' },
-  { title: 'Total (€)', key: 'total' },
+  { title: 'Total', key: 'total' },
   { title: 'Actions', sortable: false, key: 'actions' }
 ] as const;
 
@@ -103,17 +110,17 @@ const onAddQuote = () => {
   router.push('/quotes/new');
 };
 
-const onEditQuote = (item) => {
+const onEditQuote = (item: QuoteViewModel) => {
   router.push(`/quotes/edit/${item.id}`);
 };
 
-const onDeleteQuote = async (item) => {
+const onDeleteQuote = async (item: QuoteViewModel) => {
   if (!item.id) return;
 
   const confirmed = confirm(`Êtes-vous sûr de vouloir supprimer le devis numéro "${item.quoteNumber}" ?`);
   if (!confirmed) return;
 
-  // await deleteQuote(item.id);
+  await deleteQuote(item.id);
 };
 
 onMounted(async () => {

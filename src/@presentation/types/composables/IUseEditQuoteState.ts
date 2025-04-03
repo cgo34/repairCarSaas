@@ -8,11 +8,11 @@ import { LineItemViewModel } from '../models/LineItemViewModel';
 import { QuoteStatusViewType } from '../models/QuoteStatusViewType';
 import { UserViewModel } from '../models/UserViewModel';
 
-export interface IUseCreateQuoteState {
+export interface IUseEditQuoteState {
   loading: Ref<boolean>;
   error: Ref<unknown>;
 
-  init(): Promise<void>;
+  init(id: string): Promise<void>;
   quoteInformations: ComputedRef<{ number: string; date: string, expirationDate: string; status: QuoteStatusViewType; }>;
   expirationDate: ComputedRef<string>;
 

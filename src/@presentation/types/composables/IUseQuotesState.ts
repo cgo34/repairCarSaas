@@ -7,5 +7,5 @@ export interface IUseQuotesState {
 
   init(): Promise<void>;
   quotes: ComputedRef<QuoteDto[]>;
-
+  deleteQuote(quoteId: string): Promise<void>;
 }
