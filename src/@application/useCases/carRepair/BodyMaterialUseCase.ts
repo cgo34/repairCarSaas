@@ -1,6 +1,6 @@
-import { BodyMaterialDto } from "@/@application/dtos/carRepair/BodyMaterialDto";
-import { IBodyMaterialUseCase } from "@/@application/useCases/interfaces/carRepair/IBodyMaterialUseCase";
 import { IBodyMaterialService } from "@/@domain/services/carRepair/IBodyMaterialService";
+import { IBodyMaterialUseCase } from "@/@domain/useCases/carRepair/IBodyMaterialUseCase";
+import { BodyMaterialDto } from "@/@infrastructure/dtos/carRepair/BodyMaterialDto";
 import { SYMBOLS } from "@/@infrastructure/ioc/symbols";
 import { inject, injectable } from "inversify";
 
@@ -15,22 +15,18 @@ export class BodyMaterialUseCase implements IBodyMaterialUseCase {
   }
 
   async executeGetAll(): Promise<BodyMaterialDto[]> {
-    console.log('[BodyMaterialUseCase] Executing getAll');
     return this.bodyMaterialService.getAll();
   }
 
   async executeCreate(bodyMaterial: BodyMaterialDto): Promise<BodyMaterialDto> {
-    console.log('[BodyMaterialUseCase] Executing with:', bodyMaterial);
     return this.bodyMaterialService.create(bodyMaterial);
   }
 
   async executeUpdate(bodyMaterial: BodyMaterialDto): Promise<BodyMaterialDto> {
-    console.log('[BodyMaterialUseCase] Executing with:', bodyMaterial);
     return this.bodyMaterialService.update(bodyMaterial);
   }
 
   async executeDelete(id: string): Promise<void> {
-    console.log('[BodyMaterialUseCase] Executing with:', id);
     return this.bodyMaterialService.delete(id);
   }
 }

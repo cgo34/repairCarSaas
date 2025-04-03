@@ -1,14 +1,12 @@
-import { BodyPartDto } from "@/@application/dtos/carRepair/BodyPartDto";
 import { IBodyPartRepository } from "@/@domain/repositories/carRepair/IBodyPartRepository";
 import { IBodyPartService } from "@/@domain/services/carRepair/IBodyPartService";
+import { BodyPartDto } from "@/@infrastructure/dtos/carRepair/BodyPartDto";
 import { SYMBOLS } from "@/@infrastructure/ioc/symbols";
 import { inject, injectable } from "inversify";
 
 @injectable()
 export class BodyPartService implements IBodyPartService {
-  constructor(@inject(SYMBOLS.Repositories.BodyPartRepository) private bodyPartRepository: IBodyPartRepository) {
-    console.log('[BodyPartService] Initialized with BodyPartRepository:', bodyPartRepository);
-  }
+  constructor(@inject(SYMBOLS.Repositories.BodyPartRepository) private bodyPartRepository: IBodyPartRepository) {}
 
   async getAll(): Promise<BodyPartDto[]> {
     return await this.bodyPartRepository.getAll();

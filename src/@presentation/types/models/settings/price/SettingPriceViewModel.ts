@@ -3,6 +3,7 @@ import { SettingPriceBodyPartCoefficientViewModel } from "./SettingPriceBodyPart
 import { SettingPriceDiameterCoefficientViewModel } from "./SettingPriceDiameterCoefficientViewModel";
 import { SettingPriceGeneralViewModel } from "./SettingPriceGeneralViewModel";
 import { SettingPriceImpactCountToUtViewModel } from "./SettingPriceImpactCountToUtViewModel";
+import { SettingPriceRepairTypeCoefficientViewModel } from "./SettingPriceRepairTypeCoefficientViewModel";
 
 export interface SettingPriceViewModel {
   general: SettingPriceGeneralViewModel;
@@ -10,4 +11,5 @@ export interface SettingPriceViewModel {
   bodyParts: SettingPriceBodyPartCoefficientViewModel[];
   diameters: SettingPriceDiameterCoefficientViewModel[];
   impactsCount: SettingPriceImpactCountToUtViewModel[];
+  repairTypes: SettingPriceRepairTypeCoefficientViewModel[];
 }

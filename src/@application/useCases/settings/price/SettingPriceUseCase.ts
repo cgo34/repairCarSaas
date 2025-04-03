@@ -1,10 +1,11 @@
-import { SettingPriceDto } from '@/@application/dtos/settings/price/SettingPriceDto';
-import { ISettingPriceUseCase } from '@/@application/useCases/interfaces/settings/price/ISettingPriceUseCase';
+import { ISettingPriceRepairTypeCoefficientRepository } from '@/@domain/repositories/settings/price/ISettingPriceRepairTypeCoefficientRepository';
 import { ISettingPriceBodyMaterialCoefficientService } from '@/@domain/services/settings/price/ISettingPriceBodyMaterialCoefficientService';
 import { ISettingPriceBodyPartCoefficientService } from '@/@domain/services/settings/price/ISettingPriceBodyPartCoefficientService';
 import { ISettingPriceDiameterCoefficientService } from '@/@domain/services/settings/price/ISettingPriceDiameterCoefficientService';
 import { ISettingPriceGeneralService } from '@/@domain/services/settings/price/ISettingPriceGeneralService';
 import { ISettingPriceImpactCountToUtService } from '@/@domain/services/settings/price/ISettingPriceImpactCountToUtService';
+import { ISettingPriceUseCase } from '@/@domain/useCases/settings/price/ISettingPriceUseCase';
+import { SettingPriceDto } from '@/@infrastructure/dtos/settings/price/SettingPriceDto';
 import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
 import { inject, injectable } from 'inversify';
 
@@ -21,6 +22,8 @@ export class SettingPriceUseCase implements ISettingPriceUseCase {
     private settingPriceDiameterCoefficientService: ISettingPriceDiameterCoefficientService,
     @inject(SYMBOLS.Services.Setting.Price.SettingPriceImpactCountToUtService)
     private settingPriceImpactCountToUtService: ISettingPriceImpactCountToUtService,
+    @inject(SYMBOLS.Repositories.Setting.Price.RepairTypeCoefficient)
+    private settingPriceRepairTypeCoefficientRepository: ISettingPriceRepairTypeCoefficientRepository
   ) {}
 
   async getByUserId(userId: string): Promise<SettingPriceDto> {
@@ -29,6 +32,7 @@ export class SettingPriceUseCase implements ISettingPriceUseCase {
     const bodyPartCoefficient = await this.settingPriceBodyPartCoefficientService.getByUserId(userId);
     const diameterCoefficient = await this.settingPriceDiameterCoefficientService.getByUserId(userId);
     const impactCountToUt = await this.settingPriceImpactCountToUtService.getByUserId(userId);
+    const repairtTypes = await this.settingPriceRepairTypeCoefficientRepository.getByUserId(userId);
 
     return {
       general,
@@ -36,6 +40,7 @@ export class SettingPriceUseCase implements ISettingPriceUseCase {
       bodyParts: bodyPartCoefficient,
       diameters: diameterCoefficient,
       impactsCount: impactCountToUt,
+      repairTypes: repairtTypes
     };
   }
 }

@@ -1,8 +1,8 @@
 // src/@infrastructure/database/repositories/settings/price/SettingPriceHourlyRateRepository.ts
-import { SettingPriceDto } from '@/@application/dtos/settings/price/SettingPriceDto';
 import { ISettingPriceRepository } from '@/@domain/repositories/settings/price/ISettingPriceRepository';
 import { SettingPriceApiModel } from '@/@infrastructure/database/api/settings/price/SettingPriceApiModel';
 import { SupabaseClient } from '@/@infrastructure/database/clients/SupabaseClient';
+import { SettingPriceDto } from '@/@infrastructure/dtos/settings/price/SettingPriceDto';
 import { IClientProvider } from '@/@infrastructure/interfaces/IClientProvider';
 import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
 import { SettingPriceMapper } from '@/@infrastructure/mappers/settings/price/SettingPriceMapper';

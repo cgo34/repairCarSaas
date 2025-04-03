@@ -10,7 +10,6 @@ export class LogoutUseCase implements ILogoutUseCase {
   ) {}
 
   async execute(): Promise<void> {
-    console.log('[LogoutUseCase] Executing logout');
     await this.authService.logout();
   }
 }

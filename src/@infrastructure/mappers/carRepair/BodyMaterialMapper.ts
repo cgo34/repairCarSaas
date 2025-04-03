@@ -1,6 +1,6 @@
 // src/@infrastructure/mappers/BodyMaterialMapper.ts
-import { BodyMaterialDto } from '@/@application/dtos/carRepair/BodyMaterialDto';
 import { BodyMaterialApiModel } from '@/@infrastructure/database/api/carRepair/BodyMaterialApiModel';
+import { BodyMaterialDto } from '@/@infrastructure/dtos/carRepair/BodyMaterialDto';
 
 export class BodyMaterialMapper {
   static apiToDto(apiModel: BodyMaterialApiModel): BodyMaterialDto {

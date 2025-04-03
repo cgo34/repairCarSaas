@@ -2,7 +2,7 @@
   <GenericSelect
     :model-value="model"
     :items="bodyMaterials"
-    label="Sélectionner un matériau de carrosserie"
+    label="Matériau"
     @update:model-value="onSelectBodyMaterial"
     @select="onSelectBodyMaterial"
   />

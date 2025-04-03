@@ -1,5 +1,5 @@
-import { SettingPriceDiameterCoefficientDto } from '@/@application/dtos/settings/price/SettingPriceDiameterCoefficientDto';
 import { SettingPriceDiameterCoefficientApiModel } from '@/@infrastructure/database/api/settings/price/SettingPriceDiameterCoefficientApiModel';
+import { SettingPriceDiameterCoefficientDto } from '@/@infrastructure/dtos/settings/price/SettingPriceDiameterCoefficientDto';
 
 export class SettingPriceDiameterCoefficientMapper {
   static apiToDto(apiModel: SettingPriceDiameterCoefficientApiModel): SettingPriceDiameterCoefficientDto {

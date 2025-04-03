@@ -1,5 +1,5 @@
-import { SettingPriceBodyPartCoefficientDto } from '@/@application/dtos/settings/price/SettingPriceBodyPartCoefficientDto';
 import { SettingPriceBodyPartCoefficientApiModel } from '@/@infrastructure/database/api/settings/price/SettingPriceBodyPartCoefficientApiModel';
+import { SettingPriceBodyPartCoefficientDto } from '@/@infrastructure/dtos/settings/price/SettingPriceBodyPartCoefficientDto';
 
 export class SettingPriceBodyPartCoefficientMapper {
   static apiToDto(apiModel: SettingPriceBodyPartCoefficientApiModel): SettingPriceBodyPartCoefficientDto {
@@ -12,6 +12,8 @@ export class SettingPriceBodyPartCoefficientMapper {
   }
 
   static dtoToApi(dto: SettingPriceBodyPartCoefficientDto): SettingPriceBodyPartCoefficientApiModel {
+    console.log('dto to api body part', dto);
+    
     return {
       user_id: dto.userId,
       body_part_id: dto.bodyPartId,

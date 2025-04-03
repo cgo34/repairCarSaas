@@ -1,14 +1,17 @@
 export enum SYMBOL_NAMES {
     // Clients
     SUPABASE_CLIENT = 'SupabaseClient',
+
     // Providers
     CLIENT_PROVIDER = 'ClientProvider',
-    // Repositories
+
+    // #region -> REPOSITORIES
     AUTH_REPOSITORY = 'AuthRepository',
     USER_REPOSITORY = 'UserRepository',
     GARAGE_REPOSITORY = 'GarageRepository',
     INVOICE_REPOSITORY = 'InvoiceRepository',
     QUOTE_REPOSITORY = 'QuoteRepository',
+    QUOTE_DETAIL_REPOSITORY = 'QuoteDetailRepository',
     // Settings CarRepair Repositories
     BODY_PART_REPOSITORY = 'BodyPartRepository',
     BODY_MATERIAL_REPOSITORY = 'BodyMaterialRepository',
@@ -19,11 +22,15 @@ export enum SYMBOL_NAMES {
     SETTING_PRICE_BODY_MATERIAL_COEFFICIENT = 'SettingPriceBodyMaterialCoefficient',
     SETTING_PRICE_BODY_PART_COEFFICIENT = 'SettingPriceBodyPartCoefficient',
     SETTING_PRICE_DIAMETER_COEFFICIENT = 'SettingPriceDiameterCoefficient',
-    // Services
+    SETTING_PRICE_REPAIR_TYPE_COEFFICIENT = 'SettingPriceRepairTypeCoefficient',
+    // #endregion
+
+    // #region -> SERVICES
     AUTH_SERVICE = 'AuthService',
     USER_SERVICE = 'UserService',
     GARAGE_SERVICE = 'GarageService',
     NOTIFICATION_SERVICE = 'NotificationService',
+    COST_CALCULATOR_SERVICE = 'CostCalculatorService',
     // Settings CarRepair Services
     BODY_PART_SERVICE = 'BodyPartService',
     BODY_MATERIAL_SERVICE = 'BodyMaterialService',
@@ -35,7 +42,12 @@ export enum SYMBOL_NAMES {
     SETTING_PRICE_BODY_MATERIAL_COEFFICIENT_SERVICE = 'SettingPriceBodyMaterialCoefficientService',
     SETTING_PRICE_BODY_PART_COEFFICIENT_SERVICE = 'SettingPriceBodyPartCoefficientService',
     SETTING_PRICE_DIAMETER_COEFFICIENT_SERVICE = 'SettingPriceDiameterCoefficientService',
-    // UseCases
+    // -- Pdf Generator Services
+    PDF_GENERATOR_SERVICE = 'PdfGeneratorService',
+    DOWNLOAD_SERVICE = 'DownloadService',
+    // #endregion
+  
+    // #region -> USE CASES
     // -- Auth UseCases
     AUTH_USE_CASE = 'AuthUseCase',
     LOGIN_USE_CASE = 'LoginUseCase',
@@ -56,7 +68,28 @@ export enum SYMBOL_NAMES {
     SETTING_PRICE_BODY_MATERIAL_COEFFICIENT_USE_CASE = 'SettingPriceBodyMaterialCoefficientUseCase',
     SETTING_PRICE_BODY_PART_COEFFICIENT_USE_CASE = 'SettingPriceBodyPartCoefficientUseCase',
     SETTING_PRICE_DIAMETER_COEFFICIENT_USE_CASE = 'SettingPriceDiameterCoefficientUseCase',
-    // States
+    SETTING_PRICE_REPAIR_TYPE_COEFFICIENT_USE_CASE = 'SettingPriceRepairTypeCoefficientUseCase',
+    // -- Cost Calculator UseCases
+    CALCULATE_TOTAL_COST_USE_CASE = 'CalculateTotalCostUseCase',
+    CALCULATE_LINE_COST_USE_CASE = 'CalculateLineCostUseCase',
+    // -- Quote UseCases
+    QUOTE_USE_CASE = 'QuoteUseCase',
+    GET_QUOTE_USE_CASE = 'GetQuoteUseCase',
+    GET_QUOTES_USE_CASE = 'GetQuotesUseCase',
+    VIEW_QUOTE_USE_CASE = 'ViewQuoteUseCase',
+    CREATE_QUOTE_USE_CASE = 'CreateQuoteUseCase',
+    INSERT_QUOTE_USE_CASE = 'InsertQuoteUseCase',
+    SAVE_QUOTE_USE_CASE = 'SaveQuoteUseCase',
+    DELETE_QUOTE_USE_CASE = 'DeleteQuoteUseCase',
+    // -- Quote Details UseCases
+    GET_QUOTE_DETAILS_USE_CASE = 'GetQuoteDetailsUseCase',
+    ADD_QUOTE_DETAILS_USE_CASE = 'AddQuoteDetailsUseCase',
+    ADD_QUOTE_LINE_ITEM_USE_CASE = 'AddQuoteLineItemUseCase',
+    // -- Pdf UseCases
+    GENERATE_QUOTE_PDF_USE_CASE = 'GenerateQuotePdfUseCase',
+    // #endregion
+
+    // #region -> STATES
     AUTH_STATE = 'AuthState',
     // -- User States
     USER_STATE = 'UserState',
@@ -74,10 +107,15 @@ export enum SYMBOL_NAMES {
     SETTING_PRICE_BODY_MATERIAL_COEFFICIENT_STATE = 'SettingPriceBodyMaterialCoefficientState',
     SETTING_PRICE_BODY_PART_COEFFICIENT_STATE = 'SettingPriceBodyPartCoefficientState',
     SETTING_PRICE_DIAMETER_COEFFICIENT_STATE = 'SettingPriceDiameterCoefficientState',
+    SETTING_PRICE_REPAIR_TYPE_COEFFICIENT_STATE = 'SettingPriceRepairTypeCoefficientState',
     // -- Quote States
     QUOTE_STATE = 'QuoteState',
+    VIEW_QUOTE_STATE = 'ViewQuoteState',
     CREATE_QUOTE_STATE = 'CreateQuoteState',
+    EDIT_QUOTE_STATE = 'EditQuoteState',
+    GET_QUOTES_STATE = 'GetQuotesState',
     // -- Invoice States
     INVOICE_STATE = 'InvoiceState',
+    // #endregion
   }
   

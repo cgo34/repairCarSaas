@@ -109,9 +109,12 @@ function searchbox() {
       @click="toggleTheme"
     />
     
-    <VSwitch
+    <v-switch
+      class="text-secondary mx-3"
       :model-value="currentTheme === 'PurpleDarkTheme'"
       :label="themeLabel"
+      color="primary"
+      inset
       @update:model-value="toggleTheme"
     />
 

@@ -1,4 +1,4 @@
-import { BodyMaterialDto } from "@/@application/dtos/carRepair/BodyMaterialDto";
+import { BodyMaterialDto } from "@/@infrastructure/dtos/carRepair/BodyMaterialDto";
 
 export interface IBodyMaterialService {
   getAll(): Promise<BodyMaterialDto[]>;

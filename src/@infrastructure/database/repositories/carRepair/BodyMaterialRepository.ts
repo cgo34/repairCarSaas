@@ -1,5 +1,5 @@
 // src/@infrastructure/database/repositories/BodyMaterialSupabaseRepository.ts
-import { BodyMaterialDto } from '@/@application/dtos/carRepair/BodyMaterialDto';
+import { BodyMaterialDto } from '@/@infrastructure/dtos/carRepair/BodyMaterialDto';
 import { IClientProvider } from '@/@infrastructure/interfaces/IClientProvider';
 import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
 import { IBodyMaterialRepository } from '@domain/repositories/carRepair/IBodyMaterialRepository';
@@ -13,8 +13,6 @@ export class BodyMaterialRepository implements IBodyMaterialRepository {
   constructor(@inject(SYMBOLS.Providers.ClientProvider) private clientProvider: IClientProvider<SupabaseClient>) {}
 
   async getAll(): Promise<BodyMaterialDto[]> {
-    console.log('BodyMaterialRepository.getAll');
-    
     const { data, error } = await this.clientProvider.getClient()
       .fromSchema<'car_repair', 'body_materials'>('car_repair', 'body_materials')
       .select('*')
@@ -34,7 +32,6 @@ export class BodyMaterialRepository implements IBodyMaterialRepository {
       .insert(bodyMaterialApi)
       .select('*')
       .single<BodyMaterialApiModel>();
-    console.log('BodyMaterialRepository.create', data, error);
     
     if (error)
       throw new Error('Error creating body part');

@@ -7,6 +7,7 @@
     return-object
     clearable
     @update:model-value="onSelectItem"
+    @click:clear="onClearItem"
     @focus="emit('focus')"
     @blur="emit('blur')"
   >
@@ -41,6 +42,7 @@ const emit = defineEmits<{
   (e: 'update:modelValue', value: TModel | undefined): void;
   (e: 'select', value: TModel | undefined): void;
   (e: 'search', value: string): void;
+  (e: 'clear'): void;
   (e: 'focus'): void;
   (e: 'blur'): void;
 }>();
@@ -53,6 +55,12 @@ const filteredItems = computed(() => {
     item.name.toLowerCase().includes(searchQuery.value.toLowerCase())
   );
 });
+
+const onClearItem = () => {
+  model.value = undefined;
+  emit('update:modelValue', undefined);
+  emit('clear');
+};
 
 // Met à jour la valeur sélectionnée
 const onSelectItem = (selected: TModel | undefined) => {

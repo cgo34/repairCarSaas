@@ -1,8 +1,8 @@
 
-import { IAuthUseCase } from '@application/useCases/interfaces/auth/IAuthUseCase';
+import { IAuthUseCase } from '@/@domain/useCases/auth/IAuthUseCase';
+import { ILogoutUseCase } from '@/@domain/useCases/auth/ILogoutUseCase';
+import { IRegisterUseCase } from '@/@domain/useCases/auth/IRegisterUseCase';
 import { ILoginUseCase } from '@application/useCases/interfaces/auth/ILoginUseCase';
-import { ILogoutUseCase } from '@application/useCases/interfaces/auth/ILogoutUseCase';
-import { IRegisterUseCase } from '@application/useCases/interfaces/auth/IRegisterUseCase';
 import { SYMBOLS } from '@infrastructure/ioc/symbols';
 import { inject, injectable } from 'inversify';
 

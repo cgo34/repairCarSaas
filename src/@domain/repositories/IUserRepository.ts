@@ -1,4 +1,4 @@
-import { UserDto } from "@/@application/dtos/UserDto";
+import { UserDto } from "@/@infrastructure/dtos/UserDto";
 
 export interface IUserRepository {
   getUsers(): Promise<UserDto[]>;

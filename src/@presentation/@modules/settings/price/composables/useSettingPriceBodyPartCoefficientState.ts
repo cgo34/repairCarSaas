@@ -1,6 +1,6 @@
 import { IAuthState } from '@/@application/states/interfaces/IAuthState';
-import { IBodyPartUseCase } from '@/@application/useCases/interfaces/carRepair/IBodyPartUseCase';
-import { ISettingPriceBodyPartCoefficientUseCase } from '@/@application/useCases/interfaces/settings/price/ISettingPriceBodyPartCoefficientUseCase';
+import { IBodyPartUseCase } from '@/@domain/useCases/carRepair/IBodyPartUseCase';
+import { ISettingPriceBodyPartCoefficientUseCase } from '@/@domain/useCases/settings/price/ISettingPriceBodyPartCoefficientUseCase';
 import { container } from '@/@infrastructure/ioc/inversify.config';
 import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
 import { SettingPriceBodyPartCoefficientMapper } from '@/@presentation/mappers/settings/price/SettingPriceBodyPartCoefficientMapper';
@@ -46,7 +46,6 @@ export function useSettingPriceBodyPartCoefficientState(): IUseSettingPriceBodyP
     try {
       return bodyPartUseCase.executeGetAll().then((data) => {
         _bodyParts.value = data;
-        console.log('useSettingPriceBodyMaterialCoefficient.fetchBodyParts', data);
         
         return data;
       });

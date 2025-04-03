@@ -1,6 +1,6 @@
-import { SettingPriceDto } from '@/@application/dtos/settings/price/SettingPriceDto';
 import { ISettingPriceRepository } from '@/@domain/repositories/settings/price/ISettingPriceRepository';
 import { ISettingPriceService } from '@/@domain/services/settings/price/ISettingPriceService';
+import { SettingPriceDto } from '@/@infrastructure/dtos/settings/price/SettingPriceDto';
 import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
 import { inject, injectable } from 'inversify';
 

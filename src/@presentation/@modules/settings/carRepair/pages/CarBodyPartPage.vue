@@ -176,12 +176,8 @@ const onCancelBodyPartBtnClick = () => {
 
 const onValidEditBtnClick = async () => {
   if (selectedBodyPart.value?.id) {
-    console.log('updateBodyPart', selectedBodyPart.value);
-    
     await updateBodyPart(selectedBodyPart.value);
   } else {
-    console.log('addBodyPart', selectedBodyPart.value);
-    
     await addBodyPart(selectedBodyPart.value);
   }
   dialog.value = false;
