@@ -60,7 +60,7 @@ const route = useRoute();
 
 
 const useViewQuoteState = container.get<IUseViewQuoteState>(SYMBOLS.States.Quote.ViewQuoteState);
-const { init, downloadPdf, quote, pdfUrl, filename  } = useViewQuoteState;
+const { init, downloadPdf, sendQuote, quote, pdfUrl, filename  } = useViewQuoteState;
 
 const onBackBtnClick = () => {
   router.back();
@@ -73,6 +73,7 @@ const onDownloadBtnClick = () => {
 const onSendBtnClick = () => {
   console.log('onSendBtnClick');
   // router.push(`/quotes/send/${route.params.id}`);
+  // sendQuote();
 };
 
 onMounted(async () => {

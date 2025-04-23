@@ -1,11 +1,10 @@
 import { IBodyPartUseCase } from '@/@domain/useCases/carRepair/IBodyPartUseCase';
 import { container } from '@/@infrastructure/ioc/inversify.config';
 import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
-import { IBodyPartState } from '@/@presentation/types/composables/IBodyPartState';
 import { BodyPartViewModel } from '@/@presentation/types/models/carRepair/BodyPartViewModel';
 import { computed, ref } from 'vue';
 
-export function useBodyPartState(): IBodyPartState {
+export function useBodyPartState() {
   const bodyPartUseCase = container.get<IBodyPartUseCase>(SYMBOLS.UseCases.CarRepair.BodyPartUseCase);
   const _bodyParts = ref<BodyPartViewModel[]>([]);
   const _selectedBodyPart = ref<BodyPartViewModel>({

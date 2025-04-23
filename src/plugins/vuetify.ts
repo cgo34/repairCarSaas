@@ -1,5 +1,9 @@
+import GreenLightTheme from '@/theme/GreenLightTheme';
+import { PinkDarkTheme } from '@/theme/PinkDarkTheme';
+import { PinkLightTheme } from '@/theme/PinkLightTheme';
 import { PurpleDarkTheme } from '@/theme/PurpleDarkTheme';
 import { PurpleLightTheme } from '@/theme/PurpleLightTheme';
+import YellowLightTheme from '@/theme/YellowLightTheme';
 import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
@@ -20,7 +24,11 @@ export default createVuetify({
     defaultTheme: 'PurpleLightTheme',
     themes: {
       PurpleLightTheme,
-      PurpleDarkTheme
+      PurpleDarkTheme,
+      PinkLightTheme,
+      PinkDarkTheme,
+      GreenLightTheme,
+      YellowLightTheme
     }
   },
   defaults: {

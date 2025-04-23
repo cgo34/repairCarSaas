@@ -9,6 +9,7 @@ import { ICalculateLineCostUseCase } from '@/@domain/useCases/cost/ICalculateLin
 import { IAddQuoteLineItemUseCase } from '@/@domain/useCases/quotes/IAddQuoteLineItemUseCase';
 import { IGetQuoteDetailUseCase } from '@/@domain/useCases/quotes/IGetQuoteDetailUseCase';
 import { IGetQuoteUseCase } from '@/@domain/useCases/quotes/IGetQuoteUseCase';
+import { IUpdateQuoteUseCase } from '@/@domain/useCases/quotes/IUpdateQuoteUseCase';
 import { ISettingPriceUseCase } from '@/@domain/useCases/settings/price/ISettingPriceUseCase';
 import { container } from '@/@infrastructure/ioc/inversify.config';
 import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
@@ -34,14 +35,20 @@ import { computed, ref } from 'vue';
 export function useEditQuoteState() {
   // #region -> DEPENDENCIES
   const authState = container.get<IAuthState>(SYMBOLS.States.AuthState);
+
   const getQuoteUseCase = container.get<IGetQuoteUseCase>(SYMBOLS.UseCases.Quote.GetQuoteUseCase);
   const getQuoteDetailUseCase = container.get<IGetQuoteDetailUseCase>(SYMBOLS.UseCases.Quote.GetQuoteDetailsUseCase);
+
   const garageUseCase = container.get<IGarageUseCase>(SYMBOLS.UseCases.Garage);
   const technicianUseCase = container.get<IUserUseCase>(SYMBOLS.UseCases.UserUseCase);
+
   const bodyPartUseCase = container.get<IBodyPartUseCase>(SYMBOLS.UseCases.CarRepair.BodyPartUseCase);
   const bodyMaterialUseCase = container.get<IBodyMaterialUseCase>(SYMBOLS.UseCases.CarRepair.BodyMaterialUseCase);
   const repairTypeUseCase = container.get<IDentRepairTypeUseCase>(SYMBOLS.UseCases.CarRepair.DentRepairTypeUseCase);
+
   const priceParamsUseCase = container.get<ISettingPriceUseCase>(SYMBOLS.UseCases.Setting.Price.AllUseCase);
+
+  const updateQuoteUseCase = container.get<IUpdateQuoteUseCase>(SYMBOLS.UseCases.Quote.UpdateQuoteUseCase);
   const calculateLineCostUseCase = container.get<ICalculateLineCostUseCase>(SYMBOLS.UseCases.CostCalculator.CalculateLineCostUseCase);
   const addQuoteDetailsUseCase = container.get<IAddQuoteLineItemUseCase>(SYMBOLS.UseCases.Quote.AddLineItemUseCase);
   // #endregion
@@ -389,8 +396,8 @@ export function useEditQuoteState() {
     return _forfaitAmount.value + totalTaxRate.value;
   });
 
-  const saveQuote = async () => {
-    console.log('Save quote');
+  const updateQuote = async () => {
+    console.log('Update quote');
     
     if (!authState.user.value)
       throw new Error('User not found');
@@ -412,6 +419,7 @@ export function useEditQuoteState() {
       _quote.value = {
         ..._quote.value,
         status: 'pending',
+        userId: authState.user.value.id,
         
         garage: _selectedGarage.value,
         technician: _selectedTechnician.value,
@@ -427,32 +435,32 @@ export function useEditQuoteState() {
         
         lineItems: _quoteLines.value,
         
-        userId: authState.user.value.id,
       }
 
       console.log('Quote to save', _quote.value);
       
-      const quoteDto = await insertQuoteUseCase.execute(QuoteMapper.viewToDto(_quote.value)).then(async (quote) => {
-        console.log('Quote saved', quote);
-        _quote.value = QuoteMapper.dtoToView(quote);
-        if (!quote.id)
-          throw new Error('Quote not saved');
+      const quoteDto = await updateQuoteUseCase.execute(QuoteMapper.viewToDto(_quote.value)).then(async (quote) => {
+        console.log('Quote updated', quote);
+        // _quote.value = QuoteMapper.dtoToView(quote);
+        // if (!quote.id)
+        //   throw new Error('Quote not saved');
 
-        const test = _quoteLines.value.map((line) => {
-          const dtoLine = LineItemMapper.viewToDto(line);
-          return {
-            ...dtoLine,
-            id: undefined,
-          }
-        })
-
-
-        const quoteLinesDto = await addQuoteDetailsUseCase.executeQuote(quote.id, _quoteLines.value.map((line) => LineItemMapper.viewToDto(line)));
-        console.log('Quote lines saved', quoteLinesDto);
-
-        _quoteLines.value = quoteLinesDto.map(LineItemMapper.dtoToView);
-
+        // const test = _quoteLines.value.map((line) => {
+        //   const dtoLine = LineItemMapper.viewToDto(line);
+        //   return {
+        //     ...dtoLine,
+        //     id: undefined,
+        //   }
+        // })
       });
+
+
+      //   const quoteLinesDto = await updateQuoteDetailsUseCase.executeQuote(quote.id, _quoteLines.value.map((line) => LineItemMapper.viewToDto(line)));
+      //   console.log('Quote lines saved', quoteLinesDto);
+
+      //   _quoteLines.value = quoteLinesDto.map(LineItemMapper.dtoToView);
+
+      // });
       
     } catch (e) {
       error.value = e;
@@ -524,6 +532,6 @@ export function useEditQuoteState() {
     totalTaxRate,
     total,
 
-    saveQuote,
+    updateQuote,
   };
 }
