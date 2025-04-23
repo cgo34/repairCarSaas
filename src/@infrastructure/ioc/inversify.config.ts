@@ -29,6 +29,8 @@ import { GetQuoteDetailUseCase } from '@/@application/useCases/quotes/GetQuoteDe
 import { GetQuotesUseCase } from '@/@application/useCases/quotes/GetQuotesUseCase';
 import { GetQuoteUseCase } from '@/@application/useCases/quotes/GetQuoteUseCase';
 import { InsertQuoteUseCase } from '@/@application/useCases/quotes/InsertQuoteUseCase';
+import { SendQuoteUseCase } from '@/@application/useCases/quotes/SendQuoteUseCase';
+import { UpdateQuoteUseCase } from '@/@application/useCases/quotes/UpdateQuoteUseCase';
 import { ViewQuoteUseCase } from '@/@application/useCases/quotes/ViewQuoteUseCase';
 import { SettingPriceBodyMaterialCoefficientUseCase } from '@/@application/useCases/settings/price/SettingPriceBodyMaterialCoefficientUseCase';
 import { SettingPriceBodyPartCoefficientUseCase } from '@/@application/useCases/settings/price/SettingPriceBodyPartCoefficientUseCase';
@@ -82,6 +84,8 @@ import { IGetQuoteDetailUseCase } from '@/@domain/useCases/quotes/IGetQuoteDetai
 import { IGetQuoteUseCase } from '@/@domain/useCases/quotes/IGetQuoteUseCase';
 import { IInsertQuoteUseCase } from '@/@domain/useCases/quotes/IInsertQuoteUseCase';
 import { IQuotesUseCase } from '@/@domain/useCases/quotes/IQuotesUseCase';
+import { ISendQuoteUseCase } from '@/@domain/useCases/quotes/ISendQuoteUseCase';
+import { IUpdateQuoteUseCase } from '@/@domain/useCases/quotes/IUpdateQuoteUseCase';
 import { IViewQuoteUseCase } from '@/@domain/useCases/quotes/IViewQuoteUseCase';
 import { ISettingPriceBodyMaterialCoefficientUseCase } from '@/@domain/useCases/settings/price/ISettingPriceBodyMaterialCoefficientUseCase';
 import { ISettingPriceBodyPartCoefficientUseCase } from '@/@domain/useCases/settings/price/ISettingPriceBodyPartCoefficientUseCase';
@@ -147,7 +151,9 @@ import { SettingPriceRepairTypeCoefficientRepository } from '../database/reposit
 import { UserRepository } from '../database/repositories/UserRepository';
 import { BrowserDownloadService } from '../download/BrowserDownloadService';
 import { IClient } from '../interfaces/IClient';
+import { IEmailService } from '../interfaces/IEmailService';
 import { Html2PdfGenerator } from '../pdf/Html2PdfGenerator';
+import { EmailService } from '../services/EmailService';
 
 const container = new Container({ defaultScope: 'Singleton' });
 
@@ -201,6 +207,8 @@ container.bind<ICostCalculatorService>(SYMBOLS.Services.CostCalculatorService).t
 /** 4.7. -- Pdf Generator Services */
 container.bind<IPdfGenerator>(SYMBOLS.Services.PdfGeneratorService).to(Html2PdfGenerator).inSingletonScope();
 container.bind<IDownloadService>(SYMBOLS.Services.DownloadService).to(BrowserDownloadService);
+/** 4.8. -- Email Services */
+container.bind<IEmailService>(SYMBOLS.Services.EmailService).to(EmailService).inSingletonScope();
 
 
 /** 5 - USE CASES */
@@ -233,12 +241,15 @@ container.bind<IQuotesUseCase>(SYMBOLS.UseCases.Quote.GetQuotesUseCase).to(GetQu
 container.bind<IViewQuoteUseCase>(SYMBOLS.UseCases.Quote.ViewQuoteUseCase).to(ViewQuoteUseCase).inSingletonScope();
 container.bind<ICreateQuoteUseCase>(SYMBOLS.UseCases.Quote.CreateQuoteUseCase).to(CreateQuoteUseCase).inSingletonScope();
 container.bind<IInsertQuoteUseCase>(SYMBOLS.UseCases.Quote.InsertQuoteUseCase).to(InsertQuoteUseCase).inSingletonScope();
+container.bind<IUpdateQuoteUseCase>(SYMBOLS.UseCases.Quote.UpdateQuoteUseCase).to(UpdateQuoteUseCase).inSingletonScope();
 container.bind<IDeleteQuoteUseCase>(SYMBOLS.UseCases.Quote.DeleteQuoteUseCase).to(DeleteQuoteUseCase).inSingletonScope();
 container.bind<IGetQuoteUseCase>(SYMBOLS.UseCases.Quote.GetQuoteUseCase).to(GetQuoteUseCase).inSingletonScope();
 container.bind<IGetQuoteDetailUseCase>(SYMBOLS.UseCases.Quote.GetQuoteDetailsUseCase).to(GetQuoteDetailUseCase).inSingletonScope();
 // container.bind<ISaveQuoteUseCase>(SYMBOLS.UseCases.Quote.SaveQuoteUseCase).to(SaveQuoteUseCase).inSingletonScope();
 container.bind<IAddQuoteLineItemUseCase>(SYMBOLS.UseCases.Quote.AddLineItemUseCase).to(AddQuoteLineItemUseCase).inSingletonScope();
 container.bind<IGenerateQuotePdfUseCase>(SYMBOLS.UseCases.Quote.GenerateQuotePdfUseCase).to(GenerateQuotePdfUseCase).inSingletonScope();
+container.bind<ISendQuoteUseCase>(SYMBOLS.UseCases.Quote.SendQuoteUseCase).to(SendQuoteUseCase);
+
 
 
 /** 6 - STATES */

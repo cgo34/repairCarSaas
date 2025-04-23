@@ -13,6 +13,8 @@ export function useViewQuoteState() {
   const viewQuoteUseCase = container.get<IViewQuoteUseCase>(SYMBOLS.UseCases.Quote.ViewQuoteUseCase);
   const generatePdfUseCase = container.get<IGenerateQuotePdfUseCase>(SYMBOLS.UseCases.Quote.GenerateQuotePdfUseCase);
   const downloadService = container.get<IDownloadService>(SYMBOLS.Services.DownloadService);
+  const sendQuoteUseCase = container.get<ISendQuoteUseCase>(SYMBOLS.UseCases.Quote.SendQuoteUseCase);
+
   // #endregion
 
   // #region -> REFS
@@ -32,6 +34,8 @@ export function useViewQuoteState() {
         throw new Error('Quote or quote details not found');
       }
 
+      console.log('Line in state', lines);
+      
       _quote.value = QuoteMapper.dtoToView(quote);
       _pdfUrl.value = await generatePdfUseCase.execute(quote, lines);
     } catch (e) {
@@ -59,12 +63,25 @@ export function useViewQuoteState() {
     downloadService.download(_pdfUrl.value, filename);
   };
 
+  const sendQuote = async () => {
+    if (!_quote.value) return;
+    loading.value = true;
+    try {
+      await sendQuoteUseCase.execute(_quote.value.id);
+    } catch (e) {
+      error.value = e as Error;
+    } finally {
+      loading.value = false;
+    }
+  };
+
   return {
     loading,
     error,
 
     init,
     downloadPdf,
+    sendQuote,
     filename,
 
     quote: computed(() => _quote.value),

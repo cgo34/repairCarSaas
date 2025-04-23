@@ -46,7 +46,7 @@ const countries = ref<CountryViewModel[]>([
     taxRate: 8,
   },
 ]);
-const model = ref<CountryViewModel | undefined>(props.modelValue);
+const model = ref<CountryViewModel | undefined>(props.modelValue ?? countries.value[0]);
 const countrySelectionInformation = ref<string>(`Si le pays sélectionné est France : La devise est EUR et il n'y a pas de TVA. Mention sur le devis : TVA non applicable - Autoliquidation de la TVA par le client (Article 196 de la directive 2006/112/CE) et Suisse : La devise est CHF et la TVA est de 8%.`);
 
 const emit = defineEmits<{

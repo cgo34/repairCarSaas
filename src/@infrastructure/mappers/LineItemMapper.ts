@@ -12,7 +12,10 @@ export class LineItemMapper {
       impactCount25: apiModel.impact_count_25,
       impactCount35: apiModel.impact_count_35,
       dentRemovalPrice: apiModel.dent_removal_price,
-      price: apiModel.price
+      price: apiModel.price,
+      bodyPart: apiModel.bodyPart,
+      bodyMaterial: apiModel.bodyMaterial,
+      repairType: apiModel.repairType
     };
   }
 

@@ -1,12 +1,14 @@
 // 📌 Application: UpdateQuoteUseCase.ts
-// TODO: (GCE) -> NOT USE FOR THE MOMENT
-import { Quote } from '@/@domain/entities/Quote';
-import { QuoteRepository } from '@/@infrastructure/repositories/QuoteRepository';
+import { IQuoteRepository } from '@/@domain/repositories/IQuoteRepository';
+import { QuoteDto } from '@/@infrastructure/dtos/QuoteDto';
+import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
+import { inject, injectable } from 'inversify';
 
+@injectable()
 export class UpdateQuoteUseCase {
-  constructor(private quoteRepository: QuoteRepository) {}
+  constructor(@inject(SYMBOLS.Repositories.QuoteRepository) private quoteRepository: IQuoteRepository) {}
 
-  async execute(quote: Quote): Promise<Quote> {
+  async execute(quote: QuoteDto): Promise<QuoteDto> {
     return await this.quoteRepository.update(quote);
   }
 }

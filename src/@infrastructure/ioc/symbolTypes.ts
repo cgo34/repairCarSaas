@@ -45,6 +45,7 @@ export enum SYMBOL_NAMES {
     // -- Pdf Generator Services
     PDF_GENERATOR_SERVICE = 'PdfGeneratorService',
     DOWNLOAD_SERVICE = 'DownloadService',
+    EMAIL_SERVICE = 'EmailService',
     // #endregion
   
     // #region -> USE CASES
@@ -79,6 +80,7 @@ export enum SYMBOL_NAMES {
     VIEW_QUOTE_USE_CASE = 'ViewQuoteUseCase',
     CREATE_QUOTE_USE_CASE = 'CreateQuoteUseCase',
     INSERT_QUOTE_USE_CASE = 'InsertQuoteUseCase',
+    UPDATE_QUOTE_USE_CASE = 'UpdateQuoteUseCase',
     SAVE_QUOTE_USE_CASE = 'SaveQuoteUseCase',
     DELETE_QUOTE_USE_CASE = 'DeleteQuoteUseCase',
     // -- Quote Details UseCases
@@ -87,6 +89,7 @@ export enum SYMBOL_NAMES {
     ADD_QUOTE_LINE_ITEM_USE_CASE = 'AddQuoteLineItemUseCase',
     // -- Pdf UseCases
     GENERATE_QUOTE_PDF_USE_CASE = 'GenerateQuotePdfUseCase',
+    SEND_QUOTE_USE_CASE = 'SendQuoteUseCase',
     // #endregion
 
     // #region -> STATES

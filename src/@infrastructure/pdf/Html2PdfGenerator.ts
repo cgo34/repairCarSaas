@@ -9,6 +9,8 @@ import { buildQuoteHtmlTemplate } from './templates/quoteTemplate'
 export class Html2PdfGenerator implements IPdfGenerator {
   async generate(quote: QuoteDto, lines: LineItemDto[]): Promise<string> {
     console.log('Html2PdfGenerator:', quote.id);
+    console.log('Quote:', quote);
+    console.log('Lines:', lines); 
     
     const html = buildQuoteHtmlTemplate(quote, lines)
 

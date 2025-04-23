@@ -58,15 +58,15 @@
           class="rounded-lg"
           outlined
         >
-          <v-card-title class="text-h5">
+          <v-card-title class="text-h3">
             Modifier un Devis
           </v-card-title>
 
           <v-card-text>
             <!-- Informations du devis -->
-            <h5 class="text-h6 my-4">
+            <h4 class="text-h4 my-4">
               Informations générales
-            </h5>
+            </h4>
             <v-row>
               <v-col
                 cols="12"
@@ -108,14 +108,14 @@
             <v-row>
               <v-col md="6">
                 <v-card
-                  outlined
+                  elevation="0"
                   class="pa-4"
                 >
                   <div class="d-flex flex-column justify-space-between">
                     <div>
-                      <h5 class="text-h6">
+                      <h4 class="text-h4">
                         Technicien :
-                      </h5>
+                      </h4>
                     </div>
 
                     <v-flex
@@ -151,13 +151,14 @@
               <v-col md="6">
                 <v-card
                   outlined
+                  elevation="0"
                   class="pa-4"
                 >
                   <div class="d-flex flex-column justify-space-between">
                     <div>
-                      <h5 class="text-h6">
+                      <h4 class="text-h4">
                         Garage :
-                      </h5>
+                      </h4>
                     </div>
                     
 
@@ -208,11 +209,12 @@
           <v-card-text>
             <v-row>
               <v-col md="12">
-                <h5 class="text-h6 my-4">
+                <h4 class="text-h4 my-4">
                   Informations du véhicule
-                </h5>
+                </h4>
                 <v-card
                   outlined
+                  elevation="0"
                   class="pa-4"
                 >
                 <v-card-text>
@@ -262,9 +264,9 @@
           <!-- Tableau des éléments du devis -->
           <v-card-text>
             <div>
-              <h5 class="text-h6">
+              <h4 class="text-h4">
                 Options du devis
-              </h5>
+              </h4>
               <div class="d-flex justify-space-between">
                 <div><v-switch label="Appliquer un forfait ?" :modelValue="isForfait" @update:modelValue="onUpdateIsForfait" color="primary" inset></v-switch></div>
                 <div v-if="!isForfait"><v-switch label="Afficher les prix unitaires ?" :modelValue="isDisplayUnitPrice" @update:modelValue="onUpdateIsDisplayUnitPrice" color="primary" inset></v-switch></div>
@@ -283,9 +285,18 @@
             />
           </v-card-text>
           <v-card-text v-if="!isForfait">
-            <h5 class="text-h6">
-              Liste des éléments
-            </h5>
+            <div class="d-flex align-center justify-space-between">
+              <h4 class="text-h4">
+                Liste des éléments
+              </h4>
+              <v-btn
+                variant="tonal"
+                color="primary"
+                @click="onUpdateItemsBtnClick"
+              >
+                Enregistrer les éléments
+              </v-btn>
+            </div>
             <v-data-table
               :headers="headers"
               :items="quoteLines"
@@ -416,6 +427,7 @@
           <v-card-actions>
               <v-spacer></v-spacer>
               <v-btn
+                variant="tonal"
                 class="mt-3"
                 color="primary"
                 @click="onUpdateBtnClick"
@@ -637,6 +649,10 @@ const onViewPdfBtnClick = () => {
 
 const onDeleteBtnClick = () => {
   console.log('onDeleteBtnClick -> delete quote');
+};
+
+const onUpdateItemsBtnClick = () => {
+  console.log('onUpdateItemsBtnClick -> update items');
 };
 
 const onUpdateBtnClick = () => {
