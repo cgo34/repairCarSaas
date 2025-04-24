@@ -259,7 +259,7 @@ export function useEditQuoteState() {
       impactCount35: undefined,
       bodyMaterial: undefined, 
       repairType: _repairTypes.value.find(rt => rt.code === 'dsp'),
-      dentRemovalPrice: undefined,
+      dentRemovalPrice: 0,
       lineItemType: 'quote',
       price: 0,
     }
@@ -353,7 +353,7 @@ export function useEditQuoteState() {
     if (!_isForfait.value) {
       return _quoteLines.value.reduce((sum, item) => {
         return sum + item.price; // 👈 Évite undefined en mettant `?? 0`
-      }, 0) // 👈 Ajoute la valeur initiale ici
+      }, 0) ?? 0// 👈 Ajoute la valeur initiale ici
     }
 
     return _forfaitAmount.value ?? 0;
@@ -362,6 +362,8 @@ export function useEditQuoteState() {
 
   const totalDegarnissage = computed(() => 
     _quoteLines.value.reduce((sum, item) => {
+      console.log('item', item.dentRemovalPrice);
+      
       return sum + (item.dentRemovalPrice ?? 0); // 👈 Évite undefined en mettant `?? 0`
     }, 0) // 👈 Ajoute la valeur initiale ici
   );
@@ -411,9 +413,6 @@ export function useEditQuoteState() {
     if (!_carInformations.value.immatriculation || !_carInformations.value.brand || !_carInformations.value.dateEntryCirculation)
       throw new Error('Car informations not set');
 
-    if (!_isForfait.value && _quoteLines.value.length === 0)
-      throw new Error('No line items');
-
     loading.value = true;
     try {
       _quote.value = {
@@ -433,7 +432,6 @@ export function useEditQuoteState() {
         isDisplayUnitPrice: _isDisplayUnitPrice.value,
         isComputeCommissionWithoutDentRemoval: _isComputeCommissionWithoutDentRemoval.value,
         
-        lineItems: _quoteLines.value,
         
       }
 

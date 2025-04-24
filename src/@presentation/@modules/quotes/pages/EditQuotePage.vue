@@ -284,6 +284,26 @@
               @update:modelValue="onUpdateForfaitAmount"
             />
           </v-card-text>
+
+          
+          <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn
+                variant="tonal"
+                class="mt-3"
+                color="primary"
+                @click="onUpdateBtnClick"
+              >
+                Update
+              </v-btn>
+          </v-card-actions>
+        </v-card>
+          
+        <v-card
+          class="rounded-lg mt-5"
+          outlined
+        >
+
           <v-card-text v-if="!isForfait">
             <div class="d-flex align-center justify-space-between">
               <h4 class="text-h4">
@@ -342,7 +362,7 @@
               </template>
               <template #[`item.dentRemovalPrice`]="{ item }">
                 <v-text-field
-                  v-model="item.dentRemovalPrice"
+                  :modelValue="item.dentRemovalPrice"
                   placeholder="Montant"
                   dense
                   outlined
@@ -370,12 +390,26 @@
             >
               + Ajouter un élément
             </v-btn>
+            
+            <v-btn @click="genericDialogRef?.open()">Ouvrir la modal</v-btn>
           </v-card-text>
-
-          <v-divider class="my-4" />
+        </v-card>
 
           <!-- Bloc des Totaux -->
-          <v-sheet class="rounded-sm bg-lightprimary pa-2 pa-sm-6">
+           
+        <v-card
+          class="rounded-lg mt-5"
+          outlined
+        >
+
+          <v-card-text>
+            <div class="d-flex align-center justify-space-between">
+              <h4 class="text-h4">
+                Totaux
+              </h4>
+            </div>
+          </v-card-text>  
+          <v-sheet class="rounded-sm pa-2 pa-sm-6">
             <v-row justify="end">
               <v-col
                 cols="6"
@@ -409,7 +443,8 @@
                   {{ subtotal.toFixed(2) }} {{ selectedCountry?.currencySymbol || '€' }}
                 </h5>
                 <h5 v-if="!isForfait" class="py-2 text-subtitle-1 text-disabled">
-                  {{ totalDegarnissage.toFixed(2) }} {{ selectedCountry?.currencySymbol || '€' }}
+                  {{ totalDegarnissage }}
+                  <!-- {{ totalDegarnissage.toFixed(2) || '0.00' }} {{ selectedCountry?.currencySymbol || '€' }} -->
                 </h5>
                 <h5 v-if="!isForfait" class="py-2 text-subtitle-1 text-disabled">
                   {{ subTotalWithDegarnissage.toFixed(2) }} {{ selectedCountry?.currencySymbol || '€' }}
@@ -423,22 +458,25 @@
               </v-col>
             </v-row>
           </v-sheet>
-          
-          <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn
-                variant="tonal"
-                class="mt-3"
-                color="primary"
-                @click="onUpdateBtnClick"
-              >
-                Enregistrer
-              </v-btn>
-          </v-card-actions>
         </v-card>
       </v-form>
     </v-container>
   </MainLayout>
+
+  <GenericDialog
+    ref="genericDialogRef"
+    title="Exemple"
+    persistent
+    :maxWidth="500"
+  >
+    <template #default="{ isActive }">
+      <div>Contenu de la modal</div>
+    </template>
+
+    <template #actions="{ isActive }">
+      <v-btn text @click="genericDialogRef?.close()">Fermer</v-btn>
+    </template>
+  </GenericDialog>
 </template>
 
 <script setup lang="ts">
@@ -450,7 +488,9 @@ import MainLayout from '@/@presentation/@ui/layouts/MainLayout.vue';
 import BodyMaterialSelect from '@/@presentation/components/BodyMaterialSelect.vue';
 import BodyPartSelect from '@/@presentation/components/BodyPartSelect.vue';
 import CountrySelect from '@/@presentation/components/CountrySelect.vue';
+import GenericDialog from '@/@presentation/components/GenericDialog.vue';
 import RepairTypeSelect from '@/@presentation/components/RepairTypeSelect.vue';
+import type { GenericDialogExposed } from '@/@presentation/types/components';
 import { IUseEditQuoteState } from '@/@presentation/types/composables/IUseEditQuoteState';
 import { BodyMaterialViewModel } from '@/@presentation/types/models/carRepair/BodyMaterialViewModel';
 import { BodyPartViewModel } from '@/@presentation/types/models/carRepair/BodyPartViewModel';
@@ -461,6 +501,8 @@ import { LineItemViewModel } from '@/@presentation/types/models/LineItemViewMode
 import { UserViewModel } from '@/@presentation/types/models/UserViewModel';
 import { computed, onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
+
+const genericDialogRef = ref<GenericDialogExposed>()
 
 // Injection du state depuis Inversify
 const useEditQuoteState = container.get<IUseEditQuoteState>(SYMBOLS.States.Quote.EditQuoteState);
