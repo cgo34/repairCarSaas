@@ -16,7 +16,6 @@ export class ViewQuoteUseCase {
   async execute(id: string): Promise<{ quote: QuoteDto | null; lines: LineItemDto[] }> {
     const quote = await this.getQuoteUseCase.execute(id);
     const lines = await this.GetQuoteDetailsUseCase.execute(id) ?? [];
-    console.log("ViewQuoteUseCase:", quote?.id, lines);
     
     return { quote, lines };
   }

@@ -8,8 +8,6 @@ export class QuoteMapper {
    * Convertit un `QuoteApiModel` (BDD) en `QuoteDto` (Application)
    */
   static apiToDto(api: QuoteApiModel): QuoteDto {
-    console.log('api', api);
-    
     return {
       id: api.id,
       quoteNumber: api.quote_number,
@@ -41,8 +39,6 @@ export class QuoteMapper {
    * Convertit un `QuoteDto` (Application) en `QuoteApiModel` (BDD)
    */
   static dtoToApi(dto: QuoteDto): QuoteApiModel {
-    console.log('update quote dtoToApi', dto);
-    
     return {
       id: dto.id,
       quote_number: dto.quoteNumber,

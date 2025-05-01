@@ -80,8 +80,8 @@
     </template>
 
     <template #actions>
-      <v-btn text @click="onCancelBtnClick()">Annuler</v-btn>
-      <v-btn color="primary" @click="onValidateBtnClick()">Valider</v-btn>
+      <v-btn @click="onCancelBtnClick()">Annuler</v-btn>
+      <v-btn color="primary" @click="onAddBtnClick()">Valider</v-btn>
     </template>
   </GenericDialog>
 </template>
@@ -93,31 +93,19 @@ import BodyMaterialSelect from '@/@presentation/components/BodyMaterialSelect.vu
 import BodyPartSelect from '@/@presentation/components/BodyPartSelect.vue'
 import GenericDialog from '@/@presentation/components/GenericDialog.vue'
 import RepairTypeSelect from '@/@presentation/components/RepairTypeSelect.vue'
-
 import { useLineItemState } from '@/@presentation/composables/useLineItemState'
-import type { AnyVoid, GenericDialogExposed } from '@/@presentation/types/components'
+import type { GenericDialogExposed } from '@/@presentation/types/components'
 import { LineItemViewModel } from '../types/models/LineItemViewModel'
-
-
-// Injection du state depuis Inversify
-// const useEditQuoteState = container.get<IUseEditQuoteState>(SYMBOLS.States.Quote.EditQuoteState);
+import { AddLineItemDialogEmits, AddLineItemDialogProps } from './AddLineItemDialog'
 
 const {
   init,
-  availableBodyParts,
   bodyMaterials,
   repairTypes,
 } = useLineItemState();
 
-// import { useBodyPartStore } from '@/@presentation/stores/bodyParts'
-// import { useRepairTypeStore } from '@/@presentation/stores/repairTypes'
-
-
-export type AddLineItemDialogEmits = {
-  (event: 'add', lineItem: LineItemViewModel): AnyVoid
-}
-
 //#region -> DEFINES
+const props = defineProps<AddLineItemDialogProps>()
 const emit = defineEmits<AddLineItemDialogEmits>()
 //#endregion
 
@@ -139,27 +127,19 @@ const line = reactive<LineItemViewModel>({
 })
 //#endregion
 
-//#region -> MOCK / STORES (à adapter selon ton projet)
-// const availableBodyParts = useBodyPartStore().bodyParts
-// const bodyMaterials = useBodyMaterialStore().bodyMaterials
-// const repairTypes = useRepairTypeStore().repairTypes
-//#endregion
-
-//#region -> METHODS
+//#region -> EVENTS
 const onCancelBtnClick = (): void => {
   close()
 }
 
-const onValidateBtnClick = (): void => {
-  // Tu peux ici valider les champs si besoin (form.value?.validate(), etc.)
-  console.log('Formulaire validé avec :', { ...line })
-
-  // TODO: (GCE) -> ADD COMPUTE PRICE HERE
-
+const onAddBtnClick = (): void => {
+  // TODO: (GCE) -> COMPUTE PRICE HERE WITH computePrice METHOD
   close()
-  emit('add', line) // Tu peux aussi passer les données dans l'événement
+  emit('add', line)
 }
+//#endregion
 
+//#region -> METHODS
 const open = (): void => {
   resetForm()
   genericDialogRef.value?.open()

@@ -7,7 +7,6 @@ import { inject, injectable } from 'inversify';
 @injectable()
 export class AuthService implements IAuthService {
   constructor(@inject(SYMBOLS.Repositories.AuthRepository) private authRepository: IAuthRepository) {
-    console.log('[AuthService] Initialized with AuthRepository:', authRepository);
   }
 
   // Type guard pour vérifier si c'est bien un User

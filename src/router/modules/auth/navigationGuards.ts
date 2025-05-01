@@ -13,8 +13,6 @@ export const authGuard = async (to: RouteLocationNormalized, _from: RouteLocatio
   // }
 
   const isAuthenticated = authState.isAuthenticated.value;
-  console.log('Navigation guard:', { to: to.path, isAuthenticated });
-
   if (to.meta.requiresAuth && !isAuthenticated) {
     return next('/login');
   }

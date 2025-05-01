@@ -26,11 +26,6 @@ export class CreateQuoteUseCase {
     if (quote.isExpired())
       throw new Error("Impossible de créer un devis expiré");
   
-    // 🔹 4. Sauvegarder l’entité convertie en DTO
-    // await this.quoteRepository.create(QuoteMapper.domainToDto(quote));
-  
-    // 🔹 5. Retourner un DTO pour la couche Présentation
-    // console.log('quote DTO aferter generete number', QuoteMapper.domainToDto(quote));
 
     quoteDto.quoteNumber = quoteNumber;
     

@@ -20,7 +20,6 @@ export class LineItemMapper {
   }
 
   static dtoToApi(dto: LineItemDto): LineItemApiModel {
-    console.log('dtoToApi', dto);
     
     return {
       quote_id: dto.quoteId ?? undefined,
