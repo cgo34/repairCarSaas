@@ -52,10 +52,6 @@ const close = (): void => {
 }
 //#endregion
 
-onMounted(async () => {
-  console.log('ConfirmDialog mounted');
-})
-
 //#region -> EXPOSE
 defineExpose({
   open,

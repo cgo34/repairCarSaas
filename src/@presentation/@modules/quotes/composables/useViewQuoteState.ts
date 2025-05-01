@@ -33,8 +33,6 @@ export function useViewQuoteState() {
       if (!quote || !lines) {
         throw new Error('Quote or quote details not found');
       }
-
-      console.log('Line in state', lines);
       
       _quote.value = QuoteMapper.dtoToView(quote);
       _pdfUrl.value = await generatePdfUseCase.execute(quote, lines);

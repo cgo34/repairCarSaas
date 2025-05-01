@@ -78,8 +78,6 @@ export function useCreateQuoteState() {
         garage: _selectedGarage.value,
         technician: _selectedTechnician.value,
       }
-
-      console.log('user auth', authState.user.value);
       
       const quoteDto = await createQuoteUseCase.execute(QuoteMapper.viewToDto(_quote.value), authState.user.value.id);
       _quote.value = QuoteMapper.dtoToView(quoteDto);
@@ -193,8 +191,6 @@ export function useCreateQuoteState() {
   }
 
   const selectCountry = (country: CountryViewModel) => {
-    console.log('Selected country', country);
-    
     _selectedCountry.value = country;
   }
 
@@ -216,8 +212,6 @@ export function useCreateQuoteState() {
   }
 
   const save = async () => {
-    console.log('Save quote');
-    
     if (!authState.user.value)
       throw new Error('User not found');
 
@@ -249,11 +243,8 @@ export function useCreateQuoteState() {
         
         userId: authState.user.value.id,
       }
-
-      console.log('Quote to save', _quote.value);
       
       const quoteDto = await insertQuoteUseCase.execute(QuoteMapper.viewToDto(_quote.value)).then(async (quote) => {
-        console.log('Quote saved', quote);
         _quote.value = QuoteMapper.dtoToView(quote);
         if (!quote.id)
           throw new Error('Quote not saved');

@@ -13,8 +13,6 @@ export class GenerateQuotePdfUseCase implements IGenerateQuotePdfUseCase {
   ) {}
 
   async execute(quote: QuoteDto, lines: LineItemDto[]): Promise<string> {
-    console.log("GenerateQuotePdfUseCase:", quote.id);
-    
     return await this.pdfGenerator.generate(quote, lines)
   }
 }

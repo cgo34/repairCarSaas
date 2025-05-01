@@ -113,14 +113,11 @@ export function useEditQuoteState() {
       _quoteId.value = id;     
       
       const quoteDto = await getQuoteUseCase.execute(id);
-      // console.log('QuoteDto', quoteDto);
       const quoteDetailDto = await getQuoteDetailUseCase.execute(id);
-      // console.log('quoteDetailDto', quoteDetailDto);
       
       _quote.value = QuoteMapper.dtoToView(quoteDto);
       _isForfait.value = quoteDto?.isForfait ?? false
       _forfaitAmount.value = quoteDto?.forfaitAmount
-      // console.log('_quote', _quote.value);
       
       _quoteLines.value = quoteDetailDto?.map((line, idx) => {
         
@@ -129,7 +126,6 @@ export function useEditQuoteState() {
           lineId: idx + 1,
         }
       }) ?? [];
-      console.log('_quoteLines', _quoteLines.value);
       
       
       // TODO: (gce) -> MOVE TO MAPPER
@@ -259,8 +255,6 @@ export function useEditQuoteState() {
   }
 
   const selectCountry = (country: CountryViewModel) => {
-    console.log('Selected country', country);
-    
     _selectedCountry.value = country;
   }
 
@@ -291,7 +285,6 @@ export function useEditQuoteState() {
     computePrice(line)
 
     const quoteLinesDto = await addQuoteDetailsUseCase.executeQuote(LineItemMapper.viewToDto(line));
-    console.log('Quote lines saved', quoteLinesDto);
 
     const quoteAdded =  LineItemMapper.dtoToView(quoteLinesDto);
 
@@ -299,8 +292,6 @@ export function useEditQuoteState() {
   }
 
   const removeLine = (lineId: string) => {
-    console.log(lineId);
-    
     deleteLineItemUseCase.execute(lineId)
     const index = _quoteLines.value.findIndex((line) => line.id === lineId);
     if (index >= 0) {
@@ -358,8 +349,6 @@ export function useEditQuoteState() {
   }
 
   const setForfaitAmount = (amount: number) => {
-    console.log('setForfaitAmount', typeof amount, amount);
-    
     _forfaitAmount.value = amount;
   }
 
@@ -403,8 +392,6 @@ export function useEditQuoteState() {
 
   const totalDegarnissage = computed(() => 
     _quoteLines.value.reduce((sum, item) => {
-      console.log('item', item.dentRemovalPrice);
-      
       return sum + (item.dentRemovalPrice ?? 0); // 👈 Évite undefined en mettant `?? 0`
     }, 0) // 👈 Ajoute la valeur initiale ici
   );
@@ -431,10 +418,7 @@ export function useEditQuoteState() {
   const total = computed(() => {
     if (!_isForfait.value) {
       return subTotalWithDegarnissage.value + totalTaxRate.value;
-    }
-
-    console.log('total', _forfaitAmount.value);
-    
+    }    
     
     if (!_forfaitAmount.value)
       return 0;
@@ -443,8 +427,6 @@ export function useEditQuoteState() {
   });
 
   const updateQuote = async () => {
-    console.log('Update quote');
-    
     if (!authState.user.value)
       throw new Error('User not found');
 
@@ -478,11 +460,8 @@ export function useEditQuoteState() {
         
         
       }
-
-      console.log('Quote to save', _quote.value);
       
       const quoteDto = await updateQuoteUseCase.execute(QuoteMapper.viewToDto(_quote.value)).then(async (quote) => {
-        console.log('Quote updated', quote);
         // _quote.value = QuoteMapper.dtoToView(quote);
         // if (!quote.id)
         //   throw new Error('Quote not saved');
@@ -524,10 +503,7 @@ export function useEditQuoteState() {
   // #endregion
 
   const deleteQuote = (quoteNumber: string) => {
-    
     deleteQuoteUseCase.execute(_quoteId.value)
-    console.log('quote deleted : ', quoteNumber);
-    
   }
 
   return {

@@ -470,6 +470,7 @@
   <AddLineItemDialog
     ref="addLineItemDialogRef"
     title="Ajouter un élément"
+    :availableBodyParts="availableBodyParts"
     @add="onAddLineItem"
   >
   </AddLineItemDialog>  
@@ -508,7 +509,7 @@ import { CountryViewModel } from '@/@presentation/types/models/CountryViewModel'
 import { GarageViewModel } from '@/@presentation/types/models/GarageViewModel';
 import { LineItemViewModel } from '@/@presentation/types/models/LineItemViewModel';
 import { UserViewModel } from '@/@presentation/types/models/UserViewModel';
-import { computed, onMounted, ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 
@@ -583,21 +584,20 @@ const quoteId = route.params.id as string;
 const techniciansList = ref<UserViewModel[]>(technicians.value);
 const garagesList = ref<GarageViewModel[]>(garages.value);
 
-const headers = computed(()=> {
-  return [
-    { title: 'Element de carrosserie', key: 'bodyPart.name', width: '25%', minWidth: '25%' },
-    { title: 'Nombre d\'impacts',  width: '20%', minWidth: '20%', 
+const headers = [
+    { title: 'Element de carrosserie', key: 'bodyPart.name', width: '25%', minWidth: '25%', align: 'start' },
+    { title: 'Nombre d\'impacts',  width: '20%', minWidth: '20%', align: 'end',
         children: [
           { title: 'Ø 25', value: 'impactCount25' },
           { title: 'Ø 35', value: 'impactCount35' },
         ],  },
-    { title: 'Type de matériau', key: 'bodyMaterial.name', width: '20%' },
-    { title: 'Type de réparation', key: 'repairType.name', width: '20%' },
-    { title: 'Dégarnissage', key: 'dentRemovalPrice', },
+    { title: 'Type de matériau', key: 'bodyMaterial.name', width: '20%', align: 'start' },
+    { title: 'Type de réparation', key: 'repairType.name', width: '20%', align: 'start' },
+    { title: 'Dégarnissage', key: 'dentRemovalPrice', align: 'start'},
     { title: `Prix HT (${selectedCountry.value?.currencySymbol || '€'})`, key: 'price', align: 'end', width: '15%', minWidth: '15%' },
     { title: 'Actions', key: 'actions', align: 'end', sortable: false }
   ];
-})
+
 
 // #region -> METHODS
 const onBackBtnClick = () => {
@@ -667,7 +667,6 @@ const onUpdateIsComputeCommissionWithoutDentRemoval = (value: boolean) => {
 };
 
 const onSelectCountry = (country: CountryViewModel | undefined) => {
-  console.log('onSelectCountry -> country', country);
   selectCountry(country);
 };
 

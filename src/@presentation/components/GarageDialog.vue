@@ -171,9 +171,6 @@ const onCancelBtnClick = (): void => {
 }
 
 const onValidateBtnClick = (): void => {
-  // Tu peux ici valider les champs si besoin (form.value?.validate(), etc.)
-  console.log('Formulaire validé avec :', { ...garage })
-
   if (!isValidGarage.value)
     return
 
@@ -202,11 +199,6 @@ const resetForm = () => {
   garage.userId = authState.user.value?.id ?? ''
 }
 //#endregion
-
-onMounted(async () => {
-  console.log('GarageDialog mounted');
-  
-})
 
 //#region -> EXPOSE
 defineExpose({

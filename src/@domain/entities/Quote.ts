@@ -64,9 +64,7 @@ export class Quote {
    * 🔹 Vérifie si le devis est expiré.
    */
   isExpired(): boolean {
-    console.log('isExpired', this.endDate);
     const endDate = new Date(this.endDate);
-    console.log('isExpired', new Date() > endDate);
     
     return new Date() > endDate;
   }
