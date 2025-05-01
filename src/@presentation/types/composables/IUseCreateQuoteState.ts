@@ -21,6 +21,7 @@ export interface IUseCreateQuoteState {
   selectedGarage: Ref<GarageViewModel | undefined>;
   selectTechnician(technician: UserViewModel): void;
   selectGarage(garage: GarageViewModel): void;
+  setGarage(garage: GarageViewModel): void;
 
   carInformations: ComputedRef<{ immatriculation: string; brand: string; dateEntryCirculation: string; }>;
   setCarImmatriculation(value: string): void;

@@ -4,7 +4,7 @@ import { LineItemDto } from "../dtos/LineItemDto";
 export class LineItemMapper {
   static apiToDto(apiModel: LineItemApiModel): LineItemDto {
     return {
-      id: apiModel.id,
+      id: apiModel.id ?? '',
       quoteId: apiModel.quote_id,
       bodyPartId: apiModel.body_part_id,
       bodyMaterialId: apiModel.body_material_id,
@@ -20,9 +20,10 @@ export class LineItemMapper {
   }
 
   static dtoToApi(dto: LineItemDto): LineItemApiModel {
+    console.log('dtoToApi', dto);
+    
     return {
-      ...(dto.id && { id: dto.id }),
-      quote_id: dto.quoteId,
+      quote_id: dto.quoteId ?? undefined,
       body_part_id: dto.bodyPartId,
       body_material_id: dto.bodyMaterialId,
       repair_type_id: dto.repairTypeId,

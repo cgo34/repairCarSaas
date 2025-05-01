@@ -11,25 +11,11 @@ export class AddQuoteLineItemUseCase {
     @inject(SYMBOLS.Repositories.QuoteDetailRepository) private quoteDetailRepository: IQuoteDetailRepository
   ) {}
 
-  async executeQuote(quoteId: string, lineItems: LineItemDto[]): Promise<LineItemDto[]> {
-    // 🔹 1. Récupérer la Quote depuis le repository (DTO)
-    const quoteDto = await this.quoteRepository.getById(quoteId);
+  async executeQuote(lineItem: LineItemDto): Promise<LineItemDto> {
+
+    console.log('exrcute QuoteDetail add',lineItem);
     
-    if (!quoteDto)
-      throw new Error("Quote not found");
-
-    lineItems = lineItems.map(item => ({ ...item, quoteId: quoteId }));
-
-    // 🔹 2. Convertir DTO → Domain Model
-    // const quote = QuoteMapper.dtoToDomain(quoteDto);
-
-    // 🔹 3. Ajouter la ligne au modèle de domaine
-    // quote.addLineItem(lineItem);
-
-    // 🔹 4. Convertir Domain Model → DTO pour la persistance
-    console.log('executeQuote lineItems', lineItems);
-    
-    const updatedQuoteDto = await this.quoteDetailRepository.insert(lineItems);
+    const updatedQuoteDto = await this.quoteDetailRepository.insert(lineItem);
 
     // 🔹 6. Retourner l’entité en DTO pour la présentation
     return updatedQuoteDto;

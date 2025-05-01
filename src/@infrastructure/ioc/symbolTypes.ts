@@ -1,4 +1,9 @@
+// TODO: (GCE) -> TO BE MOVED TO CORE
+
 export enum SYMBOL_NAMES {
+    // Managers
+    REGION_MANAGER= 'RegionManager',
+
     // Clients
     SUPABASE_CLIENT = 'SupabaseClient',
 
@@ -87,6 +92,7 @@ export enum SYMBOL_NAMES {
     GET_QUOTE_DETAILS_USE_CASE = 'GetQuoteDetailsUseCase',
     ADD_QUOTE_DETAILS_USE_CASE = 'AddQuoteDetailsUseCase',
     ADD_QUOTE_LINE_ITEM_USE_CASE = 'AddQuoteLineItemUseCase',
+    DELETE_LINE_ITEM_USE_CASE = 'DeleteLineItemUseCase',
     // -- Pdf UseCases
     GENERATE_QUOTE_PDF_USE_CASE = 'GenerateQuotePdfUseCase',
     SEND_QUOTE_USE_CASE = 'SendQuoteUseCase',

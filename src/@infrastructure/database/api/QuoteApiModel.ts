@@ -24,4 +24,5 @@ export interface QuoteApiModel {
   garage?: GarageApiModel
   user_id: string; // 🔹 ID du créateur du devis
   user?: UserApiModel;
+  created_at?: string
 }

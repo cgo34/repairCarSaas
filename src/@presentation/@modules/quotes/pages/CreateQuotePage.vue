@@ -111,7 +111,7 @@
                       <v-btn
                         color="primary"
                         variant="text"
-                        @click="onSaveBtnClick"
+                        @click="onEditCustomerBtnClick"
                       >
                         Edit customer
                       </v-btn>
@@ -245,6 +245,15 @@
       </v-form>
     </v-container>
   </MainLayout>
+  
+  <GarageDialog
+    ref="garageDialogRef"
+    title="Edit customer"
+    persistent
+    :maxWidth="500"
+    @validated="onGarageValidated"
+  >
+  </GarageDialog>
 </template>
 
 <script setup lang="ts">
@@ -252,6 +261,8 @@ import { container } from '@/@infrastructure/ioc/inversify.config';
 import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
 import MainLayout from '@/@presentation/@ui/layouts/MainLayout.vue';
 import CountrySelect from '@/@presentation/components/CountrySelect.vue';
+import { GarageDialogExposed } from '@/@presentation/components/GarageDialog';
+import GarageDialog from '@/@presentation/components/GarageDialog.vue';
 import { IUseCreateQuoteState } from '@/@presentation/types/composables/IUseCreateQuoteState';
 import { CountryViewModel } from '@/@presentation/types/models/CountryViewModel';
 import { GarageViewModel } from '@/@presentation/types/models/GarageViewModel';
@@ -275,6 +286,7 @@ const {
   selectedGarage,
   selectGarage,
   selectTechnician,
+  setGarage,
 
   carInformations,
   setCarImmatriculation,
@@ -285,7 +297,6 @@ const {
   isDisplayUnitPrice,
   isComputeCommissionWithoutDentRemoval,
   setIsForfait,
-  setForfaitAmount,
   setIsDisplayUnitPrice,
   setIsComputeCommissionWithoutDentRemoval,
   selectCountry,
@@ -293,6 +304,9 @@ const {
 
   save
 } = useCreateQuoteState;
+
+
+const garageDialogRef = ref<GarageDialogExposed>()
 
 const techniciansList = ref<UserViewModel[]>(technicians.value);
 const garagesList = ref<GarageViewModel[]>(garages.value);
@@ -323,6 +337,14 @@ const onSelectTechnician = (technician: UserViewModel) => {
 const onSelectGarage = (garage: GarageViewModel) => {
   selectGarage(garage);
 };
+
+const onEditCustomerBtnClick = () => {
+  garageDialogRef.value?.open()
+}
+
+const onGarageValidated = (garage: GarageViewModel) => {
+  setGarage(garage)
+}
 
 const onCarImmatriculationUpdated = (value: string) => {
   setCarImmatriculation(value);
