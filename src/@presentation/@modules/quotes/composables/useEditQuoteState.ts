@@ -6,7 +6,9 @@ import { IBodyMaterialUseCase } from '@/@domain/useCases/carRepair/IBodyMaterial
 import { IBodyPartUseCase } from '@/@domain/useCases/carRepair/IBodyPartUseCase';
 import { IDentRepairTypeUseCase } from '@/@domain/useCases/carRepair/IDentRepairTypeUseCase';
 import { ICalculateLineCostUseCase } from '@/@domain/useCases/cost/ICalculateLineCostUseCase';
+import { IDeleteLineItemUseCase } from '@/@domain/useCases/lineItem/ILineItemUseCase';
 import { IAddQuoteLineItemUseCase } from '@/@domain/useCases/quotes/IAddQuoteLineItemUseCase';
+import { IDeleteQuoteUseCase } from '@/@domain/useCases/quotes/IDeleteQuoteUseCase';
 import { IGetQuoteDetailUseCase } from '@/@domain/useCases/quotes/IGetQuoteDetailUseCase';
 import { IGetQuoteUseCase } from '@/@domain/useCases/quotes/IGetQuoteUseCase';
 import { IUpdateQuoteUseCase } from '@/@domain/useCases/quotes/IUpdateQuoteUseCase';
@@ -38,6 +40,7 @@ export function useEditQuoteState() {
 
   const getQuoteUseCase = container.get<IGetQuoteUseCase>(SYMBOLS.UseCases.Quote.GetQuoteUseCase);
   const getQuoteDetailUseCase = container.get<IGetQuoteDetailUseCase>(SYMBOLS.UseCases.Quote.GetQuoteDetailsUseCase);
+  const deleteQuoteUseCase = container.get<IDeleteQuoteUseCase>(SYMBOLS.UseCases.Quote.DeleteQuoteUseCase)
 
   const garageUseCase = container.get<IGarageUseCase>(SYMBOLS.UseCases.Garage);
   const technicianUseCase = container.get<IUserUseCase>(SYMBOLS.UseCases.UserUseCase);
@@ -51,6 +54,7 @@ export function useEditQuoteState() {
   const updateQuoteUseCase = container.get<IUpdateQuoteUseCase>(SYMBOLS.UseCases.Quote.UpdateQuoteUseCase);
   const calculateLineCostUseCase = container.get<ICalculateLineCostUseCase>(SYMBOLS.UseCases.CostCalculator.CalculateLineCostUseCase);
   const addQuoteDetailsUseCase = container.get<IAddQuoteLineItemUseCase>(SYMBOLS.UseCases.Quote.AddLineItemUseCase);
+  const deleteLineItemUseCase = container.get<IDeleteLineItemUseCase>(SYMBOLS.UseCases.Quote.DeleteLineItemUseCase);
   // #endregion
 
   // #region -> CONSTANTS
@@ -114,6 +118,8 @@ export function useEditQuoteState() {
       // console.log('quoteDetailDto', quoteDetailDto);
       
       _quote.value = QuoteMapper.dtoToView(quoteDto);
+      _isForfait.value = quoteDto?.isForfait ?? false
+      _forfaitAmount.value = quoteDto?.forfaitAmount
       // console.log('_quote', _quote.value);
       
       _quoteLines.value = quoteDetailDto?.map((line, idx) => {
@@ -230,6 +236,16 @@ export function useEditQuoteState() {
     _selectedGarage.value = garage;
   }
 
+  const setGarage = (garage: GarageViewModel) => {
+    const existingGarage = _garages.value.find(g => g.name === garage.name)
+
+    if (!existingGarage) {
+      _garages.value.push(garage)
+    }
+
+    _selectedGarage.value = garage
+  }
+
   const setCarImmatriculation = (immatriculation: string) => {
     _carInformations.value.immatriculation = immatriculation;
   }
@@ -248,27 +264,45 @@ export function useEditQuoteState() {
     _selectedCountry.value = country;
   }
 
-  const addLine = () => {
+  // const addLine = () => {
+  //   if (!_priceParams.value)
+  //     throw new Error('Price params not found');
+    
+  //   const lineItem: LineItemViewModel = { 
+  //     lineId: LINE_ITEM_INCREMENT++, 
+  //     bodyPart: undefined, 
+  //     impactCount25: undefined,
+  //     impactCount35: undefined,
+  //     bodyMaterial: undefined, 
+  //     repairType: _repairTypes.value.find(rt => rt.code === 'dsp'),
+  //     dentRemovalPrice: 0,
+  //     lineItemType: 'quote',
+  //     price: 0,
+  //   }
+
+  //   _quoteLines.value.push({...lineItem});    
+  // }
+
+  const addLine = async (line: LineItemViewModel) => {
     if (!_priceParams.value)
       throw new Error('Price params not found');
     
-    const lineItem: LineItemViewModel = { 
-      lineId: LINE_ITEM_INCREMENT++, 
-      bodyPart: undefined, 
-      impactCount25: undefined,
-      impactCount35: undefined,
-      bodyMaterial: undefined, 
-      repairType: _repairTypes.value.find(rt => rt.code === 'dsp'),
-      dentRemovalPrice: 0,
-      lineItemType: 'quote',
-      price: 0,
-    }
+    line.quoteId = _quoteId.value
+    computePrice(line)
 
-    _quoteLines.value.push({...lineItem});    
+    const quoteLinesDto = await addQuoteDetailsUseCase.executeQuote(LineItemMapper.viewToDto(line));
+    console.log('Quote lines saved', quoteLinesDto);
+
+    const quoteAdded =  LineItemMapper.dtoToView(quoteLinesDto);
+
+    _quoteLines.value.push({...quoteAdded});    
   }
 
-  const removeLine = (lineId: number) => {
-    const index = _quoteLines.value.findIndex((line) => line.lineId === lineId);
+  const removeLine = (lineId: string) => {
+    console.log(lineId);
+    
+    deleteLineItemUseCase.execute(lineId)
+    const index = _quoteLines.value.findIndex((line) => line.id === lineId);
     if (index >= 0) {
       _quoteLines.value.splice(index, 1);
     }
@@ -324,6 +358,8 @@ export function useEditQuoteState() {
   }
 
   const setForfaitAmount = (amount: number) => {
+    console.log('setForfaitAmount', typeof amount, amount);
+    
     _forfaitAmount.value = amount;
   }
 
@@ -335,15 +371,20 @@ export function useEditQuoteState() {
     _isComputeCommissionWithoutDentRemoval.value = isComputeCommissionWithoutDentRemoval;
   }
 
-  const computePrice = (lineId: number) => {
-    const line = _quoteLines.value.find(l => l.lineId === lineId);
+  // const computePrice = (lineId: number) => {
+  //   const line = _quoteLines.value.find(l => l.lineId === lineId);
 
-    if (!line || !_priceParams.value)
-      throw new Error('Price params not found');
+  //   if (!line || !_priceParams.value)
+  //     throw new Error('Price params not found');
 
-    if (!line.bodyPart || !line.bodyMaterial || !line.repairType || !line.impactCount25 || !line.impactCount35)
-      return;
+  //   if (!line.bodyPart || !line.bodyMaterial || !line.repairType || !line.impactCount25 || !line.impactCount35)
+  //     return;
 
+  //   const lineItemViewDto = LineItemMapper.viewToDto(line);
+  //   line.price = calculateLineCostUseCase.execute(lineItemViewDto, SettingPriceMapper.viewToDto(_priceParams.value));
+  // }
+
+  const computePrice = (line: LineItemViewModel) => {
     const lineItemViewDto = LineItemMapper.viewToDto(line);
     line.price = calculateLineCostUseCase.execute(lineItemViewDto, SettingPriceMapper.viewToDto(_priceParams.value));
   }
@@ -351,7 +392,7 @@ export function useEditQuoteState() {
   
   const subtotal = computed(() => {
     if (!_isForfait.value) {
-      return _quoteLines.value.reduce((sum, item) => {
+      return _quoteLines.value?.reduce((sum, item) => {
         return sum + item.price; // 👈 Évite undefined en mettant `?? 0`
       }, 0) ?? 0// 👈 Ajoute la valeur initiale ici
     }
@@ -391,6 +432,9 @@ export function useEditQuoteState() {
     if (!_isForfait.value) {
       return subTotalWithDegarnissage.value + totalTaxRate.value;
     }
+
+    console.log('total', _forfaitAmount.value);
+    
     
     if (!_forfaitAmount.value)
       return 0;
@@ -479,6 +523,13 @@ export function useEditQuoteState() {
   });
   // #endregion
 
+  const deleteQuote = (quoteNumber: string) => {
+    
+    deleteQuoteUseCase.execute(_quoteId.value)
+    console.log('quote deleted : ', quoteNumber);
+    
+  }
+
   return {
     loading,
     error,
@@ -494,6 +545,7 @@ export function useEditQuoteState() {
     selectedGarage: computed(() => _selectedGarage.value),
     selectTechnician,
     selectGarage,
+    setGarage,
 
     carInformations: computed(() => _carInformations.value),
     setCarImmatriculation,
@@ -531,5 +583,6 @@ export function useEditQuoteState() {
     total,
 
     updateQuote,
+    deleteQuote
   };
 }

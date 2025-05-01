@@ -128,7 +128,7 @@ export class QuoteRepository implements IQuoteRepository {
 
     const { data, error } = await this.clientProvider.getClient()
       .from('quotes')
-      .update(quoteApi)
+      .update({...quoteApi, updated_at: new Date().toISOString()})
       .eq('id', quoteApi.id)
       .select(`
         *,
@@ -147,6 +147,11 @@ export class QuoteRepository implements IQuoteRepository {
    * Supprime un devis.
    */
   async delete(id: string): Promise<void> {
+    const { errorDetails } = await this.clientProvider.getClient()
+      .from('quote_details')
+      .delete()
+      .eq('quote_id', id);
+
     const { error } = await this.clientProvider.getClient()
       .from('quotes')
       .delete()

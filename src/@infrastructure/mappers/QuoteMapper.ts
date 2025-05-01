@@ -32,7 +32,8 @@ export class QuoteMapper {
       garageId: api.garage_id,
       garage: api.garage ? GarageMapper.apiToDto(api.garage) : undefined, // Aj
       userId: api.user_id, // Ajouté si nécessaire
-      user: api.user ? UserMapper.apiToDto(api.user) : undefined // Ajouté si nécessaire
+      user: api.user ? UserMapper.apiToDto(api.user) : undefined, // Ajouté si nécessaire
+      createdAt: api.created_at
     };
   }
 
@@ -40,6 +41,8 @@ export class QuoteMapper {
    * Convertit un `QuoteDto` (Application) en `QuoteApiModel` (BDD)
    */
   static dtoToApi(dto: QuoteDto): QuoteApiModel {
+    console.log('update quote dtoToApi', dto);
+    
     return {
       id: dto.id,
       quote_number: dto.quoteNumber,
@@ -59,7 +62,8 @@ export class QuoteMapper {
       car_date: Number(dto.carDate),
       technician_id: dto.technician?.id ?? '',
       garage_id: dto.garage?.id ?? '',
-      user_id: dto.userId
+      user_id: dto.userId,
+      created_at: dto.createdAt
     };
   }
 }

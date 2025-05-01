@@ -6,7 +6,52 @@ export const buildQuoteHtmlTemplate = (quote: QuoteDto, lines: LineItemDto[]): s
   const totalTTC = totalHT + totalStripping + tva;
   const currencySymbol = quote.currency === 'EUR' ? '€' : quote.currency;
 
-  return `
+  const totalsHtml = quote.isForfait
+  ? `
+    <div class="totals-block">
+      <table class="totals-table">
+        <tfoot>
+          <tr>
+            <td class="label">Total TTC :</td>
+            <td class="amount">${quote.forfaitAmount.toFixed(2)} ${currencySymbol}</td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  `
+  : `
+    <div class="totals-block">
+      <table class="totals-table">
+        <tbody>
+          <tr>
+            <td class="label">Total H.T :</td>
+            <td class="amount">${totalHT.toFixed(2)} ${currencySymbol}</td>
+          </tr>
+          <tr>
+            <td class="label">Total dégarnissage :</td>
+            <td class="amount">${totalStripping.toFixed(2)} ${currencySymbol}</td>
+          </tr>
+          <tr>
+            <td class="label">Total H.T + Total Dégarnissage :</td>
+            <td class="amount">${(totalHT + totalStripping).toFixed(2)} ${currencySymbol}</td>
+          </tr>
+          <tr>
+            <td class="label">TVA (${taxRate * 100}%) :</td>
+            <td class="amount">${tva.toFixed(2)} ${currencySymbol}</td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr>
+            <td class="label">Total TTC :</td>
+            <td class="amount">${totalTTC.toFixed(2)} ${currencySymbol}</td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  `;
+
+
+  let htmlTemplate = `
   <!DOCTYPE html>
   <html lang="fr">
     <head>
@@ -197,7 +242,14 @@ export const buildQuoteHtmlTemplate = (quote: QuoteDto, lines: LineItemDto[]): s
               </tr>
             </thead>
             <tbody>
-              ${lines.map(line => `
+              ${
+                quote.isForfait
+                  ? `
+                    <tr>
+                      <td colspan="4">Réparation forfaitaire</td>
+                    </tr>
+                  `
+              : lines.map(line => `
                 <tr>
                   <td>${line.bodyPart.name || '-'}</td>
                   <td>${(line.impactCount25 ?? 0) + (line.impactCount35 ?? 0)}</td>
@@ -206,38 +258,11 @@ export const buildQuoteHtmlTemplate = (quote: QuoteDto, lines: LineItemDto[]): s
                 </tr>
               `).join('')}
             </tbody>
-          </table>
+          </table>`
 
-          <div class="totals-block">
-            <table class="totals-table">
-              <tbody>
-                <tr>
-                  <td class="label">Total H.T :</td>
-                  <td class="amount">${totalHT.toFixed(2)} ${currencySymbol}</td>
-                </tr>
-                <tr>
-                  <td class="label">Total dégarnissage :</td>
-                  <td class="amount">${totalStripping.toFixed(2)} ${currencySymbol}</td>
-                </tr>
-                <tr>
-                  <td class="label">Total H.T + Total Dégarnissage :</td>
-                  <td class="amount">${(totalHT + totalStripping).toFixed(2)} ${currencySymbol}</td>
-                </tr>
-                <tr>
-                  <td class="label">TVA (${taxRate * 100}%) :</td>
-                  <td class="amount">${tva.toFixed(2)} ${currencySymbol}</td>
-                </tr>
-              </tbody>
-              <tfoot>
-                <tr>
-                  <td class="label">Total H.T</td>
-                  <td class="amount">${totalTTC.toFixed(2)} ${currencySymbol}</td>
-                </tr>
-              </tfoot>
-            </table>
-          </div>
+          htmlTemplate += totalsHtml;
 
-          <p class="tva-note">
+          htmlTemplate += `<p class="tva-note">
             TVA ${taxRate > 0 ? taxRate * 100 + '%' : 'non applicable'} - ${
               taxRate === 0
                 ? 'Autoliquidation de la TVA par le client (Article 196 de la directive 2006/112/CE)'
@@ -264,4 +289,6 @@ export const buildQuoteHtmlTemplate = (quote: QuoteDto, lines: LineItemDto[]): s
     </body>
   </html>
   `;
+
+  return htmlTemplate
 };

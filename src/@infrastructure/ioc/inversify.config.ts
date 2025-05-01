@@ -1,3 +1,5 @@
+// TODO: (GCE) -> TO BE MOVED TO CORE
+
 import { SYMBOLS } from '@infrastructure/ioc/symbols';
 import { Container } from 'inversify';
 import 'reflect-metadata';
@@ -21,6 +23,7 @@ import { CalculateLineCostUseCase } from '@/@application/useCases/cost/Calculate
 import { CalculateTotalCostUseCase } from '@/@application/useCases/cost/CalculateTotalCostUseCase';
 import { GarageUseCase } from '@/@application/useCases/GarageUseCase';
 import { ILoginUseCase } from '@/@application/useCases/interfaces/auth/ILoginUseCase';
+import { DeleteLineItemUseCase } from '@/@application/useCases/lineItem/DeleteLineItemUseCase';
 import { AddQuoteLineItemUseCase } from '@/@application/useCases/quotes/AddQuoteLineItemUseCase';
 import { CreateQuoteUseCase } from '@/@application/useCases/quotes/CreateQuoteUseCase';
 import { DeleteQuoteUseCase } from '@/@application/useCases/quotes/DeleteQuoteUseCase';
@@ -40,6 +43,8 @@ import { SettingPriceImpactCountToUtUseCase } from '@/@application/useCases/sett
 import { SettingPriceRepairTypeCoefficientUseCase } from '@/@application/useCases/settings/price/SettingPriceRepairTypeCoefficientUseCase';
 import { SettingPriceUseCase } from '@/@application/useCases/settings/price/SettingPriceUseCase';
 import { UserUseCase } from '@/@application/useCases/users/UserUseCase';
+import { IRegionManager } from '@/@core/managers/interfaces/IRegionManager';
+import { RegionManager } from '@/@core/managers/RegionManager';
 import { IBodyMaterialRepository } from '@/@domain/repositories/carRepair/IBodyMaterialRepository';
 import { IBodyPartRepository } from '@/@domain/repositories/carRepair/IBodyPartRepository';
 import { IDentRepairTypeRepository } from '@/@domain/repositories/carRepair/IDentRepairTypeRepository';
@@ -76,6 +81,7 @@ import { ICalculateLineCostUseCase } from '@/@domain/useCases/cost/ICalculateLin
 import { ICalculateTotalCostUseCase } from '@/@domain/useCases/cost/ICalculateTotalCostUseCase';
 import { IGarageUseCase } from '@/@domain/useCases/IGarageUseCase';
 import { IUserUseCase } from '@/@domain/useCases/IUserUseCase';
+import { IDeleteLineItemUseCase } from '@/@domain/useCases/lineItem/ILineItemUseCase';
 import { IAddQuoteLineItemUseCase } from '@/@domain/useCases/quotes/IAddQuoteLineItemUseCase';
 import { ICreateQuoteUseCase } from '@/@domain/useCases/quotes/ICreateQuoteUseCase';
 import { IDeleteQuoteUseCase } from '@/@domain/useCases/quotes/IDeleteQuoteUseCase';
@@ -156,6 +162,9 @@ import { Html2PdfGenerator } from '../pdf/Html2PdfGenerator';
 import { EmailService } from '../services/EmailService';
 
 const container = new Container({ defaultScope: 'Singleton' });
+
+// Managers
+container.bind<IRegionManager>(SYMBOLS.Managers.regionManager).to(RegionManager).inSingletonScope();
 
 /** 1 - CLIENTS */
 container.bind<IClient>(SYMBOLS.Clients.SupabaseClient).to(SupabaseClient).inSingletonScope();
@@ -247,6 +256,7 @@ container.bind<IGetQuoteUseCase>(SYMBOLS.UseCases.Quote.GetQuoteUseCase).to(GetQ
 container.bind<IGetQuoteDetailUseCase>(SYMBOLS.UseCases.Quote.GetQuoteDetailsUseCase).to(GetQuoteDetailUseCase).inSingletonScope();
 // container.bind<ISaveQuoteUseCase>(SYMBOLS.UseCases.Quote.SaveQuoteUseCase).to(SaveQuoteUseCase).inSingletonScope();
 container.bind<IAddQuoteLineItemUseCase>(SYMBOLS.UseCases.Quote.AddLineItemUseCase).to(AddQuoteLineItemUseCase).inSingletonScope();
+container.bind<IDeleteLineItemUseCase>(SYMBOLS.UseCases.Quote.DeleteLineItemUseCase).to(DeleteLineItemUseCase).inSingletonScope();
 container.bind<IGenerateQuotePdfUseCase>(SYMBOLS.UseCases.Quote.GenerateQuotePdfUseCase).to(GenerateQuotePdfUseCase).inSingletonScope();
 container.bind<ISendQuoteUseCase>(SYMBOLS.UseCases.Quote.SendQuoteUseCase).to(SendQuoteUseCase);
 

@@ -4,9 +4,9 @@ import { LineItemViewModel } from '@/@presentation/types/models/LineItemViewMode
 export class LineItemMapper {
   static viewToDto(viewModel: LineItemViewModel): LineItemDto {
     return {
-      id: viewModel.id ?? undefined,
+      id: viewModel.id ?? '',
       quoteId: viewModel.quoteId ?? undefined, // ❌ Pas encore rattaché à un devis
-      bodyPartId: viewModel.bodyPart?.id ?? undefined,
+      bodyPartId: viewModel.bodyPart?.id,
       bodyPart: viewModel.bodyPart ?? undefined,
       bodyMaterialId: viewModel.bodyMaterial?.id ?? undefined,
       bodyMaterial: viewModel.bodyMaterial ?? undefined,

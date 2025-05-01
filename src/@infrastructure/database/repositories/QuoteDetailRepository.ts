@@ -40,19 +40,28 @@ export class QuoteDetailRepository implements IQuoteDetailRepository {
     return data.map(LineItemMapper.apiToDto);
   }
 
-  async insert(items: LineItemDto[]): Promise<void> {
-    console.log('insert items', items);
+  async insert(item: LineItemDto): Promise<LineItemDto> {
+    console.log('insert items', item);
     
     const { data, error } = await this.clientProvider.getClient()
       .from('quote_details')
-      .insert(items.map(LineItemMapper.dtoToApi))
-      .select('*') // si tu veux les lignes insérées
+      .insert(LineItemMapper.dtoToApi(item))
+      .select(`
+        *,
+        bodyPart:body_parts(*),
+        bodyMaterial:body_materials(*),
+        repairType:repair_types(*)
+      `) // si tu veux les lignes insérées
       .returns<LineItemApiModel[]>();
     ;
 
     if (error)
       throw new Error('Error inserting quote detail');
-    // return data.map(LineItemMapper.apiToDto);
+
+    console.log('data after save', data);
+    
+
+    return LineItemMapper.apiToDto(data[0]);
   }
 
   async update(items: LineItemDto[]): Promise<LineItemDto> {

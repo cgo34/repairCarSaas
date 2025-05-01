@@ -34,4 +34,6 @@ export interface QuoteDto {
   
   isSent: boolean;
   sentAt: string | null; // 🔹 Peut être null
+
+  createdAt?: string;
 }

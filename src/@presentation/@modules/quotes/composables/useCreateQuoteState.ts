@@ -170,6 +170,16 @@ export function useCreateQuoteState() {
     _selectedGarage.value = garage;
   }
 
+  const setGarage = (garage: GarageViewModel) => {
+    const existingGarage = _garages.value.find(g => g.name === garage.name)
+
+    if (!existingGarage) {
+      _garages.value.push(garage)
+    }
+
+    _selectedGarage.value = garage
+  }
+
   const setCarImmatriculation = (immatriculation: string) => {
     _carInformations.value.immatriculation = immatriculation;
   }
@@ -273,6 +283,7 @@ export function useCreateQuoteState() {
     selectedGarage: computed(() => _selectedGarage.value),
     selectTechnician,
     selectGarage,
+    setGarage,
 
     carInformations: computed(() => _carInformations.value),
     setCarImmatriculation,

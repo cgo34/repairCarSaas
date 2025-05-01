@@ -1,6 +1,11 @@
+// TODO: (GCE) -> TO BE MOVED TO CORE
+
 import { SYMBOL_NAMES } from "./symbolTypes";
 
 const SYMBOLS = {
+  Managers: {
+    regionManager: Symbol.for(SYMBOL_NAMES.REGION_MANAGER)
+  },
   Clients: {
     SupabaseClient: Symbol.for(SYMBOL_NAMES.SUPABASE_CLIENT),
   },
@@ -99,6 +104,7 @@ const SYMBOLS = {
       GetQuoteDetailsUseCase: Symbol.for(SYMBOL_NAMES.GET_QUOTE_DETAILS_USE_CASE),
       // AddQuoteDetailsUseCase: Symbol.for(SYMBOL_NAMES.ADD_QUOTE_DETAILS_USE_CASE),
       AddLineItemUseCase: Symbol.for(SYMBOL_NAMES.ADD_QUOTE_LINE_ITEM_USE_CASE),
+      DeleteLineItemUseCase: Symbol.for(SYMBOL_NAMES.DELETE_LINE_ITEM_USE_CASE),
       // -- Pdf UseCases
       GenerateQuotePdfUseCase: Symbol.for(SYMBOL_NAMES.GENERATE_QUOTE_PDF_USE_CASE),
       SendQuoteUseCase: Symbol.for(SYMBOL_NAMES.SEND_QUOTE_USE_CASE),

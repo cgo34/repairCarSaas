@@ -8,5 +8,5 @@ export interface GarageViewModel {
   city: string;
   phone: string;
   email: string;
-  percentageCommission: number;
+  percentageCommission?: number;
 }

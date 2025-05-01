@@ -155,10 +155,20 @@
                   class="pa-4"
                 >
                   <div class="d-flex flex-column justify-space-between">
-                    <div>
-                      <h4 class="text-h4">
+                    <div class="d-flex align-center justify-space-between mb-2">
+                      <h5 class="text-h6">
                         Garage :
-                      </h4>
+                      </h5>
+                      
+                      <!-- TODO: (GCE) -> ADD IMPLEMENTATION TO FREE USER -->
+                      <v-btn
+                        color="primary"
+                        variant="text"
+                        @click="onEditCustomerBtnClick"
+                      >
+                        Edit customer
+                      </v-btn>
+
                     </div>
                     
 
@@ -273,16 +283,21 @@
                 <div v-if="!isForfait"><v-switch label="Calculer la commission sans le dégarnissage ?" :modelValue="isComputeCommissionWithoutDentRemoval" @update:modelValue="onUpdateIsComputeCommissionWithoutDentRemoval" color="primary" inset></v-switch></div>
               </div>
             </div>
+            
+            <div v-if="isForfait">
+              <h4 class="text-h4">
+                Montant du forfait
+              </h4>
+              <v-text-field
+                :modelValue="forfaitAmount"
+                placeholder="Montant du forfait"
+                type="number"
+                dense
+                outlined
+                @update:modelValue="onUpdateForfaitAmount"
+              />
+            </div>
             <CountrySelect :modelValue="selectedCountry" @select="onSelectCountry"/>
-          </v-card-text>
-          <v-card-text v-if="isForfait">
-            <v-text-field
-              :modelValue="forfaitAmount"
-              placeholder="Montant du forfait"
-              dense
-              outlined
-              @update:modelValue="onUpdateForfaitAmount"
-            />
           </v-card-text>
 
           
@@ -299,23 +314,16 @@
           </v-card-actions>
         </v-card>
           
-        <v-card
+        <v-card v-if="!isForfait"
           class="rounded-lg mt-5"
           outlined
         >
 
-          <v-card-text v-if="!isForfait">
+          <v-card-text>
             <div class="d-flex align-center justify-space-between">
               <h4 class="text-h4">
                 Liste des éléments
               </h4>
-              <v-btn
-                variant="tonal"
-                color="primary"
-                @click="onUpdateItemsBtnClick"
-              >
-                Enregistrer les éléments
-              </v-btn>
             </div>
             <v-data-table
               :headers="headers"
@@ -323,51 +331,40 @@
               class="elevation-1"
               density="comfortable"
             >
-              <template #[`item.bodyPart`]="{ item }">
-                  <BodyPartSelect
-                  :model-value="item.bodyPart"
-                  :body-parts="availableBodyParts"
-                  @select="(value) => onSelectBodyPart(value, item.lineId)"
-                />
-              </template>
-              <template #[`item.impactCount25`]="{ item }">
+              <!-- <template #[`item.bodyPart`]="{ item }">
+                  {{ item.bodyPart?.name }}
+              </template> -->
+              <!-- <template #[`item.impactCount25`]="{ item }">
                   <v-text-field
                     v-model="item.impactCount25"
                     placeholder="Nb."
                     dense
                     outlined
                   />
-              </template>
-              <template #[`item.impactCount35`]="{ item }">
+              </template> -->
+              <!-- <template #[`item.impactCount35`]="{ item }">
                 <v-text-field
                   v-model="item.impactCount35"
                   placeholder="Nb."
                   dense
                   outlined
                 />
-              </template>
-              <template #[`item.bodyMaterial`]="{ item }">
-                <BodyMaterialSelect
-                  :model-value="item.bodyMaterial"
-                  :body-materials="bodyMaterials"
-                  @select="onSelectBodyMaterial($event, item.lineId)"
-                />
-              </template>
-              <template #[`item.repairType`]="{ item }">
+              </template> -->
+              <!-- <template #[`item.repairType`]="{ item }">
                 <RepairTypeSelect
                   :model-value="item.repairType"
                   :repair-types="repairTypes"
                   @select="onSelectRepairType($event, item.lineId)"
                 />
-              </template>
-              <template #[`item.dentRemovalPrice`]="{ item }">
+              </template> -->
+              <!-- <template #[`item.dentRemovalPrice`]="{ item }">
                 <v-text-field
                   :modelValue="item.dentRemovalPrice"
                   placeholder="Montant"
                   dense
                   outlined
                 />
-              </template>
+              </template> -->
               <template #[`item.price`]="{ item }">
                 <div class="text-right">
                   {{ item.price.toFixed(2) }} €
@@ -390,8 +387,6 @@
             >
               + Ajouter un élément
             </v-btn>
-            
-            <v-btn @click="genericDialogRef?.open()">Ouvrir la modal</v-btn>
           </v-card-text>
         </v-card>
 
@@ -402,13 +397,13 @@
           outlined
         >
 
-          <v-card-text>
+          <!-- <v-card-text>
             <div class="d-flex align-center justify-space-between">
               <h4 class="text-h4">
                 Totaux
               </h4>
             </div>
-          </v-card-text>  
+          </v-card-text>   -->
           <v-sheet class="rounded-sm pa-2 pa-sm-6">
             <v-row justify="end">
               <v-col
@@ -440,20 +435,20 @@
                 class="text-end"
               >
                 <h5 class="py-2 text-subtitle-1 text-disabled">
-                  {{ subtotal.toFixed(2) }} {{ selectedCountry?.currencySymbol || '€' }}
+                  {{ regionManager.formatNumber(subtotal) ?? 0 }} {{ selectedCountry?.currencySymbol || '€' }}
                 </h5>
                 <h5 v-if="!isForfait" class="py-2 text-subtitle-1 text-disabled">
-                  {{ totalDegarnissage }}
+                  {{ regionManager.formatNumber(totalDegarnissage) }} {{ selectedCountry?.currencySymbol || '€' }}
                   <!-- {{ totalDegarnissage.toFixed(2) || '0.00' }} {{ selectedCountry?.currencySymbol || '€' }} -->
                 </h5>
                 <h5 v-if="!isForfait" class="py-2 text-subtitle-1 text-disabled">
-                  {{ subTotalWithDegarnissage.toFixed(2) }} {{ selectedCountry?.currencySymbol || '€' }}
+                  {{ regionManager.formatNumber(subTotalWithDegarnissage) }} {{ selectedCountry?.currencySymbol || '€' }}
                 </h5>
                 <h5 class="py-2 text-subtitle-1 text-disabled">
-                  {{ totalTaxRate.toFixed(2) }} {{ selectedCountry?.currencySymbol || '€' }}
+                  {{ regionManager.formatNumber(totalTaxRate) }} {{ selectedCountry?.currencySymbol || '€' }}
                 </h5>
                 <h5 class="py-2 text-subtitle-1 text-primary mt-7">
-                  {{ total.toFixed(2) }} {{ selectedCountry?.currencySymbol || '€' }}
+                  {{ regionManager.formatNumber(total) }} {{ selectedCountry?.currencySymbol || '€' }}
                 </h5>
               </v-col>
             </v-row>
@@ -462,35 +457,49 @@
       </v-form>
     </v-container>
   </MainLayout>
-
-  <GenericDialog
-    ref="genericDialogRef"
-    title="Exemple"
+  
+  <GarageDialog
+    ref="garageDialogRef"
+    title="Edit customer"
     persistent
     :maxWidth="500"
+    @validated="onGarageValidated"
   >
-    <template #default="{ isActive }">
-      <div>Contenu de la modal</div>
-    </template>
+  </GarageDialog>
 
-    <template #actions="{ isActive }">
-      <v-btn text @click="genericDialogRef?.close()">Fermer</v-btn>
-    </template>
-  </GenericDialog>
+  <AddLineItemDialog
+    ref="addLineItemDialogRef"
+    title="Ajouter un élément"
+    @add="onAddLineItem"
+  >
+  </AddLineItemDialog>  
+
+  <ConfirmDialog
+    ref="deleteQuoteConfirmDialogRef"
+    title="Delete quote"
+    message="You will delete this quote, are you sure ?"
+    confirmLabel="Confirmer"
+    cancelLabel="Annuler"
+    type="warning"
+    @confirm="onConfirmDeleteQuote"
+  >
+  </ConfirmDialog>
 </template>
 
 <script setup lang="ts">
+import { IRegionManager } from '@/@core/managers/interfaces/IRegionManager';
 import { container } from '@/@infrastructure/ioc/inversify.config';
 import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
 import BackButton from '@/@presentation/@ui/components/buttons/BackButton.vue';
 import GenericButton from '@/@presentation/@ui/components/buttons/GenericButton.vue';
 import MainLayout from '@/@presentation/@ui/layouts/MainLayout.vue';
-import BodyMaterialSelect from '@/@presentation/components/BodyMaterialSelect.vue';
-import BodyPartSelect from '@/@presentation/components/BodyPartSelect.vue';
+import AddLineItemDialog from '@/@presentation/components/AddLineItemDialog.vue';
+import { ConfirmDialogExposed } from '@/@presentation/components/ConfirmDialog';
+import ConfirmDialog from '@/@presentation/components/ConfirmDialog.vue';
 import CountrySelect from '@/@presentation/components/CountrySelect.vue';
-import GenericDialog from '@/@presentation/components/GenericDialog.vue';
-import RepairTypeSelect from '@/@presentation/components/RepairTypeSelect.vue';
-import type { GenericDialogExposed } from '@/@presentation/types/components';
+import { GarageDialogExposed } from '@/@presentation/components/GarageDialog';
+import GarageDialog from '@/@presentation/components/GarageDialog.vue';
+import type { AddLineItemDialogExposed } from '@/@presentation/types/components';
 import { IUseEditQuoteState } from '@/@presentation/types/composables/IUseEditQuoteState';
 import { BodyMaterialViewModel } from '@/@presentation/types/models/carRepair/BodyMaterialViewModel';
 import { BodyPartViewModel } from '@/@presentation/types/models/carRepair/BodyPartViewModel';
@@ -502,7 +511,14 @@ import { UserViewModel } from '@/@presentation/types/models/UserViewModel';
 import { computed, onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
-const genericDialogRef = ref<GenericDialogExposed>()
+
+const regionManager = container.get<IRegionManager>(SYMBOLS.Managers.regionManager);
+
+
+const garageDialogRef = ref<GarageDialogExposed>()
+const addLineItemDialogRef = ref<AddLineItemDialogExposed>()
+const deleteQuoteConfirmDialogRef = ref<ConfirmDialogExposed>()
+
 
 // Injection du state depuis Inversify
 const useEditQuoteState = container.get<IUseEditQuoteState>(SYMBOLS.States.Quote.EditQuoteState);
@@ -519,6 +535,7 @@ const {
   selectedGarage,
   selectGarage,
   selectTechnician,
+  setGarage,
 
   carInformations,
   setCarImmatriculation,
@@ -554,7 +571,9 @@ const {
   totalTaxRate,
   total,
 
-  updateQuote
+  updateQuote,
+
+  deleteQuote
 } = useEditQuoteState;
 
 const router = useRouter();
@@ -566,14 +585,14 @@ const garagesList = ref<GarageViewModel[]>(garages.value);
 
 const headers = computed(()=> {
   return [
-    { title: 'Element de carrosserie', key: 'bodyPart', width: '25%', minWidth: '25%' },
+    { title: 'Element de carrosserie', key: 'bodyPart.name', width: '25%', minWidth: '25%' },
     { title: 'Nombre d\'impacts',  width: '20%', minWidth: '20%', 
         children: [
           { title: 'Ø 25', value: 'impactCount25' },
           { title: 'Ø 35', value: 'impactCount35' },
         ],  },
-    { title: 'Type de matériau', key: 'bodyMaterial', width: '20%' },
-    { title: 'Type de réparation', key: 'repairType', width: '20%' },
+    { title: 'Type de matériau', key: 'bodyMaterial.name', width: '20%' },
+    { title: 'Type de réparation', key: 'repairType.name', width: '20%' },
     { title: 'Dégarnissage', key: 'dentRemovalPrice', },
     { title: `Prix HT (${selectedCountry.value?.currencySymbol || '€'})`, key: 'price', align: 'end', width: '15%', minWidth: '15%' },
     { title: 'Actions', key: 'actions', align: 'end', sortable: false }
@@ -611,6 +630,14 @@ const onSelectGarage = (garage: GarageViewModel) => {
   selectGarage(garage);
 };
 
+const onEditCustomerBtnClick = () => {
+  garageDialogRef.value?.open()
+}
+
+const onGarageValidated = (garage: GarageViewModel) => {
+  setGarage(garage)
+}
+
 const onCarImmatriculationUpdated = (value: string) => {
   setCarImmatriculation(value);
 };
@@ -628,7 +655,7 @@ const onUpdateIsForfait = (value: boolean) => {
 };
 
 const onUpdateForfaitAmount = (value: number) => {
-  setForfaitAmount(value);
+  setForfaitAmount(Number(value));
 };
 
 const onUpdateIsDisplayUnitPrice = (value: boolean) => {
@@ -645,12 +672,16 @@ const onSelectCountry = (country: CountryViewModel | undefined) => {
 };
 
 const onAddItemBtnClick = () => {
-  addLine()  
+  addLineItemDialogRef.value?.open()
 };
 
 const onRemoveItemBtnClick = (item: LineItemViewModel) => {
-  removeLine(item.lineId);
+  removeLine(item.id);
 };
+
+const onAddLineItem = (item: LineItemViewModel) =>  {
+  addLine(item)
+}
 
 
 const onSelectBodyPart = (bodyPart: BodyPartViewModel | undefined, lineId: number) => {
@@ -685,20 +716,23 @@ const onSendBtnClick = () => {
 };
 
 const onViewPdfBtnClick = () => {
-  console.log('onViewPdfBtnClick -> pdf visualization');
   router.push(`/quotes/view/${route.params.id}`);
 };
 
 const onDeleteBtnClick = () => {
-  console.log('onDeleteBtnClick -> delete quote');
+  deleteQuoteConfirmDialogRef.value?.open()
 };
+
+const onConfirmDeleteQuote = () => {
+  deleteQuote(quoteInformations.value.number)
+  router.push(`/quotes/`)
+}
 
 const onUpdateItemsBtnClick = () => {
   console.log('onUpdateItemsBtnClick -> update items');
 };
 
 const onUpdateBtnClick = () => {
-  console.log('onUpdateBtnClick -> quoteInformations', quoteInformations.value);
   updateQuote();
 };
 // #endregion
