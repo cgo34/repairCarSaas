@@ -33,7 +33,9 @@ export class QuoteMapper {
       lineItems: view.lineItems?.map((line) => LineItemMapper.viewToDto(line)) ?? [],
 
       isSent: view.isSent,
-      sentAt: view.sentAt ? view.sentAt.toISOString() : null
+      sentAt: view.sentAt ? view.sentAt.toISOString() : null,
+
+      createdAt: view.createdAt
     };
   }
 
@@ -66,6 +68,8 @@ export class QuoteMapper {
 
       isSent: dto.isSent,
       sentAt: dto.sentAt ? new Date(dto.sentAt) : undefined,
+
+      createdAt: dto.createdAt
     };
   }
 }

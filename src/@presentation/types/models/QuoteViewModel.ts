@@ -57,4 +57,6 @@ export interface QuoteViewModel {
 
   isSent: boolean;
   sentAt?: Date;
+
+  createdAt?: string
 }

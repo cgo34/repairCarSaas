@@ -25,7 +25,12 @@ export class QuoteDetailRepository implements IQuoteDetailRepository {
   async get(id: string): Promise<LineItemDto[] | null> {
     const { data, error } = await this.clientProvider.getClient()
       .from('quote_details')
-      .select('*')
+      .select(`
+        *,
+        bodyPart:body_parts(*),
+        bodyMaterial:body_materials(*),
+        repairType:repair_types(*)
+      `)
       .eq('quote_id', id)
       .returns<LineItemApiModel[]>();
       console.log('get quote detail', data);
@@ -35,30 +40,42 @@ export class QuoteDetailRepository implements IQuoteDetailRepository {
     return data.map(LineItemMapper.apiToDto);
   }
 
-  async insert(items: LineItemDto[]): Promise<void> {
-    console.log('insert items', items);
+  async insert(item: LineItemDto): Promise<LineItemDto> {
+    console.log('insert items', item);
     
     const { data, error } = await this.clientProvider.getClient()
       .from('quote_details')
-      .insert(items.map(LineItemMapper.dtoToApi))
-      .select('*') // si tu veux les lignes insérées
+      .insert(LineItemMapper.dtoToApi(item))
+      .select(`
+        *,
+        bodyPart:body_parts(*),
+        bodyMaterial:body_materials(*),
+        repairType:repair_types(*)
+      `) // si tu veux les lignes insérées
       .returns<LineItemApiModel[]>();
     ;
 
-    if (error) throw new Error('Error inserting quote detail');
-    // return data.map(LineItemMapper.apiToDto);
+    if (error)
+      throw new Error('Error inserting quote detail');
+
+    console.log('data after save', data);
+    
+
+    return LineItemMapper.apiToDto(data[0]);
   }
 
-  async update(item: LineItemDto): Promise<LineItemDto> {
+  async update(items: LineItemDto[]): Promise<LineItemDto> {
     const { data, error } = await this.clientProvider.getClient()
       .from('quote_details')
-      .update(LineItemMapper.dtoToApi(item))
-      .eq('id', item.id)
+      .update(items.map(LineItemMapper.dtoToApi))
+      .eq('quote_id', items[0].quoteId)
       .select('*')
-      .single<LineItemApiModel>();
+      .returns<LineItemApiModel[]>();
 
-    if (error) throw new Error('Error updating quote detail');
-    return LineItemMapper.apiToDto(data);
+    if (error)
+      throw new Error('Error updating quote detail');
+
+    return data.map(LineItemMapper.apiToDto);
   }
 
   async delete(id: string): Promise<void> {

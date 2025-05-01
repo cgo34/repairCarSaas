@@ -1,6 +1,11 @@
+// TODO: (GCE) -> TO BE MOVED TO CORE
+
 import { SYMBOL_NAMES } from "./symbolTypes";
 
 const SYMBOLS = {
+  Managers: {
+    regionManager: Symbol.for(SYMBOL_NAMES.REGION_MANAGER)
+  },
   Clients: {
     SupabaseClient: Symbol.for(SYMBOL_NAMES.SUPABASE_CLIENT),
   },
@@ -52,6 +57,7 @@ const SYMBOLS = {
     },
     PdfGeneratorService: Symbol.for(SYMBOL_NAMES.PDF_GENERATOR_SERVICE),
     DownloadService: Symbol.for(SYMBOL_NAMES.DOWNLOAD_SERVICE),
+    EmailService: Symbol.for(SYMBOL_NAMES.EMAIL_SERVICE),
   },
   UseCases: {
     Auth: {
@@ -91,14 +97,17 @@ const SYMBOLS = {
       ViewQuoteUseCase: Symbol.for(SYMBOL_NAMES.VIEW_QUOTE_USE_CASE),
       CreateQuoteUseCase: Symbol.for(SYMBOL_NAMES.CREATE_QUOTE_USE_CASE),
       InsertQuoteUseCase: Symbol.for(SYMBOL_NAMES.INSERT_QUOTE_USE_CASE),
+      UpdateQuoteUseCase: Symbol.for(SYMBOL_NAMES.UPDATE_QUOTE_USE_CASE),
       SaveQuoteUseCase: Symbol.for(SYMBOL_NAMES.SAVE_QUOTE_USE_CASE),
       DeleteQuoteUseCase: Symbol.for(SYMBOL_NAMES.DELETE_QUOTE_USE_CASE),
       
       GetQuoteDetailsUseCase: Symbol.for(SYMBOL_NAMES.GET_QUOTE_DETAILS_USE_CASE),
       // AddQuoteDetailsUseCase: Symbol.for(SYMBOL_NAMES.ADD_QUOTE_DETAILS_USE_CASE),
       AddLineItemUseCase: Symbol.for(SYMBOL_NAMES.ADD_QUOTE_LINE_ITEM_USE_CASE),
+      DeleteLineItemUseCase: Symbol.for(SYMBOL_NAMES.DELETE_LINE_ITEM_USE_CASE),
       // -- Pdf UseCases
       GenerateQuotePdfUseCase: Symbol.for(SYMBOL_NAMES.GENERATE_QUOTE_PDF_USE_CASE),
+      SendQuoteUseCase: Symbol.for(SYMBOL_NAMES.SEND_QUOTE_USE_CASE),
     },
   },
   States: {

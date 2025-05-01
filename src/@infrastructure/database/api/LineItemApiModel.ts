@@ -6,11 +6,11 @@ export interface LineItemApiModel {
   id?: string;
   quote_id: string; // Clé étrangère vers la table `quotes`
   body_part_id: string;
-  body_parts?: BodyPartApiModel;
+  bodyPart?: BodyPartApiModel;
   body_material_id: string;
-  body_materials?: BodyMaterialApiModel;
+  bodyMaterial?: BodyMaterialApiModel;
   repair_type_id: string;
-  repair_types?: DentRepairTypeApiModel
+  repairType?: DentRepairTypeApiModel
   impact_count_25: number;
   impact_count_35: number;
   dent_removal_price: number;

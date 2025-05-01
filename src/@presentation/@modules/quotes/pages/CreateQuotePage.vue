@@ -102,10 +102,20 @@
                   class="pa-4"
                 >
                   <div class="d-flex flex-column justify-space-between">
-                    <div>
+                    <div class="d-flex align-center justify-space-between mb-2">
                       <h5 class="text-h6">
                         Garage :
                       </h5>
+                      
+                      <!-- TODO: (GCE) -> ADD IMPLEMENTATION TO FREE USER -->
+                      <v-btn
+                        color="primary"
+                        variant="text"
+                        @click="onEditCustomerBtnClick"
+                      >
+                        Edit customer
+                      </v-btn>
+
                     </div>
                     
 
@@ -114,6 +124,7 @@
                       sm12
                       md12
                     >
+                      <!-- INFO -> IMPLEMENTATION TO PAID USER -->
                       <v-select
                         :model-value="selectedGarage"
                         label="Select Garage"
@@ -221,191 +232,43 @@
             </div>
             <CountrySelect :modelValue="selectedCountry" @select="onSelectCountry"/>
           </v-card-text>
-          <v-card-text v-if="isForfait">
-            <v-text-field
-              v-model="forfaitAmount"
-              placeholder="Montant du forfait"
-              dense
-              outlined
-              @update:modelValue="onUpdateForfaitAmount"
-            />
-          </v-card-text>
-          <v-card-text v-if="!isForfait">
-            <h5 class="text-h6">
-              Liste des éléments
-            </h5>
-            <v-data-table
-              :headers="headers"
-              :items="quoteLines"
-              class="elevation-1"
-              density="comfortable"
-            >
-              <template #[`item.bodyPart`]="{ item }">
-                  <BodyPartSelect
-                  :model-value="item.bodyPart"
-                  :body-parts="availableBodyParts"
-                  @select="(value) => onSelectBodyPart(value, item.lineId)"
-                />
-              </template>
-              <template #[`item.impactCount25`]="{ item }">
-                  <v-text-field
-                    v-model="item.impactCount25"
-                    placeholder="Nb."
-                    dense
-                    outlined
-                  />
-              </template>
-              <template #[`item.impactCount35`]="{ item }">
-                <v-text-field
-                  v-model="item.impactCount35"
-                  placeholder="Nb."
-                  dense
-                  outlined
-                />
-              </template>
-              <template #[`item.bodyMaterial`]="{ item }">
-                <BodyMaterialSelect
-                  :model-value="item.bodyMaterial"
-                  :body-materials="bodyMaterials"
-                  @select="onSelectBodyMaterial($event, item.lineId)"
-                />
-              </template>
-              <template #[`item.repairType`]="{ item }">
-                <RepairTypeSelect
-                  :model-value="item.repairType"
-                  :repair-types="repairTypes"
-                  @select="onSelectRepairType($event, item.lineId)"
-                />
-              </template>
-              <template #[`item.dentRemovalPrice`]="{ item }">
-                <v-text-field
-                  v-model="item.dentRemovalPrice"
-                  placeholder="Montant"
-                  dense
-                  outlined
-                  @update:model-value="onUpdateDentRemovalPrice($event, item.lineId)"
-                />
-              </template>
-              <template #[`item.price`]="{ item }">
-                <div class="text-right">
-                  {{ item.price.toFixed(2) }} €
-                </div>
-              </template>
-              <template #[`item.actions`]="{ item }">
-                <v-icon
-                  class="me-2"
-                  size="small"
-                  @click="onRemoveItemBtnClick(item)"
-                >
-                  mdi-delete
-                </v-icon>
-              </template>
-            </v-data-table>
-            <v-btn
-              class="mt-3"
-              color="primary"
-              @click="onAddItemBtnClick"
-            >
-              + Ajouter un élément
-            </v-btn>
-          </v-card-text>
-
-          <v-divider class="my-4" />
-
-          <!-- Bloc des Totaux -->
-          <v-sheet class="rounded-sm bg-lightprimary pa-2 pa-sm-6">
-            <v-row justify="end">
-              <v-col
-                cols="6"
-                sm="3"
-                md="3"
-                class="text-end"
-              >
-                <h5 class="py-2 text-subtitle-1">
-                  Total H.T :
-                </h5>
-                <h5 v-if="!isForfait" class="py-2 text-subtitle-1 text-no-wrap">
-                  Total dégarnissage :
-                </h5>
-                <h5 v-if="!isForfait" class="py-2 text-subtitle-1 text-no-wrap">
-                  Total H.T + Total Dégarnissage :
-                </h5>
-                <h5 class="py-2 text-subtitle-1 text-no-wrap">
-                  TVA ({{ selectedCountry?.taxRate || 0 }}%) :
-                </h5>
-                <h5 class="py-2 text-subtitle-1 text-primary mt-7">
-                  Total H.T
-                </h5>
-              </v-col>
-              <v-col
-                cols="6"
-                sm="3"
-                md="2"
-                class="text-end"
-              >
-                <h5 class="py-2 text-subtitle-1 text-disabled">
-                  {{ subtotal.toFixed(2) }} {{ selectedCountry?.currencySymbol || '€' }}
-                </h5>
-                <h5 v-if="!isForfait" class="py-2 text-subtitle-1 text-disabled">
-                  {{ totalDegarnissage.toFixed(2) }} {{ selectedCountry?.currencySymbol || '€' }}
-                </h5>
-                <h5 v-if="!isForfait" class="py-2 text-subtitle-1 text-disabled">
-                  {{ subTotalWithDegarnissage.toFixed(2) }} {{ selectedCountry?.currencySymbol || '€' }}
-                </h5>
-                <h5 class="py-2 text-subtitle-1 text-disabled">
-                  {{ totalTaxRate.toFixed(2) }} {{ selectedCountry?.currencySymbol || '€' }}
-                </h5>
-                <h5 class="py-2 text-subtitle-1 text-primary mt-7">
-                  {{ total.toFixed(2) }} {{ selectedCountry?.currencySymbol || '€' }}
-                </h5>
-              </v-col>
-            </v-row>
-          </v-sheet>
-          
-          <v-card-actions>
-              <v-spacer></v-spacer>
-
-              <v-btn
-                v-if="quoteInformations.status === 'draft'"
-                class="mt-3"
-                color="primary"
-                @click="onSaveBtnClick"
-              >
-                Sauvegarder
-              </v-btn>
-              <v-btn
-                v-else
-                class="mt-3"
-                color="primary"
-                @click="onUpdateBtnClick"
-              >
-                Mettre à jour
-              </v-btn>
-          </v-card-actions>
         </v-card>
+        <div class="d-flex justify-end">
+          <v-btn
+            class="mt-3"
+            color="primary"
+            @click="onSaveBtnClick"
+          >
+            Créer
+          </v-btn>
+        </div>
       </v-form>
     </v-container>
   </MainLayout>
+  
+  <GarageDialog
+    ref="garageDialogRef"
+    title="Edit customer"
+    persistent
+    :maxWidth="500"
+    @validated="onGarageValidated"
+  >
+  </GarageDialog>
 </template>
 
 <script setup lang="ts">
 import { container } from '@/@infrastructure/ioc/inversify.config';
 import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
 import MainLayout from '@/@presentation/@ui/layouts/MainLayout.vue';
-import BodyMaterialSelect from '@/@presentation/components/BodyMaterialSelect.vue';
-import BodyPartSelect from '@/@presentation/components/BodyPartSelect.vue';
 import CountrySelect from '@/@presentation/components/CountrySelect.vue';
-import RepairTypeSelect from '@/@presentation/components/RepairTypeSelect.vue';
+import { GarageDialogExposed } from '@/@presentation/components/GarageDialog';
+import GarageDialog from '@/@presentation/components/GarageDialog.vue';
 import { IUseCreateQuoteState } from '@/@presentation/types/composables/IUseCreateQuoteState';
-import { BodyMaterialViewModel } from '@/@presentation/types/models/carRepair/BodyMaterialViewModel';
-import { BodyPartViewModel } from '@/@presentation/types/models/carRepair/BodyPartViewModel';
-import { DentRepairTypeViewModel } from '@/@presentation/types/models/carRepair/DentRepairTypeViewModel';
 import { CountryViewModel } from '@/@presentation/types/models/CountryViewModel';
 import { GarageViewModel } from '@/@presentation/types/models/GarageViewModel';
-import { LineItemViewModel } from '@/@presentation/types/models/LineItemViewModel';
 import { UserViewModel } from '@/@presentation/types/models/UserViewModel';
 import router from '@/router';
-import { computed, onMounted, ref } from 'vue';
+import { onMounted, ref } from 'vue';
 
 // Injection du state depuis Inversify
 const useCreateQuoteState = container.get<IUseCreateQuoteState>(SYMBOLS.States.Quote.CreateQuoteState);
@@ -423,64 +286,30 @@ const {
   selectedGarage,
   selectGarage,
   selectTechnician,
+  setGarage,
 
   carInformations,
   setCarImmatriculation,
   setCarBrand,
   setCarDateEntryCirculation,
 
-  availableBodyParts,
-  bodyMaterials,
-
   isForfait,
   isDisplayUnitPrice,
   isComputeCommissionWithoutDentRemoval,
   setIsForfait,
-  setForfaitAmount,
   setIsDisplayUnitPrice,
   setIsComputeCommissionWithoutDentRemoval,
-  forfaitAmount,
   selectCountry,
   selectedCountry,
 
-  repairTypes,
-  quoteLines,
-  addLine,
-  removeLine,
-
-  selectBodyPart,
-  selectBodyMaterial,
-  selectRepairType,
-  setDentRemovalPrice,
-
-  
-  subtotal,
-  totalDegarnissage,
-  subTotalWithDegarnissage,
-  totalTaxRate,
-  total,
-
-  saveQuote
+  save
 } = useCreateQuoteState;
+
+
+const garageDialogRef = ref<GarageDialogExposed>()
 
 const techniciansList = ref<UserViewModel[]>(technicians.value);
 const garagesList = ref<GarageViewModel[]>(garages.value);
-
-const headers = computed(()=> {
-  return [
-    { title: 'Element de carrosserie', key: 'bodyPart', width: '25%', minWidth: '25%' },
-    { title: 'Nombre d\'impacts',  width: '20%', minWidth: '20%', 
-        children: [
-          { title: 'Ø 25', value: 'impactCount25' },
-          { title: 'Ø 35', value: 'impactCount35' },
-        ],  },
-    { title: 'Type de matériau', key: 'bodyMaterial', width: '20%' },
-    { title: 'Type de réparation', key: 'repairType', width: '20%' },
-    { title: 'Dégarnissage', key: 'dentRemovalPrice', },
-    { title: `Prix HT (${selectedCountry.value?.currencySymbol || '€'})`, key: 'price', align: 'end', width: '15%', minWidth: '15%' },
-    { title: 'Actions', key: 'actions', align: 'end', sortable: false }
-  ];
-})
 
 // #region -> METHODS
 const onSearchTechnician = (event: InputEvent) => {
@@ -509,6 +338,14 @@ const onSelectGarage = (garage: GarageViewModel) => {
   selectGarage(garage);
 };
 
+const onEditCustomerBtnClick = () => {
+  garageDialogRef.value?.open()
+}
+
+const onGarageValidated = (garage: GarageViewModel) => {
+  setGarage(garage)
+}
+
 const onCarImmatriculationUpdated = (value: string) => {
   setCarImmatriculation(value);
 };
@@ -523,10 +360,6 @@ const onCarYearUpdated = (value: string) => {
 
 const onUpdateIsForfait = (value: boolean) => {
   setIsForfait(value);
-};
-
-const onUpdateForfaitAmount = (value: string) => {
-  setForfaitAmount(Number(value));
 };
 
 const onUpdateIsDisplayUnitPrice = (value: boolean) => {
@@ -544,44 +377,10 @@ const onSelectCountry = (country: CountryViewModel | undefined) => {
   selectCountry(country);
 };
 
-const onAddItemBtnClick = () => {
-  addLine()  
-};
-
-const onRemoveItemBtnClick = (item: LineItemViewModel) => {
-  if (!item.lineId)
-    return;
-
-  removeLine(item.lineId);
-};
-
-const onSelectBodyPart = (bodyPart: BodyPartViewModel | undefined, lineId: number) => {
-  if (!bodyPart)
-    return;
-
-  selectBodyPart(lineId, bodyPart);
-};
-
-const onSelectBodyMaterial = (bodyMaterial: BodyMaterialViewModel | undefined, lineId: number) => {
-  if (!bodyMaterial)
-    return;
-
-  selectBodyMaterial(lineId, bodyMaterial);
-};
-
-const onSelectRepairType = (repairType: DentRepairTypeViewModel | undefined, lineId: number) => {
-  if (!repairType)
-    return;
-
-  selectRepairType(lineId, repairType);
-};
-
-const onUpdateDentRemovalPrice = (value: string, lineId: number) => {
-  setDentRemovalPrice(lineId, Number(value));
-};
-
 const onSaveBtnClick = () => {
-  saveQuote().then(() => {
+  console.log('Quote saved successfully');
+  save().then(() => {
+    console.log('Quote saved successfully');
     router.push(`/quotes/edit/${quote.value.id}`);
   });
 };

@@ -10,6 +10,8 @@ export class GetQuoteDetailUseCase {
 
   async execute(id: string): Promise<LineItemDto[] | null> {
     const result =  await this.quoteDetailRepository.get(id)
+    console.log('GetQuoteDetailUseCase:', id, result);
+    
     return result;
   }
 }

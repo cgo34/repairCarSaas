@@ -4,6 +4,7 @@ export type ConfigProps = {
     mini_sidebar: boolean;
     fontTheme: string;
     inputBg: boolean;
+    currentTheme: string;
   };
   
   const config: ConfigProps = {
@@ -11,7 +12,8 @@ export type ConfigProps = {
     Customizer_drawer: false,
     mini_sidebar: false,
     fontTheme: 'Roboto',
-    inputBg: false
+    inputBg: false,
+    currentTheme: 'PurpleLightTheme',
   };
   
   export default config;

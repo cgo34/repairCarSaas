@@ -53,5 +53,7 @@ export interface IUseEditQuoteState {
   addLine(): void;
   removeLine(lineId: number): void;
 
+  totalDegarnissage,
+  total: computedRef<number>,
   save(): Promise<void>;
 }
