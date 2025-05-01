@@ -1,6 +1,6 @@
 // src/@infrastructure/mappers/DentRepairTypeMapper.ts
-import { DentRepairTypeDto } from '@/@application/dtos/carRepair/DentRepairTypeDto';
 import { DentRepairTypeApiModel } from '@/@infrastructure/database/api/carRepair/DentRepairTypeApiModel';
+import { DentRepairTypeDto } from '@/@infrastructure/dtos/carRepair/DentRepairTypeDto';
 
 export class DentRepairTypeMapper {
   static apiToDto(apiModel: DentRepairTypeApiModel): DentRepairTypeDto {

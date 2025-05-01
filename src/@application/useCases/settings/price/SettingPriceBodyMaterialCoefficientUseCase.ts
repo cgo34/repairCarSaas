@@ -1,6 +1,6 @@
-import { SettingPriceBodyMaterialCoefficientDto } from '@/@application/dtos/settings/price/SettingPriceBodyMaterialCoefficientDto';
-import { ISettingPriceBodyMaterialCoefficientUseCase } from '@/@application/useCases/interfaces/settings/price/ISettingPriceBodyMaterialCoefficientUseCase';
 import { ISettingPriceBodyMaterialCoefficientService } from '@/@domain/services/settings/price/ISettingPriceBodyMaterialCoefficientService';
+import { ISettingPriceBodyMaterialCoefficientUseCase } from '@/@domain/useCases/settings/price/ISettingPriceBodyMaterialCoefficientUseCase';
+import { SettingPriceBodyMaterialCoefficientDto } from '@/@infrastructure/dtos/settings/price/SettingPriceBodyMaterialCoefficientDto';
 import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
 import { inject, injectable } from 'inversify';
 

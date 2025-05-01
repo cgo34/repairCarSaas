@@ -1,4 +1,4 @@
-import { DentRepairTypeDto } from "@/@application/dtos/carRepair/DentRepairTypeDto";
+import { DentRepairTypeDto } from "@/@infrastructure/dtos/carRepair/DentRepairTypeDto";
 
 export interface IDentRepairTypeRepository {
   getAll(): Promise<DentRepairTypeDto[]>;

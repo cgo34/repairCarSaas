@@ -1,11 +1,10 @@
-import { IBodyPartUseCase } from '@/@application/useCases/interfaces/carRepair/IBodyPartUseCase';
+import { IBodyPartUseCase } from '@/@domain/useCases/carRepair/IBodyPartUseCase';
 import { container } from '@/@infrastructure/ioc/inversify.config';
 import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
-import { IBodyPartState } from '@/@presentation/types/composables/IBodyPartState';
 import { BodyPartViewModel } from '@/@presentation/types/models/carRepair/BodyPartViewModel';
 import { computed, ref } from 'vue';
 
-export function useBodyPartState(): IBodyPartState {
+export function useBodyPartState() {
   const bodyPartUseCase = container.get<IBodyPartUseCase>(SYMBOLS.UseCases.CarRepair.BodyPartUseCase);
   const _bodyParts = ref<BodyPartViewModel[]>([]);
   const _selectedBodyPart = ref<BodyPartViewModel>({
@@ -45,8 +44,6 @@ export function useBodyPartState(): IBodyPartState {
     const exists = _bodyParts.value.find((bp) => bp.id === bodyPart.id);
     if (!exists)
       throw new Error('Body part does not exist');
-
-    console.log('useBodyPart.selectBodyPart', bodyPart);
 
     _selectedBodyPart.value = bodyPart;
   }

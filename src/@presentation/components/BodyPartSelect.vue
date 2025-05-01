@@ -2,7 +2,7 @@
   <GenericSelect
     :model-value="model"
     :items="bodyParts"
-    label="Sélectionner un élément de carrosserie"
+    label="Elément"
     @select="onSelectBodyPart"
   />
 </template>

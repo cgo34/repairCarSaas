@@ -8,21 +8,21 @@ const customizerDrawer = ref(config.Customizer_drawer);
 const miniSidebar = ref(config.mini_sidebar);
 const fontTheme = ref(config.fontTheme);
 const inputBg = ref(config.inputBg);
-const currentTheme = ref('PurpleDarkTheme');
+const currentTheme = ref('');
 
 export function useCustomizerState() {
   const theme = useTheme();
-  theme.global.name.value = currentTheme.value;
+  // theme.global.name.value = currentTheme.value;
 
   // Fonction pour basculer entre les thèmes "light" et "dark"
   const toggleTheme = (newValue: boolean | null) => {
-    const selectedTheme = newValue ? 'PurpleDarkTheme' : 'PurpleLightTheme';
+    const selectedTheme = newValue ? 'PinkDarkTheme' : 'PinkDarkTheme';
     theme.global.name.value = selectedTheme;
     currentTheme.value = selectedTheme; // Synchronise la variable globale
   };
 
   const themeLabel = computed(() => {
-    return currentTheme.value === 'PurpleDarkTheme' ? 'Dark' : 'Light';
+    return currentTheme.value === 'PinkDarkTheme' ? 'Dark' : 'Light';
   });
 
   // Actions

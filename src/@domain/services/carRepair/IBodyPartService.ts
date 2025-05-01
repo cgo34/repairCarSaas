@@ -1,4 +1,4 @@
-import { BodyPartDto } from "@/@application/dtos/carRepair/BodyPartDto";
+import { BodyPartDto } from "@/@infrastructure/dtos/carRepair/BodyPartDto";
 
 export interface IBodyPartService {
   getAll(): Promise<BodyPartDto[]>;

@@ -1,5 +1,5 @@
-import { GarageDto } from '@/@application/dtos/GarageDto';
 import { GarageApiModel } from '@/@infrastructure/database/api/GarageApiModel';
+import { GarageDto } from '@/@infrastructure/dtos/GarageDto';
 
 export class GarageMapper {
   static apiToDto(apiModel: GarageApiModel): GarageDto {

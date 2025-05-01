@@ -1,4 +1,4 @@
-import { SettingPriceDiameterCoefficientDto } from '@/@application/dtos/settings/price/SettingPriceDiameterCoefficientDto';
+import { SettingPriceDiameterCoefficientDto } from '@/@infrastructure/dtos/settings/price/SettingPriceDiameterCoefficientDto';
 
 export interface ISettingPriceDiameterCoefficientRepository {
   getByUserId(userId: string): Promise<SettingPriceDiameterCoefficientDto[]>;

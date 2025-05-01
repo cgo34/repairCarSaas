@@ -1,438 +1,315 @@
 <template>
   <MainLayout>
-    <v-container>
-      <v-card
-        class="rounded-lg"
-        outlined
-      >
-        <v-card-title class="text-h5">
-          Créer un Devis
-        </v-card-title>
+    <v-container fluid class="px-0 py-0">
+      <v-form ref="form">
+        <v-card
+          class="rounded-lg"
+          outlined
+        >
+          <v-card-title class="text-h5">
+            Créer un Devis
+          </v-card-title>
 
-        <v-card-text>
-          <!-- Informations du devis -->
-          <v-row>
-            <v-col
-              cols="12"
-              md="4"
-            >
-              <v-text-field
-                v-model="quote.quoteNumber"
-                label="Numéro de devis"
-                readonly
-                outlined
-              />
-            </v-col>
-            <v-col
-              cols="12"
-              md="4"
-            >
-              <v-text-field
-                v-model="quote.date"
-                label="Date"
-                type="date"
-                outlined
-              />
-            </v-col>
-            <v-col
-              cols="12"
-              md="4"
-            >
-              <v-text-field
-                v-model="quote.validUntil"
-                label="Validité jusqu'à"
-                type="date"
-                outlined
-              />
-            </v-col>
-          </v-row>
-
-          <!-- Informations du Technicien et du Garage -->
-          <v-row>
-            <v-col md="6">
-              <v-card
-                outlined
-                class="pa-4"
+          <v-card-text>
+            <!-- Informations du devis -->
+            <h5 class="text-h6 my-4">
+              Informations générales
+            </h5>
+            <v-row>
+              <v-col
+                cols="12"
+                md="4"
               >
-                <div class="d-flex flex-column justify-space-between">
-                  <div>
-                    <h5 class="text-h6">
-                      From:
-                    </h5>
-                    <p class="mb-0">
-                      <strong>{{ selectedTechnician?.fullName || 'Sélectionner un technicien' }}</strong>
-                    </p>
-                    <p
-                      v-if="selectedTechnician"
-                      class="mb-0"
+                <v-text-field
+                  v-model="quoteInformations.number"
+                  label="Numéro de devis"
+                  readonly
+                  outlined
+                />
+              </v-col>
+              <v-col
+                cols="12"
+                md="4"
+              >
+                <v-text-field
+                  v-model="quoteInformations.date"
+                  label="Date"
+                  type="date"
+                  outlined
+                />
+              </v-col>
+              <v-col
+                cols="12"
+                md="4"
+              >
+                <v-text-field
+                  v-model="expirationDate"
+                  label="Validité jusqu'à"
+                  type="date"
+                  outlined
+                  required
+                />
+              </v-col>
+            </v-row>
+
+            <!-- Informations du Technicien et du Garage -->
+            <v-row>
+              <v-col md="6">
+                <v-card
+                  outlined
+                  class="pa-4"
+                >
+                  <div class="d-flex flex-column justify-space-between">
+                    <div>
+                      <h5 class="text-h6">
+                        Technicien :
+                      </h5>
+                    </div>
+
+                    <v-flex
+                      xs12
+                      sm12
+                      md12
                     >
-                      {{ selectedTechnician.email }}
-                    </p>
+                      <v-select
+                        :model-value="selectedTechnician"
+                        label="Select Technician"
+                        :items="techniciansList"
+                        :item-props="true"
+                        item-title="fullName"
+                        item-value
+                        return-object
+                        clearable
+                        @update:model-value="onSelectTechnician"
+                      >
+                        <template #prepend-item>
+                          <v-list-tile>
+                            <v-text-field
+                              label="Search"
+                              @input="onSearchTechnician"
+                            />
+                          </v-list-tile>
+                        </template>
+                      </v-select>
+                    </v-flex>
                   </div>
+                </v-card>
+              </v-col>
 
-                  <v-flex
-                    xs12
-                    sm12
-                    md12
-                  >
-                    <v-select
-                      :model-value="selectedTechnician"
-                      label="Select Technician"
-                      :items="techniciansList"
-                      :item-props="true"
-                      item-title="fullName"
-                      item-value
-                      return-object
-                      clearable
-                      @update:model-value="onSelectTechnician"
-                    >
-                      <template #prepend-item>
-                        <v-list-tile>
-                          <v-text-field
-                            label="Search"
-                            @input="onSearchTechnician"
-                          />
-                        </v-list-tile>
-                      </template>
-                    </v-select>
-                  </v-flex>
+              <v-col md="6">
+                <v-card
+                  outlined
+                  class="pa-4"
+                >
+                  <div class="d-flex flex-column justify-space-between">
+                    <div class="d-flex align-center justify-space-between mb-2">
+                      <h5 class="text-h6">
+                        Garage :
+                      </h5>
+                      
+                      <!-- TODO: (GCE) -> ADD IMPLEMENTATION TO FREE USER -->
+                      <v-btn
+                        color="primary"
+                        variant="text"
+                        @click="onEditCustomerBtnClick"
+                      >
+                        Edit customer
+                      </v-btn>
 
-                  <!-- <v-btn
-                    variant="outlined"
-                    color="primary"
-                    @click="selectTechnician"
-                  >
-                    Changer
-                  </v-btn> -->
-                </div>
-              </v-card>
-            </v-col>
+                    </div>
+                    
 
-            <v-col md="6">
-              <v-card
-                outlined
-                class="pa-4"
-              >
-                <div class="d-flex flex-column justify-space-between">
-                  <div>
-                    <h5 class="text-h6">
-                      To:
-                    </h5>
-                    <p class="mb-0">
-                      <strong>{{ selectedGarage?.name || 'Ajouter un garage' }}</strong>
-                    </p>
-                    <p
-                      v-if="selectedGarage"
-                      class="mb-0"
+                    <v-flex
+                      xs12
+                      sm12
+                      md12
                     >
-                      {{ selectedGarage.address }}, {{ selectedGarage.zipCode }} {{ selectedGarage.city }}
-                    </p>
-                    <p
-                      v-if="selectedGarage"
-                      class="mb-0"
+                      <!-- INFO -> IMPLEMENTATION TO PAID USER -->
+                      <v-select
+                        :model-value="selectedGarage"
+                        label="Select Garage"
+                        :items="garagesList"
+                        :item-props="true"
+                        item-title="name"
+                        item-value
+                        return-object
+                        clearable
+                        @update:model-value="onSelectGarage"
+                      >
+                        <template #prepend-item>
+                          <v-list-tile>
+                            <v-text-field
+                              label="Search"
+                              @input="onSearchGarage"
+                            />
+                          </v-list-tile>
+                        </template>
+                      </v-select>
+                    </v-flex>
+
+                    <!-- <v-btn
+                      variant="outlined"
+                      color="primary"
+                      @click="selectGarage"
                     >
-                      {{ selectedGarage.phone }}
-                    </p>
+                      {{ quote.garage ? 'Changer' : 'Ajouter' }}
+                    </v-btn> -->
                   </div>
-                  
+                </v-card>
+              </v-col>
+            </v-row>
+          </v-card-text>
 
-                  <v-flex
-                    xs12
-                    sm12
-                    md12
-                  >
-                    <v-select
-                      :model-value="selectedGarage"
-                      label="Select Garage"
-                      :items="garagesList"
-                      :item-props="true"
-                      item-title="name"
-                      item-value
-                      return-object
-                      clearable
-                      @update:model-value="onSelectGarage"
+          <v-divider class="my-4" />
+
+          <!-- Informations du véhicule -->
+          
+          <v-card-text>
+            <v-row>
+              <v-col md="12">
+                <h5 class="text-h6 my-4">
+                  Informations du véhicule
+                </h5>
+                <v-card
+                  outlined
+                  class="pa-4"
+                >
+                <v-card-text>
+                  <v-row>
+                    <v-col
+                      cols="12"
+                      md="4"
                     >
-                      <template #prepend-item>
-                        <v-list-tile>
-                          <v-text-field
-                            label="Search"
-                            @input="onSearchGarage"
-                          />
-                        </v-list-tile>
-                      </template>
-                    </v-select>
-                  </v-flex>
+                      <v-text-field
+                        v-model="carInformations.immatriculation"
+                        label="Immatriculation"
+                        outlined
+                        @update:model-value="(value) => onCarImmatriculationUpdated(value)"
+                      />
+                    </v-col>
+                    <v-col
+                      cols="12"
+                      md="4"
+                    >
+                      <v-text-field
+                        v-model="carInformations.brand"
+                        label="Marque"
+                        outlined
+                        @update:model-value="(value) => onCarBrandUpdated(value)"
+                      />
+                    </v-col>
+                    <v-col
+                      cols="12"
+                      md="4"
+                    >
+                      <v-text-field
+                        v-model="carInformations.dateEntryCirculation"
+                        label="Année"
+                        outlined
+                        @update:model-value="(value) => onCarYearUpdated(value)"
+                      />
+                    </v-col>
+                  </v-row>
+                </v-card-text>
+                </v-card>
+              </v-col>
+            </v-row>
+          </v-card-text>
+        
+          <v-divider class="my-4" />
 
-                  <!-- <v-btn
-                    variant="outlined"
-                    color="primary"
-                    @click="selectGarage"
-                  >
-                    {{ quote.garage ? 'Changer' : 'Ajouter' }}
-                  </v-btn> -->
-                </div>
-              </v-card>
-            </v-col>
-          </v-row>
-        </v-card-text>
-
-        <v-divider class="my-4" />
-
-        <!-- Informations du véhicule -->
-         
-        <v-card-text>
-          <v-row>
-            <v-col md="12">
-              <v-card
-                outlined
-                class="pa-4"
-              >
-                <v-row>
-                  <v-col
-                    cols="12"
-                    md="4"
-                  >
-                    <v-text-field
-                      label="Immatriculation"
-                      outlined
-                    />
-                  </v-col>
-                  <v-col
-                    cols="12"
-                    md="4"
-                  >
-                    <v-text-field
-                      label="Marque"
-                      outlined
-                    />
-                  </v-col>
-                  <v-col
-                    cols="12"
-                    md="4"
-                  >
-                    <v-text-field
-                      label="Année"
-                      outlined
-                    />
-                  </v-col>
-                </v-row>
-              </v-card>
-            </v-col>
-          </v-row>
-        </v-card-text>
-      
-        <v-divider class="my-4" />
-
-        <!-- Tableau des éléments du devis -->
-        <v-card-text>
-          <v-data-table
-            :headers="headers"
-            :items="quoteLines"
-            class="elevation-1"
-          >
-            <template #[`item.bodyPart`]="{ item }">
-              <BodyPartSelect
-                :model-value="item.bodyPart"
-                :body-parts="availableBodyParts"
-                @select="onSelectBodyPart($event, item.id)"
-              />
-              <!-- <v-text-field
-                v-model="item.bodyPart.name"
-                placeholder="Nom de l'élément"
-                dense
-                outlined
-              /> -->
-            </template>
-            <template #[`item.impactSize`]="{ item }">
-              <!-- <v-text-field
-                v-model="item.impactSize"
-                placeholder="Taille impact"
-                dense
-                outlined
-              /> -->
-            </template>
-            <template #[`item.impactCount`]="{ item }">
-              <!-- <v-text-field
-                v-model="item.impactCount"
-                type="number"
-                placeholder="Nombre impact"
-                dense
-                outlined
-              /> -->
-            </template>
-            <template #[`item.bodyMaterial.name`]="{ item }">
-              <BodyMaterialSelect
-                :model-value="item.bodyMaterial"
-                :body-parts="bodyMaterials"
-                @select="onSelectBodyMaterial($event, item.id)"
-              />
-              <!-- <v-text-field
-                v-model="item.bodyMaterial.name"
-                placeholder="Matériau"
-                dense
-                outlined
-              /> -->
-            </template>
-            <template #[`item.repairType.name`]="{ item }">
-              <RepairTypeSelect
-                :model-value="item.repairType"
-                :repair-types="repairTypes"
-                @update:model-value="onSelectRepairType"
-                @select="onSelectRepairType"
-              />
-
-              <!-- <v-text-field
-                v-model="item.repairType.name"
-                placeholder="Type de réparation"
-                dense
-                outlined
-              /> -->
-            </template>
-            <template #[`item.price`]="{ item }">
-              <!-- <div class="text-right">
-                {{ item.price.toFixed(2) }} €
-              </div> -->
-            </template>
-            <template #[`item.actions`]="{ item }">
-              <v-icon
-                class="me-2"
-                size="small"
-                @click="removeItem(item)"
-              >
-                mdi-delete
-              </v-icon>
-            </template>
-          </v-data-table>
+          <!-- Tableau des éléments du devis -->
+          <v-card-text>
+            <div>
+              <h5 class="text-h6">
+                Options du devis
+              </h5>
+              <div class="d-flex justify-space-between">
+                <div><v-switch label="Appliquer un forfait ?" :modelValue="isForfait" @update:modelValue="onUpdateIsForfait" color="primary" inset></v-switch></div>
+                <div v-if="!isForfait"><v-switch label="Afficher les prix unitaires ?" :modelValue="isDisplayUnitPrice" @update:modelValue="onUpdateIsDisplayUnitPrice" color="primary" inset></v-switch></div>
+                <div v-if="!isForfait"><v-switch label="Calculer la commission sans le dégarnissage ?" :modelValue="isComputeCommissionWithoutDentRemoval" @update:modelValue="onUpdateIsComputeCommissionWithoutDentRemoval" color="primary" inset></v-switch></div>
+              </div>
+            </div>
+            <CountrySelect :modelValue="selectedCountry" @select="onSelectCountry"/>
+          </v-card-text>
+        </v-card>
+        <div class="d-flex justify-end">
           <v-btn
             class="mt-3"
             color="primary"
-            @click="onAddItemBtnClick"
+            @click="onSaveBtnClick"
           >
-            + Ajouter un élément
+            Créer
           </v-btn>
-        </v-card-text>
-
-        <v-divider class="my-4" />
-
-        <!-- Bloc des Totaux -->
-        <v-sheet class="rounded-sm bg-lightprimary pa-2 pa-sm-6">
-          <v-row justify="end">
-            <v-col
-              cols="6"
-              sm="3"
-              md="2"
-              class="text-end"
-            >
-              <h5 class="py-2 text-subtitle-1">
-                Sub Total :
-              </h5>
-              <h5 class="py-2 text-subtitle-1 text-no-wrap">
-                Taxes (10%) :
-              </h5>
-              <h5 class="py-2 text-subtitle-1 text-no-wrap">
-                Discount (5%) :
-              </h5>
-              <h5 class="py-2 text-subtitle-1 text-primary mt-7">
-                Total
-              </h5>
-            </v-col>
-            <v-col
-              cols="6"
-              sm="3"
-              md="2"
-              class="text-end"
-            >
-              <h5 class="py-2 text-subtitle-1 text-disabled">
-                {{ subtotal.toFixed(2) }} €
-              </h5>
-              <h5 class="py-2 text-subtitle-1 text-disabled">
-                {{ tax.toFixed(2) }} €
-              </h5>
-              <h5 class="py-2 text-subtitle-1 text-disabled">
-                {{ discount.toFixed(2) }} €
-              </h5>
-              <h5 class="py-2 text-subtitle-1 text-primary mt-7">
-                {{ total.toFixed(2) }} €
-              </h5>
-            </v-col>
-          </v-row>
-        </v-sheet>
-      </v-card>
+        </div>
+      </v-form>
     </v-container>
   </MainLayout>
+  
+  <GarageDialog
+    ref="garageDialogRef"
+    title="Edit customer"
+    persistent
+    :maxWidth="500"
+    @validated="onGarageValidated"
+  >
+  </GarageDialog>
 </template>
 
 <script setup lang="ts">
 import { container } from '@/@infrastructure/ioc/inversify.config';
 import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
 import MainLayout from '@/@presentation/@ui/layouts/MainLayout.vue';
-import BodyPartSelect from '@/@presentation/components/BodyPartSelect.vue';
+import CountrySelect from '@/@presentation/components/CountrySelect.vue';
+import { GarageDialogExposed } from '@/@presentation/components/GarageDialog';
+import GarageDialog from '@/@presentation/components/GarageDialog.vue';
 import { IUseCreateQuoteState } from '@/@presentation/types/composables/IUseCreateQuoteState';
-import { BodyMaterialViewModel } from '@/@presentation/types/models/carRepair/BodyMaterialViewModel';
-import { BodyPartViewModel } from '@/@presentation/types/models/carRepair/BodyPartViewModel';
-import { DentRepairTypeViewModel } from '@/@presentation/types/models/carRepair/DentRepairTypeViewModel';
+import { CountryViewModel } from '@/@presentation/types/models/CountryViewModel';
 import { GarageViewModel } from '@/@presentation/types/models/GarageViewModel';
 import { UserViewModel } from '@/@presentation/types/models/UserViewModel';
-import { computed, onMounted, ref } from 'vue';
+import router from '@/router';
+import { onMounted, ref } from 'vue';
 
 // Injection du state depuis Inversify
 const useCreateQuoteState = container.get<IUseCreateQuoteState>(SYMBOLS.States.Quote.CreateQuoteState);
 
 const {
   init,
+
+  quote,
+  quoteInformations,
+  expirationDate,
+
   technicians,
   garages,
   selectedTechnician,
   selectedGarage,
   selectGarage,
   selectTechnician,
-  availableBodyParts,
-  bodyParts,
-  bodyMaterials,
-  repairTypes,
-  quoteLines,
-  addLine,
+  setGarage,
 
-  selectBodyPart,
+  carInformations,
+  setCarImmatriculation,
+  setCarBrand,
+  setCarDateEntryCirculation,
+
+  isForfait,
+  isDisplayUnitPrice,
+  isComputeCommissionWithoutDentRemoval,
+  setIsForfait,
+  setIsDisplayUnitPrice,
+  setIsComputeCommissionWithoutDentRemoval,
+  selectCountry,
+  selectedCountry,
+
+  save
 } = useCreateQuoteState;
 
-// type QuoteItem = {
-//   id: number;
-//   bodyPart: { name: string };
-//   impactSize: string;
-//   impactCount: number;
-//   bodyMaterial: { name: string };
-//   repairType: { name: string };
-//   price: number;
-//   qty: number;
-// };
+
+const garageDialogRef = ref<GarageDialogExposed>()
 
 const techniciansList = ref<UserViewModel[]>(technicians.value);
 const garagesList = ref<GarageViewModel[]>(garages.value);
-
-const quote = ref({
-  quoteNumber: `Q-${Date.now()}`,
-  date: new Date().toISOString().split('T')[0],
-  validUntil: '',
-  technician: null,
-  garage: null,
-  items: [] as QuoteItem[],
-});
-
-const headers = [
-  { title: 'Element', key: 'bodyPart' },
-  { title: 'Taille impact', key: 'impactSize' },
-  { title: 'Nombre impact', key: 'impactCount' },
-  { title: 'Matériau', key: 'bodyMaterial.name' },
-  { title: 'Type de réparation', key: 'repairType.name' },
-  { title: 'Prix HT (€)', key: 'price', align: 'end' },
-  { title: 'Actions', key: 'actions', sortable: false }
-];
-
-const subtotal = computed(() => quote.value.items.reduce((sum, item) => sum + item.price, 0));
-const tax = computed(() => subtotal.value * 0.10);
-const discount = computed(() => subtotal.value * 0.05);
-const total = computed(() => subtotal.value + tax.value - discount.value);
 
 // #region -> METHODS
 const onSearchTechnician = (event: InputEvent) => {
@@ -444,10 +321,6 @@ const onSearchTechnician = (event: InputEvent) => {
   }
 };
 
-const onSelectTechnician = (technician: UserViewModel) => {
-  selectTechnician(technician);
-};
-
 const onSearchGarage = (event: InputEvent) => {
   const search = (event.target as HTMLInputElement).value;
   if (search) {
@@ -457,50 +330,69 @@ const onSearchGarage = (event: InputEvent) => {
   }
 };
 
+const onSelectTechnician = (technician: UserViewModel) => {
+  selectTechnician(technician);
+};
+
 const onSelectGarage = (garage: GarageViewModel) => {
   selectGarage(garage);
 };
 
-const onAddItemBtnClick = () => {
-//   quote.value.items.push({ 
-//   id: Date.now(), 
-//   bodyPart: { name: '' }, 
-//   impactSize: '', 
-//   impactCount: 0, 
-//   bodyMaterial: { name: '' }, 
-//   repairType: { name: '' }, 
-//   price: Math.floor(Math.random() * (800 - 100 + 1)) + 100, 
-//   qty: 1 
-// });
-console.log('onAddItemBtnClick');
+const onEditCustomerBtnClick = () => {
+  garageDialogRef.value?.open()
+}
 
-  addLine()
-  
+const onGarageValidated = (garage: GarageViewModel) => {
+  setGarage(garage)
+}
+
+const onCarImmatriculationUpdated = (value: string) => {
+  setCarImmatriculation(value);
 };
 
-const removeItem = (item: QuoteItem) => {
-  quote.value.items = quote.value.items.filter(i => i.id !== item.id);
+const onCarBrandUpdated = (value: string) => {
+  setCarBrand(value);
 };
 
-
-const onSelectBodyPart = (bodyPart: BodyPartViewModel, lineId: number) => {
-  console.log('onSelectBodyPart', lineId, bodyPart);
-  selectBodyPart(lineId, bodyPart);
-  // selectBodyPart(lineId, bodyPart);
+const onCarYearUpdated = (value: string) => {
+  setCarDateEntryCirculation(value);
 };
 
-const onSelectBodyMaterial = (bodyMaterial: BodyMaterialViewModel, lineId: number) => {
-  console.log('onSelectBodyMaterial', lineId, bodyMaterial);
-  // selectBodyMaterial(lineId, bodyMaterial);
+const onUpdateIsForfait = (value: boolean) => {
+  setIsForfait(value);
 };
 
-const onSelectRepairType = (repairType: DentRepairTypeViewModel) => {
-  console.log('onSelectRepairType', repairType);
-  // selectRepairType(repairType);
+const onUpdateIsDisplayUnitPrice = (value: boolean) => {
+  setIsDisplayUnitPrice(value);
+};
+
+const onUpdateIsComputeCommissionWithoutDentRemoval = (value: boolean) => {
+  setIsComputeCommissionWithoutDentRemoval(value);
+};
+
+const onSelectCountry = (country: CountryViewModel | undefined) => {
+  if (!country)
+    return;
+
+  selectCountry(country);
+};
+
+const onSaveBtnClick = () => {
+  console.log('Quote saved successfully');
+  save().then(() => {
+    console.log('Quote saved successfully');
+    router.push(`/quotes/edit/${quote.value.id}`);
+  });
+};
+
+const onUpdateBtnClick = () => {
+  console.log('onUpdateBtnClick -> quoteInformations', quoteInformations.value);
 };
 // #endregion
   
 onMounted(async () => {
   await init();
+  techniciansList.value = technicians.value;
+  garagesList.value = garages.value;
 });
 </script>

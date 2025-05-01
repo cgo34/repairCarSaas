@@ -1,6 +1,6 @@
-import { SettingPriceDiameterCoefficientDto } from '@/@application/dtos/settings/price/SettingPriceDiameterCoefficientDto';
 import { ISettingPriceDiameterCoefficientRepository } from '@/@domain/repositories/settings/price/ISettingPriceDiameterCoefficientRepository';
 import { ISettingPriceDiameterCoefficientService } from '@/@domain/services/settings/price/ISettingPriceDiameterCoefficientService';
+import { SettingPriceDiameterCoefficientDto } from '@/@infrastructure/dtos/settings/price/SettingPriceDiameterCoefficientDto';
 import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
 import { inject, injectable } from 'inversify';
 

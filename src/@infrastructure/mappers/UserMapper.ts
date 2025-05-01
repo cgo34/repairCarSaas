@@ -1,4 +1,4 @@
-import { UserDto } from '@/@application/dtos/UserDto';
+import { UserDto } from '@/@infrastructure/dtos/UserDto';
 import { User } from '@domain/entities/User';
 import { UserApiModel } from '../database/api/UserApiModel';
 import { RoleMapper } from './RoleMapper';

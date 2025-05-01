@@ -1,8 +1,8 @@
 // src/@infrastructure/database/repositories/settings/price/SettingPriceBodyPartCoefficientRepository.ts
-import { SettingPriceBodyPartCoefficientDto } from '@/@application/dtos/settings/price/SettingPriceBodyPartCoefficientDto';
 import { ISettingPriceBodyPartCoefficientRepository } from '@/@domain/repositories/settings/price/ISettingPriceBodyPartCoefficientRepository';
 import { SettingPriceBodyPartCoefficientApiModel } from '@/@infrastructure/database/api/settings/price/SettingPriceBodyPartCoefficientApiModel';
 import { SupabaseClient } from '@/@infrastructure/database/clients/SupabaseClient';
+import { SettingPriceBodyPartCoefficientDto } from '@/@infrastructure/dtos/settings/price/SettingPriceBodyPartCoefficientDto';
 import { IClientProvider } from '@/@infrastructure/interfaces/IClientProvider';
 import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
 import { SettingPriceBodyPartCoefficientMapper } from '@/@infrastructure/mappers/settings/price/SettingPriceBodyPartCoefficientMapper';
@@ -50,7 +50,7 @@ export class SettingPriceBodyPartCoefficientRepository implements ISettingPriceB
     const { data, error } = await this.clientProvider.getClient()
       .fromSchema<'car_repair', 'setting_price_body_part_coefficient'>('car_repair', 'setting_price_body_part_coefficient')
       .update({
-        coefficient: settingApi.difficulty_coefficient,
+        difficulty_coefficient: settingApi.difficulty_coefficient,
         body_part_id: settingApi.body_parts?.id,
         user_id: settingApi.user_id
       })

@@ -1,5 +1,5 @@
 import { IAuthState } from '@/@application/states/interfaces/IAuthState';
-import { IGarageUseCase } from '@/@application/useCases/interfaces/IGarageUseCase';
+import { IGarageUseCase } from '@/@domain/useCases/IGarageUseCase';
 import { container } from '@/@infrastructure/ioc/inversify.config';
 import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
 import { GarageMapper } from '@/@presentation/mappers/GarageMapper';

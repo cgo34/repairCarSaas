@@ -1,6 +1,7 @@
 {
   "name": "repairCarSaas",
   "version": "1.0.0",
+  "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -9,7 +10,7 @@
     "lint:fix": "eslint \"src/**/*.{ts,tsx,vue,js,jsx}\" --fix",
     "type-check": "vue-tsc --noEmit",
     "test": "echo \"No tests specified\" && exit 0",
-    "supabase:gen:types": "supabase gen types typescript --project-id ombgvakpwmgtkimvrhzh --schema public,car_repair > src/@infrastructure/database/database.types.ts"
+    "supabase:gen:types": "supabase gen types typescript --project-id ombgvakpwmgtkimvrhzh --schema public > src/@infrastructure/database/database.types.ts"
   },
   "dependencies": {
     "@mdi/font": "^7.4.47",
@@ -18,6 +19,7 @@
     "apexcharts": "^4.4.0",
     "bcryptjs": "^2.4.3",
     "dotenv": "^16.4.7",
+    "html2pdf.js": "^0.10.3",
     "inversify": "^6.2.1",
     "reflect-metadata": "^0.2.2",
     "vee-validate": "^4.15.0",

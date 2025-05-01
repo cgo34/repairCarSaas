@@ -1,7 +1,7 @@
-import { SettingPriceImpactCountToUtDto } from '@/@application/dtos/settings/price/SettingPriceImpactCountToUtDto';
 import { ISettingPriceImpactCountToUtRepository } from '@/@domain/repositories/settings/price/ISettingPriceImpactCountToUtRepository';
 import { SettingPriceImpactCountToUtApiModel } from '@/@infrastructure/database/api/settings/price/SettingPriceImpactCountToUtApiModel';
 import { SupabaseClient } from '@/@infrastructure/database/clients/SupabaseClient';
+import { SettingPriceImpactCountToUtDto } from '@/@infrastructure/dtos/settings/price/SettingPriceImpactCountToUtDto';
 import { IClientProvider } from '@/@infrastructure/interfaces/IClientProvider';
 import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
 import { SettingPriceImpactCountToUtMapper } from '@/@infrastructure/mappers/settings/price/SettingPriceImpactCountToUtMapper';

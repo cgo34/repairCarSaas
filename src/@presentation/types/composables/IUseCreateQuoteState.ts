@@ -1,9 +1,8 @@
-import { Ref } from 'vue';
-import { BodyMaterialViewModel } from '../models/carRepair/BodyMaterialViewModel';
-import { BodyPartViewModel } from '../models/carRepair/BodyPartViewModel';
-import { DentRepairTypeViewModel } from '../models/carRepair/DentRepairTypeViewModel';
+import { ComputedRef, Ref } from 'vue';
+import { CountryViewModel } from '../models/CountryViewModel';
 import { GarageViewModel } from '../models/GarageViewModel';
-import { LineItemViewModel } from '../models/LineItemViewModel';
+import { QuoteStatusViewType } from '../models/QuoteStatusViewType';
+import { QuoteViewModel } from '../models/QuoteViewModel';
 import { UserViewModel } from '../models/UserViewModel';
 
 export interface IUseCreateQuoteState {
@@ -11,17 +10,34 @@ export interface IUseCreateQuoteState {
   error: Ref<unknown>;
 
   init(): Promise<void>;
+
+  quote: ComputedRef<QuoteViewModel>;
+  quoteInformations: ComputedRef<{ number: string; date: string, expirationDate: string; status: QuoteStatusViewType; }>;
+  expirationDate: ComputedRef<string>;
+
   technicians: Ref<UserViewModel[]>;
   garages: Ref<GarageViewModel[]>;
-  selectedTechnician: Ref<UserViewModel>;
-  selectedGarage: Ref<GarageViewModel>;
+  selectedTechnician: Ref<UserViewModel | undefined>;
+  selectedGarage: Ref<GarageViewModel | undefined>;
   selectTechnician(technician: UserViewModel): void;
   selectGarage(garage: GarageViewModel): void;
-  bodyParts: Ref<BodyPartViewModel[]>;
-  availableBodyParts: Ref<BodyPartViewModel[]>;
-  bodyMaterials: Ref<BodyMaterialViewModel[]>;
-  repairTypes: Ref<DentRepairTypeViewModel[]>;
+  setGarage(garage: GarageViewModel): void;
 
-  quoteLines: Ref<LineItemViewModel[]>;
-  addLine(): void;
+  carInformations: ComputedRef<{ immatriculation: string; brand: string; dateEntryCirculation: string; }>;
+  setCarImmatriculation(value: string): void;
+  setCarBrand(value: string): void;
+  setCarDateEntryCirculation(value: string): void;
+
+  isForfait: ComputedRef<boolean>;
+  isDisplayUnitPrice: ComputedRef<boolean>;
+  isComputeCommissionWithoutDentRemoval: ComputedRef<boolean>;
+  setIsForfait(value: boolean): void;
+  setForfaitAmount(value: number): void;
+  setIsDisplayUnitPrice(value: boolean): void;
+  setIsComputeCommissionWithoutDentRemoval(value: boolean): void;
+  
+  selectCountry(country: CountryViewModel): void;
+  selectedCountry: ComputedRef<CountryViewModel>;
+
+  save(): Promise<void>;
 }

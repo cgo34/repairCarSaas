@@ -1,6 +1,6 @@
 import { IAuthState } from '@/@application/states/interfaces/IAuthState';
-import { IBodyMaterialUseCase } from '@/@application/useCases/interfaces/carRepair/IBodyMaterialUseCase';
-import { ISettingPriceBodyMaterialCoefficientUseCase } from '@/@application/useCases/interfaces/settings/price/ISettingPriceBodyMaterialCoefficientUseCase';
+import { IBodyMaterialUseCase } from '@/@domain/useCases/carRepair/IBodyMaterialUseCase';
+import { ISettingPriceBodyMaterialCoefficientUseCase } from '@/@domain/useCases/settings/price/ISettingPriceBodyMaterialCoefficientUseCase';
 import { container } from '@/@infrastructure/ioc/inversify.config';
 import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
 import { SettingPriceBodyMaterialCoefficientMapper } from '@/@presentation/mappers/settings/price/SettingPriceBodyMaterialCoefficientMapper';

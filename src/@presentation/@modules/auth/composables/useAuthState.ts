@@ -48,7 +48,6 @@ export function useAuthState() {
   };
 
   const logout = async () => {
-    console.log('useAuthState -> logout');
     loading.value = true;
     error.value = null;
     
