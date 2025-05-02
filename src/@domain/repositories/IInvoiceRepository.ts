@@ -2,7 +2,7 @@ import { InvoiceDto } from '@/@infrastructure/dtos/InvoiceDto';
 import { InvoiceStatusDto } from '@/@infrastructure/dtos/InvoiceStatusDto';
 
 export interface IInvoiceRepository {
-  generateInvoiceNumber(): Promise<string>;
+  generateInvoiceNumber(userId: string): Promise<string>;
   
   getAll(): Promise<InvoiceDto[]>;
   getAllByUserId(userId: string): Promise<InvoiceDto[]>;

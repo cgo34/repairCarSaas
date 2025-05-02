@@ -10,7 +10,7 @@ export class CreateInvoiceUseCase {
 
   async execute(invoiceDto: InvoiceDto, userId: string): Promise<InvoiceDto> {    
     // 🔹 1. Générer un numéro unique
-    const invoiceNumber = await this.invoiceRepository.generateInvoiceNumber();
+    const invoiceNumber = await this.invoiceRepository.generateInvoiceNumber(userId);
     
     // 🔹 2. Convertir le DTO en Entité pour appliquer les règles métiers
     const invoice = InvoiceMapper.dtoToDomain({

@@ -5,6 +5,8 @@ import { DentRepairTypeDto } from "./carRepair/DentRepairTypeDto";
 export interface LineItemDto {
   id: string;
   quoteId: string;
+  quoteDetailId: string;
+  invoiceId: string;
   bodyPartId: string;
   bodyPart: BodyPartDto
   bodyMaterialId: string;

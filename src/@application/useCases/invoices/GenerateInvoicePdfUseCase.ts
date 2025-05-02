@@ -13,6 +13,6 @@ export class GenerateInvoicePdfUseCase implements IGenerateInvoicePdfUseCase {
   ) {}
 
   async execute(invoice: InvoiceDto, lines: LineItemDto[]): Promise<string> {
-    return await this.pdfGenerator.generate(invoice, lines)
+    return await this.pdfGenerator.generateInvoice(invoice, lines)
   }
 }

@@ -15,18 +15,19 @@ export class InvoiceRepository implements IInvoiceRepository {
   /**
    * Génère un numéro de devis unique.
    */
-  async generateInvoiceNumber(): Promise<string> {
+  async generateInvoiceNumber(userId: string): Promise<string> {
     const { count, error } = await this.clientProvider.getClient()
     .from('invoices')
-    .select('*', { count: 'exact', head: true }); // ⚡ Optimisé pour éviter un gros dataset
+    .select('*', { count: 'exact', head: true }) // ⚡ Optimisé pour éviter un gros dataset
+    .eq('user_id', userId)
     
     if (error)
       throw new Error('Error generating invoice number');
 
     const year = new Date().getFullYear().toString().slice(-2);
-    const quoteNumber = `D${year}${(count! + 1).toString().padStart(5, '0')}`;
+    const invoiceNumber = `F${year}${(count! + 1).toString().padStart(5, '0')}`;
     
-    return quoteNumber;
+    return invoiceNumber;
   }
 
   /**
@@ -52,7 +53,6 @@ export class InvoiceRepository implements IInvoiceRepository {
       .from('invoices')
       .select(`
         *,
-        user:users!invoices_user_id_fkey(*),
         technician:users!invoices_technician_id_fkey(*),
         garage:garages(*)
       `)
@@ -73,7 +73,6 @@ export class InvoiceRepository implements IInvoiceRepository {
       .from('invoices')
       .select(`
         *,
-        user:users!invoices_user_id_fkey(*),
         technician:users!invoices_technician_id_fkey(*),
         garage:garages(*)
       `)
@@ -87,11 +86,11 @@ export class InvoiceRepository implements IInvoiceRepository {
   }
 
   // TODO: (gce) -> TO BE MOVE TO DetailRepository
-  // async getDetails(quoteId: string): Promise<LineItemDto[]> {
+  // async getDetails(invoiceId: string): Promise<LineItemDto[]> {
   //   const { data, error } = await this.clientProvider.getClient()
-  //     .from('quote_details')
+  //     .from('invoice_details')
   //     .select('*')
-  //     .eq('quote_id', quoteId)
+  //     .eq('invoice_id', invoiceId)
   //     .returns<InvoiceDetailApiModel[]>();
   
   //   if (error) throw new Error(`Error fetching invoice details: ${error.message}`);
@@ -104,11 +103,11 @@ export class InvoiceRepository implements IInvoiceRepository {
    * Crée un devis.
    */
   async create(invoice: InvoiceDto): Promise<InvoiceDto> {
-    const quoteApi = InvoiceMapper.dtoToApi(invoice);
+    const invoiceApi = InvoiceMapper.dtoToApi(invoice);
 
     const { data, error } = await this.clientProvider.getClient()
       .from('invoices')
-      .insert(quoteApi)
+      .insert(invoiceApi)
       .select('*')
       .single<InvoiceApiModel>();
 
@@ -122,14 +121,14 @@ export class InvoiceRepository implements IInvoiceRepository {
    * Met à jour un devis.
    */
   async update(invoice: InvoiceDto): Promise<InvoiceDto> {
-    const quoteApi = InvoiceMapper.dtoToApi(invoice);
+    const invoiceApi = InvoiceMapper.dtoToApi(invoice);
 
-    if (!quoteApi.id) throw new Error('Invoice ID is required');
+    if (!invoiceApi.id) throw new Error('Invoice ID is required');
 
     const { data, error } = await this.clientProvider.getClient()
       .from('invoices')
-      .update({...quoteApi, updated_at: new Date().toISOString()})
-      .eq('id', quoteApi.id)
+      .update({...invoiceApi, updated_at: new Date().toISOString()})
+      .eq('id', invoiceApi.id)
       .select(`
         *,
         user:users!invoices_user_id_fkey(*),
@@ -148,9 +147,9 @@ export class InvoiceRepository implements IInvoiceRepository {
    */
   async delete(id: string): Promise<void> {
     const { errorDetails } = await this.clientProvider.getClient()
-      .from('quote_details')
+      .from('invoice_details')
       .delete()
-      .eq('quote_id', id);
+      .eq('invoice_id', id);
 
     const { error } = await this.clientProvider.getClient()
       .from('invoices')
@@ -161,10 +160,10 @@ export class InvoiceRepository implements IInvoiceRepository {
       throw new Error('Error deleting invoice');    
   }
 
-  // async addLineItem(quoteId: string, lineItem: InvoiceLineItem): Promise<void> {
+  // async addLineItem(invoiceId: string, lineItem: InvoiceLineItem): Promise<void> {
   //   const lineApi: InvoiceDetailApiModel = {
   //     id: crypto.randomUUID(),
-  //     quote_id: quoteId,
+  //     invoice_id: invoiceId,
   //     body_part_id: lineItem.bodyPartId,
   //     body_material_id: lineItem.bodyMaterialId,
   //     repair_type_id: lineItem.repairTypeId,
@@ -175,16 +174,16 @@ export class InvoiceRepository implements IInvoiceRepository {
   //   };
 
   //   const { error } = await this.clientProvider.getClient()
-  //     .fromSchema<'quoting', 'quote_details'>('quoting', 'quote_details')
+  //     .fromSchema<'quoting', 'invoice_details'>('quoting', 'invoice_details')
   //     .insert(lineApi);
 
   //   if (error) throw new Error('Error adding invoice detail');
   // }
 
-  // async updateLineItem(quoteId: string, lineItem: InvoiceLineItemDto): Promise<void> {
+  // async updateLineItem(invoiceId: string, lineItem: InvoiceLineItemDto): Promise<void> {
   //   const lineApi: InvoiceDetailApiModel = {
   //     id: lineItem.id,
-  //     quote_id: quoteId,
+  //     invoice_id: invoiceId,
   //     body_part_id: lineItem.bodyPartId,
   //     body_material_id: lineItem.bodyMaterialId,
   //     repair_type_id: lineItem.repairTypeId,
@@ -195,18 +194,18 @@ export class InvoiceRepository implements IInvoiceRepository {
   //   };
 
   //   const { error } = await this.clientProvider.getClient()
-  //     .fromSchema<'quoting', 'quote_details'>('quoting', 'quote_details')
+  //     .fromSchema<'quoting', 'invoice_details'>('quoting', 'invoice_details')
   //     .update(lineApi)
   //     .eq('id', lineApi.id);
 
   //   if (error) throw new Error('Error updating invoice detail');
   // }
 
-  async updateStatus(quoteId: string, status: InvoiceStatusDto): Promise<void> {
+  async updateStatus(invoiceId: string, status: InvoiceStatusDto): Promise<void> {
     const { error } = await this.clientProvider.getClient()
       .fromSchema<'quoting', 'invoices'>('quoting', 'invoices')
       .update({ status: status.status })
-      .eq('id', quoteId);
+      .eq('id', invoiceId);
 
     if (error) throw new Error('Error updating invoice status');
   }

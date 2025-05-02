@@ -80,6 +80,8 @@ export function useCreateInvoiceState() {
       }
       
       const invoiceDto = await createInvoiceUseCase.execute(InvoiceMapper.viewToDto(_invoice.value), authState.user.value.id);
+      console.log('invoiceDTO', invoiceDto);
+      
       _invoice.value = InvoiceMapper.dtoToView(invoiceDto);
       
       // TODO: (gce) -> MOVE TO MAPPER

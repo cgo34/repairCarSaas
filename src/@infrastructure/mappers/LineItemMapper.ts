@@ -23,6 +23,8 @@ export class LineItemMapper {
     
     return {
       quote_id: dto.quoteId ?? undefined,
+      quote_detail_id: dto.quoteDetailId ?? undefined,
+      invoice_id: dto.invoiceId ?? undefined,
       body_part_id: dto.bodyPartId,
       body_material_id: dto.bodyMaterialId,
       repair_type_id: dto.repairTypeId,

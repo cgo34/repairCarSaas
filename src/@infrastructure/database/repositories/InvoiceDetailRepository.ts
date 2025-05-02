@@ -40,6 +40,8 @@ export class InvoiceDetailRepository implements IInvoiceDetailRepository {
   }
 
   async insert(item: LineItemDto): Promise<LineItemDto> {
+    console.log('invoice line item to insert', LineItemMapper.dtoToApi(item));
+    
     const { data, error } = await this.clientProvider.getClient()
       .from('invoice_details')
       .insert(LineItemMapper.dtoToApi(item))

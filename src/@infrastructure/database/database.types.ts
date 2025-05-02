@@ -99,6 +99,7 @@ export type Database = {
         Row: {
           body_material_id: string | null
           body_part_id: string | null
+          dent_removal_price: number | null
           id: string
           impact_count_25: number | null
           impact_count_35: number | null
@@ -106,11 +107,11 @@ export type Database = {
           price: number | null
           quote_detail_id: string | null
           repair_type_id: string | null
-          stripping_percentage: number | null
         }
         Insert: {
           body_material_id?: string | null
           body_part_id?: string | null
+          dent_removal_price?: number | null
           id?: string
           impact_count_25?: number | null
           impact_count_35?: number | null
@@ -118,11 +119,11 @@ export type Database = {
           price?: number | null
           quote_detail_id?: string | null
           repair_type_id?: string | null
-          stripping_percentage?: number | null
         }
         Update: {
           body_material_id?: string | null
           body_part_id?: string | null
+          dent_removal_price?: number | null
           id?: string
           impact_count_25?: number | null
           impact_count_35?: number | null
@@ -130,7 +131,6 @@ export type Database = {
           price?: number | null
           quote_detail_id?: string | null
           repair_type_id?: string | null
-          stripping_percentage?: number | null
         }
         Relationships: [
           {
