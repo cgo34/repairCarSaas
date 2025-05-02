@@ -1,14 +1,35 @@
-import { InvoiceService } from '@/@application/services/InvoiceService';
-import { Invoice } from '@/@domain/entities/Invoice';
+import { InvoiceMapper } from '@/@application/mappers/InvoiceMapper';
+import { IInvoiceRepository } from '@/@domain/repositories/IInvoiceRepository';
+import { InvoiceDto } from '@/@infrastructure/dtos/InvoiceDto';
+import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
+import { inject, injectable } from 'inversify';
 
+@injectable()
 export class CreateInvoiceUseCase {
-  private invoiceService: InvoiceService;
+  constructor(@inject(SYMBOLS.Repositories.InvoiceRepository) private invoiceRepository: IInvoiceRepository) {}
 
-  constructor(invoiceService: InvoiceService) {
-    this.invoiceService = invoiceService;
-  }
+  async execute(invoiceDto: InvoiceDto, userId: string): Promise<InvoiceDto> {    
+    // 🔹 1. Générer un numéro unique
+    const invoiceNumber = await this.invoiceRepository.generateInvoiceNumber();
+    
+    // 🔹 2. Convertir le DTO en Entité pour appliquer les règles métiers
+    const invoice = InvoiceMapper.dtoToDomain({
+      ...invoiceDto,
+      id: crypto.randomUUID(),
+      invoiceNumber: invoiceNumber,
+      endDate: '', // 🔹 La date de fin est calculée par le système
+      status: 'draft',
+      userId, // L’utilisateur qui crée le devis
+    });
+  
+    // 🔹 3. Appliquer d'éventuelles règles métier
+    if (invoice.isExpired())
+      throw new Error("Impossible de créer un devis expiré");
+  
 
-  async execute(invoice: Invoice) {
-    return await this.invoiceService.createInvoice(invoice);
+    invoiceDto.invoiceNumber = invoiceNumber;
+    
+    return invoiceDto;
   }
+  
 }

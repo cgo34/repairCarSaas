@@ -4,16 +4,16 @@ import { BodyPartViewModel } from '../models/carRepair/BodyPartViewModel';
 import { DentRepairTypeViewModel } from '../models/carRepair/DentRepairTypeViewModel';
 import { CountryViewModel } from '../models/CountryViewModel';
 import { GarageViewModel } from '../models/GarageViewModel';
+import { InvoiceStatusViewType } from '../models/InvoiceStatusViewType';
 import { LineItemViewModel } from '../models/LineItemViewModel';
-import { QuoteStatusViewType } from '../models/QuoteStatusViewType';
 import { UserViewModel } from '../models/UserViewModel';
 
-export interface IUseEditQuoteState {
+export interface IUseEditInvoiceState {
   loading: Ref<boolean>;
   error: Ref<unknown>;
 
   init(id: string): Promise<void>;
-  quoteInformations: ComputedRef<{ number: string; date: string, expirationDate: string; status: QuoteStatusViewType; }>;
+  quoteInformations: ComputedRef<{ number: string; date: string, expirationDate: string; status: InvoiceStatusViewType; }>;
   expirationDate: ComputedRef<string>;
 
   technicians: Ref<UserViewModel[]>;

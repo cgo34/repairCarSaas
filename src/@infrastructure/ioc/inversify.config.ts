@@ -23,6 +23,17 @@ import { CalculateLineCostUseCase } from '@/@application/useCases/cost/Calculate
 import { CalculateTotalCostUseCase } from '@/@application/useCases/cost/CalculateTotalCostUseCase';
 import { GarageUseCase } from '@/@application/useCases/GarageUseCase';
 import { ILoginUseCase } from '@/@application/useCases/interfaces/auth/ILoginUseCase';
+import { AddInvoiceLineItemUseCase } from '@/@application/useCases/invoices/AddInvoiceLineItemUseCase';
+import { CreateInvoiceUseCase } from '@/@application/useCases/invoices/CreateInvoiceUseCase';
+import { DeleteInvoiceUseCase } from '@/@application/useCases/invoices/DeleteInvoiceUseCase';
+import { GenerateInvoicePdfUseCase } from '@/@application/useCases/invoices/GenerateInvoicePdfUseCase';
+import { GetInvoiceDetailUseCase } from '@/@application/useCases/invoices/GetInvoiceDetailUseCase';
+import { GetInvoicesUseCase } from '@/@application/useCases/invoices/GetInvoicesUseCase';
+import { GetInvoiceUseCase } from '@/@application/useCases/invoices/GetInvoiceUseCase';
+import { InsertInvoiceUseCase } from '@/@application/useCases/invoices/InsertInvoiceUseCase';
+import { SendInvoiceUseCase } from '@/@application/useCases/invoices/SendInvoiceUseCase';
+import { UpdateInvoiceUseCase } from '@/@application/useCases/invoices/UpdateInvoiceUseCase';
+import { ViewInvoiceUseCase } from '@/@application/useCases/invoices/ViewInvoiceUseCase';
 import { DeleteLineItemUseCase } from '@/@application/useCases/lineItem/DeleteLineItemUseCase';
 import { AddQuoteLineItemUseCase } from '@/@application/useCases/quotes/AddQuoteLineItemUseCase';
 import { CreateQuoteUseCase } from '@/@application/useCases/quotes/CreateQuoteUseCase';
@@ -80,6 +91,17 @@ import { IDentRepairTypeUseCase } from '@/@domain/useCases/carRepair/IDentRepair
 import { ICalculateLineCostUseCase } from '@/@domain/useCases/cost/ICalculateLineCostUseCase';
 import { ICalculateTotalCostUseCase } from '@/@domain/useCases/cost/ICalculateTotalCostUseCase';
 import { IGarageUseCase } from '@/@domain/useCases/IGarageUseCase';
+import { IAddInvoiceLineItemUseCase } from '@/@domain/useCases/invoices/IAddInvoiceLineItemUseCase';
+import { ICreateInvoiceUseCase } from '@/@domain/useCases/invoices/ICreateInvoiceUseCase';
+import { IDeleteInvoiceUseCase } from '@/@domain/useCases/invoices/IDeleteInvoiceUseCase';
+import { IGenerateInvoicePdfUseCase } from '@/@domain/useCases/invoices/IGenerateInvoicePdfUseCase';
+import { IGetInvoiceDetailUseCase } from '@/@domain/useCases/invoices/IGetInvoiceDetailUseCase';
+import { IGetInvoiceUseCase } from '@/@domain/useCases/invoices/IGetInvoiceUseCase';
+import { IInsertInvoiceUseCase } from '@/@domain/useCases/invoices/IInsertInvoiceUseCase';
+import { IInvoicesUseCase } from '@/@domain/useCases/invoices/IInvoicesUseCase';
+import { ISendInvoiceUseCase } from '@/@domain/useCases/invoices/ISendInvoiceUseCase';
+import { IUpdateInvoiceUseCase } from '@/@domain/useCases/invoices/IUpdateInvoiceUseCase';
+import { IViewInvoiceUseCase } from '@/@domain/useCases/invoices/IViewInvoiceUseCase';
 import { IUserUseCase } from '@/@domain/useCases/IUserUseCase';
 import { IDeleteLineItemUseCase } from '@/@domain/useCases/lineItem/ILineItemUseCase';
 import { IAddQuoteLineItemUseCase } from '@/@domain/useCases/quotes/IAddQuoteLineItemUseCase';
@@ -104,6 +126,10 @@ import { AuthSupabaseRepository } from '@/@infrastructure/database/repositories/
 import { BodyPartRepository } from '@/@infrastructure/database/repositories/carRepair/BodyPartRepository';
 import { IClientProvider } from '@/@infrastructure/interfaces/IClientProvider';
 import { useGarageState } from '@/@presentation/@modules/garages/composables/useGarageState';
+import { useCreateInvoiceState } from '@/@presentation/@modules/invoices/composables/useCreateInvoiceState';
+import { useEditInvoiceState } from '@/@presentation/@modules/invoices/composables/useEditInvoiceState';
+import { useInvoicesState } from '@/@presentation/@modules/invoices/composables/useInvoicesState';
+import { useViewInvoiceState } from '@/@presentation/@modules/invoices/composables/useViewInvoiceState';
 import { useCreateQuoteState } from '@/@presentation/@modules/quotes/composables/useCreateQuoteState';
 import { useEditQuoteState } from '@/@presentation/@modules/quotes/composables/useEditQuoteState';
 import { useQuotesState } from '@/@presentation/@modules/quotes/composables/useQuotesState';
@@ -121,11 +147,15 @@ import { useUserState } from '@/@presentation/@modules/users/composables/useUser
 import { IBodyMaterialState } from '@/@presentation/types/composables/IBodyMaterialState';
 import { IBodyPartState } from '@/@presentation/types/composables/IBodyPartState';
 import { IDentRepairTypeState } from '@/@presentation/types/composables/IDentRepairTypeState';
+import { IUseCreateInvoiceState } from '@/@presentation/types/composables/IUseCreateInvoiceState';
 import { IUseCreateQuoteState } from '@/@presentation/types/composables/IUseCreateQuoteState';
+import { IUseEditInvoiceState } from '@/@presentation/types/composables/IUseEditInvoiceState';
 import { IUseEditQuoteState } from '@/@presentation/types/composables/IUseEditQuoteState';
 import { IUseGarageState } from '@/@presentation/types/composables/IUseGarageState';
+import { IUseInvoicesState } from '@/@presentation/types/composables/IUseInvoicesStates';
 import { IUseQuotesState } from '@/@presentation/types/composables/IUseQuotesState';
 import { IUseUserState } from '@/@presentation/types/composables/IUseUserState';
+import { IUseViewInvoiceState } from '@/@presentation/types/composables/IUseViewInvoiceState';
 import { IUseViewQuoteState } from '@/@presentation/types/composables/IUseViewQuoteState';
 import { IUseSettingPriceBodyMaterialCoefficientState } from '@/@presentation/types/composables/settings/price/IUseSettingPriceBodyMaterialCoefficientState';
 import { IUseSettingPriceBodyPartCoefficientState } from '@/@presentation/types/composables/settings/price/IUseSettingPriceBodyPartCoefficientState';
@@ -160,6 +190,10 @@ import { IClient } from '../interfaces/IClient';
 import { IEmailService } from '../interfaces/IEmailService';
 import { Html2PdfGenerator } from '../pdf/Html2PdfGenerator';
 import { EmailService } from '../services/EmailService';
+import { IInvoiceRepository } from '@/@domain/repositories/IInvoiceRepository';
+import { IInvoiceDetailRepository } from '@/@domain/repositories/IInvoiceDetailRepository';
+import { InvoiceRepository } from '../database/repositories/InvoiceRepository';
+import { InvoiceDetailRepository } from '../database/repositories/InvoiceDetailRepository';
 
 const container = new Container({ defaultScope: 'Singleton' });
 
@@ -193,6 +227,10 @@ container.bind<IUserRepository>(SYMBOLS.Repositories.UserRepository).to(UserRepo
 container.bind<IQuoteRepository>(SYMBOLS.Repositories.QuoteRepository).to(QuoteRepository).inSingletonScope();
 /** 3.6. -- Quote Detail Repositories */
 container.bind<IQuoteDetailRepository>(SYMBOLS.Repositories.QuoteDetailRepository).to(QuoteDetailRepository).inSingletonScope();
+/** 3.7. -- Invoice Repositories */
+container.bind<IInvoiceRepository>(SYMBOLS.Repositories.InvoiceRepository).to(InvoiceRepository).inSingletonScope();
+/** 3.8. -- Invoice Detail Repositories */
+container.bind<IInvoiceDetailRepository>(SYMBOLS.Repositories.InvoiceDetailRepository).to(InvoiceDetailRepository).inSingletonScope();
 
 /** 4 - SERVICES */
 container.bind<IAuthService>(SYMBOLS.Services.AuthService).to(AuthService).inSingletonScope();
@@ -259,6 +297,21 @@ container.bind<IAddQuoteLineItemUseCase>(SYMBOLS.UseCases.Quote.AddLineItemUseCa
 container.bind<IDeleteLineItemUseCase>(SYMBOLS.UseCases.Quote.DeleteLineItemUseCase).to(DeleteLineItemUseCase).inSingletonScope();
 container.bind<IGenerateQuotePdfUseCase>(SYMBOLS.UseCases.Quote.GenerateQuotePdfUseCase).to(GenerateQuotePdfUseCase).inSingletonScope();
 container.bind<ISendQuoteUseCase>(SYMBOLS.UseCases.Quote.SendQuoteUseCase).to(SendQuoteUseCase);
+/** 5.6. -- Invoice UseCases */
+// container.bind<IInvoiceUseCase>(SYMBOLS.UseCases.Invoice.InvoiceUseCase).to(InvoiceUseCase).inSingletonScope();
+container.bind<IInvoicesUseCase>(SYMBOLS.UseCases.Invoice.GetInvoicesUseCase).to(GetInvoicesUseCase).inSingletonScope();
+container.bind<IViewInvoiceUseCase>(SYMBOLS.UseCases.Invoice.ViewInvoiceUseCase).to(ViewInvoiceUseCase).inSingletonScope();
+container.bind<ICreateInvoiceUseCase>(SYMBOLS.UseCases.Invoice.CreateInvoiceUseCase).to(CreateInvoiceUseCase).inSingletonScope();
+container.bind<IInsertInvoiceUseCase>(SYMBOLS.UseCases.Invoice.InsertInvoiceUseCase).to(InsertInvoiceUseCase).inSingletonScope();
+container.bind<IUpdateInvoiceUseCase>(SYMBOLS.UseCases.Invoice.UpdateInvoiceUseCase).to(UpdateInvoiceUseCase).inSingletonScope();
+container.bind<IDeleteInvoiceUseCase>(SYMBOLS.UseCases.Invoice.DeleteInvoiceUseCase).to(DeleteInvoiceUseCase).inSingletonScope();
+container.bind<IGetInvoiceUseCase>(SYMBOLS.UseCases.Invoice.GetInvoiceUseCase).to(GetInvoiceUseCase).inSingletonScope();
+container.bind<IGetInvoiceDetailUseCase>(SYMBOLS.UseCases.Invoice.GetInvoiceDetailsUseCase).to(GetInvoiceDetailUseCase).inSingletonScope();
+// container.bind<ISaveInvoiceUseCase>(SYMBOLS.UseCases.Invoice.SaveInvoiceUseCase).to(SaveInvoiceUseCase).inSingletonScope();
+container.bind<IAddInvoiceLineItemUseCase>(SYMBOLS.UseCases.Invoice.AddLineItemUseCase).to(AddInvoiceLineItemUseCase).inSingletonScope();
+// container.bind<IDeleteLineItemUseCase>(SYMBOLS.UseCases.Invoice.DeleteLineItemUseCase).to(DeleteLineItemUseCase).inSingletonScope();
+container.bind<IGenerateInvoicePdfUseCase>(SYMBOLS.UseCases.Invoice.GenerateInvoicePdfUseCase).to(GenerateInvoicePdfUseCase).inSingletonScope();
+container.bind<ISendInvoiceUseCase>(SYMBOLS.UseCases.Invoice.SendInvoiceUseCase).to(SendInvoiceUseCase);
 
 
 
@@ -314,6 +367,19 @@ container.bind<IUseEditQuoteState>(SYMBOLS.States.Quote.EditQuoteState).toDynami
 });
 container.bind<IUseQuotesState>(SYMBOLS.States.Quote.GetQuotesUseCase).toDynamicValue(() => {
   return useQuotesState();
+});
+/** 6.4. -- Invoice States */
+container.bind<IUseCreateInvoiceState>(SYMBOLS.States.Invoice.CreateInvoiceState).toDynamicValue(() => {
+  return useCreateInvoiceState();
+});
+container.bind<IUseViewInvoiceState>(SYMBOLS.States.Invoice.ViewInvoiceState).toDynamicValue(() => {
+  return useViewInvoiceState();
+});
+container.bind<IUseEditInvoiceState>(SYMBOLS.States.Invoice.EditInvoiceState).toDynamicValue(() => {
+  return useEditInvoiceState();
+});
+container.bind<IUseInvoicesState>(SYMBOLS.States.Invoice.GetInvoicesUseCase).toDynamicValue(() => {
+  return useInvoicesState();
 });
 
 export { container };

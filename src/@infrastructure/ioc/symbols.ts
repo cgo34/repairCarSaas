@@ -17,6 +17,7 @@ const SYMBOLS = {
     UserRepository: Symbol.for(SYMBOL_NAMES.USER_REPOSITORY),
     GarageRepository: Symbol.for(SYMBOL_NAMES.GARAGE_REPOSITORY),
     InvoiceRepository: Symbol.for(SYMBOL_NAMES.INVOICE_REPOSITORY),
+    InvoiceDetailRepository: Symbol.for(SYMBOL_NAMES.INVOICE_DETAIL_REPOSITORY),
     QuoteRepository: Symbol.for(SYMBOL_NAMES.QUOTE_REPOSITORY),
     QuoteDetailRepository: Symbol.for(SYMBOL_NAMES.QUOTE_DETAIL_REPOSITORY),
     // -- Settings CarRepair Repositories
@@ -109,6 +110,25 @@ const SYMBOLS = {
       GenerateQuotePdfUseCase: Symbol.for(SYMBOL_NAMES.GENERATE_QUOTE_PDF_USE_CASE),
       SendQuoteUseCase: Symbol.for(SYMBOL_NAMES.SEND_QUOTE_USE_CASE),
     },
+    Invoice: {
+      InvoiceUseCase: Symbol.for(SYMBOL_NAMES.INVOICE_USE_CASE),
+      GetInvoiceUseCase: Symbol.for(SYMBOL_NAMES.GET_INVOICE_USE_CASE),
+      GetInvoicesUseCase: Symbol.for(SYMBOL_NAMES.GET_INVOICES_USE_CASE),
+      ViewInvoiceUseCase: Symbol.for(SYMBOL_NAMES.VIEW_INVOICE_USE_CASE),
+      CreateInvoiceUseCase: Symbol.for(SYMBOL_NAMES.CREATE_INVOICE_USE_CASE),
+      InsertInvoiceUseCase: Symbol.for(SYMBOL_NAMES.INSERT_INVOICE_USE_CASE),
+      UpdateInvoiceUseCase: Symbol.for(SYMBOL_NAMES.UPDATE_INVOICE_USE_CASE),
+      SaveInvoiceUseCase: Symbol.for(SYMBOL_NAMES.SAVE_INVOICE_USE_CASE),
+      DeleteInvoiceUseCase: Symbol.for(SYMBOL_NAMES.DELETE_INVOICE_USE_CASE),
+      
+      GetInvoiceDetailsUseCase: Symbol.for(SYMBOL_NAMES.GET_INVOICE_DETAILS_USE_CASE),
+      // AddInvoiceDetailsUseCase: Symbol.for(SYMBOL_NAMES.ADD_INVOICE_DETAILS_USE_CASE),
+      AddLineItemUseCase: Symbol.for(SYMBOL_NAMES.ADD_INVOICE_LINE_ITEM_USE_CASE),
+      DeleteLineItemUseCase: Symbol.for(SYMBOL_NAMES.DELETE_LINE_ITEM_USE_CASE),
+      // -- Pdf UseCases
+      GenerateInvoicePdfUseCase: Symbol.for(SYMBOL_NAMES.GENERATE_INVOICE_PDF_USE_CASE),
+      SendInvoiceUseCase: Symbol.for(SYMBOL_NAMES.SEND_INVOICE_USE_CASE),
+    },
   },
   States: {
     AuthState: Symbol.for(SYMBOL_NAMES.AUTH_STATE),
@@ -142,6 +162,14 @@ const SYMBOLS = {
       CreateQuoteState: Symbol.for(SYMBOL_NAMES.CREATE_QUOTE_STATE),
       EditQuoteState: Symbol.for(SYMBOL_NAMES.EDIT_QUOTE_STATE),
       GetQuotesUseCase: Symbol.for(SYMBOL_NAMES.GET_QUOTES_STATE),
+    },
+    // -- Invoices States
+    Invoice: {
+      InvoiceState: Symbol.for(SYMBOL_NAMES.INVOICE_STATE),
+      ViewInvoiceState: Symbol.for(SYMBOL_NAMES.VIEW_INVOICE_STATE),
+      CreateInvoiceState: Symbol.for(SYMBOL_NAMES.CREATE_INVOICE_STATE),
+      EditInvoiceState: Symbol.for(SYMBOL_NAMES.EDIT_INVOICE_STATE),
+      GetInvoicesUseCase: Symbol.for(SYMBOL_NAMES.GET_INVOICES_STATE),
     }
   },
 };

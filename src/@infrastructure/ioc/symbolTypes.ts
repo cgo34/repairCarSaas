@@ -15,6 +15,7 @@ export enum SYMBOL_NAMES {
     USER_REPOSITORY = 'UserRepository',
     GARAGE_REPOSITORY = 'GarageRepository',
     INVOICE_REPOSITORY = 'InvoiceRepository',
+    INVOICE_DETAIL_REPOSITORY = 'InvoiceDetailRepository',
     QUOTE_REPOSITORY = 'QuoteRepository',
     QUOTE_DETAIL_REPOSITORY = 'QuoteDetailRepository',
     // Settings CarRepair Repositories
@@ -96,6 +97,25 @@ export enum SYMBOL_NAMES {
     // -- Pdf UseCases
     GENERATE_QUOTE_PDF_USE_CASE = 'GenerateQuotePdfUseCase',
     SEND_QUOTE_USE_CASE = 'SendQuoteUseCase',
+
+    // -- Invoice UseCases
+    INVOICE_USE_CASE = 'InvoiceUseCase',
+    GET_INVOICE_USE_CASE = 'GetInvoiceUseCase',
+    GET_INVOICES_USE_CASE = 'GetInvoicesUseCase',
+    VIEW_INVOICE_USE_CASE = 'ViewInvoiceUseCase',
+    CREATE_INVOICE_USE_CASE = 'CreateInvoiceUseCase',
+    INSERT_INVOICE_USE_CASE = 'InsertInvoiceUseCase',
+    UPDATE_INVOICE_USE_CASE = 'UpdateInvoiceUseCase',
+    SAVE_INVOICE_USE_CASE = 'SaveInvoiceUseCase',
+    DELETE_INVOICE_USE_CASE = 'DeleteInvoiceUseCase',
+    // -- Invoice Details UseCases
+    GET_INVOICE_DETAILS_USE_CASE = 'GetInvoiceDetailsUseCase',
+    ADD_INVOICE_DETAILS_USE_CASE = 'AddInvoiceDetailsUseCase',
+    ADD_INVOICE_LINE_ITEM_USE_CASE = 'AddInvoiceLineItemUseCase',
+    // DELETE_LINE_ITEM_USE_CASE = 'DeleteLineItemUseCase',
+    // -- Pdf UseCases
+    GENERATE_INVOICE_PDF_USE_CASE = 'GenerateInvoicePdfUseCase',
+    SEND_INVOICE_USE_CASE = 'SendInvoiceUseCase',
     // #endregion
 
     // #region -> STATES
@@ -125,6 +145,10 @@ export enum SYMBOL_NAMES {
     GET_QUOTES_STATE = 'GetQuotesState',
     // -- Invoice States
     INVOICE_STATE = 'InvoiceState',
+    VIEW_INVOICE_STATE = 'ViewInvoiceState',
+    CREATE_INVOICE_STATE = 'CreateInvoiceState',
+    EDIT_INVOICE_STATE = 'EditInvoiceState',
+    GET_INVOICES_STATE = 'GetInvoicesState',
     // #endregion
   }
   
