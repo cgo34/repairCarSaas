@@ -2,6 +2,13 @@
   <MainLayout>
     <v-container fluid>
       <v-row>
+        <v-alert
+          class="mb-2"
+          type="info"
+          icon="$info"
+          variant="tonal"
+          text="L'indice de difficulté 1 est un DSP sur de la tôle. L'aluminium est ici majoré d'un multiplicateur et le travail de DAP est, lui, minoré Le diammètre 2 est le diamètre de référence, le diamètre 1 permet de minorer le prix de référence, quelle que soit la méthode de chiffrage."
+        ></v-alert>
         <v-data-table
           :headers="headers"
           :items="settings"
