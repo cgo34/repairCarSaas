@@ -2,7 +2,7 @@ import { QuoteDto } from '@/@infrastructure/dtos/QuoteDto';
 import { QuoteStatusDto } from '@/@infrastructure/dtos/QuoteStatusDto';
 
 export interface IQuoteRepository {
-  generateQuoteNumber(): Promise<string>;
+  generateQuoteNumber(userId: string): Promise<string>;
   
   getAll(): Promise<QuoteDto[]>;
   getAllByUserId(userId: string): Promise<QuoteDto[]>;

@@ -15,10 +15,11 @@ export class QuoteRepository implements IQuoteRepository {
   /**
    * Génère un numéro de devis unique.
    */
-  async generateQuoteNumber(): Promise<string> {
+  async generateQuoteNumber(userId): Promise<string> {
     const { count, error } = await this.clientProvider.getClient()
     .from('quotes')
     .select('*', { count: 'exact', head: true }); // ⚡ Optimisé pour éviter un gros dataset
+    .eq('user_id', userId)
     
     if (error)
       throw new Error('Error generating quote number');
