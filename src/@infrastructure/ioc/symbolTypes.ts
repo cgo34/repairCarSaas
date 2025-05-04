@@ -13,6 +13,10 @@ export enum SYMBOL_NAMES {
     // #region -> REPOSITORIES
     AUTH_REPOSITORY = 'AuthRepository',
     USER_REPOSITORY = 'UserRepository',
+    
+    // -- Subscription REPOSITORIES
+    SUBSCRIPTION_REPOSITORY = 'SubscriptionRepository',
+
     GARAGE_REPOSITORY = 'GarageRepository',
     INVOICE_REPOSITORY = 'InvoiceRepository',
     INVOICE_DETAIL_REPOSITORY = 'InvoiceDetailRepository',
@@ -116,10 +120,15 @@ export enum SYMBOL_NAMES {
     // -- Pdf UseCases
     GENERATE_INVOICE_PDF_USE_CASE = 'GenerateInvoicePdfUseCase',
     SEND_INVOICE_USE_CASE = 'SendInvoiceUseCase',
+    
+    // -- Subscription UseCases
+    SUBSCRIBE_TO_FREE_PLAN_USE_CASE = 'SubscribeToFreePlan',
+    GET_CURRENT_SUBSCRIPTION_USE_CASE = 'GetCurrentSubscriptionUseCase',
     // #endregion
 
     // #region -> STATES
     AUTH_STATE = 'AuthState',
+    SUBSCRIPTION_STATE = 'SubscriptionState',
     // -- User States
     USER_STATE = 'UserState',
     // -- Garage States

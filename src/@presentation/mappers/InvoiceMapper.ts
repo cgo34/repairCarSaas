@@ -36,7 +36,16 @@ export class InvoiceMapper {
       isSent: view.isSent,
       sentAt: view.sentAt ? view.sentAt.toISOString() : null,
 
-      createdAt: view.createdAt
+      createdAt: view.createdAt,
+      
+      // garage info for first level subscription users
+      garageName: view.garageName,
+      garageAddress: view.garageAddress,
+      garageZipCode: view.garageZipCode,
+      garageCity: view.garageCity,
+      garagePhone: view.garagePhone,
+      garageEmail: view.garageEmail,
+      garagePercentageCommission: view.garagePercentageCommission
     };
   }
 
@@ -71,7 +80,16 @@ export class InvoiceMapper {
       isSent: dto.isSent,
       sentAt: dto.sentAt ? new Date(dto.sentAt) : undefined,
 
-      createdAt: dto.createdAt
+      createdAt: dto.createdAt,
+      
+      // garage info for first level subscription users
+      garageName: dto.garageName,
+      garageAddress: dto.garageAddress,
+      garageZipCode: dto.garageZipCode,
+      garageCity: dto.garageCity,
+      garagePhone: dto.garagePhone,
+      garageEmail: dto.garageEmail,
+      garagePercentageCommission: dto.garagePercentageCommission
     };
   }
 }

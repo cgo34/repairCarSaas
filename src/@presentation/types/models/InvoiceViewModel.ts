@@ -59,5 +59,14 @@ export interface InvoiceViewModel {
   isSent: boolean;
   sentAt?: Date;
 
-  createdAt?: string
+  createdAt?: string;
+
+  // garage info for first level subscription users
+  garageName?: string;
+  garageAddress?: string;
+  garageZipCode?: string;
+  garageCity?: string;
+  garagePhone?: string;
+  garageEmail?: string;
+  garagePercentageCommission?: number;
 }

@@ -39,7 +39,7 @@ export class SupabaseClient implements IClient {
   get auth() {
     return {
       signIn: (email: string, password: string) => this.client.auth.signInWithPassword({ email, password }),
-      signUp: (email: string, password: string) => this.client.auth.signUp({ email, password }),
+      signUp: (email: string, password: string, fullName: string) => this.client.auth.signUp({ email, password, options: { data: { fullName }} }),
       signOut: () => this.client.auth.signOut(),
       onAuthStateChange: (callback: (event: string, session: any) => void) => this.client.auth.onAuthStateChange(callback),
       user: () => this.client.auth.getUser(),

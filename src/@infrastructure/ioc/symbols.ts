@@ -15,6 +15,8 @@ const SYMBOLS = {
   Repositories: {
     AuthRepository: Symbol.for(SYMBOL_NAMES.AUTH_REPOSITORY),
     UserRepository: Symbol.for(SYMBOL_NAMES.USER_REPOSITORY),
+    // Subscription Repositories
+    SubscriptionRepository: Symbol.for(SYMBOL_NAMES.SUBSCRIPTION_REPOSITORY),
     GarageRepository: Symbol.for(SYMBOL_NAMES.GARAGE_REPOSITORY),
     InvoiceRepository: Symbol.for(SYMBOL_NAMES.INVOICE_REPOSITORY),
     InvoiceDetailRepository: Symbol.for(SYMBOL_NAMES.INVOICE_DETAIL_REPOSITORY),
@@ -66,6 +68,11 @@ const SYMBOLS = {
       LoginUseCase: Symbol.for(SYMBOL_NAMES.LOGIN_USE_CASE),
       LogoutUseCase: Symbol.for(SYMBOL_NAMES.LOGOUT_USE_CASE),
       RegisterUseCase: Symbol.for(SYMBOL_NAMES.REGISTER_USE_CASE),
+    },
+    // -- Subscription UseCases
+    Subscription: {
+      SubscribeToFreePlanUseCase: Symbol.for(SYMBOL_NAMES.SUBSCRIBE_TO_FREE_PLAN_USE_CASE),
+      GetCurrentSubscriptionUseCase: Symbol.for(SYMBOL_NAMES.GET_CURRENT_SUBSCRIPTION_USE_CASE),
     },
     // -- User UseCases
     UserUseCase: Symbol.for(SYMBOL_NAMES.USER_USE_CASE),
@@ -132,6 +139,7 @@ const SYMBOLS = {
   },
   States: {
     AuthState: Symbol.for(SYMBOL_NAMES.AUTH_STATE),
+    SubscriptionState: Symbol.for(SYMBOL_NAMES.SUBSCRIPTION_STATE),
     // -- User States
     UserState: Symbol.for(SYMBOL_NAMES.USER_STATE),
     // -- Garage States

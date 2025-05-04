@@ -37,4 +37,13 @@ export interface InvoiceDto {
   sentAt: string | null; // 🔹 Peut être null
 
   createdAt?: string;
+  
+  // garage info for first level subscription users
+  garageName?: string;
+  garageAddress?: string;
+  garageZipCode?: string;
+  garageCity?: string;
+  garagePhone?: string;
+  garageEmail?: string;
+  garagePercentageCommission?: number;
 }

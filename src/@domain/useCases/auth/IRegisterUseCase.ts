@@ -1,5 +1,5 @@
-import { Session } from "@supabase/supabase-js";
+import { AuthResponse } from "@supabase/supabase-js";
 
 export interface IRegisterUseCase {
-    execute(email: string, password: string, fullName: string): Promise<Session>;
+    execute(email: string, password: string, fullName: string): Promise<AuthResponse>;
   }

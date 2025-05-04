@@ -180,7 +180,14 @@ export type Database = {
           currency: string | null
           end_date: string | null
           forfait_amount: number | null
+          garage_address: string | null
+          garage_city: string | null
+          garage_email: string | null
           garage_id: string | null
+          garage_name: string | null
+          garage_percentage_commission: number | null
+          garage_phone: string | null
+          garage_zip_code: string | null
           id: string
           invoice_number: string | null
           is_forfait: boolean | null
@@ -202,7 +209,14 @@ export type Database = {
           currency?: string | null
           end_date?: string | null
           forfait_amount?: number | null
+          garage_address?: string | null
+          garage_city?: string | null
+          garage_email?: string | null
           garage_id?: string | null
+          garage_name?: string | null
+          garage_percentage_commission?: number | null
+          garage_phone?: string | null
+          garage_zip_code?: string | null
           id?: string
           invoice_number?: string | null
           is_forfait?: boolean | null
@@ -224,7 +238,14 @@ export type Database = {
           currency?: string | null
           end_date?: string | null
           forfait_amount?: number | null
+          garage_address?: string | null
+          garage_city?: string | null
+          garage_email?: string | null
           garage_id?: string | null
+          garage_name?: string | null
+          garage_percentage_commission?: number | null
+          garage_phone?: string | null
+          garage_zip_code?: string | null
           id?: string
           invoice_number?: string | null
           is_forfait?: boolean | null
@@ -336,7 +357,14 @@ export type Database = {
           currency: string | null
           end_date: string | null
           forfait_amount: number | null
+          garage_address: string | null
+          garage_city: string | null
+          garage_email: string | null
           garage_id: string | null
+          garage_name: string | null
+          garage_percentage_commission: number | null
+          garage_phone: string | null
+          garage_zip_code: string | null
           id: string
           is_compute_commission_without_dent_removal: boolean | null
           is_display_unit_price: boolean | null
@@ -359,7 +387,14 @@ export type Database = {
           currency?: string | null
           end_date?: string | null
           forfait_amount?: number | null
+          garage_address?: string | null
+          garage_city?: string | null
+          garage_email?: string | null
           garage_id?: string | null
+          garage_name?: string | null
+          garage_percentage_commission?: number | null
+          garage_phone?: string | null
+          garage_zip_code?: string | null
           id?: string
           is_compute_commission_without_dent_removal?: boolean | null
           is_display_unit_price?: boolean | null
@@ -382,7 +417,14 @@ export type Database = {
           currency?: string | null
           end_date?: string | null
           forfait_amount?: number | null
+          garage_address?: string | null
+          garage_city?: string | null
+          garage_email?: string | null
           garage_id?: string | null
+          garage_name?: string | null
+          garage_percentage_commission?: number | null
+          garage_phone?: string | null
+          garage_zip_code?: string | null
           id?: string
           is_compute_commission_without_dent_removal?: boolean | null
           is_display_unit_price?: boolean | null
@@ -623,6 +665,74 @@ export type Database = {
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      subscription_plans: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          id: string
+          name: string
+          price_cents: number
+          stripe_price_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          name: string
+          price_cents: number
+          stripe_price_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          name?: string
+          price_cents?: number
+          stripe_price_id?: string | null
+        }
+        Relationships: []
+      }
+      subscriptions: {
+        Row: {
+          created_at: string | null
+          end_date: string | null
+          id: string
+          plan_id: string
+          start_date: string
+          status: string
+          stripe_subscription_id: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          end_date?: string | null
+          id?: string
+          plan_id: string
+          start_date: string
+          status: string
+          stripe_subscription_id?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          end_date?: string | null
+          id?: string
+          plan_id?: string
+          start_date?: string
+          status?: string
+          stripe_subscription_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "subscriptions_plan_id_fkey"
+            columns: ["plan_id"]
+            isOneToOne: false
+            referencedRelation: "subscription_plans"
             referencedColumns: ["id"]
           },
         ]

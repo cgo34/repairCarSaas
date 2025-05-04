@@ -21,9 +21,18 @@ export interface InvoiceApiModel {
   car_date: number;
   technician_id: string;
   technician?: UserApiModel
-  garage_id: string;
+  garage_id: string | null;
   garage?: GarageApiModel
   user_id: string; // 🔹 ID du créateur du devis
   // user?: UserApiModel;
-  created_at?: string
+  created_at?: string;
+  
+  // garage info for first level subscription users
+  garage_name?: string;
+  garage_address?: string;
+  garage_zip_code?: string;
+  garage_city?: string;
+  garage_phone?: string;
+  garage_email?: string;
+  garage_percentage_commission?: number;
 }

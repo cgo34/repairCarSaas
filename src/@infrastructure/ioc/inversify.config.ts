@@ -16,6 +16,8 @@ import { SettingPriceGeneralService } from '@/@application/services/settings/pri
 import { SettingPriceImpactCountToUtService } from '@/@application/services/settings/price/SettingPriceImpactCountToUtService';
 import { UserService } from '@/@application/services/UserService';
 import { IAuthState } from '@/@application/states/interfaces/IAuthState';
+import { ISubscriptionState } from '@/@application/states/interfaces/ISubscriptionState';
+import { SubscriptionState } from '@/@application/states/SubscriptionState';
 import { BodyMaterialUseCase } from '@/@application/useCases/carRepair/BodyMaterialUseCase';
 import { BodyPartUseCase } from '@/@application/useCases/carRepair/BodyPartUseCase';
 import { DentRepairTypeUseCase } from '@/@application/useCases/carRepair/DentRepairTypeUSeCase';
@@ -53,6 +55,8 @@ import { SettingPriceGeneralUseCase } from '@/@application/useCases/settings/pri
 import { SettingPriceImpactCountToUtUseCase } from '@/@application/useCases/settings/price/SettingPriceImpactCountToUtUseCase';
 import { SettingPriceRepairTypeCoefficientUseCase } from '@/@application/useCases/settings/price/SettingPriceRepairTypeCoefficientUseCase';
 import { SettingPriceUseCase } from '@/@application/useCases/settings/price/SettingPriceUseCase';
+import { GetCurrentSubscriptionUseCase } from '@/@application/useCases/subscription/GetCurrentSubscriptionUseCase';
+import { SubscribeToFreePlanUseCase } from '@/@application/useCases/subscription/SubscribeToFreePlanUseCase';
 import { UserUseCase } from '@/@application/useCases/users/UserUseCase';
 import { IRegionManager } from '@/@core/managers/interfaces/IRegionManager';
 import { RegionManager } from '@/@core/managers/RegionManager';
@@ -60,8 +64,11 @@ import { IBodyMaterialRepository } from '@/@domain/repositories/carRepair/IBodyM
 import { IBodyPartRepository } from '@/@domain/repositories/carRepair/IBodyPartRepository';
 import { IDentRepairTypeRepository } from '@/@domain/repositories/carRepair/IDentRepairTypeRepository';
 import { IGarageRepository } from '@/@domain/repositories/IGarageRepository';
+import { IInvoiceDetailRepository } from '@/@domain/repositories/IInvoiceDetailRepository';
+import { IInvoiceRepository } from '@/@domain/repositories/IInvoiceRepository';
 import { IQuoteDetailRepository } from '@/@domain/repositories/IQuoteDetailRepository';
 import { IQuoteRepository } from '@/@domain/repositories/IQuoteRepository';
+import { ISubscriptionRepository } from '@/@domain/repositories/ISubscriptionRepository';
 import { IUserRepository } from '@/@domain/repositories/IUserRepository';
 import { ISettingPriceBodyMaterialCoefficientRepository } from '@/@domain/repositories/settings/price/ISettingPriceBodyMaterialCoefficientRepository';
 import { ISettingPriceBodyPartCoefficientRepository } from '@/@domain/repositories/settings/price/ISettingPriceBodyPartCoefficientRepository';
@@ -122,6 +129,8 @@ import { ISettingPriceGeneralUseCase } from '@/@domain/useCases/settings/price/I
 import { ISettingPriceImpactCountToUtUseCase } from '@/@domain/useCases/settings/price/ISettingPriceImpactCountToUtUseCase';
 import { ISettingPriceRepairTypeCoefficientUseCase } from '@/@domain/useCases/settings/price/ISettingPriceRepairTypeCoefficientUseCase';
 import { ISettingPriceUseCase } from '@/@domain/useCases/settings/price/ISettingPriceUseCase';
+import { IGetCurrentSubscriptionUseCase } from '@/@domain/useCases/subscription/IGetCurrentSubscriptionUseCase';
+import { ISubscribeToFreePlanUseCase } from '@/@domain/useCases/subscription/ISubscribeToFreePlanUseCase';
 import { AuthSupabaseRepository } from '@/@infrastructure/database/repositories/auth/AuthSupabaseRepository';
 import { BodyPartRepository } from '@/@infrastructure/database/repositories/carRepair/BodyPartRepository';
 import { IClientProvider } from '@/@infrastructure/interfaces/IClientProvider';
@@ -176,6 +185,8 @@ import { SupabaseClientProvider } from '../database/providers/SupabaseClientProv
 import { BodyMaterialRepository } from '../database/repositories/carRepair/BodyMaterialRepository';
 import { DentRepairTypeRepository } from '../database/repositories/carRepair/DentRepairTypeRepository';
 import { GarageRepository } from '../database/repositories/GarageRepository';
+import { InvoiceDetailRepository } from '../database/repositories/InvoiceDetailRepository';
+import { InvoiceRepository } from '../database/repositories/InvoiceRepository';
 import { QuoteDetailRepository } from '../database/repositories/QuoteDetailRepository';
 import { QuoteRepository } from '../database/repositories/QuoteRepository';
 import { SettingPriceBodyMaterialCoefficientRepository } from '../database/repositories/settings/price/SettingPriceBodyMaterialCoefficientRepository';
@@ -184,16 +195,13 @@ import { SettingPriceDiameterCoefficientRepository } from '../database/repositor
 import { SettingPriceGeneralRepository } from '../database/repositories/settings/price/SettingPriceGeneralRepository';
 import { SettingPriceImpactCountToUtRepository } from '../database/repositories/settings/price/SettingPriceImpactCountToUtRepository';
 import { SettingPriceRepairTypeCoefficientRepository } from '../database/repositories/settings/price/SettingPriceRepairTypeCoefficientRepository';
+import { SubscriptionRepository } from '../database/repositories/SubscriptionRepository';
 import { UserRepository } from '../database/repositories/UserRepository';
 import { BrowserDownloadService } from '../download/BrowserDownloadService';
 import { IClient } from '../interfaces/IClient';
 import { IEmailService } from '../interfaces/IEmailService';
 import { Html2PdfGenerator } from '../pdf/Html2PdfGenerator';
 import { EmailService } from '../services/EmailService';
-import { IInvoiceRepository } from '@/@domain/repositories/IInvoiceRepository';
-import { IInvoiceDetailRepository } from '@/@domain/repositories/IInvoiceDetailRepository';
-import { InvoiceRepository } from '../database/repositories/InvoiceRepository';
-import { InvoiceDetailRepository } from '../database/repositories/InvoiceDetailRepository';
 
 const container = new Container({ defaultScope: 'Singleton' });
 
@@ -208,6 +216,7 @@ container.bind<IClientProvider<SupabaseClient>>(SYMBOLS.Providers.ClientProvider
 
 /** 3 - REPOSITORIES */
 container.bind<IAuthRepository>(SYMBOLS.Repositories.AuthRepository).to(AuthSupabaseRepository).inSingletonScope();
+container.bind<ISubscriptionRepository>(SYMBOLS.Repositories.SubscriptionRepository).to(SubscriptionRepository).inSingletonScope();
 /** 3.1. -- Garage CarRepair Repository */
 container.bind<IGarageRepository>(SYMBOLS.Repositories.GarageRepository).to(GarageRepository).inSingletonScope();
 /** 3.2. -- Settings CarRepair Repositories */
@@ -263,6 +272,8 @@ container.bind<IAuthUseCase>(SYMBOLS.UseCases.Auth.Container).to(AuthUseCase).in
 container.bind<ILoginUseCase>(SYMBOLS.UseCases.Auth.LoginUseCase).to(LoginUseCase).inSingletonScope();
 container.bind<ILogoutUseCase>(SYMBOLS.UseCases.Auth.LogoutUseCase).to(LogoutUseCase).inSingletonScope();
 container.bind<IRegisterUseCase>(SYMBOLS.UseCases.Auth.RegisterUseCase).to(RegisterUseCase).inSingletonScope();
+container.bind<ISubscribeToFreePlanUseCase>(SYMBOLS.UseCases.Subscription.SubscribeToFreePlanUseCase).to(SubscribeToFreePlanUseCase).inSingletonScope();
+container.bind<IGetCurrentSubscriptionUseCase>(SYMBOLS.UseCases.Subscription.GetCurrentSubscriptionUseCase).to(GetCurrentSubscriptionUseCase).inSingletonScope();
 /** 5.1. -- Garage CarRepair UseCases */
 container.bind<IGarageUseCase>(SYMBOLS.UseCases.Garage).to(GarageUseCase).inSingletonScope();
 /** 5.2. -- Settings CarRepair UseCases */
@@ -317,6 +328,7 @@ container.bind<ISendInvoiceUseCase>(SYMBOLS.UseCases.Invoice.SendInvoiceUseCase)
 
 /** 6 - STATES */
 container.bind<IAuthState>(SYMBOLS.States.AuthState).to(AuthState).inSingletonScope();
+container.bind<ISubscriptionState>(SYMBOLS.States.SubscriptionState).to(SubscriptionState).inSingletonScope();
 /** 6.1. -- Garage CarRepair States */
 container.bind<IUseGarageState>(SYMBOLS.States.GarageState).toDynamicValue(() => {
   return useGarageState();

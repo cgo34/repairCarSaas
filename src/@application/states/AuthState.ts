@@ -93,6 +93,7 @@ export class AuthState implements IAuthState {
   async login(email: string, password: string): Promise<void> {
     try {      
       const user = await this.authUseCase.login.execute(email, password);
+      console.log('login user', user);
       
       if (!user) {
         throw new AuthError(
@@ -126,18 +127,33 @@ export class AuthState implements IAuthState {
 
   async register(email: string, password: string, fullName: string): Promise<void> {
     try {
-      const session = await this.authUseCase.register.execute(email, password, fullName);
+      const { data, error } = await this.authUseCase.register.execute(email, password, fullName);
+      console.log('register session', data);
       
-      if (!session?.user) {
+      if (!data?.user) {
         throw new AuthError(
           AuthErrorCode.REGISTRATION_FAILED,
           'Registration failed: no user returned'
         );
       }
+
+      const user = {
+        id: data.user.id,
+        email: data.user.email,
+        role: data.user.user_metadata?.role ?? 'authenticated',
+        createdAt: new Date(data.user.created_at),
+        fullName: data.user.user_metadata?.fullName ?? ''
+      };
   
       // Mise à jour de l'état
-      this.user.value = session.user;
+      this.user.value = user;
       this.isAuthenticated.value = true;
+      console.log('data user id created', data.user.id);
+
+      // TODO: (GCE) -> ADD USE CASE TO INSERT USER PROFILE TO PUBLIC.USERS TABLE SUPABASE
+
+      // ➕ Lier automatiquement le plan 'free'
+      await this.authUseCase.subscribeToFreePlan.execute(data.user.id);
       
       // Utilisation des méthodes communes
       this.pushState();

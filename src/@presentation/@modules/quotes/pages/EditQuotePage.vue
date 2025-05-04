@@ -12,6 +12,16 @@
 
           <GenericButton
             class="me-2 text-none"
+            color="secondary"
+            prepend-icon="mdi-file-plus"
+            variant="flat"
+            @click="onFinalizeBtnClick"
+          >
+            Convert to invoice
+          </GenericButton>
+
+          <GenericButton
+            class="me-2 text-none"
             color="success"
             prepend-icon="mdi-check-bold"
             variant="flat"

@@ -1,3 +1,4 @@
+import { SupabaseAuthResponse } from '@/@infrastructure/database/dtos/supabase/SupabaseAuthResponse';
 import { User } from '@domain/entities/User';
 import { IAuthRepository } from '@domain/repositories/IAuthRepository';
 import { IAuthService } from '@domain/services/IAuthService';
@@ -30,8 +31,8 @@ export class AuthService implements IAuthService {
     return user;
   }
 
-  async register(email: string, password: string): Promise<void> {
-    return await this.authRepository.register(email, password);
+  async register(email: string, password: string, fullName: string): Promise<SupabaseAuthResponse> {
+    return await this.authRepository.register(email, password, fullName);
   }
 
   async logout(): Promise<void> {

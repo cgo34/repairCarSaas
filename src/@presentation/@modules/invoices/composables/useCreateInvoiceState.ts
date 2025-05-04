@@ -245,6 +245,17 @@ export function useCreateInvoiceState() {
         
         userId: authState.user.value.id,
       }
+
+      
+
+      // TODO: (GCE) -> CHECK HERE LEVEL SUBSCRIPTION - IF 1 set single garage info with from quote _selectedGarage - ELSE set garage with _selectedGarage
+      _invoice.value.garageName = _selectedGarage.value.name
+      _invoice.value.garageAddress = _selectedGarage.value.address
+      _invoice.value.garageZipCode = _selectedGarage.value.zipCode
+      _invoice.value.garageCity = _selectedGarage.value.city
+      _invoice.value.garagePhone = _selectedGarage.value.phone
+      _invoice.value.garageEmail = _selectedGarage.value.email
+      _invoice.value.garagePercentageCommission = _selectedGarage.value.percentageCommission
       
       const invoiceDto = await insertInvoiceUseCase.execute(InvoiceMapper.viewToDto(_invoice.value)).then(async (invoice) => {
         _invoice.value = InvoiceMapper.dtoToView(invoice);
