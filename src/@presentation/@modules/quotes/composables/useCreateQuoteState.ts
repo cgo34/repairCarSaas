@@ -33,7 +33,7 @@ export function useCreateQuoteState() {
     number: '',
     date: '',
     expirationDate: '',
-    status: 'draft',
+    status_id: 'processing',
   });
 
   const _technicians = ref<UserViewModel[]>([]);
@@ -93,7 +93,7 @@ export function useCreateQuoteState() {
       // const expirationDate = new Date(startDate);
       // expirationDate.setMonth(expirationDate.getMonth() + 1);
       // _quoteInformations.value.expirationDate = expirationDate.toISOString().split('T')[0];
-      _quoteInformations.value.status = _quote.value.status;
+      _quoteInformations.value.status_id = _quote.value.status_id;
 
       const [garageData, technicianData] =
         await Promise.all([

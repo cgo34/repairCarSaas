@@ -18,6 +18,10 @@ const SYMBOLS = {
     // Subscription Repositories
     SubscriptionRepository: Symbol.for(SYMBOL_NAMES.SUBSCRIPTION_REPOSITORY),
     GarageRepository: Symbol.for(SYMBOL_NAMES.GARAGE_REPOSITORY),
+    
+    // Document Statuse Repositories
+    DocumentStatuseRepository: Symbol.for(SYMBOL_NAMES.DOCUMENT_STATUSE_REPOSITORY),
+
     InvoiceRepository: Symbol.for(SYMBOL_NAMES.INVOICE_REPOSITORY),
     InvoiceDetailRepository: Symbol.for(SYMBOL_NAMES.INVOICE_DETAIL_REPOSITORY),
     QuoteRepository: Symbol.for(SYMBOL_NAMES.QUOTE_REPOSITORY),
@@ -76,7 +80,12 @@ const SYMBOLS = {
     },
     // -- User UseCases
     UserUseCase: Symbol.for(SYMBOL_NAMES.USER_USE_CASE),
+    User: {
+      CreateUserUseCase: Symbol.for(SYMBOL_NAMES.CREATE_USER_USE_CASE),
+    },
     Garage: Symbol.for(SYMBOL_NAMES.GARAGE_USE_CASE),
+    GetDocumentStatuse: Symbol.for(SYMBOL_NAMES.GET_DOCUMENT_STATUSE_USE_CASE),
+
     CarRepair: {
       BodyPartUseCase: Symbol.for(SYMBOL_NAMES.BODY_PART_USE_CASE),
       BodyMaterialUseCase: Symbol.for(SYMBOL_NAMES.BODY_MATERIAL_USE_CASE),
@@ -106,8 +115,9 @@ const SYMBOLS = {
       CreateQuoteUseCase: Symbol.for(SYMBOL_NAMES.CREATE_QUOTE_USE_CASE),
       InsertQuoteUseCase: Symbol.for(SYMBOL_NAMES.INSERT_QUOTE_USE_CASE),
       UpdateQuoteUseCase: Symbol.for(SYMBOL_NAMES.UPDATE_QUOTE_USE_CASE),
-      SaveQuoteUseCase: Symbol.for(SYMBOL_NAMES.SAVE_QUOTE_USE_CASE),
+      UpdateStatusQuoteUseCase: Symbol.for(SYMBOL_NAMES.UPDATE_STATUS_QUOTE_USE_CASE),
       DeleteQuoteUseCase: Symbol.for(SYMBOL_NAMES.DELETE_QUOTE_USE_CASE),
+      DuplicateQuoteToInvoiceUseCase: Symbol.for(SYMBOL_NAMES.DUPLICATE_QUOTE_TO_INVOICE),
       
       GetQuoteDetailsUseCase: Symbol.for(SYMBOL_NAMES.GET_QUOTE_DETAILS_USE_CASE),
       // AddQuoteDetailsUseCase: Symbol.for(SYMBOL_NAMES.ADD_QUOTE_DETAILS_USE_CASE),

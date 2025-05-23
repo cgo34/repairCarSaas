@@ -1,7 +1,6 @@
 export interface UserApiModel {
-  id: string;
+  id?: string;
   email: string;
-  password: string;
   full_name: string;
-  created_at: string;
+  role: 'technician' | 'garage' | 'admin'; // mise à jour ici
 }

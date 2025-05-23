@@ -28,9 +28,12 @@
           </template>
           <!-- #ENDREGION -->
 
-          
           <template #item.quoteNumber="{ value }">
             <span class="font-weight-medium">#{{ value }}</span>
+          </template>
+          
+          <template #item.garage="{ value }">
+            {{ value.name }}
           </template>
           
           <template #item.createdAt="{ value }">
@@ -38,7 +41,7 @@
           </template>
 
           <template #item.status="{ value }">
-            <v-chip :text="value" color="orange"></v-chip>
+            <v-chip :text="value.label" :color="value.code === 'processing' ? 'blue' : value.code === 'accepted' ? 'green' : 'red'"></v-chip>
           </template>
 
           

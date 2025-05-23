@@ -1,8 +1,9 @@
 <template>
   <GenericSelect
-    :model-value="model"
+    :model-value="modelValue"
     :items="repairTypes"
     label="Réparation"
+    :item-title="itemTitle"
     @update:model-value="onSelectRepairType"
     @select="onSelectRepairType"
   />
@@ -19,6 +20,7 @@ const props = defineProps<{
 }>();
 
 const model = ref<RepairTypeViewModel | undefined>(props.modelValue);
+const itemTitle = 'name'
 
 const emit = defineEmits<{
   (e: 'update:modelValue', value: RepairTypeViewModel | undefined): void;

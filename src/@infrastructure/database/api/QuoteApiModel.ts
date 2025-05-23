@@ -1,3 +1,4 @@
+import { DocumentStatusApiModel } from "./DocumentStatuseApiModel";
 import { GarageApiModel } from "./GarageApiModel";
 import { UserApiModel } from "./UserApiModel";
 
@@ -10,7 +11,8 @@ export interface QuoteApiModel {
   is_compute_commission_without_dent_removal: boolean;
   start_date: string; // Stocké en format ISO (YYYY-MM-DDTHH:mm:ss.sssZ)
   end_date: string;
-  status: 'pending' | 'cancel' | 'draft' | 'validated' | 'accepted' | 'signed' | 'sent';
+  status_id: string;
+  status?: DocumentStatusApiModel;
   country: string;
   currency: string;
   is_sent: boolean;

@@ -24,6 +24,7 @@ import { DentRepairTypeUseCase } from '@/@application/useCases/carRepair/DentRep
 import { CalculateLineCostUseCase } from '@/@application/useCases/cost/CalculateLineCostUseCase';
 import { CalculateTotalCostUseCase } from '@/@application/useCases/cost/CalculateTotalCostUseCase';
 import { GarageUseCase } from '@/@application/useCases/GarageUseCase';
+import { GetDocumentStatuseUseCase } from '@/@application/useCases/GetDocumentStatuseUseCase';
 import { ILoginUseCase } from '@/@application/useCases/interfaces/auth/ILoginUseCase';
 import { AddInvoiceLineItemUseCase } from '@/@application/useCases/invoices/AddInvoiceLineItemUseCase';
 import { CreateInvoiceUseCase } from '@/@application/useCases/invoices/CreateInvoiceUseCase';
@@ -40,6 +41,7 @@ import { DeleteLineItemUseCase } from '@/@application/useCases/lineItem/DeleteLi
 import { AddQuoteLineItemUseCase } from '@/@application/useCases/quotes/AddQuoteLineItemUseCase';
 import { CreateQuoteUseCase } from '@/@application/useCases/quotes/CreateQuoteUseCase';
 import { DeleteQuoteUseCase } from '@/@application/useCases/quotes/DeleteQuoteUseCase';
+import { DuplicateQuoteToInvoiceUseCase } from '@/@application/useCases/quotes/DuplicateQuoteToInvoiceUseCase';
 import { GenerateQuotePdfUseCase } from '@/@application/useCases/quotes/GenerateQuotePdfUseCase';
 import { GetQuoteDetailUseCase } from '@/@application/useCases/quotes/GetQuoteDetailUseCase';
 import { GetQuotesUseCase } from '@/@application/useCases/quotes/GetQuotesUseCase';
@@ -47,6 +49,7 @@ import { GetQuoteUseCase } from '@/@application/useCases/quotes/GetQuoteUseCase'
 import { InsertQuoteUseCase } from '@/@application/useCases/quotes/InsertQuoteUseCase';
 import { SendQuoteUseCase } from '@/@application/useCases/quotes/SendQuoteUseCase';
 import { UpdateQuoteUseCase } from '@/@application/useCases/quotes/UpdateQuoteUseCase';
+import { UpdateStatusQuoteUseCase } from '@/@application/useCases/quotes/UpdateStatusQuoteUseCase';
 import { ViewQuoteUseCase } from '@/@application/useCases/quotes/ViewQuoteUseCase';
 import { SettingPriceBodyMaterialCoefficientUseCase } from '@/@application/useCases/settings/price/SettingPriceBodyMaterialCoefficientUseCase';
 import { SettingPriceBodyPartCoefficientUseCase } from '@/@application/useCases/settings/price/SettingPriceBodyPartCoefficientUseCase';
@@ -57,12 +60,14 @@ import { SettingPriceRepairTypeCoefficientUseCase } from '@/@application/useCase
 import { SettingPriceUseCase } from '@/@application/useCases/settings/price/SettingPriceUseCase';
 import { GetCurrentSubscriptionUseCase } from '@/@application/useCases/subscription/GetCurrentSubscriptionUseCase';
 import { SubscribeToFreePlanUseCase } from '@/@application/useCases/subscription/SubscribeToFreePlanUseCase';
+import { CreateUserUseCase } from '@/@application/useCases/users/CreateUserUseCase';
 import { UserUseCase } from '@/@application/useCases/users/UserUseCase';
 import { IRegionManager } from '@/@core/managers/interfaces/IRegionManager';
 import { RegionManager } from '@/@core/managers/RegionManager';
 import { IBodyMaterialRepository } from '@/@domain/repositories/carRepair/IBodyMaterialRepository';
 import { IBodyPartRepository } from '@/@domain/repositories/carRepair/IBodyPartRepository';
 import { IDentRepairTypeRepository } from '@/@domain/repositories/carRepair/IDentRepairTypeRepository';
+import { IDocumentStatuseRepository } from '@/@domain/repositories/IDocumentStatuseRepository';
 import { IGarageRepository } from '@/@domain/repositories/IGarageRepository';
 import { IInvoiceDetailRepository } from '@/@domain/repositories/IInvoiceDetailRepository';
 import { IInvoiceRepository } from '@/@domain/repositories/IInvoiceRepository';
@@ -98,6 +103,7 @@ import { IDentRepairTypeUseCase } from '@/@domain/useCases/carRepair/IDentRepair
 import { ICalculateLineCostUseCase } from '@/@domain/useCases/cost/ICalculateLineCostUseCase';
 import { ICalculateTotalCostUseCase } from '@/@domain/useCases/cost/ICalculateTotalCostUseCase';
 import { IGarageUseCase } from '@/@domain/useCases/IGarageUseCase';
+import { IGetDocumentStatuseUseCase } from '@/@domain/useCases/IGetDocumentStatuseUseCase';
 import { IAddInvoiceLineItemUseCase } from '@/@domain/useCases/invoices/IAddInvoiceLineItemUseCase';
 import { ICreateInvoiceUseCase } from '@/@domain/useCases/invoices/ICreateInvoiceUseCase';
 import { IDeleteInvoiceUseCase } from '@/@domain/useCases/invoices/IDeleteInvoiceUseCase';
@@ -114,6 +120,7 @@ import { IDeleteLineItemUseCase } from '@/@domain/useCases/lineItem/ILineItemUse
 import { IAddQuoteLineItemUseCase } from '@/@domain/useCases/quotes/IAddQuoteLineItemUseCase';
 import { ICreateQuoteUseCase } from '@/@domain/useCases/quotes/ICreateQuoteUseCase';
 import { IDeleteQuoteUseCase } from '@/@domain/useCases/quotes/IDeleteQuoteUseCase';
+import { IDuplicateQuoteToInvoiceUseCase } from '@/@domain/useCases/quotes/IDuplicateQuoteToInvoiceUseCase';
 import { IGenerateQuotePdfUseCase } from '@/@domain/useCases/quotes/IGenerateQuotePdfUseCase';
 import { IGetQuoteDetailUseCase } from '@/@domain/useCases/quotes/IGetQuoteDetailUseCase';
 import { IGetQuoteUseCase } from '@/@domain/useCases/quotes/IGetQuoteUseCase';
@@ -121,6 +128,7 @@ import { IInsertQuoteUseCase } from '@/@domain/useCases/quotes/IInsertQuoteUseCa
 import { IQuotesUseCase } from '@/@domain/useCases/quotes/IQuotesUseCase';
 import { ISendQuoteUseCase } from '@/@domain/useCases/quotes/ISendQuoteUseCase';
 import { IUpdateQuoteUseCase } from '@/@domain/useCases/quotes/IUpdateQuoteUseCase';
+import { IUpdateStatusQuoteUseCase } from '@/@domain/useCases/quotes/IUpdateStatusQuoteUseCase';
 import { IViewQuoteUseCase } from '@/@domain/useCases/quotes/IViewQuoteUseCase';
 import { ISettingPriceBodyMaterialCoefficientUseCase } from '@/@domain/useCases/settings/price/ISettingPriceBodyMaterialCoefficientUseCase';
 import { ISettingPriceBodyPartCoefficientUseCase } from '@/@domain/useCases/settings/price/ISettingPriceBodyPartCoefficientUseCase';
@@ -131,6 +139,7 @@ import { ISettingPriceRepairTypeCoefficientUseCase } from '@/@domain/useCases/se
 import { ISettingPriceUseCase } from '@/@domain/useCases/settings/price/ISettingPriceUseCase';
 import { IGetCurrentSubscriptionUseCase } from '@/@domain/useCases/subscription/IGetCurrentSubscriptionUseCase';
 import { ISubscribeToFreePlanUseCase } from '@/@domain/useCases/subscription/ISubscribeToFreePlanUseCase';
+import { ICreateUserUseCase } from '@/@domain/useCases/user/ICreateUserUseCase';
 import { AuthSupabaseRepository } from '@/@infrastructure/database/repositories/auth/AuthSupabaseRepository';
 import { BodyPartRepository } from '@/@infrastructure/database/repositories/carRepair/BodyPartRepository';
 import { IClientProvider } from '@/@infrastructure/interfaces/IClientProvider';
@@ -184,6 +193,7 @@ import { SupabaseClient } from '../database/clients/SupabaseClient';
 import { SupabaseClientProvider } from '../database/providers/SupabaseClientProvider';
 import { BodyMaterialRepository } from '../database/repositories/carRepair/BodyMaterialRepository';
 import { DentRepairTypeRepository } from '../database/repositories/carRepair/DentRepairTypeRepository';
+import { DocumentStatuseRepository } from '../database/repositories/DocumentStatuseRepository';
 import { GarageRepository } from '../database/repositories/GarageRepository';
 import { InvoiceDetailRepository } from '../database/repositories/InvoiceDetailRepository';
 import { InvoiceRepository } from '../database/repositories/InvoiceRepository';
@@ -232,6 +242,8 @@ container.bind<ISettingPriceImpactCountToUtRepository>(SYMBOLS.Repositories.Sett
 container.bind<ISettingPriceRepairTypeCoefficientRepository>(SYMBOLS.Repositories.Setting.Price.RepairTypeCoefficient).to(SettingPriceRepairTypeCoefficientRepository).inSingletonScope();
 /** 3.4. -- User CarRepair Repositories */
 container.bind<IUserRepository>(SYMBOLS.Repositories.UserRepository).to(UserRepository).inSingletonScope();
+/** 3.5. -- Document Statuse Repositories */
+container.bind<IDocumentStatuseRepository>(SYMBOLS.Repositories.DocumentStatuseRepository).to(DocumentStatuseRepository).inSingletonScope();
 /** 3.5. -- Quote Repositories */
 container.bind<IQuoteRepository>(SYMBOLS.Repositories.QuoteRepository).to(QuoteRepository).inSingletonScope();
 /** 3.6. -- Quote Detail Repositories */
@@ -276,6 +288,8 @@ container.bind<ISubscribeToFreePlanUseCase>(SYMBOLS.UseCases.Subscription.Subscr
 container.bind<IGetCurrentSubscriptionUseCase>(SYMBOLS.UseCases.Subscription.GetCurrentSubscriptionUseCase).to(GetCurrentSubscriptionUseCase).inSingletonScope();
 /** 5.1. -- Garage CarRepair UseCases */
 container.bind<IGarageUseCase>(SYMBOLS.UseCases.Garage).to(GarageUseCase).inSingletonScope();
+/** 5.1. -- Document Statuse UseCases */
+container.bind<IGetDocumentStatuseUseCase>(SYMBOLS.UseCases.GetDocumentStatuse).to(GetDocumentStatuseUseCase).inSingletonScope();
 /** 5.2. -- Settings CarRepair UseCases */
 container.bind<IBodyPartUseCase>(SYMBOLS.UseCases.CarRepair.BodyPartUseCase).to(BodyPartUseCase).inSingletonScope();
 container.bind<IBodyMaterialUseCase>(SYMBOLS.UseCases.CarRepair.BodyMaterialUseCase).to(BodyMaterialUseCase).inSingletonScope();
@@ -290,6 +304,7 @@ container.bind<ISettingPriceImpactCountToUtUseCase>(SYMBOLS.UseCases.Setting.Pri
 container.bind<ISettingPriceRepairTypeCoefficientUseCase>(SYMBOLS.UseCases.Setting.Price.RepairTypeCoefficientUseCase).to(SettingPriceRepairTypeCoefficientUseCase).inSingletonScope();
 /** 5.4. -- User CarRepair UseCases */
 container.bind<IUserUseCase>(SYMBOLS.UseCases.UserUseCase).to(UserUseCase).inSingletonScope();
+container.bind<ICreateUserUseCase>(SYMBOLS.UseCases.User.CreateUserUseCase).to(CreateUserUseCase).inSingletonScope();
 /** 5.5. -- Cost Calculator UseCases */
 container.bind<ICalculateLineCostUseCase>(SYMBOLS.UseCases.CostCalculator.CalculateLineCostUseCase).to(CalculateLineCostUseCase).inSingletonScope();
 container.bind<ICalculateTotalCostUseCase>(SYMBOLS.UseCases.CostCalculator.CalculateTotalCostUseCase).to(CalculateTotalCostUseCase).inSingletonScope();
@@ -303,11 +318,12 @@ container.bind<IUpdateQuoteUseCase>(SYMBOLS.UseCases.Quote.UpdateQuoteUseCase).t
 container.bind<IDeleteQuoteUseCase>(SYMBOLS.UseCases.Quote.DeleteQuoteUseCase).to(DeleteQuoteUseCase).inSingletonScope();
 container.bind<IGetQuoteUseCase>(SYMBOLS.UseCases.Quote.GetQuoteUseCase).to(GetQuoteUseCase).inSingletonScope();
 container.bind<IGetQuoteDetailUseCase>(SYMBOLS.UseCases.Quote.GetQuoteDetailsUseCase).to(GetQuoteDetailUseCase).inSingletonScope();
-// container.bind<ISaveQuoteUseCase>(SYMBOLS.UseCases.Quote.SaveQuoteUseCase).to(SaveQuoteUseCase).inSingletonScope();
+container.bind<IUpdateStatusQuoteUseCase>(SYMBOLS.UseCases.Quote.UpdateStatusQuoteUseCase).to(UpdateStatusQuoteUseCase).inSingletonScope();
 container.bind<IAddQuoteLineItemUseCase>(SYMBOLS.UseCases.Quote.AddLineItemUseCase).to(AddQuoteLineItemUseCase).inSingletonScope();
 container.bind<IDeleteLineItemUseCase>(SYMBOLS.UseCases.Quote.DeleteLineItemUseCase).to(DeleteLineItemUseCase).inSingletonScope();
 container.bind<IGenerateQuotePdfUseCase>(SYMBOLS.UseCases.Quote.GenerateQuotePdfUseCase).to(GenerateQuotePdfUseCase).inSingletonScope();
 container.bind<ISendQuoteUseCase>(SYMBOLS.UseCases.Quote.SendQuoteUseCase).to(SendQuoteUseCase);
+container.bind<IDuplicateQuoteToInvoiceUseCase>(SYMBOLS.UseCases.Quote.DuplicateQuoteToInvoiceUseCase).to(DuplicateQuoteToInvoiceUseCase).inSingletonScope();
 /** 5.6. -- Invoice UseCases */
 // container.bind<IInvoiceUseCase>(SYMBOLS.UseCases.Invoice.InvoiceUseCase).to(InvoiceUseCase).inSingletonScope();
 container.bind<IInvoicesUseCase>(SYMBOLS.UseCases.Invoice.GetInvoicesUseCase).to(GetInvoicesUseCase).inSingletonScope();

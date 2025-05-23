@@ -60,6 +60,29 @@ export class InvoiceDetailRepository implements IInvoiceDetailRepository {
     return LineItemMapper.apiToDto(data[0]);
   }
 
+  
+
+  async insertMultiple(items: LineItemDto[]): Promise<LineItemDto[]> {
+    console.log('invoice lines items to insert', items.map(LineItemMapper.invoiceDtoToApi));
+    
+    const { data, error } = await this.clientProvider.getClient()
+      .from('invoice_details')
+      .insert(items.map(LineItemMapper.invoiceDtoToApi))
+      .select(`
+        *,
+        bodyPart:body_parts(*),
+        bodyMaterial:body_materials(*),
+        repairType:repair_types(*)
+      `) // si tu veux les lignes insérées
+      .returns<LineItemApiModel[]>();
+    ;
+
+    if (error)
+      throw new Error('Error inserting invoice detail');
+    
+    return data;
+  }
+
   async update(items: LineItemDto[]): Promise<LineItemDto> {
     const { data, error } = await this.clientProvider.getClient()
       .from('invoice_details')

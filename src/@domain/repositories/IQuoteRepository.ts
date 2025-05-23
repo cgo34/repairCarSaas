@@ -1,5 +1,4 @@
 import { QuoteDto } from '@/@infrastructure/dtos/QuoteDto';
-import { QuoteStatusDto } from '@/@infrastructure/dtos/QuoteStatusDto';
 
 export interface IQuoteRepository {
   generateQuoteNumber(userId: string): Promise<string>;
@@ -13,5 +12,5 @@ export interface IQuoteRepository {
   delete(id: string): Promise<void>;
   // addLineItem(quoteId: string, lineItem: QuoteLineItemDto): Promise<void>;
   // updateLineItem(quoteId: string, lineItem: QuoteLineItemDto): Promise<void>;
-  updateStatus(quoteId: string, status: QuoteStatusDto): Promise<void>;
+  updateStatus(quoteId: string, statusId: string): Promise<void>;
 }

@@ -18,6 +18,10 @@ export enum SYMBOL_NAMES {
     SUBSCRIPTION_REPOSITORY = 'SubscriptionRepository',
 
     GARAGE_REPOSITORY = 'GarageRepository',
+
+    // -- Document Statuses REPOSITORIES
+    DOCUMENT_STATUSE_REPOSITORY = 'DocumentStatuseRepository',
+
     INVOICE_REPOSITORY = 'InvoiceRepository',
     INVOICE_DETAIL_REPOSITORY = 'InvoiceDetailRepository',
     QUOTE_REPOSITORY = 'QuoteRepository',
@@ -66,6 +70,7 @@ export enum SYMBOL_NAMES {
     REGISTER_USE_CASE = 'RegisterUseCase',
     // -- User UseCases
     USER_USE_CASE = 'UserUseCase',
+    CREATE_USER_USE_CASE = 'CreateUserUseCase',
     // -- Garage UseCases
     GARAGE_USE_CASE = 'GarageUseCase',
     // -- Settings CarRepair UseCases
@@ -83,6 +88,8 @@ export enum SYMBOL_NAMES {
     // -- Cost Calculator UseCases
     CALCULATE_TOTAL_COST_USE_CASE = 'CalculateTotalCostUseCase',
     CALCULATE_LINE_COST_USE_CASE = 'CalculateLineCostUseCase',
+    // -- Document Statuse UseCases
+    GET_DOCUMENT_STATUSE_USE_CASE = 'GetDocumentStatuseUseCase',
     // -- Quote UseCases
     QUOTE_USE_CASE = 'QuoteUseCase',
     GET_QUOTE_USE_CASE = 'GetQuoteUseCase',
@@ -91,13 +98,16 @@ export enum SYMBOL_NAMES {
     CREATE_QUOTE_USE_CASE = 'CreateQuoteUseCase',
     INSERT_QUOTE_USE_CASE = 'InsertQuoteUseCase',
     UPDATE_QUOTE_USE_CASE = 'UpdateQuoteUseCase',
-    SAVE_QUOTE_USE_CASE = 'SaveQuoteUseCase',
+    UPDATE_STATUS_QUOTE_USE_CASE = 'UpdateStatusQuoteUseCase',
     DELETE_QUOTE_USE_CASE = 'DeleteQuoteUseCase',
     // -- Quote Details UseCases
     GET_QUOTE_DETAILS_USE_CASE = 'GetQuoteDetailsUseCase',
     ADD_QUOTE_DETAILS_USE_CASE = 'AddQuoteDetailsUseCase',
     ADD_QUOTE_LINE_ITEM_USE_CASE = 'AddQuoteLineItemUseCase',
     DELETE_LINE_ITEM_USE_CASE = 'DeleteLineItemUseCase',
+
+    DUPLICATE_QUOTE_TO_INVOICE = 'DuplicateQuoteToInvoice',
+
     // -- Pdf UseCases
     GENERATE_QUOTE_PDF_USE_CASE = 'GenerateQuotePdfUseCase',
     SEND_QUOTE_USE_CASE = 'SendQuoteUseCase',

@@ -13,7 +13,7 @@ export class GarageRepository implements IGarageRepository {
 
   async getGarages(): Promise<GarageDto[]> {
     const { data, error } = await this.clientProvider.getClient()
-      .fromSchema<'car_repair', 'garages'>('car_repair', 'garages')
+      .from('garages')
       .select('*')
       .returns<GarageApiModel[]>();
 
@@ -24,7 +24,7 @@ export class GarageRepository implements IGarageRepository {
   
   async getByUserId(userId: string): Promise<GarageDto[]> {
     const { data, error } = await this.clientProvider.getClient()
-      .fromSchema<'car_repair', 'garages'>('car_repair', 'garages')
+      .from('garages')
       .select('*')
       .eq('user_id', userId)
       .returns<GarageApiModel[]>();
@@ -36,7 +36,7 @@ export class GarageRepository implements IGarageRepository {
 
   async getById(id: string): Promise<GarageDto | null> {
     const { data, error } = await this.clientProvider.getClient()
-      .fromSchema<'car_repair', 'garages'>('car_repair', 'garages')
+      .from('garages')
       .select('*')
       .eq('id', id)
       .single<GarageApiModel>();
@@ -50,7 +50,7 @@ export class GarageRepository implements IGarageRepository {
     const garageApi = GarageMapper.dtoToApi(garage);
 
     const { data, error } = await this.clientProvider.getClient()
-      .fromSchema<'car_repair', 'garages'>('car_repair', 'garages')
+      .from('garages')
       .insert(garageApi)
       .select('*')
       .single<GarageApiModel>();
@@ -66,7 +66,7 @@ export class GarageRepository implements IGarageRepository {
     if (!garageApi.id) throw new Error('Garage ID is required');
 
     const { data, error } = await this.clientProvider.getClient()
-      .fromSchema<'car_repair', 'garages'>('car_repair', 'garages')
+      .from('garages')
       .update(garageApi)
       .eq('id', garageApi.id)
       .select('*')
@@ -79,7 +79,7 @@ export class GarageRepository implements IGarageRepository {
 
   async delete(id: string): Promise<void> {
     const { error } = await this.clientProvider.getClient()
-      .fromSchema<'car_repair', 'garages'>('car_repair', 'garages')
+      .from('garages')
       .delete()
       .eq('id', id);
 

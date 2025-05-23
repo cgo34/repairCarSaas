@@ -1,7 +1,7 @@
 import { CountryViewModel } from "./CountryViewModel";
+import { DocumentStatuseViewModel } from "./DocumentStatuseViewModel";
 import { GarageViewModel } from "./GarageViewModel";
 import { LineItemViewModel } from "./LineItemViewModel";
-import { QuoteStatusViewType } from "./QuoteStatusViewType";
 import { UserViewModel } from "./UserViewModel";
 
 /*
@@ -30,7 +30,8 @@ import { UserViewModel } from "./UserViewModel";
 export interface QuoteViewModel {
   id?: string;
   quoteNumber: string;
-  status: QuoteStatusViewType;
+  status_id: string;
+  status: DocumentStatuseViewModel;
 
   userId: string;
 

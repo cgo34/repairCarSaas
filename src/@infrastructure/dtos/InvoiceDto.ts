@@ -5,9 +5,11 @@ import { UserDto } from "./UserDto";
 
 export interface InvoiceDto {
   id?: string;
-  invoiceNumber: string;
+  invoiceNumber?: string;
   quoteNumber: string;
-  status: 'pending' | 'cancel' | 'draft' | 'validated' | 'accepted' | 'signed' | 'sent' | 'draft';
+  
+  status_id: string;
+  status: any;
   
   userId: string; // 🔹 Ajout pour suivre le créateur du devis
   user?: UserDto; // 🔹 Ajout pour le nom du créateur du devis

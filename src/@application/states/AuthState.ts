@@ -1,5 +1,6 @@
 import { AuthError } from '@/@domain/errors/AuthError';
 import { IAuthUseCase } from '@/@domain/useCases/auth/IAuthUseCase';
+import { ICreateUserUseCase } from '@/@domain/useCases/user/ICreateUserUseCase';
 import { AuthErrorCode } from '@/@domain/valueObjects/AuthErrorCode';
 import { User } from '@domain/entities/User';
 import { IAuthState } from '@domain/states/IAuthState';
@@ -27,7 +28,8 @@ export class AuthState implements IAuthState {
   constructor(
     @inject(SYMBOLS.UseCases.Auth.Container) private authUseCase: IAuthUseCase,
     @inject(SYMBOLS.UseCases.Auth.LoginUseCase) private loginUseCase: ILoginUseCase,
-    @inject(SYMBOLS.UseCases.Auth.LogoutUseCase) private logoutUseCase: ILogoutUseCase
+    @inject(SYMBOLS.UseCases.Auth.LogoutUseCase) private logoutUseCase: ILogoutUseCase,
+    @inject(SYMBOLS.UseCases.User.CreateUserUseCase) private createUserUseCase: ICreateUserUseCase,
   ) {
     this.loadPersistedState();
   }
@@ -139,11 +141,11 @@ export class AuthState implements IAuthState {
 
       const user = {
         id: data.user.id,
-        email: data.user.email,
-        role: data.user.user_metadata?.role ?? 'authenticated',
-        createdAt: new Date(data.user.created_at),
+        email: data.user.email ?? '',
+        role: 'technician',
         fullName: data.user.user_metadata?.fullName ?? ''
       };
+
   
       // Mise à jour de l'état
       this.user.value = user;
@@ -157,6 +159,9 @@ export class AuthState implements IAuthState {
       
       // Utilisation des méthodes communes
       this.pushState();
+      
+      // Une fois inscrit, créer son profil dans public.users
+      await this.createUserUseCase.execute(user)
       
     } catch (error) {
       throw new AuthError(

@@ -48,6 +48,24 @@ export type Database = {
         }
         Relationships: []
       }
+      document_statuses: {
+        Row: {
+          code: string
+          id: string
+          label: string
+        }
+        Insert: {
+          code: string
+          id?: string
+          label: string
+        }
+        Update: {
+          code?: string
+          id?: string
+          label?: string
+        }
+        Relationships: []
+      }
       garages: {
         Row: {
           address: string | null
@@ -373,7 +391,7 @@ export type Database = {
           quote_number: string | null
           sent_at: string | null
           start_date: string | null
-          status: string | null
+          status_id: string | null
           technician_id: string | null
           updated_at: string | null
           user_id: string | null
@@ -403,7 +421,7 @@ export type Database = {
           quote_number?: string | null
           sent_at?: string | null
           start_date?: string | null
-          status?: string | null
+          status_id?: string | null
           technician_id?: string | null
           updated_at?: string | null
           user_id?: string | null
@@ -433,7 +451,7 @@ export type Database = {
           quote_number?: string | null
           sent_at?: string | null
           start_date?: string | null
-          status?: string | null
+          status_id?: string | null
           technician_id?: string | null
           updated_at?: string | null
           user_id?: string | null
@@ -444,6 +462,13 @@ export type Database = {
             columns: ["garage_id"]
             isOneToOne: false
             referencedRelation: "garages"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "quotes_status_id_fkey"
+            columns: ["status_id"]
+            isOneToOne: false
+            referencedRelation: "document_statuses"
             referencedColumns: ["id"]
           },
           {
@@ -739,25 +764,22 @@ export type Database = {
       }
       users: {
         Row: {
-          created_at: string | null
           email: string
-          full_name: string
+          full_name: string | null
           id: string
-          password: string
+          role: string | null
         }
         Insert: {
-          created_at?: string | null
           email: string
-          full_name: string
+          full_name?: string | null
           id?: string
-          password: string
+          role?: string | null
         }
         Update: {
-          created_at?: string | null
           email?: string
-          full_name?: string
+          full_name?: string | null
           id?: string
-          password?: string
+          role?: string | null
         }
         Relationships: []
       }
@@ -766,7 +788,15 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      ensure_user_profile: {
+        Args: {
+          user_id: string
+          email: string
+          full_name: string
+          role: string
+        }
+        Returns: undefined
+      }
     }
     Enums: {
       [_ in never]: never

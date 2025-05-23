@@ -14,6 +14,11 @@ export class SupabaseClient implements IClient {
       { db: { schema: 'public' } }
     );
   }
+
+  rpc<T = any>(fn: string, params?: Record<string, any>) {
+    return this.client.rpc<T>(fn, params);
+  }
+  
   
   // Proxy methods to the underlying client
   from<T extends keyof Database['public']['Tables']>(table: T) {

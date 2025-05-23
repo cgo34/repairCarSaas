@@ -10,6 +10,7 @@ import { buildQuoteHtmlTemplate } from './templates/quoteTemplate'
 @injectable()
 export class Html2PdfGenerator implements IPdfGenerator {
   async generate(quote: QuoteDto, lines: LineItemDto[]): Promise<string> {
+    console.log('generate', quote);
     
     const html = buildQuoteHtmlTemplate(quote, lines)
 
