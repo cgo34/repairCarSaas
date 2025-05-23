@@ -2,6 +2,13 @@
   <MainLayout>
     <v-container fluid>
       <v-row>
+        <v-alert
+          class="mb-2"
+          type="info"
+          icon="$info"
+          variant="tonal"
+          text="L'indice de difficulté 1 est une bosse sur un pavillon. Vous pouvez décider qu'une bosse sur un autre élément de carrosserie est X fois plus difficile à réparer."
+        ></v-alert>
         <v-data-table
           :headers="headers"
           :items="settings"

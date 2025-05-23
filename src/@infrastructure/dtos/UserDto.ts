@@ -1,7 +1,6 @@
 export interface UserDto {
-  id: string;
+  id?: string;
   email: string;
-  password: string;
   fullName: string;
-  createdAt: string;
+  role: 'technician' | 'garage' | 'admin'; // mise à jour ici
 }

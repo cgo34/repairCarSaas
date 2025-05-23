@@ -3,6 +3,9 @@
     :model-value="model"
     :items="countries"
     label="Pays"
+    item-title="name"
+    :readonly="readonly"
+    :clearable="!readonly"
     @select="onSelectCountry"
     @clear="onClearCountry"
   />
@@ -22,6 +25,7 @@ import { defineEmits, defineProps, ref } from 'vue';
 
 const props = defineProps<{
   modelValue?: CountryViewModel;
+  readonly?: boolean;
 }>();
 
 const countries = ref<CountryViewModel[]>([

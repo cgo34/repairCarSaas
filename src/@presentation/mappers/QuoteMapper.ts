@@ -1,12 +1,31 @@
+import { GarageDto } from "@/@infrastructure/dtos/GarageDto";
 import { QuoteDto } from "@/@infrastructure/dtos/QuoteDto";
+import { GarageViewModel } from "../types/models/GarageViewModel";
 import { QuoteViewModel } from "../types/models/QuoteViewModel";
+import { GarageMapper } from "./GarageMapper";
 import { LineItemMapper } from "./LineItemMapper";
 
 export class QuoteMapper {
   static viewToDto(view: QuoteViewModel): QuoteDto {
+    console.log('viewToDto', view);
+    
+    let garage: GarageDto = view.garage ? GarageMapper.viewToDto(view.garage) : {
+      id: view.garageId,
+      name: view.garageName ?? '',
+      address: view.garageAddress ?? '',
+      zipCode: view.garageZipCode ?? '',
+      city: view.garageCity ?? '',
+      phone: view.garagePhone ?? '',
+      email: view.garageEmail ?? '',
+      percentageCommission: view.garagePercentageCommission ?? 0,
+      userId: view.userId,
+      code: view.garageName?.toLocaleLowerCase() ?? ''
+    };
+
     return {
       id: view.id ?? undefined,
       quoteNumber: view.quoteNumber,
+      status_id: view.status_id,
       status: view.status,
 
       userId: view.userId,
@@ -16,7 +35,7 @@ export class QuoteMapper {
 
       technician: view.technician,
       technicianId: view.technicianId,
-      garage: view.garage,
+      garage: garage,
       garageId: view.garageId,
 
       carBrand: view.carBrand ?? '',
@@ -35,14 +54,38 @@ export class QuoteMapper {
       isSent: view.isSent,
       sentAt: view.sentAt ? view.sentAt.toISOString() : null,
 
-      createdAt: view.createdAt
+      createdAt: view.createdAt,
+      
+      // garage info for first level subscription users
+      garageName: view.garageName,
+      garageAddress: view.garageAddress,
+      garageZipCode: view.garageZipCode,
+      garageCity: view.garageCity,
+      garagePhone: view.garagePhone,
+      garageEmail: view.garageEmail,
+      garagePercentageCommission: view.garagePercentageCommission
     };
   }
 
   static dtoToView(dto: QuoteDto): QuoteViewModel {
+
+    let garage: GarageViewModel = dto.garage ? GarageMapper.dtoToView(dto.garage) : {
+      id: dto.garageId,
+      name: dto.garageName ?? '',
+      address: dto.garageAddress ?? '',
+      zipCode: dto.garageZipCode ?? '',
+      city: dto.garageCity ?? '',
+      phone: dto.garagePhone ?? '',
+      email: dto.garageEmail ?? '',
+      percentageCommission: dto.garagePercentageCommission ?? 0,
+      userId: dto.userId,
+      code: dto.garageName?.toLocaleLowerCase() ?? ''
+    };
+
     return {
       id: dto.id ?? undefined,
       quoteNumber: dto.quoteNumber,
+      status_id: dto.status_id,
       status: dto.status,
 
       userId: dto.userId,
@@ -52,7 +95,7 @@ export class QuoteMapper {
       
       technician: dto.technician,
       technicianId: dto.technicianId,
-      garage: dto.garage,
+      garage: garage,
       garageId: dto.garageId,
 
       carBrand: dto.carBrand,
@@ -69,7 +112,16 @@ export class QuoteMapper {
       isSent: dto.isSent,
       sentAt: dto.sentAt ? new Date(dto.sentAt) : undefined,
 
-      createdAt: dto.createdAt
+      createdAt: dto.createdAt,
+      
+      // garage info for first level subscription users
+      garageName: dto.garageName,
+      garageAddress: dto.garageAddress,
+      garageZipCode: dto.garageZipCode,
+      garageCity: dto.garageCity,
+      garagePhone: dto.garagePhone,
+      garageEmail: dto.garageEmail,
+      garagePercentageCommission: dto.garagePercentageCommission
     };
   }
 }

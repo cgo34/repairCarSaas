@@ -15,10 +15,11 @@ export class QuoteRepository implements IQuoteRepository {
   /**
    * Génère un numéro de devis unique.
    */
-  async generateQuoteNumber(): Promise<string> {
+  async generateQuoteNumber(userId): Promise<string> {
     const { count, error } = await this.clientProvider.getClient()
     .from('quotes')
-    .select('*', { count: 'exact', head: true }); // ⚡ Optimisé pour éviter un gros dataset
+    .select('*', { count: 'exact', head: true }) // ⚡ Optimisé pour éviter un gros dataset
+    .eq('user_id', userId);
     
     if (error)
       throw new Error('Error generating quote number');
@@ -54,7 +55,8 @@ export class QuoteRepository implements IQuoteRepository {
         *,
         user:users!quotes_user_id_fkey(*),
         technician:users!quotes_technician_id_fkey(*),
-        garage:garages(*)
+        garage:garages(*),
+        status:document_statuses(*)
       `)
       .eq('user_id', userId)
       .returns<QuoteApiModel[]>();
@@ -62,6 +64,8 @@ export class QuoteRepository implements IQuoteRepository {
     if (error)
       throw new Error('Error fetching user quotes');
 
+    console.log(data);
+    
     return data.map(QuoteMapper.apiToDto);
   }
 
@@ -75,13 +79,17 @@ export class QuoteRepository implements IQuoteRepository {
         *,
         user:users!quotes_user_id_fkey(*),
         technician:users!quotes_technician_id_fkey(*),
-        garage:garages(*)
+        garage:garages(*),
+        status:document_statuses(*)
       `)
       .eq('id', id)
       .single<QuoteApiModel>();
 
     if (error)
       throw new Error('Error fetching quote');
+
+    console.log(data);
+    
 
     return data ? QuoteMapper.apiToDto(data) : null;
   }
@@ -161,51 +169,10 @@ export class QuoteRepository implements IQuoteRepository {
       throw new Error('Error deleting quote');    
   }
 
-  // async addLineItem(quoteId: string, lineItem: QuoteLineItem): Promise<void> {
-  //   const lineApi: QuoteDetailApiModel = {
-  //     id: crypto.randomUUID(),
-  //     quote_id: quoteId,
-  //     body_part_id: lineItem.bodyPartId,
-  //     body_material_id: lineItem.bodyMaterialId,
-  //     repair_type_id: lineItem.repairTypeId,
-  //     impact_count_25: lineItem.impactCount25,
-  //     impact_count_35: lineItem.impactCount35,
-  //     dent_removal_price: lineItem.strippingPercentage,
-  //     price: lineItem.price,
-  //   };
-
-  //   const { error } = await this.clientProvider.getClient()
-  //     .fromSchema<'quoting', 'quote_details'>('quoting', 'quote_details')
-  //     .insert(lineApi);
-
-  //   if (error) throw new Error('Error adding quote detail');
-  // }
-
-  // async updateLineItem(quoteId: string, lineItem: QuoteLineItemDto): Promise<void> {
-  //   const lineApi: QuoteDetailApiModel = {
-  //     id: lineItem.id,
-  //     quote_id: quoteId,
-  //     body_part_id: lineItem.bodyPartId,
-  //     body_material_id: lineItem.bodyMaterialId,
-  //     repair_type_id: lineItem.repairTypeId,
-  //     impact_count_25: lineItem.impactCount25,
-  //     impact_count_35: lineItem.impactCount35,
-  //     dent_removal_price: lineItem.strippingPercentage,
-  //     price: lineItem.price,
-  //   };
-
-  //   const { error } = await this.clientProvider.getClient()
-  //     .fromSchema<'quoting', 'quote_details'>('quoting', 'quote_details')
-  //     .update(lineApi)
-  //     .eq('id', lineApi.id);
-
-  //   if (error) throw new Error('Error updating quote detail');
-  // }
-
-  async updateStatus(quoteId: string, status: QuoteStatusDto): Promise<void> {
+  async updateStatus(quoteId: string, statusId: string): Promise<void> {
     const { error } = await this.clientProvider.getClient()
-      .fromSchema<'quoting', 'quotes'>('quoting', 'quotes')
-      .update({ status: status.status })
+      .from('quotes')
+      .update({ status_id: statusId })
       .eq('id', quoteId);
 
     if (error) throw new Error('Error updating quote status');

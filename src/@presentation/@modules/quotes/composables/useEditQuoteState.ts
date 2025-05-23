@@ -1,6 +1,7 @@
 // region -> IMPORTS
 import { IAuthState } from '@/@application/states/interfaces/IAuthState';
 import { IGarageUseCase } from '@/@domain/useCases/IGarageUseCase';
+import { IGetDocumentStatuseUseCase } from '@/@domain/useCases/IGetDocumentStatuseUseCase';
 import { IUserUseCase } from '@/@domain/useCases/IUserUseCase';
 import { IBodyMaterialUseCase } from '@/@domain/useCases/carRepair/IBodyMaterialUseCase';
 import { IBodyPartUseCase } from '@/@domain/useCases/carRepair/IBodyPartUseCase';
@@ -9,12 +10,14 @@ import { ICalculateLineCostUseCase } from '@/@domain/useCases/cost/ICalculateLin
 import { IDeleteLineItemUseCase } from '@/@domain/useCases/lineItem/ILineItemUseCase';
 import { IAddQuoteLineItemUseCase } from '@/@domain/useCases/quotes/IAddQuoteLineItemUseCase';
 import { IDeleteQuoteUseCase } from '@/@domain/useCases/quotes/IDeleteQuoteUseCase';
+import { IDuplicateQuoteToInvoiceUseCase } from '@/@domain/useCases/quotes/IDuplicateQuoteToInvoiceUseCase';
 import { IGetQuoteDetailUseCase } from '@/@domain/useCases/quotes/IGetQuoteDetailUseCase';
 import { IGetQuoteUseCase } from '@/@domain/useCases/quotes/IGetQuoteUseCase';
 import { IUpdateQuoteUseCase } from '@/@domain/useCases/quotes/IUpdateQuoteUseCase';
 import { ISettingPriceUseCase } from '@/@domain/useCases/settings/price/ISettingPriceUseCase';
 import { container } from '@/@infrastructure/ioc/inversify.config';
 import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
+import { DocumentStatuseMapper } from '@/@presentation/mappers/DocumentStatuseMapper';
 import { GarageMapper } from '@/@presentation/mappers/GarageMapper';
 import { LineItemMapper } from '@/@presentation/mappers/LineItemMapper';
 import { QuoteMapper } from '@/@presentation/mappers/QuoteMapper';
@@ -23,6 +26,7 @@ import { BodyPartMapper } from '@/@presentation/mappers/settings/BodyPartMapper'
 import { RepairTypeMapper } from '@/@presentation/mappers/settings/RepairTypeMapper';
 import { SettingPriceMapper } from '@/@presentation/mappers/settings/price/SettingPriceMapper';
 import { CountryViewModel } from '@/@presentation/types/models/CountryViewModel';
+import { DocumentStatuseViewModel } from '@/@presentation/types/models/DocumentStatuseViewModel';
 import { GarageViewModel } from '@/@presentation/types/models/GarageViewModel';
 import { LineItemViewModel } from '@/@presentation/types/models/LineItemViewModel';
 import { QuoteViewModel } from '@/@presentation/types/models/QuoteViewModel';
@@ -37,6 +41,8 @@ import { computed, ref } from 'vue';
 export function useEditQuoteState() {
   // #region -> DEPENDENCIES
   const authState = container.get<IAuthState>(SYMBOLS.States.AuthState);
+
+  const getDocumentStatuseUseCase = container.get<IGetDocumentStatuseUseCase>(SYMBOLS.UseCases.GetDocumentStatuse);
 
   const getQuoteUseCase = container.get<IGetQuoteUseCase>(SYMBOLS.UseCases.Quote.GetQuoteUseCase);
   const getQuoteDetailUseCase = container.get<IGetQuoteDetailUseCase>(SYMBOLS.UseCases.Quote.GetQuoteDetailsUseCase);
@@ -55,6 +61,8 @@ export function useEditQuoteState() {
   const calculateLineCostUseCase = container.get<ICalculateLineCostUseCase>(SYMBOLS.UseCases.CostCalculator.CalculateLineCostUseCase);
   const addQuoteDetailsUseCase = container.get<IAddQuoteLineItemUseCase>(SYMBOLS.UseCases.Quote.AddLineItemUseCase);
   const deleteLineItemUseCase = container.get<IDeleteLineItemUseCase>(SYMBOLS.UseCases.Quote.DeleteLineItemUseCase);
+
+  const duplicateQuoteToInvoiceUseCase = container.get<IDuplicateQuoteToInvoiceUseCase>(SYMBOLS.UseCases.Quote.DuplicateQuoteToInvoiceUseCase)
   // #endregion
 
   // #region -> CONSTANTS
@@ -64,13 +72,13 @@ export function useEditQuoteState() {
   // #region -> REFS
   const _priceParams = ref<SettingPriceViewModel>();
 
-
+  const _statuses = ref<DocumentStatuseViewModel[]>([])
   const _quote = ref<QuoteViewModel | undefined>(undefined);
-  const _quoteInformations = ref({
+  const _quoteInformations = ref<{number: string, date: string, expirationDate: string, status: DocumentStatuseViewModel | undefined}>({
     number: '',
     date: '',
     expirationDate: '',
-    status: 'draft',
+    status: undefined,
   });
 
   const _technicians = ref<UserViewModel[]>([]);
@@ -114,6 +122,9 @@ export function useEditQuoteState() {
       
       const quoteDto = await getQuoteUseCase.execute(id);
       const quoteDetailDto = await getQuoteDetailUseCase.execute(id);
+      const statusesDto = await getDocumentStatuseUseCase.execute();
+
+      _statuses.value = statusesDto.map(m => DocumentStatuseMapper.dtoToView(m))
       
       _quote.value = QuoteMapper.dtoToView(quoteDto);
       _isForfait.value = quoteDto?.isForfait ?? false
@@ -137,6 +148,8 @@ export function useEditQuoteState() {
       // const expirationDate = new Date(startDate);
       // expirationDate.setMonth(expirationDate.getMonth() + 1);
       // _quoteInformations.value.expirationDate = expirationDate.toISOString().split('T')[0];
+      console.log('quote value', _quote.value);
+      
       _quoteInformations.value.status = _quote.value.status;
 
       _selectedTechnician.value = _quote.value.technician;
@@ -502,15 +515,27 @@ export function useEditQuoteState() {
   });
   // #endregion
 
+  const duplicateQuoteToInvoice = () => {
+    if (!_quote.value)
+      return
+    
+    duplicateQuoteToInvoiceUseCase.execute(QuoteMapper.viewToDto(_quote.value), _quoteLines.value.map(LineItemMapper.viewToDto))
+  }
+
   const deleteQuote = (quoteNumber: string) => {
     deleteQuoteUseCase.execute(_quoteId.value)
   }
+
+  const isReadOnly = computed(()=> {
+    return _quoteInformations.value.status?.code === 'accepted' || _quoteInformations.value.status?.code === 'invoiced'
+  })
 
   return {
     loading,
     error,
     init,
 
+    statuses: computed(() => _statuses.value),
     quote: computed(() => _quote.value),
     quoteInformations: computed(() => _quoteInformations.value),
     expirationDate,
@@ -559,6 +584,8 @@ export function useEditQuoteState() {
     total,
 
     updateQuote,
-    deleteQuote
+    deleteQuote,
+    duplicateQuoteToInvoice,
+    isReadOnly
   };
 }

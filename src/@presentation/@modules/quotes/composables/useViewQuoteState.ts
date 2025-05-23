@@ -26,6 +26,8 @@ export function useViewQuoteState() {
 
   // #region -> INIT
   const init = async (quoteId: string) => {
+    console.log('init preview for quoteId', quoteId);
+    
     loading.value = true;
     try {
       const { quote, lines } = await viewQuoteUseCase.execute(quoteId);
@@ -35,7 +37,9 @@ export function useViewQuoteState() {
       }
       
       _quote.value = QuoteMapper.dtoToView(quote);
-      _pdfUrl.value = await generatePdfUseCase.execute(quote, lines);
+      console.log('_quote', _quote.value);
+      
+      _pdfUrl.value = await generatePdfUseCase.execute(QuoteMapper.viewToDto(_quote.value), lines);
     } catch (e) {
       error.value = e as Error;
     } finally {

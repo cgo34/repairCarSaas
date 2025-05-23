@@ -6,7 +6,8 @@ import { UserDto } from "./UserDto";
 export interface QuoteDto {
   id?: string;
   quoteNumber: string;
-  status: 'pending' | 'cancel' | 'draft' | 'validated' | 'accepted' | 'signed' | 'sent' | 'draft';
+  status_id: string;
+  status: any;
   
   userId: string; // 🔹 Ajout pour suivre le créateur du devis
   user?: UserDto; // 🔹 Ajout pour le nom du créateur du devis
@@ -36,4 +37,13 @@ export interface QuoteDto {
   sentAt: string | null; // 🔹 Peut être null
 
   createdAt?: string;
+  
+  // garage info for first level subscription users
+  garageName?: string;
+  garageAddress?: string;
+  garageZipCode?: string;
+  garageCity?: string;
+  garagePhone?: string;
+  garageEmail?: string;
+  garagePercentageCommission?: number;
 }

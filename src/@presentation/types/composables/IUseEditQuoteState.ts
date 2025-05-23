@@ -3,9 +3,9 @@ import { BodyMaterialViewModel } from '../models/carRepair/BodyMaterialViewModel
 import { BodyPartViewModel } from '../models/carRepair/BodyPartViewModel';
 import { DentRepairTypeViewModel } from '../models/carRepair/DentRepairTypeViewModel';
 import { CountryViewModel } from '../models/CountryViewModel';
+import { DocumentStatuseViewModel } from '../models/DocumentStatuseViewModel';
 import { GarageViewModel } from '../models/GarageViewModel';
 import { LineItemViewModel } from '../models/LineItemViewModel';
-import { QuoteStatusViewType } from '../models/QuoteStatusViewType';
 import { UserViewModel } from '../models/UserViewModel';
 
 export interface IUseEditQuoteState {
@@ -13,7 +13,8 @@ export interface IUseEditQuoteState {
   error: Ref<unknown>;
 
   init(id: string): Promise<void>;
-  quoteInformations: ComputedRef<{ number: string; date: string, expirationDate: string; status: QuoteStatusViewType; }>;
+  statuses: ComputedRef<DocumentStatuseViewModel[]>;
+  quoteInformations: ComputedRef<{ number: string; date: string, expirationDate: string; status: DocumentStatuseViewModel; }>;
   expirationDate: ComputedRef<string>;
 
   technicians: Ref<UserViewModel[]>;
@@ -54,6 +55,6 @@ export interface IUseEditQuoteState {
   removeLine(lineId: number): void;
 
   totalDegarnissage,
-  total: computedRef<number>,
+  total: ComputedRef<number>,
   save(): Promise<void>;
 }

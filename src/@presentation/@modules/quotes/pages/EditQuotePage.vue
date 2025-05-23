@@ -12,16 +12,6 @@
 
           <GenericButton
             class="me-2 text-none"
-            color="success"
-            prepend-icon="mdi-check-bold"
-            variant="flat"
-            @click="onFinalizeBtnClick"
-          >
-            Finalize
-          </GenericButton>
-
-          <GenericButton
-            class="me-2 text-none"
             color="secondary"
             prepend-icon="mdi-file-pdf-box"
             variant="flat"
@@ -41,6 +31,30 @@
           </GenericButton>
 
           <GenericButton
+            v-if="!isReadOnly"
+            class="me-2 text-none"
+            color="success"
+            prepend-icon="mdi-check-bold"
+            variant="flat"
+            @click="onFinalizeBtnClick"
+          >
+            Finalize
+          </GenericButton>
+
+          <GenericButton
+            v-if="quoteInformations.status?.code === 'accepted'"
+            class="me-2 text-none"
+            color="success"
+            prepend-icon="mdi-file-plus"
+            variant="flat"
+            :readonly="quoteInformations.status?.code !== 'accepted'"
+            @click="onDuplicateQuoteToInvoiceBtnClick"
+          >
+            Convert to invoice
+          </GenericButton>
+
+          <GenericButton
+            v-if="!isReadOnly"
             class="me-2 text-none"
             color="error"
             prepend-icon="mdi-delete"
@@ -70,29 +84,44 @@
             <v-row>
               <v-col
                 cols="12"
-                md="4"
+                md="3"
               >
                 <v-text-field
                   v-model="quoteInformations.number"
                   label="Numéro de devis"
                   readonly
+                  disabled
                   outlined
                 />
               </v-col>
               <v-col
                 cols="12"
-                md="4"
+                md="3"
+              >
+                <GenericSelect
+                  :model-value="quoteInformations.status"
+                  :items="statuses"
+                  label="Status"
+                  item-title="label"
+                  readonly
+                  disabled
+                />
+              </v-col>
+              <v-col
+                cols="12"
+                md="3"
               >
                 <v-text-field
                   v-model="quoteInformations.date"
                   label="Date"
                   type="date"
                   outlined
+                  :readonly="isReadOnly"
                 />
               </v-col>
               <v-col
                 cols="12"
-                md="4"
+                md="3"
               >
                 <v-text-field
                   v-model="expirationDate"
@@ -100,6 +129,7 @@
                   type="date"
                   outlined
                   required
+                  :readonly="isReadOnly"
                 />
               </v-col>
             </v-row>
@@ -131,8 +161,9 @@
                         item-title="fullName"
                         item-value
                         return-object
-                        clearable
+                        :clearable="!isReadOnly"
                         @update:model-value="onSelectTechnician"
+                        :readonly="isReadOnly"
                       >
                         <template #prepend-item>
                           <v-list-tile>
@@ -159,9 +190,10 @@
                       <h5 class="text-h6">
                         Garage :
                       </h5>
-                      
+
                       <!-- TODO: (GCE) -> ADD IMPLEMENTATION TO FREE USER -->
                       <v-btn
+                        v-if="!isReadOnly"
                         color="primary"
                         variant="text"
                         @click="onEditCustomerBtnClick"
@@ -181,12 +213,13 @@
                         :model-value="selectedGarage"
                         label="Select Garage"
                         :items="garagesList"
-                        :item-props="true"
                         item-title="name"
+                        :item-props="true"
                         item-value
                         return-object
-                        clearable
+                        :clearable="!isReadOnly"
                         @update:model-value="onSelectGarage"
+                        :readonly="isReadOnly"
                       >
                         <template #prepend-item>
                           <v-list-tile>
@@ -238,6 +271,7 @@
                         label="Immatriculation"
                         outlined
                         @update:model-value="(value) => onCarImmatriculationUpdated(value)"
+                        :readonly="isReadOnly"
                       />
                     </v-col>
                     <v-col
@@ -249,6 +283,7 @@
                         label="Marque"
                         outlined
                         @update:model-value="(value) => onCarBrandUpdated(value)"
+                        :readonly="isReadOnly"
                       />
                     </v-col>
                     <v-col
@@ -260,6 +295,7 @@
                         label="Année"
                         outlined
                         @update:model-value="(value) => onCarYearUpdated(value)"
+                        :readonly="isReadOnly"
                       />
                     </v-col>
                   </v-row>
@@ -278,9 +314,34 @@
                 Options du devis
               </h4>
               <div class="d-flex justify-space-between">
-                <div><v-switch label="Appliquer un forfait ?" :modelValue="isForfait" @update:modelValue="onUpdateIsForfait" color="primary" inset></v-switch></div>
-                <div v-if="!isForfait"><v-switch label="Afficher les prix unitaires ?" :modelValue="isDisplayUnitPrice" @update:modelValue="onUpdateIsDisplayUnitPrice" color="primary" inset></v-switch></div>
-                <div v-if="!isForfait"><v-switch label="Calculer la commission sans le dégarnissage ?" :modelValue="isComputeCommissionWithoutDentRemoval" @update:modelValue="onUpdateIsComputeCommissionWithoutDentRemoval" color="primary" inset></v-switch></div>
+                <div>
+                  <v-switch
+                    label="Appliquer un forfait ?" :modelValue="isForfait"
+                    @update:modelValue="onUpdateIsForfait"
+                    color="primary"
+                    inset
+                    :readonly="isReadOnly">
+                  </v-switch>
+                  </div>
+                <div v-if="!isForfait">
+                    <v-switch
+                    label="Afficher les prix unitaires ?" :modelValue="isDisplayUnitPrice"
+                    @update:modelValue="onUpdateIsDisplayUnitPrice"
+                    color="primary"
+                    inset
+                    :readonly="isReadOnly">
+                  </v-switch>
+                </div>
+                <div v-if="!isForfait">
+                  <v-switch
+                    label="Calculer la commission sans le dégarnissage ?"
+                    :modelValue="isComputeCommissionWithoutDentRemoval"
+                    @update:modelValue="onUpdateIsComputeCommissionWithoutDentRemoval"
+                    color="primary"
+                    inset
+                    :readonly="isReadOnly">
+                  </v-switch>
+                </div>
               </div>
             </div>
             
@@ -295,19 +356,22 @@
                 dense
                 outlined
                 @update:modelValue="onUpdateForfaitAmount"
+                :readonly="isReadOnly"
               />
             </div>
-            <CountrySelect :modelValue="selectedCountry" @select="onSelectCountry"/>
+            <CountrySelect :modelValue="selectedCountry" @select="onSelectCountry" :readonly="isReadOnly"/>
           </v-card-text>
 
           
           <v-card-actions>
               <v-spacer></v-spacer>
               <v-btn
+                v-if="quoteInformations.status?.code !== 'accepted'"
                 variant="tonal"
                 class="mt-3"
                 color="primary"
                 @click="onUpdateBtnClick"
+                :readonly="isReadOnly"
               >
                 Update
               </v-btn>
@@ -375,15 +439,18 @@
                   class="me-2"
                   size="small"
                   @click="onRemoveItemBtnClick(item)"
+                  :disabled="isReadOnly"
                 >
                   mdi-delete
                 </v-icon>
               </template>
             </v-data-table>
             <v-btn
+              v-if="!isReadOnly"
               class="mt-3"
               color="primary"
               @click="onAddItemBtnClick"
+              :disabled="isReadOnly"
             >
               + Ajouter un élément
             </v-btn>
@@ -500,6 +567,7 @@ import ConfirmDialog from '@/@presentation/components/ConfirmDialog.vue';
 import CountrySelect from '@/@presentation/components/CountrySelect.vue';
 import { GarageDialogExposed } from '@/@presentation/components/GarageDialog';
 import GarageDialog from '@/@presentation/components/GarageDialog.vue';
+import GenericSelect from '@/@presentation/components/GenericSelect.vue';
 import type { AddLineItemDialogExposed } from '@/@presentation/types/components';
 import { IUseEditQuoteState } from '@/@presentation/types/composables/IUseEditQuoteState';
 import { BodyMaterialViewModel } from '@/@presentation/types/models/carRepair/BodyMaterialViewModel';
@@ -527,6 +595,7 @@ const useEditQuoteState = container.get<IUseEditQuoteState>(SYMBOLS.States.Quote
 const {
   init,
 
+  statuses,
   quoteInformations,
   expirationDate,
 
@@ -573,8 +642,9 @@ const {
   total,
 
   updateQuote,
-
-  deleteQuote
+  deleteQuote,
+  duplicateQuoteToInvoice,
+  isReadOnly
 } = useEditQuoteState;
 
 const router = useRouter();
@@ -713,6 +783,10 @@ const onFinalizeBtnClick = () => {
 const onSendBtnClick = () => {
   console.log('onSendBtnClick -> send quote');
 };
+
+const onDuplicateQuoteToInvoiceBtnClick = () => {
+  duplicateQuoteToInvoice()
+}
 
 const onViewPdfBtnClick = () => {
   router.push(`/quotes/view/${route.params.id}`);

@@ -2,6 +2,7 @@
   <GenericSelect
     :model-value="model"
     :items="bodyMaterials"
+    :item-title="itemTitle"
     label="Matériau"
     @update:model-value="onSelectBodyMaterial"
     @select="onSelectBodyMaterial"
@@ -19,7 +20,7 @@ const props = defineProps<{
 }>();
 
 const model = ref<BodyMaterialViewModel | undefined>(props.modelValue);
-
+const itemTitle = 'name'
 const emit = defineEmits<{
   (e: 'update:modelValue', value: BodyMaterialViewModel | undefined): void;
   (e: 'select', value: BodyMaterialViewModel | undefined): void;

@@ -1,5 +1,6 @@
 import { AuthError } from '@/@domain/errors/AuthError';
 import { IAuthUseCase } from '@/@domain/useCases/auth/IAuthUseCase';
+import { ICreateUserUseCase } from '@/@domain/useCases/user/ICreateUserUseCase';
 import { AuthErrorCode } from '@/@domain/valueObjects/AuthErrorCode';
 import { User } from '@domain/entities/User';
 import { IAuthState } from '@domain/states/IAuthState';
@@ -27,7 +28,8 @@ export class AuthState implements IAuthState {
   constructor(
     @inject(SYMBOLS.UseCases.Auth.Container) private authUseCase: IAuthUseCase,
     @inject(SYMBOLS.UseCases.Auth.LoginUseCase) private loginUseCase: ILoginUseCase,
-    @inject(SYMBOLS.UseCases.Auth.LogoutUseCase) private logoutUseCase: ILogoutUseCase
+    @inject(SYMBOLS.UseCases.Auth.LogoutUseCase) private logoutUseCase: ILogoutUseCase,
+    @inject(SYMBOLS.UseCases.User.CreateUserUseCase) private createUserUseCase: ICreateUserUseCase,
   ) {
     this.loadPersistedState();
   }
@@ -93,6 +95,7 @@ export class AuthState implements IAuthState {
   async login(email: string, password: string): Promise<void> {
     try {      
       const user = await this.authUseCase.login.execute(email, password);
+      console.log('login user', user);
       
       if (!user) {
         throw new AuthError(
@@ -126,21 +129,39 @@ export class AuthState implements IAuthState {
 
   async register(email: string, password: string, fullName: string): Promise<void> {
     try {
-      const session = await this.authUseCase.register.execute(email, password, fullName);
+      const { data, error } = await this.authUseCase.register.execute(email, password, fullName);
+      console.log('register session', data);
       
-      if (!session?.user) {
+      if (!data?.user) {
         throw new AuthError(
           AuthErrorCode.REGISTRATION_FAILED,
           'Registration failed: no user returned'
         );
       }
+
+      const user = {
+        id: data.user.id,
+        email: data.user.email ?? '',
+        role: 'technician',
+        fullName: data.user.user_metadata?.fullName ?? ''
+      };
+
   
       // Mise à jour de l'état
-      this.user.value = session.user;
+      this.user.value = user;
       this.isAuthenticated.value = true;
+      console.log('data user id created', data.user.id);
+
+      // TODO: (GCE) -> ADD USE CASE TO INSERT USER PROFILE TO PUBLIC.USERS TABLE SUPABASE
+
+      // ➕ Lier automatiquement le plan 'free'
+      await this.authUseCase.subscribeToFreePlan.execute(data.user.id);
       
       // Utilisation des méthodes communes
       this.pushState();
+      
+      // Une fois inscrit, créer son profil dans public.users
+      await this.createUserUseCase.execute(user)
       
     } catch (error) {
       throw new AuthError(

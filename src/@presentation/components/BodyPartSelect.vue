@@ -3,6 +3,7 @@
     :model-value="model"
     :items="bodyParts"
     label="Elément"
+    :item-title="itemTitle"
     @select="onSelectBodyPart"
   />
 </template>
@@ -18,6 +19,7 @@ const props = defineProps<{
 }>();
 
 const model = ref<BodyPartViewModel | undefined>(props.modelValue);
+const itemTitle = 'name'
 
 const emit = defineEmits<{
   (e: 'update:modelValue', value: BodyPartViewModel | undefined): void;

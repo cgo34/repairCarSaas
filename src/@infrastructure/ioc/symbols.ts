@@ -15,8 +15,15 @@ const SYMBOLS = {
   Repositories: {
     AuthRepository: Symbol.for(SYMBOL_NAMES.AUTH_REPOSITORY),
     UserRepository: Symbol.for(SYMBOL_NAMES.USER_REPOSITORY),
+    // Subscription Repositories
+    SubscriptionRepository: Symbol.for(SYMBOL_NAMES.SUBSCRIPTION_REPOSITORY),
     GarageRepository: Symbol.for(SYMBOL_NAMES.GARAGE_REPOSITORY),
+    
+    // Document Statuse Repositories
+    DocumentStatuseRepository: Symbol.for(SYMBOL_NAMES.DOCUMENT_STATUSE_REPOSITORY),
+
     InvoiceRepository: Symbol.for(SYMBOL_NAMES.INVOICE_REPOSITORY),
+    InvoiceDetailRepository: Symbol.for(SYMBOL_NAMES.INVOICE_DETAIL_REPOSITORY),
     QuoteRepository: Symbol.for(SYMBOL_NAMES.QUOTE_REPOSITORY),
     QuoteDetailRepository: Symbol.for(SYMBOL_NAMES.QUOTE_DETAIL_REPOSITORY),
     // -- Settings CarRepair Repositories
@@ -66,9 +73,19 @@ const SYMBOLS = {
       LogoutUseCase: Symbol.for(SYMBOL_NAMES.LOGOUT_USE_CASE),
       RegisterUseCase: Symbol.for(SYMBOL_NAMES.REGISTER_USE_CASE),
     },
+    // -- Subscription UseCases
+    Subscription: {
+      SubscribeToFreePlanUseCase: Symbol.for(SYMBOL_NAMES.SUBSCRIBE_TO_FREE_PLAN_USE_CASE),
+      GetCurrentSubscriptionUseCase: Symbol.for(SYMBOL_NAMES.GET_CURRENT_SUBSCRIPTION_USE_CASE),
+    },
     // -- User UseCases
     UserUseCase: Symbol.for(SYMBOL_NAMES.USER_USE_CASE),
+    User: {
+      CreateUserUseCase: Symbol.for(SYMBOL_NAMES.CREATE_USER_USE_CASE),
+    },
     Garage: Symbol.for(SYMBOL_NAMES.GARAGE_USE_CASE),
+    GetDocumentStatuse: Symbol.for(SYMBOL_NAMES.GET_DOCUMENT_STATUSE_USE_CASE),
+
     CarRepair: {
       BodyPartUseCase: Symbol.for(SYMBOL_NAMES.BODY_PART_USE_CASE),
       BodyMaterialUseCase: Symbol.for(SYMBOL_NAMES.BODY_MATERIAL_USE_CASE),
@@ -98,8 +115,9 @@ const SYMBOLS = {
       CreateQuoteUseCase: Symbol.for(SYMBOL_NAMES.CREATE_QUOTE_USE_CASE),
       InsertQuoteUseCase: Symbol.for(SYMBOL_NAMES.INSERT_QUOTE_USE_CASE),
       UpdateQuoteUseCase: Symbol.for(SYMBOL_NAMES.UPDATE_QUOTE_USE_CASE),
-      SaveQuoteUseCase: Symbol.for(SYMBOL_NAMES.SAVE_QUOTE_USE_CASE),
+      UpdateStatusQuoteUseCase: Symbol.for(SYMBOL_NAMES.UPDATE_STATUS_QUOTE_USE_CASE),
       DeleteQuoteUseCase: Symbol.for(SYMBOL_NAMES.DELETE_QUOTE_USE_CASE),
+      DuplicateQuoteToInvoiceUseCase: Symbol.for(SYMBOL_NAMES.DUPLICATE_QUOTE_TO_INVOICE),
       
       GetQuoteDetailsUseCase: Symbol.for(SYMBOL_NAMES.GET_QUOTE_DETAILS_USE_CASE),
       // AddQuoteDetailsUseCase: Symbol.for(SYMBOL_NAMES.ADD_QUOTE_DETAILS_USE_CASE),
@@ -109,9 +127,29 @@ const SYMBOLS = {
       GenerateQuotePdfUseCase: Symbol.for(SYMBOL_NAMES.GENERATE_QUOTE_PDF_USE_CASE),
       SendQuoteUseCase: Symbol.for(SYMBOL_NAMES.SEND_QUOTE_USE_CASE),
     },
+    Invoice: {
+      InvoiceUseCase: Symbol.for(SYMBOL_NAMES.INVOICE_USE_CASE),
+      GetInvoiceUseCase: Symbol.for(SYMBOL_NAMES.GET_INVOICE_USE_CASE),
+      GetInvoicesUseCase: Symbol.for(SYMBOL_NAMES.GET_INVOICES_USE_CASE),
+      ViewInvoiceUseCase: Symbol.for(SYMBOL_NAMES.VIEW_INVOICE_USE_CASE),
+      CreateInvoiceUseCase: Symbol.for(SYMBOL_NAMES.CREATE_INVOICE_USE_CASE),
+      InsertInvoiceUseCase: Symbol.for(SYMBOL_NAMES.INSERT_INVOICE_USE_CASE),
+      UpdateInvoiceUseCase: Symbol.for(SYMBOL_NAMES.UPDATE_INVOICE_USE_CASE),
+      SaveInvoiceUseCase: Symbol.for(SYMBOL_NAMES.SAVE_INVOICE_USE_CASE),
+      DeleteInvoiceUseCase: Symbol.for(SYMBOL_NAMES.DELETE_INVOICE_USE_CASE),
+      
+      GetInvoiceDetailsUseCase: Symbol.for(SYMBOL_NAMES.GET_INVOICE_DETAILS_USE_CASE),
+      // AddInvoiceDetailsUseCase: Symbol.for(SYMBOL_NAMES.ADD_INVOICE_DETAILS_USE_CASE),
+      AddLineItemUseCase: Symbol.for(SYMBOL_NAMES.ADD_INVOICE_LINE_ITEM_USE_CASE),
+      DeleteLineItemUseCase: Symbol.for(SYMBOL_NAMES.DELETE_LINE_ITEM_USE_CASE),
+      // -- Pdf UseCases
+      GenerateInvoicePdfUseCase: Symbol.for(SYMBOL_NAMES.GENERATE_INVOICE_PDF_USE_CASE),
+      SendInvoiceUseCase: Symbol.for(SYMBOL_NAMES.SEND_INVOICE_USE_CASE),
+    },
   },
   States: {
     AuthState: Symbol.for(SYMBOL_NAMES.AUTH_STATE),
+    SubscriptionState: Symbol.for(SYMBOL_NAMES.SUBSCRIPTION_STATE),
     // -- User States
     UserState: Symbol.for(SYMBOL_NAMES.USER_STATE),
     // -- Garage States
@@ -142,6 +180,14 @@ const SYMBOLS = {
       CreateQuoteState: Symbol.for(SYMBOL_NAMES.CREATE_QUOTE_STATE),
       EditQuoteState: Symbol.for(SYMBOL_NAMES.EDIT_QUOTE_STATE),
       GetQuotesUseCase: Symbol.for(SYMBOL_NAMES.GET_QUOTES_STATE),
+    },
+    // -- Invoices States
+    Invoice: {
+      InvoiceState: Symbol.for(SYMBOL_NAMES.INVOICE_STATE),
+      ViewInvoiceState: Symbol.for(SYMBOL_NAMES.VIEW_INVOICE_STATE),
+      CreateInvoiceState: Symbol.for(SYMBOL_NAMES.CREATE_INVOICE_STATE),
+      EditInvoiceState: Symbol.for(SYMBOL_NAMES.EDIT_INVOICE_STATE),
+      GetInvoicesUseCase: Symbol.for(SYMBOL_NAMES.GET_INVOICES_STATE),
     }
   },
 };

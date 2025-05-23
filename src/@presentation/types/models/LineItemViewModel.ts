@@ -7,7 +7,9 @@ type LineItemType = 'quote' | 'invoice';
 export interface LineItemViewModel {
   id?: string;
   lineId?: number;
+  invoiceId?: string;
   quoteId?: string;
+  quoteDetailId?: string;
   bodyPartId?: string;
   bodyPart?: BodyPartViewModel;
   impactCount25?: number;

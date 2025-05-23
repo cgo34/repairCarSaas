@@ -2,6 +2,13 @@
   <MainLayout>
     <v-container fluid>
       <v-row>
+        <v-alert
+          class="mb-2"
+          type="info"
+          icon="$info"
+          variant="tonal"
+          text="Le montant du taux horaire est appliqué aux calculs des éléments"
+        ></v-alert>
         <v-data-table
           :headers="headers"
           :items="settings"

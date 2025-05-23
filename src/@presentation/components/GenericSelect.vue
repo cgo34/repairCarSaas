@@ -1,9 +1,9 @@
 <template>
   <v-select
-    :model-value="model"
+    :model-value="modelValue"
     :items="filteredItems"
     :label="label"
-    item-title="name"
+    :item-title="itemTitle"
     return-object
     clearable
     @update:model-value="onSelectItem"
@@ -32,6 +32,7 @@ const props = defineProps<{
   modelValue?: TModel | undefined;
   items: TModel[];
   label: string;
+  itemTitle: string
 }>();
 
 // Stocke la valeur sélectionnée localement

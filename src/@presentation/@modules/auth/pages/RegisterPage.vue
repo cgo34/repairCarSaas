@@ -29,10 +29,12 @@ const passwordRules = [
 
 const handleRegister = async () => {
   try {
-    await register();
-    window.location.href = '/dashboard';
+    await register().then(() => {
+
+      window.location.href = '/dashboard';
+    });
   } catch (error: unknown) {
-    alert(error.message);
+    console.log(error);
   }
 };
   </script>

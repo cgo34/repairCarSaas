@@ -17,6 +17,7 @@ export class QuoteMapper {
       isComputeCommissionWithoutDentRemoval: api.is_compute_commission_without_dent_removal,
       startDate: api.start_date,
       endDate: api.end_date,
+      status_id: api.status_id,
       status: api.status,
       country: api.country,
       currency: api.currency,
@@ -27,11 +28,20 @@ export class QuoteMapper {
       carDate: api.car_date.toString(),
       technicianId: api.technician_id,
       technician: api.technician ? UserMapper.apiToDto(api.technician) : undefined, // Ajouté si nécessaire
-      garageId: api.garage_id,
+      garageId: api.garage_id ?? undefined,
       garage: api.garage ? GarageMapper.apiToDto(api.garage) : undefined, // Aj
       userId: api.user_id, // Ajouté si nécessaire
       user: api.user ? UserMapper.apiToDto(api.user) : undefined, // Ajouté si nécessaire
-      createdAt: api.created_at
+      createdAt: api.created_at,
+      
+      // garage info for first level subscription users
+      garageName: api.garage_name,
+      garageAddress: api.garage_address,
+      garageZipCode: api.garage_zip_code,
+      garageCity: api.garage_city,
+      garagePhone: api.garage_phone,
+      garageEmail: api.garage_email,
+      garagePercentageCommission: api.garage_percentage_commission
     };
   }
 
@@ -48,6 +58,7 @@ export class QuoteMapper {
       is_compute_commission_without_dent_removal: dto.isComputeCommissionWithoutDentRemoval,
       start_date: dto.startDate,
       end_date: dto.endDate,
+      status_id: dto.status_id,
       status: dto.status,
       country: (typeof dto.country === 'string') ? dto.country : dto.country?.code ?? '',
       currency: dto.currency,
@@ -57,9 +68,18 @@ export class QuoteMapper {
       car_id: dto.carId,
       car_date: Number(dto.carDate),
       technician_id: dto.technician?.id ?? '',
-      garage_id: dto.garage?.id ?? '',
+      garage_id: dto.garage?.id ?? null,
       user_id: dto.userId,
-      created_at: dto.createdAt
+      created_at: dto.createdAt,
+      
+      // garage info for first level subscription users
+      garage_name: dto.garageName,
+      garage_address: dto.garageAddress,
+      garage_zip_code: dto.garageZipCode,
+      garage_city: dto.garageCity,
+      garage_phone: dto.garagePhone,
+      garage_email: dto.garageEmail,
+      garage_percentage_commission: dto.garagePercentageCommission
     };
   }
 }

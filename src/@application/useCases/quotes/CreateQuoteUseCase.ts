@@ -10,7 +10,7 @@ export class CreateQuoteUseCase {
 
   async execute(quoteDto: QuoteDto, userId: string): Promise<QuoteDto> {    
     // 🔹 1. Générer un numéro unique
-    const quoteNumber = await this.quoteRepository.generateQuoteNumber();
+    const quoteNumber = await this.quoteRepository.generateQuoteNumber(userId);
     
     // 🔹 2. Convertir le DTO en Entité pour appliquer les règles métiers
     const quote = QuoteMapper.dtoToDomain({

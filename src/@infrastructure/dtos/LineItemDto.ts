@@ -3,8 +3,10 @@ import { BodyPartDto } from "./carRepair/BodyPartDto";
 import { DentRepairTypeDto } from "./carRepair/DentRepairTypeDto";
 
 export interface LineItemDto {
-  id: string;
-  quoteId: string;
+  id?: string;
+  invoiceId?: string;
+  quoteId?: string;
+  quoteDetailId?: string;
   bodyPartId: string;
   bodyPart: BodyPartDto
   bodyMaterialId: string;
