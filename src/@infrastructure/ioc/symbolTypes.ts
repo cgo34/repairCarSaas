@@ -33,10 +33,8 @@ export enum SYMBOL_NAMES {
     // -- Settings Prices CarRepair Repositories
     SETTING_PRICE_GENERAL_REPOSITORY = 'SettingPriceGeneralRepository',
     SETTING_PRICE_IMPACT_COUNT_TO_UT_REPOSITORY = 'SettingPriceImpactCountToUtRepository',
-    SETTING_PRICE_BODY_MATERIAL_COEFFICIENT = 'SettingPriceBodyMaterialCoefficient',
     SETTING_PRICE_BODY_PART_COEFFICIENT = 'SettingPriceBodyPartCoefficient',
-    SETTING_PRICE_DIAMETER_COEFFICIENT = 'SettingPriceDiameterCoefficient',
-    SETTING_PRICE_REPAIR_TYPE_COEFFICIENT = 'SettingPriceRepairTypeCoefficient',
+    SETTING_PRICE_TECHNICITY_COEFFICIENT_REPOSITORY = 'SettingPriceTechnicityCoefficientRepository',
     // #endregion
 
     // #region -> SERVICES
@@ -53,9 +51,8 @@ export enum SYMBOL_NAMES {
     // -- Settings Prices CarRepair Services
     SETTING_PRICE_GENERAL_SERVICE = 'SettingPriceGeneralService',
     SETTING_PRICE_IMPACT_COUNT_TO_UT_SERVICE = 'SettingPriceImpactCountToUtService',
-    SETTING_PRICE_BODY_MATERIAL_COEFFICIENT_SERVICE = 'SettingPriceBodyMaterialCoefficientService',
     SETTING_PRICE_BODY_PART_COEFFICIENT_SERVICE = 'SettingPriceBodyPartCoefficientService',
-    SETTING_PRICE_DIAMETER_COEFFICIENT_SERVICE = 'SettingPriceDiameterCoefficientService',
+    SETTING_PRICE_TECHNICITY_COEFFICIENT_SERVICE = 'SettingPriceTechnicityCoefficientService',
     // -- Pdf Generator Services
     PDF_GENERATOR_SERVICE = 'PdfGeneratorService',
     DOWNLOAD_SERVICE = 'DownloadService',
@@ -81,10 +78,8 @@ export enum SYMBOL_NAMES {
     SETTING_PRICE_USE_CASE = 'SettingPriceUseCase',
     SETTING_PRICE_GENERAL_USE_CASE = 'SettingPriceGeneralUseCase',
     SETTING_PRICE_IMPACT_COUNT_TO_UT_USE_CASE = 'SettingPriceImpactCountToUtUseCase',
-    SETTING_PRICE_BODY_MATERIAL_COEFFICIENT_USE_CASE = 'SettingPriceBodyMaterialCoefficientUseCase',
     SETTING_PRICE_BODY_PART_COEFFICIENT_USE_CASE = 'SettingPriceBodyPartCoefficientUseCase',
-    SETTING_PRICE_DIAMETER_COEFFICIENT_USE_CASE = 'SettingPriceDiameterCoefficientUseCase',
-    SETTING_PRICE_REPAIR_TYPE_COEFFICIENT_USE_CASE = 'SettingPriceRepairTypeCoefficientUseCase',
+    SETTING_PRICE_TECHNICITY_COEFFICIENT_USE_CASE = 'SettingPriceTechnicityCoefficientUseCase',
     // -- Cost Calculator UseCases
     CALCULATE_TOTAL_COST_USE_CASE = 'CalculateTotalCostUseCase',
     CALCULATE_LINE_COST_USE_CASE = 'CalculateLineCostUseCase',
@@ -152,10 +147,8 @@ export enum SYMBOL_NAMES {
     SETTING_PRICE_STATE = 'SettingPriceState',
     SETTING_PRICE_GENERAL_STATE = 'SettingPriceGeneralState',
     SETTING_PRICE_IMPACT_COUNT_TO_UT_STATE = 'SettingPriceImpactCountToUtState',
-    SETTING_PRICE_BODY_MATERIAL_COEFFICIENT_STATE = 'SettingPriceBodyMaterialCoefficientState',
     SETTING_PRICE_BODY_PART_COEFFICIENT_STATE = 'SettingPriceBodyPartCoefficientState',
-    SETTING_PRICE_DIAMETER_COEFFICIENT_STATE = 'SettingPriceDiameterCoefficientState',
-    SETTING_PRICE_REPAIR_TYPE_COEFFICIENT_STATE = 'SettingPriceRepairTypeCoefficientState',
+    SETTING_PRICE_TECHNICITY_COEFFICIENT_STATE = 'SettingPriceTechnicityCoefficientState',
     // -- Quote States
     QUOTE_STATE = 'QuoteState',
     VIEW_QUOTE_STATE = 'ViewQuoteState',

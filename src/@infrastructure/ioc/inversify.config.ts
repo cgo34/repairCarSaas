@@ -9,11 +9,10 @@ import { BodyPartService } from '@/@application/services/carRepair/BodyPartServi
 import { DentRepairTypeService } from '@/@application/services/carRepair/DentRepairTypeService';
 import { CostCalculatorService } from '@/@application/services/CostCalculatorService';
 import { GarageService } from '@/@application/services/GarageService';
-import { SettingPriceBodyMaterialCoefficientService } from '@/@application/services/settings/price/SettingPriceBodyMaterialCoefficientService';
 import { SettingPriceBodyPartCoefficientService } from '@/@application/services/settings/price/SettingPriceBodyPartCoefficientService';
-import { SettingPriceDiameterCoefficientService } from '@/@application/services/settings/price/SettingPriceDiameterCoefficientService';
 import { SettingPriceGeneralService } from '@/@application/services/settings/price/SettingPriceGeneralService';
 import { SettingPriceImpactCountToUtService } from '@/@application/services/settings/price/SettingPriceImpactCountToUtService';
+import { SettingPriceTechnicityCoefficientService } from '@/@application/services/settings/price/SettingPriceTechnicityCoefficientService';
 import { UserService } from '@/@application/services/UserService';
 import { IAuthState } from '@/@application/states/interfaces/IAuthState';
 import { ISubscriptionState } from '@/@application/states/interfaces/ISubscriptionState';
@@ -51,12 +50,10 @@ import { SendQuoteUseCase } from '@/@application/useCases/quotes/SendQuoteUseCas
 import { UpdateQuoteUseCase } from '@/@application/useCases/quotes/UpdateQuoteUseCase';
 import { UpdateStatusQuoteUseCase } from '@/@application/useCases/quotes/UpdateStatusQuoteUseCase';
 import { ViewQuoteUseCase } from '@/@application/useCases/quotes/ViewQuoteUseCase';
-import { SettingPriceBodyMaterialCoefficientUseCase } from '@/@application/useCases/settings/price/SettingPriceBodyMaterialCoefficientUseCase';
 import { SettingPriceBodyPartCoefficientUseCase } from '@/@application/useCases/settings/price/SettingPriceBodyPartCoefficientUseCase';
-import { SettingPriceDiameterCoefficientUseCase } from '@/@application/useCases/settings/price/SettingPriceDiameterCoefficientUseCase';
 import { SettingPriceGeneralUseCase } from '@/@application/useCases/settings/price/SettingPriceGeneralUseCase';
 import { SettingPriceImpactCountToUtUseCase } from '@/@application/useCases/settings/price/SettingPriceImpactCountToUtUseCase';
-import { SettingPriceRepairTypeCoefficientUseCase } from '@/@application/useCases/settings/price/SettingPriceRepairTypeCoefficientUseCase';
+import { SettingPriceTechnicityCoefficientUseCase } from '@/@application/useCases/settings/price/SettingPriceTechnicityCoefficientUseCase';
 import { SettingPriceUseCase } from '@/@application/useCases/settings/price/SettingPriceUseCase';
 import { GetCurrentSubscriptionUseCase } from '@/@application/useCases/subscription/GetCurrentSubscriptionUseCase';
 import { SubscribeToFreePlanUseCase } from '@/@application/useCases/subscription/SubscribeToFreePlanUseCase';
@@ -75,12 +72,10 @@ import { IQuoteDetailRepository } from '@/@domain/repositories/IQuoteDetailRepos
 import { IQuoteRepository } from '@/@domain/repositories/IQuoteRepository';
 import { ISubscriptionRepository } from '@/@domain/repositories/ISubscriptionRepository';
 import { IUserRepository } from '@/@domain/repositories/IUserRepository';
-import { ISettingPriceBodyMaterialCoefficientRepository } from '@/@domain/repositories/settings/price/ISettingPriceBodyMaterialCoefficientRepository';
 import { ISettingPriceBodyPartCoefficientRepository } from '@/@domain/repositories/settings/price/ISettingPriceBodyPartCoefficientRepository';
-import { ISettingPriceDiameterCoefficientRepository } from '@/@domain/repositories/settings/price/ISettingPriceDiameterCoefficientRepository';
 import { ISettingPriceGeneralRepository } from '@/@domain/repositories/settings/price/ISettingPriceGeneralRepository';
 import { ISettingPriceImpactCountToUtRepository } from '@/@domain/repositories/settings/price/ISettingPriceImpactCountToUtRepository';
-import { ISettingPriceRepairTypeCoefficientRepository } from '@/@domain/repositories/settings/price/ISettingPriceRepairTypeCoefficientRepository';
+import { ISettingPriceTechnicityCoefficientRepository } from '@/@domain/repositories/settings/price/ISettingPriceTechnicityCoefficientRepository';
 import { IBodyMaterialService } from '@/@domain/services/carRepair/IBodyMaterialService';
 import { IBodyPartService } from '@/@domain/services/carRepair/IBodyPartService';
 import { IDentRepairTypeService } from '@/@domain/services/carRepair/IDentRepairTypeService';
@@ -89,11 +84,10 @@ import { IDownloadService } from '@/@domain/services/IDownloadService';
 import { IGarageService } from '@/@domain/services/IGarageService';
 import { IPdfGenerator } from '@/@domain/services/IPdfGenerator';
 import { IUserService } from '@/@domain/services/IUserService';
-import { ISettingPriceBodyMaterialCoefficientService } from '@/@domain/services/settings/price/ISettingPriceBodyMaterialCoefficientService';
 import { ISettingPriceBodyPartCoefficientService } from '@/@domain/services/settings/price/ISettingPriceBodyPartCoefficientService';
-import { ISettingPriceDiameterCoefficientService } from '@/@domain/services/settings/price/ISettingPriceDiameterCoefficientService';
 import { ISettingPriceGeneralService } from '@/@domain/services/settings/price/ISettingPriceGeneralService';
 import { ISettingPriceImpactCountToUtService } from '@/@domain/services/settings/price/ISettingPriceImpactCountToUtService';
+import { ISettingPriceTechnicityCoefficientService } from '@/@domain/services/settings/price/ISettingPriceTechnicityCoefficientService';
 import { IAuthUseCase } from '@/@domain/useCases/auth/IAuthUseCase';
 import { ILogoutUseCase } from '@/@domain/useCases/auth/ILogoutUseCase';
 import { IRegisterUseCase } from '@/@domain/useCases/auth/IRegisterUseCase';
@@ -130,12 +124,10 @@ import { ISendQuoteUseCase } from '@/@domain/useCases/quotes/ISendQuoteUseCase';
 import { IUpdateQuoteUseCase } from '@/@domain/useCases/quotes/IUpdateQuoteUseCase';
 import { IUpdateStatusQuoteUseCase } from '@/@domain/useCases/quotes/IUpdateStatusQuoteUseCase';
 import { IViewQuoteUseCase } from '@/@domain/useCases/quotes/IViewQuoteUseCase';
-import { ISettingPriceBodyMaterialCoefficientUseCase } from '@/@domain/useCases/settings/price/ISettingPriceBodyMaterialCoefficientUseCase';
 import { ISettingPriceBodyPartCoefficientUseCase } from '@/@domain/useCases/settings/price/ISettingPriceBodyPartCoefficientUseCase';
-import { ISettingPriceDiameterCoefficientUseCase } from '@/@domain/useCases/settings/price/ISettingPriceDiameterCoefficientUseCase';
 import { ISettingPriceGeneralUseCase } from '@/@domain/useCases/settings/price/ISettingPriceGeneralUseCase';
 import { ISettingPriceImpactCountToUtUseCase } from '@/@domain/useCases/settings/price/ISettingPriceImpactCountToUtUseCase';
-import { ISettingPriceRepairTypeCoefficientUseCase } from '@/@domain/useCases/settings/price/ISettingPriceRepairTypeCoefficientUseCase';
+import { ISettingPriceTechnicityCoefficientUseCase } from '@/@domain/useCases/settings/price/ISettingPriceTechnicityCoefficientUseCase';
 import { ISettingPriceUseCase } from '@/@domain/useCases/settings/price/ISettingPriceUseCase';
 import { IGetCurrentSubscriptionUseCase } from '@/@domain/useCases/subscription/IGetCurrentSubscriptionUseCase';
 import { ISubscribeToFreePlanUseCase } from '@/@domain/useCases/subscription/ISubscribeToFreePlanUseCase';
@@ -155,12 +147,10 @@ import { useViewQuoteState } from '@/@presentation/@modules/quotes/composables/u
 import { useBodyMaterialState } from '@/@presentation/@modules/settings/carRepair/composables/useBodyMaterialState';
 import { useBodyPartState } from '@/@presentation/@modules/settings/carRepair/composables/useBodyPartState';
 import { useDentRepairTypeState } from '@/@presentation/@modules/settings/carRepair/composables/useDentRepairTypeState';
-import { useSettingPriceBodyMaterialCoefficientState } from '@/@presentation/@modules/settings/price/composables/useSettingPriceBodyMaterialCoefficientState';
 import { useSettingPriceBodyPartCoefficientState } from '@/@presentation/@modules/settings/price/composables/useSettingPriceBodyPartCoefficientState';
-import { useSettingPriceDiameterCoefficientState } from '@/@presentation/@modules/settings/price/composables/useSettingPriceDiameterCoefficientState';
 import { useSettingPriceGeneralState } from '@/@presentation/@modules/settings/price/composables/useSettingPriceGeneralState';
 import { useSettingPriceImpactCountToUtState } from '@/@presentation/@modules/settings/price/composables/useSettingPriceImpactCountToUtState';
-import { useSettingPriceRepairTypeCoefficientState } from '@/@presentation/@modules/settings/price/composables/useSettingPriceRepairTypeCoefficientState';
+import { useSettingPriceTechnicityCoefficientState } from '@/@presentation/@modules/settings/price/composables/useSettingPriceTechnicityCoefficientState';
 import { useUserState } from '@/@presentation/@modules/users/composables/useUserState';
 import { IBodyMaterialState } from '@/@presentation/types/composables/IBodyMaterialState';
 import { IBodyPartState } from '@/@presentation/types/composables/IBodyPartState';
@@ -175,12 +165,10 @@ import { IUseQuotesState } from '@/@presentation/types/composables/IUseQuotesSta
 import { IUseUserState } from '@/@presentation/types/composables/IUseUserState';
 import { IUseViewInvoiceState } from '@/@presentation/types/composables/IUseViewInvoiceState';
 import { IUseViewQuoteState } from '@/@presentation/types/composables/IUseViewQuoteState';
-import { IUseSettingPriceBodyMaterialCoefficientState } from '@/@presentation/types/composables/settings/price/IUseSettingPriceBodyMaterialCoefficientState';
 import { IUseSettingPriceBodyPartCoefficientState } from '@/@presentation/types/composables/settings/price/IUseSettingPriceBodyPartCoefficientState';
-import { IUseSettingPriceDiameterCoefficientState } from '@/@presentation/types/composables/settings/price/IUseSettingPriceDiameterCoefficientState';
 import { IUseSettingPriceGeneralState } from '@/@presentation/types/composables/settings/price/IUseSettingPriceGeneralState';
 import { IUseSettingPriceImpactCountToUtState } from '@/@presentation/types/composables/settings/price/IUseSettingPriceImpactCountToUtState';
-import { IUseSettingPriceRepairTypeCoefficientState } from '@/@presentation/types/composables/settings/price/IUseSettingPriceRepairTypeCoefficientState';
+import { IUseSettingPriceTechnicityCoefficientState } from '@/@presentation/types/composables/settings/price/IUseSettingPriceTechnicityCoefficientState';
 import { AuthService } from '@application/services/auth/AuthService';
 import { AuthState } from '@application/states/AuthState';
 import { AuthUseCase } from '@application/useCases/auth/AuthUseCase';
@@ -199,12 +187,10 @@ import { InvoiceDetailRepository } from '../database/repositories/InvoiceDetailR
 import { InvoiceRepository } from '../database/repositories/InvoiceRepository';
 import { QuoteDetailRepository } from '../database/repositories/QuoteDetailRepository';
 import { QuoteRepository } from '../database/repositories/QuoteRepository';
-import { SettingPriceBodyMaterialCoefficientRepository } from '../database/repositories/settings/price/SettingPriceBodyMaterialCoefficientRepository';
 import { SettingPriceBodyPartCoefficientRepository } from '../database/repositories/settings/price/SettingPriceBodyPartCoefficientRepository';
-import { SettingPriceDiameterCoefficientRepository } from '../database/repositories/settings/price/SettingPriceDiameterCoefficientRepository';
 import { SettingPriceGeneralRepository } from '../database/repositories/settings/price/SettingPriceGeneralRepository';
 import { SettingPriceImpactCountToUtRepository } from '../database/repositories/settings/price/SettingPriceImpactCountToUtRepository';
-import { SettingPriceRepairTypeCoefficientRepository } from '../database/repositories/settings/price/SettingPriceRepairTypeCoefficientRepository';
+import { SettingPriceTechnicityCoefficientRepository } from '../database/repositories/settings/price/SettingPriceTechnicityCoefficientRepository';
 import { SubscriptionRepository } from '../database/repositories/SubscriptionRepository';
 import { UserRepository } from '../database/repositories/UserRepository';
 import { BrowserDownloadService } from '../download/BrowserDownloadService';
@@ -235,11 +221,9 @@ container.bind<IBodyMaterialRepository>(SYMBOLS.Repositories.BodyMaterialReposit
 container.bind<IDentRepairTypeRepository>(SYMBOLS.Repositories.DentRepairTypeRepository).to(DentRepairTypeRepository).inSingletonScope();
 /** 3.3 -- Settings CarRepair Repositories */
 container.bind<ISettingPriceGeneralRepository>(SYMBOLS.Repositories.Setting.Price.SettingPriceGeneralRepository).to(SettingPriceGeneralRepository).inSingletonScope();
-container.bind<ISettingPriceBodyMaterialCoefficientRepository>(SYMBOLS.Repositories.Setting.Price.SettingPriceBodyMaterialCoefficient).to(SettingPriceBodyMaterialCoefficientRepository).inSingletonScope();
 container.bind<ISettingPriceBodyPartCoefficientRepository>(SYMBOLS.Repositories.Setting.Price.SettingPriceBodyPartCoefficient).to(SettingPriceBodyPartCoefficientRepository).inSingletonScope();
-container.bind<ISettingPriceDiameterCoefficientRepository>(SYMBOLS.Repositories.Setting.Price.SettingPriceDiameterCoefficient).to(SettingPriceDiameterCoefficientRepository).inSingletonScope();
+container.bind<ISettingPriceTechnicityCoefficientRepository>(SYMBOLS.Repositories.Setting.Price.SettingPriceTechnicityCoefficient).to(SettingPriceTechnicityCoefficientRepository).inSingletonScope();
 container.bind<ISettingPriceImpactCountToUtRepository>(SYMBOLS.Repositories.Setting.Price.SettingPriceImpactCountToUtRepository).to(SettingPriceImpactCountToUtRepository).inSingletonScope();
-container.bind<ISettingPriceRepairTypeCoefficientRepository>(SYMBOLS.Repositories.Setting.Price.RepairTypeCoefficient).to(SettingPriceRepairTypeCoefficientRepository).inSingletonScope();
 /** 3.4. -- User CarRepair Repositories */
 container.bind<IUserRepository>(SYMBOLS.Repositories.UserRepository).to(UserRepository).inSingletonScope();
 /** 3.5. -- Document Statuse Repositories */
@@ -263,9 +247,8 @@ container.bind<IBodyMaterialService>(SYMBOLS.Services.BodyMaterialService).to(Bo
 container.bind<IDentRepairTypeService>(SYMBOLS.Services.DentRepairTypeService).to(DentRepairTypeService).inSingletonScope();
 /** 4.3. -- Settings CarRepair Services */
 container.bind<ISettingPriceGeneralService>(SYMBOLS.Services.Setting.Price.SettingPriceGeneralService).to(SettingPriceGeneralService).inSingletonScope();
-container.bind<ISettingPriceBodyMaterialCoefficientService>(SYMBOLS.Services.Setting.Price.SettingPriceBodyMaterialCoefficientService).to(SettingPriceBodyMaterialCoefficientService).inSingletonScope();
 container.bind<ISettingPriceBodyPartCoefficientService>(SYMBOLS.Services.Setting.Price.SettingPriceBodyPartCoefficientService).to(SettingPriceBodyPartCoefficientService).inSingletonScope();
-container.bind<ISettingPriceDiameterCoefficientService>(SYMBOLS.Services.Setting.Price.SettingPriceDiameterCoefficientService).to(SettingPriceDiameterCoefficientService).inSingletonScope();
+container.bind<ISettingPriceTechnicityCoefficientService>(SYMBOLS.Services.Setting.Price.SettingPriceTechnicityCoefficientService).to(SettingPriceTechnicityCoefficientService).inSingletonScope();
 container.bind<ISettingPriceImpactCountToUtService>(SYMBOLS.Services.Setting.Price.SettingPriceImpactCountToUtService).to(SettingPriceImpactCountToUtService).inSingletonScope();
 /** 4.4. -- User CarRepair Services */
 container.bind<IUserService>(SYMBOLS.Services.UserService).to(UserService).inSingletonScope();
@@ -297,11 +280,9 @@ container.bind<IDentRepairTypeUseCase>(SYMBOLS.UseCases.CarRepair.DentRepairType
 /** 5.3. -- Settings Prices CarRepair UseCases */
 container.bind<ISettingPriceUseCase>(SYMBOLS.UseCases.Setting.Price.AllUseCase).to(SettingPriceUseCase).inSingletonScope();
 container.bind<ISettingPriceGeneralUseCase>(SYMBOLS.UseCases.Setting.Price.GeneralUseCase).to(SettingPriceGeneralUseCase).inSingletonScope();
-container.bind<ISettingPriceBodyMaterialCoefficientUseCase>(SYMBOLS.UseCases.Setting.Price.BodyMaterialCoefficientUseCase).to(SettingPriceBodyMaterialCoefficientUseCase).inSingletonScope();
 container.bind<ISettingPriceBodyPartCoefficientUseCase>(SYMBOLS.UseCases.Setting.Price.BodyPartCoefficientUseCase).to(SettingPriceBodyPartCoefficientUseCase).inSingletonScope();
-container.bind<ISettingPriceDiameterCoefficientUseCase>(SYMBOLS.UseCases.Setting.Price.DiameterCoefficientUseCase).to(SettingPriceDiameterCoefficientUseCase).inSingletonScope();
+container.bind<ISettingPriceTechnicityCoefficientUseCase>(SYMBOLS.UseCases.Setting.Price.TechnicityCoefficientUseCase).to(SettingPriceTechnicityCoefficientUseCase).inSingletonScope();
 container.bind<ISettingPriceImpactCountToUtUseCase>(SYMBOLS.UseCases.Setting.Price.ImpactCountToUtUseCase).to(SettingPriceImpactCountToUtUseCase).inSingletonScope();
-container.bind<ISettingPriceRepairTypeCoefficientUseCase>(SYMBOLS.UseCases.Setting.Price.RepairTypeCoefficientUseCase).to(SettingPriceRepairTypeCoefficientUseCase).inSingletonScope();
 /** 5.4. -- User CarRepair UseCases */
 container.bind<IUserUseCase>(SYMBOLS.UseCases.UserUseCase).to(UserUseCase).inSingletonScope();
 container.bind<ICreateUserUseCase>(SYMBOLS.UseCases.User.CreateUserUseCase).to(CreateUserUseCase).inSingletonScope();
@@ -368,20 +349,14 @@ container.bind<IDentRepairTypeState>(SYMBOLS.States.CarRepair.DentRepairTypeStat
 container.bind<IUseSettingPriceGeneralState>(SYMBOLS.States.Setting.Price.GeneralState).toDynamicValue(() => {
   return useSettingPriceGeneralState();
 });
-container.bind<IUseSettingPriceBodyMaterialCoefficientState>(SYMBOLS.States.Setting.Price.BodyMaterialCoefficientState).toDynamicValue(() => {
-  return useSettingPriceBodyMaterialCoefficientState();
-});
 container.bind<IUseSettingPriceBodyPartCoefficientState>(SYMBOLS.States.Setting.Price.BodyPartCoefficientState).toDynamicValue(() => {
   return useSettingPriceBodyPartCoefficientState();
 });
-container.bind<IUseSettingPriceDiameterCoefficientState>(SYMBOLS.States.Setting.Price.DiameterCoefficientState).toDynamicValue(() => {
-  return useSettingPriceDiameterCoefficientState();
+container.bind<IUseSettingPriceTechnicityCoefficientState>(SYMBOLS.States.Setting.Price.TechnicityCoefficientState).toDynamicValue(() => {
+  return useSettingPriceTechnicityCoefficientState();
 });
 container.bind<IUseSettingPriceImpactCountToUtState>(SYMBOLS.States.Setting.Price.ImpactCountToUtState).toDynamicValue(() => {
   return useSettingPriceImpactCountToUtState();
-});
-container.bind<IUseSettingPriceRepairTypeCoefficientState>(SYMBOLS.States.Setting.Price.RepairTypeCoefficientState).toDynamicValue(() => {
-  return useSettingPriceRepairTypeCoefficientState();
 });
 /** 6.3. -- Quote States */
 container.bind<IUseCreateQuoteState>(SYMBOLS.States.Quote.CreateQuoteState).toDynamicValue(() => {

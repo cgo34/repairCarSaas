@@ -1,4 +1,4 @@
-export interface SettingPriceDiameterCoefficientViewDto {
+export interface SettingPriceDiameterCoefficientDto {
     id: string,
     userId: string,
     diameter: number,

@@ -1,9 +1,9 @@
 import { SettingPriceBodyMaterialCoefficientViewModel } from "./SettingPriceBodyMaterialCoefficientViewModel";
 import { SettingPriceBodyPartCoefficientViewModel } from "./SettingPriceBodyPartCoefficientViewModel";
-import { SettingPriceDiameterCoefficientViewModel } from "./SettingPriceDiameterCoefficientViewModel";
 import { SettingPriceGeneralViewModel } from "./SettingPriceGeneralViewModel";
 import { SettingPriceImpactCountToUtViewModel } from "./SettingPriceImpactCountToUtViewModel";
 import { SettingPriceRepairTypeCoefficientViewModel } from "./SettingPriceRepairTypeCoefficientViewModel";
+import { SettingPriceDiameterCoefficientViewModel } from "./SettingPriceTechnicityCoefficientViewModel";
 
 export interface SettingPriceViewModel {
   general: SettingPriceGeneralViewModel;

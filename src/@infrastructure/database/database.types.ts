@@ -561,35 +561,6 @@ export type Database = {
           },
         ]
       }
-      setting_price_diameter_coefficient: {
-        Row: {
-          coefficient: number | null
-          diameter: number | null
-          id: string
-          user_id: string | null
-        }
-        Insert: {
-          coefficient?: number | null
-          diameter?: number | null
-          id: string
-          user_id?: string | null
-        }
-        Update: {
-          coefficient?: number | null
-          diameter?: number | null
-          id?: string
-          user_id?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "setting_price_diameter_coefficient_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       setting_price_general: {
         Row: {
           hourly_rate: number | null
@@ -677,6 +648,44 @@ export type Database = {
           },
           {
             foreignKeyName: "setting_price_repair_type_coefficient_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      setting_price_technicity_coefficient: {
+        Row: {
+          aluminium_coefficient: number
+          dap_coefficient: number
+          diameter_25_coefficient: number
+          diameter_35_coefficient: number
+          dsp_coefficient: number
+          id: string
+          user_id: string
+        }
+        Insert: {
+          aluminium_coefficient?: number
+          dap_coefficient?: number
+          diameter_25_coefficient?: number
+          diameter_35_coefficient?: number
+          dsp_coefficient?: number
+          id?: string
+          user_id: string
+        }
+        Update: {
+          aluminium_coefficient?: number
+          dap_coefficient?: number
+          diameter_25_coefficient?: number
+          diameter_35_coefficient?: number
+          dsp_coefficient?: number
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "setting_price_diameter_coefficient_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "users"

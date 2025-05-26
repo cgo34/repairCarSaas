@@ -115,7 +115,9 @@ export function useSettingPriceImpactCountToUtState(): IUseSettingPriceImpactCou
     
     loading.value = true;
     try {
-      return useCase.save(_settings.value)
+      return useCase.save(_settings.value).then(data => {
+        _settings.value = data
+      })
     } catch (e) {
       error.value = e;
       // throw e;

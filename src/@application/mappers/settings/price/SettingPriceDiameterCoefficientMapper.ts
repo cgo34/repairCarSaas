@@ -1,5 +1,5 @@
 import { SettingPriceDiameterCoefficient } from '@/@domain/models/settings/price/SettingPriceDiameterCoefficient';
-import { SettingPriceDiameterCoefficientDto } from '@/@infrastructure/dtos/settings/price/SettingPriceDiameterCoefficientDto';
+import { SettingPriceDiameterCoefficientDto } from '@/@infrastructure/dtos/settings/price/SettingPriceTechnicityCoefficientDto';
 
 export class SettingPriceDiameterCoefficientMapper {
   static dtoToDomain(dto: SettingPriceDiameterCoefficientDto): SettingPriceDiameterCoefficient {

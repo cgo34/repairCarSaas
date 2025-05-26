@@ -62,7 +62,9 @@ export function useSettingPriceGeneralState(): IUseSettingPriceGeneralState {
   const saveSettingPriceGeneral = async () => {
     loading.value = true;
     try {
-      return settingPriceGeneralUseCase.save(_settings.value)
+      return settingPriceGeneralUseCase.save(_settings.value).then(data => {
+        _settings.value = data
+      })
     } catch (e) {
       error.value = e;
       // throw e;

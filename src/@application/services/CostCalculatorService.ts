@@ -4,9 +4,9 @@ import { injectable } from 'inversify';
 import { LineItemViewDto } from '../dtos/LineItemViewDto';
 import { SettingPriceBodyMaterialCoefficientViewDto } from '../dtos/settings/SettingPriceBodyMaterialCoefficientViewDto';
 import { SettingPriceBodyPartCoefficientViewDto } from '../dtos/settings/SettingPriceBodyPartCoefficientViewType';
-import { SettingPriceDiameterCoefficientViewDto } from '../dtos/settings/SettingPriceDiameterCoefficientViewType';
 import { SettingPriceImpactCountToUtViewDto } from '../dtos/settings/SettingPriceImpactCountToUtViewDto';
 import { SettingPriceRepairTypeCoefficientViewDto } from '../dtos/settings/SettingPriceRepairTypeCoefficientViewDto';
+import { SettingPriceDiameterCoefficientViewDto } from '../dtos/settings/SettingPriceTechnicityCoefficientDto';
 import { SettingPriceViewDto } from '../dtos/settings/SettingPriceViewDto';
 
 @injectable()
