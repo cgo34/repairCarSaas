@@ -14,7 +14,7 @@ export class BodyMaterialRepository implements IBodyMaterialRepository {
 
   async getAll(): Promise<BodyMaterialDto[]> {
     const { data, error } = await this.clientProvider.getClient()
-      .fromSchema<'car_repair', 'body_materials'>('car_repair', 'body_materials')
+      .from('body_materials')
       .select('*')
       .returns<BodyMaterialApiModel[]>();
 
@@ -28,7 +28,7 @@ export class BodyMaterialRepository implements IBodyMaterialRepository {
     const bodyMaterialApi = BodyMaterialMapper.dtoToApi(bodyMaterial);
     
     const { data, error } = await this.clientProvider.getClient()
-      .fromSchema<'car_repair', 'body_materials'>('car_repair', 'body_materials')
+      .from('body_materials')
       .insert(bodyMaterialApi)
       .select('*')
       .single<BodyMaterialApiModel>();
@@ -46,7 +46,7 @@ export class BodyMaterialRepository implements IBodyMaterialRepository {
       throw new Error('Body part id is required');
 
     const { data, error } = await this.clientProvider.getClient()
-      .fromSchema<'car_repair', 'body_materials'>('car_repair', 'body_materials')
+      .from('body_materials')
       .update(bodyMaterialApi)
       .eq('id', bodyMaterialApi.id)
       .select('*')
@@ -59,7 +59,7 @@ export class BodyMaterialRepository implements IBodyMaterialRepository {
 
   async delete(id: string): Promise<void> {
     const { error } = await this.clientProvider.getClient()
-      .fromSchema<'car_repair', 'body_materials'>('car_repair', 'body_materials')
+      .from('body_materials')
       .delete()
       .eq('id', id);
       

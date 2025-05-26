@@ -2,6 +2,13 @@
   <MainLayout>
     <v-container fluid>
       <v-row>
+        <v-alert
+          class="mb-2"
+          type="info"
+          icon="$info"
+          variant="tonal"
+          text="Le nombre de bosses est traduit en Unités de temps (UT) paramétrables 1UT = 6 minutes"
+        ></v-alert>
         <v-data-table
           :headers="headers"
           :items="settings"

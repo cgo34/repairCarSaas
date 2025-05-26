@@ -1,7 +1,7 @@
 import { CountryViewModel } from "./CountryViewModel";
+import { DocumentStatuseViewModel } from "./DocumentStatuseViewModel";
 import { GarageViewModel } from "./GarageViewModel";
 import { LineItemViewModel } from "./LineItemViewModel";
-import { QuoteStatusViewType } from "./QuoteStatusViewType";
 import { UserViewModel } from "./UserViewModel";
 
 /*
@@ -30,7 +30,8 @@ import { UserViewModel } from "./UserViewModel";
 export interface QuoteViewModel {
   id?: string;
   quoteNumber: string;
-  status: QuoteStatusViewType;
+  status_id: string;
+  status: DocumentStatuseViewModel;
 
   userId: string;
 
@@ -58,5 +59,14 @@ export interface QuoteViewModel {
   isSent: boolean;
   sentAt?: Date;
 
-  createdAt?: string
+  createdAt?: string;
+
+  // garage info for first level subscription users
+  garageName?: string;
+  garageAddress?: string;
+  garageZipCode?: string;
+  garageCity?: string;
+  garagePhone?: string;
+  garageEmail?: string;
+  garagePercentageCommission?: number;
 }

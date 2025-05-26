@@ -1,7 +1,9 @@
+import { SubscriptionApiModel } from "../database/api/SubscriptionApiModel";
+
 export interface UserDto {
-  id: string;
+  id?: string;
   email: string;
-  password: string;
   fullName: string;
-  createdAt: string;
+  role: 'technician' | 'garage' | 'admin'; // mise à jour ici
+  subscription: SubscriptionApiModel
 }

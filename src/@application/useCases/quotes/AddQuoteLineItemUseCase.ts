@@ -12,9 +12,6 @@ export class AddQuoteLineItemUseCase {
   ) {}
 
   async executeQuote(lineItem: LineItemDto): Promise<LineItemDto> {
-
-    console.log('exrcute QuoteDetail add',lineItem);
-    
     const updatedQuoteDto = await this.quoteDetailRepository.insert(lineItem);
 
     // 🔹 6. Retourner l’entité en DTO pour la présentation

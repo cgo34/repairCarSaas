@@ -378,15 +378,9 @@ const onSelectCountry = (country: CountryViewModel | undefined) => {
 };
 
 const onSaveBtnClick = () => {
-  console.log('Quote saved successfully');
   save().then(() => {
-    console.log('Quote saved successfully');
     router.push(`/quotes/edit/${quote.value.id}`);
   });
-};
-
-const onUpdateBtnClick = () => {
-  console.log('onUpdateBtnClick -> quoteInformations', quoteInformations.value);
 };
 // #endregion
   

@@ -14,6 +14,11 @@ export class SupabaseClient implements IClient {
       { db: { schema: 'public' } }
     );
   }
+
+  rpc<T = any>(fn: string, params?: Record<string, any>) {
+    return this.client.rpc<T>(fn, params);
+  }
+  
   
   // Proxy methods to the underlying client
   from<T extends keyof Database['public']['Tables']>(table: T) {
@@ -39,7 +44,7 @@ export class SupabaseClient implements IClient {
   get auth() {
     return {
       signIn: (email: string, password: string) => this.client.auth.signInWithPassword({ email, password }),
-      signUp: (email: string, password: string) => this.client.auth.signUp({ email, password }),
+      signUp: (email: string, password: string, fullName: string) => this.client.auth.signUp({ email, password, options: { data: { fullName }} }),
       signOut: () => this.client.auth.signOut(),
       onAuthStateChange: (callback: (event: string, session: any) => void) => this.client.auth.onAuthStateChange(callback),
       user: () => this.client.auth.getUser(),

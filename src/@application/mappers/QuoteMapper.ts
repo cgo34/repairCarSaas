@@ -1,7 +1,51 @@
 import { Quote } from '@/@domain/entities/Quote';
+import { InvoiceDto } from '@/@infrastructure/dtos/InvoiceDto';
 import { QuoteDto } from '@/@infrastructure/dtos/QuoteDto';
 
 export class QuoteMapper {
+
+  static quoteToInvoice(quoteDto: QuoteDto): InvoiceDto {
+      return {
+        quoteNumber: quoteDto.quoteNumber,
+
+        status_id: quoteDto.status_id,
+        status: quoteDto.status,
+
+        startDate: quoteDto.startDate,
+        endDate: quoteDto.endDate,
+        carBrand: quoteDto.carBrand,
+        carId: quoteDto.carId,
+        carDate: quoteDto.carDate,
+
+        technicianId: quoteDto.technicianId,
+        technician: quoteDto.technician, // Ajouté si nécessaire
+        garageId: quoteDto.garageId ?? undefined,
+        garage: quoteDto.garage, // Aj
+        userId: quoteDto.userId, // Ajouté si nécessaire
+        user: quoteDto.user, // Ajouté si nécessaire
+        
+        country: quoteDto.country,
+        currency: quoteDto.currency,
+        
+        isForfait: quoteDto.isForfait,
+        forfaitAmount: quoteDto.forfaitAmount ?? undefined,
+        // isDisplayUnitPrice: quoteDto.isDisplayUnitPrice,
+        // isComputeCommissionWithoutDentRemoval: quoteDto.isComputeCommissionWithoutDentRemoval,
+        
+        // garage info for first level subscription users
+        garageName: quoteDto.garageName,
+        garageAddress: quoteDto.garageAddress,
+        garageZipCode: quoteDto.garageZipCode,
+        garageCity: quoteDto.garageCity,
+        garagePhone: quoteDto.garagePhone,
+        garageEmail: quoteDto.garageEmail,
+        garagePercentageCommission: quoteDto.garagePercentageCommission,
+
+        isSent: false,
+        sentAt: null,
+      };
+    }
+
   /**
    * Convertit un `QuoteDto` en `Quote` (Entité Domain Model)
    */
@@ -13,7 +57,7 @@ export class QuoteMapper {
       dto.forfaitAmount ?? null,
       new Date(dto.startDate),
       new Date(dto.endDate),
-      dto.status,
+      dto.status_id,
       dto.country ?? '',
       dto.currency,
       dto.isSent,
@@ -40,7 +84,7 @@ export class QuoteMapper {
       forfaitAmount: quote.forfaitAmount ?? undefined,
       startDate: quote.startDate.toISOString(),
       endDate: quote.endDate.toISOString(),
-      status: quote.status,
+      status_id: quote.status_id,
       country: quote.country,
       currency: quote.currency,
       isSent: quote.isSent,

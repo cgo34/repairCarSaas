@@ -2,7 +2,7 @@ import { IClientProvider } from '@/@infrastructure/interfaces/IClientProvider';
 import { IAuthRepository } from '@domain/repositories/IAuthRepository';
 import { SupabaseAuthResponse } from '@infrastructure/database/dtos/supabase/SupabaseAuthResponse';
 import { SYMBOLS } from '@infrastructure/ioc/symbols';
-import { AuthError } from '@supabase/supabase-js';
+import { AuthError, AuthResponse } from '@supabase/supabase-js';
 import { inject, injectable } from 'inversify';
 import { SupabaseClient } from '../../clients/SupabaseClient';
 import { User } from '../../dtos/supabase/SupabaseUser';
@@ -29,8 +29,12 @@ export class AuthSupabaseRepository implements IAuthRepository {
     }
   }
 
-  async register(email: string, password: string): Promise<any> {
-    return await this.clientProvider.getClient().auth.signUp(email, password);
+  async register(email: string, password: string, fullName: string): Promise<AuthResponse> {
+    console.log('register user repository');
+    
+    return await this.clientProvider.getClient().auth.signUp(email, password, fullName );
+
+
   }
 
   async logout(): Promise<{ error: AuthError | null }> {

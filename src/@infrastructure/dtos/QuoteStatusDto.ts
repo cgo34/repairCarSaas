@@ -2,6 +2,7 @@ export const QUOTE_STATUSES = [
   'cancel',
   'draft',
   'pending',
+  'processing',
   'validated',
   'accepted',
   'signed',

@@ -33,7 +33,6 @@ export class QuoteDetailRepository implements IQuoteDetailRepository {
       `)
       .eq('quote_id', id)
       .returns<LineItemApiModel[]>();
-      console.log('get quote detail', data);
       
 
     if (error) throw new Error('Error fetching quote detail');
@@ -41,8 +40,6 @@ export class QuoteDetailRepository implements IQuoteDetailRepository {
   }
 
   async insert(item: LineItemDto): Promise<LineItemDto> {
-    console.log('insert items', item);
-    
     const { data, error } = await this.clientProvider.getClient()
       .from('quote_details')
       .insert(LineItemMapper.dtoToApi(item))
@@ -57,10 +54,7 @@ export class QuoteDetailRepository implements IQuoteDetailRepository {
 
     if (error)
       throw new Error('Error inserting quote detail');
-
-    console.log('data after save', data);
     
-
     return LineItemMapper.apiToDto(data[0]);
   }
 

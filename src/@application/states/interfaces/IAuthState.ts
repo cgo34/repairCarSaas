@@ -1,9 +1,11 @@
+import { SubscriptionDto } from "@/@application/dtos/SubscriptionDto";
 import { User } from "@domain/entities/User";
 import { IAuthStateSnapshot } from "@domain/states/IAuthStateSnapshot";
 import { Ref } from "vue";
 
 export interface IAuthState {
     user: Ref<User | undefined>;
+    subscription: Ref<SubscriptionDto>;
     isAuthenticated: Ref<boolean>;
     isAuthReady: boolean;
     login(email: string, password: string): Promise<void>;

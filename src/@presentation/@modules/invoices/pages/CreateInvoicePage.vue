@@ -1,0 +1,392 @@
+<template>
+  <MainLayout>
+    <v-container fluid class="px-0 py-0">
+      <v-form ref="form">
+        <v-card
+          class="rounded-lg"
+          outlined
+        >
+          <v-card-title class="text-h5">
+            Créer une facture
+          </v-card-title>
+
+          <v-card-text>
+            <!-- Informations du facture -->
+            <h5 class="text-h6 my-4">
+              Informations générales
+            </h5>
+            <v-row>
+              <v-col
+                cols="12"
+                md="4"
+              >
+                <v-text-field
+                  v-model="invoiceInformations.number"
+                  label="Numéro de facture"
+                  readonly
+                  outlined
+                />
+              </v-col>
+              <v-col
+                cols="12"
+                md="4"
+              >
+                <v-text-field
+                  v-model="invoiceInformations.date"
+                  label="Date"
+                  type="date"
+                  outlined
+                />
+              </v-col>
+              <v-col
+                cols="12"
+                md="4"
+              >
+                <v-text-field
+                  v-model="expirationDate"
+                  label="Validité jusqu'à"
+                  type="date"
+                  outlined
+                  required
+                />
+              </v-col>
+            </v-row>
+
+            <!-- Informations du Technicien et du Garage -->
+            <v-row>
+              <v-col md="6">
+                <v-card
+                  outlined
+                  class="pa-4"
+                >
+                  <div class="d-flex flex-column justify-space-between">
+                    <div>
+                      <h5 class="text-h6">
+                        Technicien :
+                      </h5>
+                    </div>
+
+                    <v-flex
+                      xs12
+                      sm12
+                      md12
+                    >
+                      <v-select
+                        :model-value="selectedTechnician"
+                        label="Select Technician"
+                        :items="techniciansList"
+                        :item-props="true"
+                        item-title="fullName"
+                        item-value
+                        return-object
+                        clearable
+                        @update:model-value="onSelectTechnician"
+                      >
+                        <template #prepend-item>
+                          <v-list-tile>
+                            <v-text-field
+                              label="Search"
+                              @input="onSearchTechnician"
+                            />
+                          </v-list-tile>
+                        </template>
+                      </v-select>
+                    </v-flex>
+                  </div>
+                </v-card>
+              </v-col>
+
+              <v-col md="6">
+                <v-card
+                  outlined
+                  class="pa-4"
+                >
+                  <div class="d-flex flex-column justify-space-between">
+                    <div class="d-flex align-center justify-space-between mb-2">
+                      <h5 class="text-h6">
+                        Garage :
+                      </h5>
+                      
+                      <!-- TODO: (GCE) -> ADD IMPLEMENTATION TO FREE USER -->
+                      <v-btn
+                        color="primary"
+                        variant="text"
+                        @click="onEditCustomerBtnClick"
+                      >
+                        Edit customer
+                      </v-btn>
+
+                    </div>
+                    
+
+                    <v-flex
+                      xs12
+                      sm12
+                      md12
+                    >
+                      <!-- INFO -> IMPLEMENTATION TO PAID USER -->
+                      <v-select
+                        :model-value="selectedGarage"
+                        label="Select Garage"
+                        :items="garagesList"
+                        :item-props="true"
+                        item-title="name"
+                        item-value
+                        return-object
+                        clearable
+                        @update:model-value="onSelectGarage"
+                      >
+                        <template #prepend-item>
+                          <v-list-tile>
+                            <v-text-field
+                              label="Search"
+                              @input="onSearchGarage"
+                            />
+                          </v-list-tile>
+                        </template>
+                      </v-select>
+                    </v-flex>
+
+                    <!-- <v-btn
+                      variant="outlined"
+                      color="primary"
+                      @click="selectGarage"
+                    >
+                      {{ invoice.garage ? 'Changer' : 'Ajouter' }}
+                    </v-btn> -->
+                  </div>
+                </v-card>
+              </v-col>
+            </v-row>
+          </v-card-text>
+
+          <v-divider class="my-4" />
+
+          <!-- Informations du véhicule -->
+          
+          <v-card-text>
+            <v-row>
+              <v-col md="12">
+                <h5 class="text-h6 my-4">
+                  Informations du véhicule
+                </h5>
+                <v-card
+                  outlined
+                  class="pa-4"
+                >
+                <v-card-text>
+                  <v-row>
+                    <v-col
+                      cols="12"
+                      md="4"
+                    >
+                      <v-text-field
+                        v-model="carInformations.immatriculation"
+                        label="Immatriculation"
+                        outlined
+                        @update:model-value="(value) => onCarImmatriculationUpdated(value)"
+                      />
+                    </v-col>
+                    <v-col
+                      cols="12"
+                      md="4"
+                    >
+                      <v-text-field
+                        v-model="carInformations.brand"
+                        label="Marque"
+                        outlined
+                        @update:model-value="(value) => onCarBrandUpdated(value)"
+                      />
+                    </v-col>
+                    <v-col
+                      cols="12"
+                      md="4"
+                    >
+                      <v-text-field
+                        v-model="carInformations.dateEntryCirculation"
+                        label="Année"
+                        outlined
+                        @update:model-value="(value) => onCarYearUpdated(value)"
+                      />
+                    </v-col>
+                  </v-row>
+                </v-card-text>
+                </v-card>
+              </v-col>
+            </v-row>
+          </v-card-text>
+        
+          <v-divider class="my-4" />
+
+          <!-- Tableau des éléments du facture -->
+          <v-card-text>
+            <div>
+              <h5 class="text-h6">
+                Options du facture
+              </h5>
+              <div class="d-flex justify-space-between">
+                <div><v-switch label="Appliquer un forfait ?" :modelValue="isForfait" @update:modelValue="onUpdateIsForfait" color="primary" inset></v-switch></div>
+                <div v-if="!isForfait"><v-switch label="Afficher les prix unitaires ?" :modelValue="isDisplayUnitPrice" @update:modelValue="onUpdateIsDisplayUnitPrice" color="primary" inset></v-switch></div>
+                <div v-if="!isForfait"><v-switch label="Calculer la commission sans le dégarnissage ?" :modelValue="isComputeCommissionWithoutDentRemoval" @update:modelValue="onUpdateIsComputeCommissionWithoutDentRemoval" color="primary" inset></v-switch></div>
+              </div>
+            </div>
+            <CountrySelect :modelValue="selectedCountry" @select="onSelectCountry"/>
+          </v-card-text>
+        </v-card>
+        <div class="d-flex justify-end">
+          <v-btn
+            class="mt-3"
+            color="primary"
+            @click="onSaveBtnClick"
+          >
+            Créer
+          </v-btn>
+        </div>
+      </v-form>
+    </v-container>
+  </MainLayout>
+  
+  <GarageDialog
+    ref="garageDialogRef"
+    title="Edit customer"
+    persistent
+    :maxWidth="500"
+    @validated="onGarageValidated"
+  >
+  </GarageDialog>
+</template>
+
+<script setup lang="ts">
+import { container } from '@/@infrastructure/ioc/inversify.config';
+import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
+import MainLayout from '@/@presentation/@ui/layouts/MainLayout.vue';
+import CountrySelect from '@/@presentation/components/CountrySelect.vue';
+import { GarageDialogExposed } from '@/@presentation/components/GarageDialog';
+import GarageDialog from '@/@presentation/components/GarageDialog.vue';
+import { IUseCreateInvoiceState } from '@/@presentation/types/composables/IUseCreateInvoiceState';
+import { CountryViewModel } from '@/@presentation/types/models/CountryViewModel';
+import { GarageViewModel } from '@/@presentation/types/models/GarageViewModel';
+import { UserViewModel } from '@/@presentation/types/models/UserViewModel';
+import router from '@/router';
+import { onMounted, ref } from 'vue';
+
+// Injection du state depuis Inversify
+const useCreateInvoiceState = container.get<IUseCreateInvoiceState>(SYMBOLS.States.Invoice.CreateInvoiceState);
+
+const {
+  init,
+
+  invoice,
+  invoiceInformations,
+  expirationDate,
+
+  technicians,
+  garages,
+  selectedTechnician,
+  selectedGarage,
+  selectGarage,
+  selectTechnician,
+  setGarage,
+
+  carInformations,
+  setCarImmatriculation,
+  setCarBrand,
+  setCarDateEntryCirculation,
+
+  isForfait,
+  isDisplayUnitPrice,
+  isComputeCommissionWithoutDentRemoval,
+  setIsForfait,
+  setIsDisplayUnitPrice,
+  setIsComputeCommissionWithoutDentRemoval,
+  selectCountry,
+  selectedCountry,
+
+  save
+} = useCreateInvoiceState;
+
+
+const garageDialogRef = ref<GarageDialogExposed>()
+
+const techniciansList = ref<UserViewModel[]>(technicians.value);
+const garagesList = ref<GarageViewModel[]>(garages.value);
+
+// #region -> METHODS
+const onSearchTechnician = (event: InputEvent) => {
+  const search = (event.target as HTMLInputElement).value;
+  if (search) {
+    techniciansList.value = techniciansList.value.filter(t => t.fullName.toLowerCase().includes(search));
+  } else {
+    techniciansList.value = technicians.value;
+  }
+};
+
+const onSearchGarage = (event: InputEvent) => {
+  const search = (event.target as HTMLInputElement).value;
+  if (search) {
+    garagesList.value = garagesList.value.filter(g => g.name.toLowerCase().includes(search));
+  } else {
+    garagesList.value = garages.value;
+  }
+};
+
+const onSelectTechnician = (technician: UserViewModel) => {
+  selectTechnician(technician);
+};
+
+const onSelectGarage = (garage: GarageViewModel) => {
+  selectGarage(garage);
+};
+
+const onEditCustomerBtnClick = () => {
+  garageDialogRef.value?.open()
+}
+
+const onGarageValidated = (garage: GarageViewModel) => {
+  setGarage(garage)
+}
+
+const onCarImmatriculationUpdated = (value: string) => {
+  setCarImmatriculation(value);
+};
+
+const onCarBrandUpdated = (value: string) => {
+  setCarBrand(value);
+};
+
+const onCarYearUpdated = (value: string) => {
+  setCarDateEntryCirculation(value);
+};
+
+const onUpdateIsForfait = (value: boolean) => {
+  setIsForfait(value);
+};
+
+const onUpdateIsDisplayUnitPrice = (value: boolean) => {
+  setIsDisplayUnitPrice(value);
+};
+
+const onUpdateIsComputeCommissionWithoutDentRemoval = (value: boolean) => {
+  setIsComputeCommissionWithoutDentRemoval(value);
+};
+
+const onSelectCountry = (country: CountryViewModel | undefined) => {
+  if (!country)
+    return;
+
+  selectCountry(country);
+};
+
+const onSaveBtnClick = () => {
+  save().then(() => {
+    router.push(`/invoices/edit/${invoice.value.id}`);
+  });
+};
+// #endregion
+  
+onMounted(async () => {
+  await init();
+  techniciansList.value = technicians.value;
+  garagesList.value = garages.value;
+});
+</script>

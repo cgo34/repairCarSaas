@@ -11,8 +11,6 @@ export class CalculateLineCostUseCase {
   ) {}
 
   execute(lineItem: LineItemViewDto, priceParams: SettingPrice): number {
-    console.log('Calculating line cost *************************', lineItem);
-    
     return this.costCalculatorService.calculateLinePrice(lineItem, priceParams);
   }
 }

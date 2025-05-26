@@ -13,8 +13,17 @@ export enum SYMBOL_NAMES {
     // #region -> REPOSITORIES
     AUTH_REPOSITORY = 'AuthRepository',
     USER_REPOSITORY = 'UserRepository',
+    
+    // -- Subscription REPOSITORIES
+    SUBSCRIPTION_REPOSITORY = 'SubscriptionRepository',
+
     GARAGE_REPOSITORY = 'GarageRepository',
+
+    // -- Document Statuses REPOSITORIES
+    DOCUMENT_STATUSE_REPOSITORY = 'DocumentStatuseRepository',
+
     INVOICE_REPOSITORY = 'InvoiceRepository',
+    INVOICE_DETAIL_REPOSITORY = 'InvoiceDetailRepository',
     QUOTE_REPOSITORY = 'QuoteRepository',
     QUOTE_DETAIL_REPOSITORY = 'QuoteDetailRepository',
     // Settings CarRepair Repositories
@@ -61,6 +70,7 @@ export enum SYMBOL_NAMES {
     REGISTER_USE_CASE = 'RegisterUseCase',
     // -- User UseCases
     USER_USE_CASE = 'UserUseCase',
+    CREATE_USER_USE_CASE = 'CreateUserUseCase',
     // -- Garage UseCases
     GARAGE_USE_CASE = 'GarageUseCase',
     // -- Settings CarRepair UseCases
@@ -78,6 +88,8 @@ export enum SYMBOL_NAMES {
     // -- Cost Calculator UseCases
     CALCULATE_TOTAL_COST_USE_CASE = 'CalculateTotalCostUseCase',
     CALCULATE_LINE_COST_USE_CASE = 'CalculateLineCostUseCase',
+    // -- Document Statuse UseCases
+    GET_DOCUMENT_STATUSE_USE_CASE = 'GetDocumentStatuseUseCase',
     // -- Quote UseCases
     QUOTE_USE_CASE = 'QuoteUseCase',
     GET_QUOTE_USE_CASE = 'GetQuoteUseCase',
@@ -86,20 +98,47 @@ export enum SYMBOL_NAMES {
     CREATE_QUOTE_USE_CASE = 'CreateQuoteUseCase',
     INSERT_QUOTE_USE_CASE = 'InsertQuoteUseCase',
     UPDATE_QUOTE_USE_CASE = 'UpdateQuoteUseCase',
-    SAVE_QUOTE_USE_CASE = 'SaveQuoteUseCase',
+    UPDATE_STATUS_QUOTE_USE_CASE = 'UpdateStatusQuoteUseCase',
     DELETE_QUOTE_USE_CASE = 'DeleteQuoteUseCase',
     // -- Quote Details UseCases
     GET_QUOTE_DETAILS_USE_CASE = 'GetQuoteDetailsUseCase',
     ADD_QUOTE_DETAILS_USE_CASE = 'AddQuoteDetailsUseCase',
     ADD_QUOTE_LINE_ITEM_USE_CASE = 'AddQuoteLineItemUseCase',
     DELETE_LINE_ITEM_USE_CASE = 'DeleteLineItemUseCase',
+
+    DUPLICATE_QUOTE_TO_INVOICE = 'DuplicateQuoteToInvoice',
+
     // -- Pdf UseCases
     GENERATE_QUOTE_PDF_USE_CASE = 'GenerateQuotePdfUseCase',
     SEND_QUOTE_USE_CASE = 'SendQuoteUseCase',
+
+    // -- Invoice UseCases
+    INVOICE_USE_CASE = 'InvoiceUseCase',
+    GET_INVOICE_USE_CASE = 'GetInvoiceUseCase',
+    GET_INVOICES_USE_CASE = 'GetInvoicesUseCase',
+    VIEW_INVOICE_USE_CASE = 'ViewInvoiceUseCase',
+    CREATE_INVOICE_USE_CASE = 'CreateInvoiceUseCase',
+    INSERT_INVOICE_USE_CASE = 'InsertInvoiceUseCase',
+    UPDATE_INVOICE_USE_CASE = 'UpdateInvoiceUseCase',
+    SAVE_INVOICE_USE_CASE = 'SaveInvoiceUseCase',
+    DELETE_INVOICE_USE_CASE = 'DeleteInvoiceUseCase',
+    // -- Invoice Details UseCases
+    GET_INVOICE_DETAILS_USE_CASE = 'GetInvoiceDetailsUseCase',
+    ADD_INVOICE_DETAILS_USE_CASE = 'AddInvoiceDetailsUseCase',
+    ADD_INVOICE_LINE_ITEM_USE_CASE = 'AddInvoiceLineItemUseCase',
+    // DELETE_LINE_ITEM_USE_CASE = 'DeleteLineItemUseCase',
+    // -- Pdf UseCases
+    GENERATE_INVOICE_PDF_USE_CASE = 'GenerateInvoicePdfUseCase',
+    SEND_INVOICE_USE_CASE = 'SendInvoiceUseCase',
+    
+    // -- Subscription UseCases
+    SUBSCRIBE_TO_FREE_PLAN_USE_CASE = 'SubscribeToFreePlan',
+    GET_CURRENT_SUBSCRIPTION_USE_CASE = 'GetCurrentSubscriptionUseCase',
     // #endregion
 
     // #region -> STATES
     AUTH_STATE = 'AuthState',
+    SUBSCRIPTION_STATE = 'SubscriptionState',
     // -- User States
     USER_STATE = 'UserState',
     // -- Garage States
@@ -125,6 +164,10 @@ export enum SYMBOL_NAMES {
     GET_QUOTES_STATE = 'GetQuotesState',
     // -- Invoice States
     INVOICE_STATE = 'InvoiceState',
+    VIEW_INVOICE_STATE = 'ViewInvoiceState',
+    CREATE_INVOICE_STATE = 'CreateInvoiceState',
+    EDIT_INVOICE_STATE = 'EditInvoiceState',
+    GET_INVOICES_STATE = 'GetInvoicesState',
     // #endregion
   }
   

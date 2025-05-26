@@ -14,7 +14,7 @@ export class SettingPriceDiameterCoefficientRepository implements ISettingPriceD
 
   async getByUserId(userId: string): Promise<SettingPriceDiameterCoefficientDto[]> {
     const { data, error } = await this.clientProvider.getClient()
-      .fromSchema<'car_repair', 'setting_price_diameter_coefficient'>('car_repair', 'setting_price_diameter_coefficient')
+      .from('setting_price_diameter_coefficient')
       .select('*')
       .eq('user_id', userId)
       .returns<SettingPriceDiameterCoefficientApiModel[]>();
@@ -28,7 +28,7 @@ export class SettingPriceDiameterCoefficientRepository implements ISettingPriceD
     const settingApi = SettingPriceDiameterCoefficientMapper.dtoToApi(setting);
 
     const { data, error } = await this.clientProvider.getClient()
-      .fromSchema<'car_repair', 'setting_price_diameter_coefficient'>('car_repair', 'setting_price_diameter_coefficient')
+      .from('setting_price_diameter_coefficient')
       .insert(settingApi)
       .select('*')
       .single<SettingPriceDiameterCoefficientApiModel>();
@@ -44,7 +44,7 @@ export class SettingPriceDiameterCoefficientRepository implements ISettingPriceD
     if (!settingApi.id) throw new Error('Setting ID is required');
 
     const { data, error } = await this.clientProvider.getClient()
-      .fromSchema<'car_repair', 'setting_price_diameter_coefficient'>('car_repair', 'setting_price_diameter_coefficient')
+      .from('setting_price_diameter_coefficient')
       .update(settingApi)
       .eq('id', settingApi.id)
       .eq('user_id', settingApi.user_id)
@@ -58,7 +58,7 @@ export class SettingPriceDiameterCoefficientRepository implements ISettingPriceD
 
   async delete(id: string): Promise<void> {
     const { error } = await this.clientProvider.getClient()
-      .fromSchema<'car_repair', 'setting_price_diameter_coefficient'>('car_repair', 'setting_price_diameter_coefficient')
+      .from('setting_price_diameter_coefficient')
       .delete()
       .eq('id', id);
 

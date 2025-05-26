@@ -1,6 +1,7 @@
 // region -> IMPORTS
 import { IAuthState } from '@/@application/states/interfaces/IAuthState';
 import { IGarageUseCase } from '@/@domain/useCases/IGarageUseCase';
+import { IGetDocumentStatuseUseCase } from '@/@domain/useCases/IGetDocumentStatuseUseCase';
 import { IUserUseCase } from '@/@domain/useCases/IUserUseCase';
 import { IBodyMaterialUseCase } from '@/@domain/useCases/carRepair/IBodyMaterialUseCase';
 import { IBodyPartUseCase } from '@/@domain/useCases/carRepair/IBodyPartUseCase';
@@ -9,12 +10,14 @@ import { ICalculateLineCostUseCase } from '@/@domain/useCases/cost/ICalculateLin
 import { IDeleteLineItemUseCase } from '@/@domain/useCases/lineItem/ILineItemUseCase';
 import { IAddQuoteLineItemUseCase } from '@/@domain/useCases/quotes/IAddQuoteLineItemUseCase';
 import { IDeleteQuoteUseCase } from '@/@domain/useCases/quotes/IDeleteQuoteUseCase';
+import { IDuplicateQuoteToInvoiceUseCase } from '@/@domain/useCases/quotes/IDuplicateQuoteToInvoiceUseCase';
 import { IGetQuoteDetailUseCase } from '@/@domain/useCases/quotes/IGetQuoteDetailUseCase';
 import { IGetQuoteUseCase } from '@/@domain/useCases/quotes/IGetQuoteUseCase';
 import { IUpdateQuoteUseCase } from '@/@domain/useCases/quotes/IUpdateQuoteUseCase';
 import { ISettingPriceUseCase } from '@/@domain/useCases/settings/price/ISettingPriceUseCase';
 import { container } from '@/@infrastructure/ioc/inversify.config';
 import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
+import { DocumentStatuseMapper } from '@/@presentation/mappers/DocumentStatuseMapper';
 import { GarageMapper } from '@/@presentation/mappers/GarageMapper';
 import { LineItemMapper } from '@/@presentation/mappers/LineItemMapper';
 import { QuoteMapper } from '@/@presentation/mappers/QuoteMapper';
@@ -23,6 +26,7 @@ import { BodyPartMapper } from '@/@presentation/mappers/settings/BodyPartMapper'
 import { RepairTypeMapper } from '@/@presentation/mappers/settings/RepairTypeMapper';
 import { SettingPriceMapper } from '@/@presentation/mappers/settings/price/SettingPriceMapper';
 import { CountryViewModel } from '@/@presentation/types/models/CountryViewModel';
+import { DocumentStatuseViewModel } from '@/@presentation/types/models/DocumentStatuseViewModel';
 import { GarageViewModel } from '@/@presentation/types/models/GarageViewModel';
 import { LineItemViewModel } from '@/@presentation/types/models/LineItemViewModel';
 import { QuoteViewModel } from '@/@presentation/types/models/QuoteViewModel';
@@ -37,6 +41,8 @@ import { computed, ref } from 'vue';
 export function useEditQuoteState() {
   // #region -> DEPENDENCIES
   const authState = container.get<IAuthState>(SYMBOLS.States.AuthState);
+
+  const getDocumentStatuseUseCase = container.get<IGetDocumentStatuseUseCase>(SYMBOLS.UseCases.GetDocumentStatuse);
 
   const getQuoteUseCase = container.get<IGetQuoteUseCase>(SYMBOLS.UseCases.Quote.GetQuoteUseCase);
   const getQuoteDetailUseCase = container.get<IGetQuoteDetailUseCase>(SYMBOLS.UseCases.Quote.GetQuoteDetailsUseCase);
@@ -55,6 +61,8 @@ export function useEditQuoteState() {
   const calculateLineCostUseCase = container.get<ICalculateLineCostUseCase>(SYMBOLS.UseCases.CostCalculator.CalculateLineCostUseCase);
   const addQuoteDetailsUseCase = container.get<IAddQuoteLineItemUseCase>(SYMBOLS.UseCases.Quote.AddLineItemUseCase);
   const deleteLineItemUseCase = container.get<IDeleteLineItemUseCase>(SYMBOLS.UseCases.Quote.DeleteLineItemUseCase);
+
+  const duplicateQuoteToInvoiceUseCase = container.get<IDuplicateQuoteToInvoiceUseCase>(SYMBOLS.UseCases.Quote.DuplicateQuoteToInvoiceUseCase)
   // #endregion
 
   // #region -> CONSTANTS
@@ -64,13 +72,13 @@ export function useEditQuoteState() {
   // #region -> REFS
   const _priceParams = ref<SettingPriceViewModel>();
 
-
+  const _statuses = ref<DocumentStatuseViewModel[]>([])
   const _quote = ref<QuoteViewModel | undefined>(undefined);
-  const _quoteInformations = ref({
+  const _quoteInformations = ref<{number: string, date: string, expirationDate: string, status: DocumentStatuseViewModel | undefined}>({
     number: '',
     date: '',
     expirationDate: '',
-    status: 'draft',
+    status: undefined,
   });
 
   const _technicians = ref<UserViewModel[]>([]);
@@ -113,14 +121,14 @@ export function useEditQuoteState() {
       _quoteId.value = id;     
       
       const quoteDto = await getQuoteUseCase.execute(id);
-      // console.log('QuoteDto', quoteDto);
       const quoteDetailDto = await getQuoteDetailUseCase.execute(id);
-      // console.log('quoteDetailDto', quoteDetailDto);
+      const statusesDto = await getDocumentStatuseUseCase.execute();
+
+      _statuses.value = statusesDto.map(m => DocumentStatuseMapper.dtoToView(m))
       
       _quote.value = QuoteMapper.dtoToView(quoteDto);
       _isForfait.value = quoteDto?.isForfait ?? false
       _forfaitAmount.value = quoteDto?.forfaitAmount
-      // console.log('_quote', _quote.value);
       
       _quoteLines.value = quoteDetailDto?.map((line, idx) => {
         
@@ -129,7 +137,6 @@ export function useEditQuoteState() {
           lineId: idx + 1,
         }
       }) ?? [];
-      console.log('_quoteLines', _quoteLines.value);
       
       
       // TODO: (gce) -> MOVE TO MAPPER
@@ -141,6 +148,8 @@ export function useEditQuoteState() {
       // const expirationDate = new Date(startDate);
       // expirationDate.setMonth(expirationDate.getMonth() + 1);
       // _quoteInformations.value.expirationDate = expirationDate.toISOString().split('T')[0];
+      console.log('quote value', _quote.value);
+      
       _quoteInformations.value.status = _quote.value.status;
 
       _selectedTechnician.value = _quote.value.technician;
@@ -259,8 +268,6 @@ export function useEditQuoteState() {
   }
 
   const selectCountry = (country: CountryViewModel) => {
-    console.log('Selected country', country);
-    
     _selectedCountry.value = country;
   }
 
@@ -291,7 +298,6 @@ export function useEditQuoteState() {
     computePrice(line)
 
     const quoteLinesDto = await addQuoteDetailsUseCase.executeQuote(LineItemMapper.viewToDto(line));
-    console.log('Quote lines saved', quoteLinesDto);
 
     const quoteAdded =  LineItemMapper.dtoToView(quoteLinesDto);
 
@@ -299,8 +305,6 @@ export function useEditQuoteState() {
   }
 
   const removeLine = (lineId: string) => {
-    console.log(lineId);
-    
     deleteLineItemUseCase.execute(lineId)
     const index = _quoteLines.value.findIndex((line) => line.id === lineId);
     if (index >= 0) {
@@ -358,8 +362,6 @@ export function useEditQuoteState() {
   }
 
   const setForfaitAmount = (amount: number) => {
-    console.log('setForfaitAmount', typeof amount, amount);
-    
     _forfaitAmount.value = amount;
   }
 
@@ -403,8 +405,6 @@ export function useEditQuoteState() {
 
   const totalDegarnissage = computed(() => 
     _quoteLines.value.reduce((sum, item) => {
-      console.log('item', item.dentRemovalPrice);
-      
       return sum + (item.dentRemovalPrice ?? 0); // 👈 Évite undefined en mettant `?? 0`
     }, 0) // 👈 Ajoute la valeur initiale ici
   );
@@ -431,10 +431,7 @@ export function useEditQuoteState() {
   const total = computed(() => {
     if (!_isForfait.value) {
       return subTotalWithDegarnissage.value + totalTaxRate.value;
-    }
-
-    console.log('total', _forfaitAmount.value);
-    
+    }    
     
     if (!_forfaitAmount.value)
       return 0;
@@ -443,8 +440,6 @@ export function useEditQuoteState() {
   });
 
   const updateQuote = async () => {
-    console.log('Update quote');
-    
     if (!authState.user.value)
       throw new Error('User not found');
 
@@ -478,11 +473,8 @@ export function useEditQuoteState() {
         
         
       }
-
-      console.log('Quote to save', _quote.value);
       
       const quoteDto = await updateQuoteUseCase.execute(QuoteMapper.viewToDto(_quote.value)).then(async (quote) => {
-        console.log('Quote updated', quote);
         // _quote.value = QuoteMapper.dtoToView(quote);
         // if (!quote.id)
         //   throw new Error('Quote not saved');
@@ -523,18 +515,27 @@ export function useEditQuoteState() {
   });
   // #endregion
 
-  const deleteQuote = (quoteNumber: string) => {
+  const duplicateQuoteToInvoice = () => {
+    if (!_quote.value)
+      return
     
-    deleteQuoteUseCase.execute(_quoteId.value)
-    console.log('quote deleted : ', quoteNumber);
-    
+    duplicateQuoteToInvoiceUseCase.execute(QuoteMapper.viewToDto(_quote.value), _quoteLines.value.map(LineItemMapper.viewToDto))
   }
+
+  const deleteQuote = (quoteNumber: string) => {
+    deleteQuoteUseCase.execute(_quoteId.value)
+  }
+
+  const isReadOnly = computed(()=> {
+    return _quoteInformations.value.status?.code === 'accepted' || _quoteInformations.value.status?.code === 'invoiced'
+  })
 
   return {
     loading,
     error,
     init,
 
+    statuses: computed(() => _statuses.value),
     quote: computed(() => _quote.value),
     quoteInformations: computed(() => _quoteInformations.value),
     expirationDate,
@@ -583,6 +584,8 @@ export function useEditQuoteState() {
     total,
 
     updateQuote,
-    deleteQuote
+    deleteQuote,
+    duplicateQuoteToInvoice,
+    isReadOnly
   };
 }

@@ -33,7 +33,7 @@ export function useCreateQuoteState() {
     number: '',
     date: '',
     expirationDate: '',
-    status: 'draft',
+    status_id: 'processing',
   });
 
   const _technicians = ref<UserViewModel[]>([]);
@@ -57,6 +57,8 @@ export function useCreateQuoteState() {
   const init = async () => {
     loading.value = true;
     try {
+      console.log('auht state from useCreateQuote', authState);
+      
       if (!authState.user.value)
         throw new Error('User not found');
 
@@ -78,8 +80,6 @@ export function useCreateQuoteState() {
         garage: _selectedGarage.value,
         technician: _selectedTechnician.value,
       }
-
-      console.log('user auth', authState.user.value);
       
       const quoteDto = await createQuoteUseCase.execute(QuoteMapper.viewToDto(_quote.value), authState.user.value.id);
       _quote.value = QuoteMapper.dtoToView(quoteDto);
@@ -93,7 +93,7 @@ export function useCreateQuoteState() {
       // const expirationDate = new Date(startDate);
       // expirationDate.setMonth(expirationDate.getMonth() + 1);
       // _quoteInformations.value.expirationDate = expirationDate.toISOString().split('T')[0];
-      _quoteInformations.value.status = _quote.value.status;
+      _quoteInformations.value.status_id = _quote.value.status_id;
 
       const [garageData, technicianData] =
         await Promise.all([
@@ -171,6 +171,9 @@ export function useCreateQuoteState() {
   }
 
   const setGarage = (garage: GarageViewModel) => {
+    if (!_quote.value)
+      return
+
     const existingGarage = _garages.value.find(g => g.name === garage.name)
 
     if (!existingGarage) {
@@ -178,6 +181,14 @@ export function useCreateQuoteState() {
     }
 
     _selectedGarage.value = garage
+
+    _quote.value.garageName = _selectedGarage.value.name
+    _quote.value.garageAddress = _selectedGarage.value.address
+    _quote.value.garageZipCode = _selectedGarage.value.zipCode
+    _quote.value.garageCity = _selectedGarage.value.city
+    _quote.value.garagePhone = _selectedGarage.value.phone
+    _quote.value.garageEmail = _selectedGarage.value.email
+    _quote.value.garagePercentageCommission = _selectedGarage.value.percentageCommission
   }
 
   const setCarImmatriculation = (immatriculation: string) => {
@@ -193,8 +204,6 @@ export function useCreateQuoteState() {
   }
 
   const selectCountry = (country: CountryViewModel) => {
-    console.log('Selected country', country);
-    
     _selectedCountry.value = country;
   }
 
@@ -216,8 +225,6 @@ export function useCreateQuoteState() {
   }
 
   const save = async () => {
-    console.log('Save quote');
-    
     if (!authState.user.value)
       throw new Error('User not found');
 
@@ -250,10 +257,16 @@ export function useCreateQuoteState() {
         userId: authState.user.value.id,
       }
 
-      console.log('Quote to save', _quote.value);
+      // TODO: (GCE) -> CHECK HERE LEVEL SUBSCRIPTION - IF 1 set single garage info with from quote _selectedGarage - ELSE set garage with _selectedGarage
+      _quote.value.garageName = _selectedGarage.value.name
+      _quote.value.garageAddress = _selectedGarage.value.address
+      _quote.value.garageZipCode = _selectedGarage.value.zipCode
+      _quote.value.garageCity = _selectedGarage.value.city
+      _quote.value.garagePhone = _selectedGarage.value.phone
+      _quote.value.garageEmail = _selectedGarage.value.email
+      _quote.value.garagePercentageCommission = _selectedGarage.value.percentageCommission
       
       const quoteDto = await insertQuoteUseCase.execute(QuoteMapper.viewToDto(_quote.value)).then(async (quote) => {
-        console.log('Quote saved', quote);
         _quote.value = QuoteMapper.dtoToView(quote);
         if (!quote.id)
           throw new Error('Quote not saved');

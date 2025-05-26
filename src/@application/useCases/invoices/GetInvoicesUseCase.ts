@@ -1,13 +1,14 @@
-import { InvoiceService } from '@/@application/services/InvoiceService';
+// TODO: (GCE) -> NOT USE FOR THE MOMENT
+import { IInvoiceRepository } from '@/@domain/repositories/IInvoiceRepository';
+import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
+import { inject, injectable } from 'inversify';
 
+@injectable()
 export class GetInvoicesUseCase {
-  private invoiceService: InvoiceService;
+  constructor(@inject(SYMBOLS.Repositories.InvoiceRepository) private invoiceRepository: IInvoiceRepository) {}
 
-  constructor(invoiceService: InvoiceService) {
-    this.invoiceService = invoiceService;
-  }
 
-  async execute() {
-    return await this.invoiceService.getAllInvoices();
+  async execute(userId: string) {
+    return await this.invoiceRepository.getAllByUserId(userId);
   }
 }

@@ -6,6 +6,7 @@ export class LineItemMapper {
     return {
       id: viewModel.id ?? '',
       quoteId: viewModel.quoteId ?? undefined, // ❌ Pas encore rattaché à un devis
+      invoiceId: viewModel.invoiceId ?? undefined,
       bodyPartId: viewModel.bodyPart?.id,
       bodyPart: viewModel.bodyPart ?? undefined,
       bodyMaterialId: viewModel.bodyMaterial?.id ?? undefined,
