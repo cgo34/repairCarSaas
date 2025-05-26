@@ -13,7 +13,7 @@ export class DentRepairTypeRepository implements IDentRepairTypeRepository {
 
   async getAll(): Promise<DentRepairTypeDto[]> {
     const { data, error } = await this.clientProvider.getClient()
-      .fromSchema<'car_repair', 'repair_types'>('car_repair', 'repair_types')
+      .from('repair_types')
       .select('*')
       .returns<DentRepairTypeApiModel[]>();
 
@@ -27,7 +27,7 @@ export class DentRepairTypeRepository implements IDentRepairTypeRepository {
     const dentRepairTypeApi = DentRepairTypeMapper.dtoToApi(dentRepairType);
 
     const { data, error } = await this.clientProvider.getClient()
-      .fromSchema<'car_repair', 'repair_types'>('car_repair', 'repair_types')
+      .from('repair_types')
       .insert(dentRepairTypeApi)
       .select('*')
       .single<DentRepairTypeApiModel>();
@@ -47,7 +47,7 @@ export class DentRepairTypeRepository implements IDentRepairTypeRepository {
     const { id, ...updateDentRepairTypeApi } = dentRepairTypeApi;
     
     const { data, error } = await this.clientProvider.getClient()
-      .fromSchema<'car_repair', 'repair_types'>('car_repair', 'repair_types')
+      .from('repair_types')
       .update(updateDentRepairTypeApi)
       .eq('id', id)
       .select('*')
@@ -61,7 +61,7 @@ export class DentRepairTypeRepository implements IDentRepairTypeRepository {
 
   async delete(id: string): Promise<void> {
     const { error } = await this.clientProvider.getClient()
-      .fromSchema<'car_repair', 'repair_types'>('car_repair', 'repair_types')
+      .from('repair_types')
       .delete()
       .eq('id', id);
 

@@ -14,7 +14,7 @@ export class SettingPriceRepairTypeCoefficientRepository implements ISettingPric
 
   async getByUserId(userId: string): Promise<SettingPriceRepairTypeCoefficientDto[]> {
     const { data, error } = await this.clientProvider.getClient()
-      .fromSchema<'car_repair', 'setting_price_repair_type_coefficient'>('car_repair', 'setting_price_repair_type_coefficient')
+      .from('setting_price_repair_type_coefficient')
       .select('*, repair_types(*)')
       .eq('user_id', userId)
       .returns<SettingPriceRepairTypeCoefficientApiModel[]>();
@@ -28,7 +28,7 @@ export class SettingPriceRepairTypeCoefficientRepository implements ISettingPric
     const settingApi = SettingPriceRepairTypeCoefficientMapper.dtoToApi(setting);
 
     const { data, error } = await this.clientProvider.getClient()
-      .fromSchema<'car_repair', 'setting_price_repair_type_coefficient'>('car_repair', 'setting_price_repair_type_coefficient')
+      .from('setting_price_repair_type_coefficient')
       .insert({
         repair_type_coefficient: settingApi.repair_type_coefficient,
         repair_type_id: settingApi.repair_types?.id,
@@ -48,7 +48,7 @@ export class SettingPriceRepairTypeCoefficientRepository implements ISettingPric
     if (!settingApi.repair_type_id) throw new Error('Setting ID is required');
 
     const { data, error } = await this.clientProvider.getClient()
-      .fromSchema<'car_repair', 'setting_price_repair_type_coefficient'>('car_repair', 'setting_price_repair_type_coefficient')
+      .from('setting_price_repair_type_coefficient')
       .update({
         repair_type_coefficient: settingApi.repair_type_coefficient,
         repair_type_id: settingApi.repair_types?.id,
@@ -66,7 +66,7 @@ export class SettingPriceRepairTypeCoefficientRepository implements ISettingPric
 
   async delete(bodyMaterialId: string, userId: string): Promise<void> {
     const { error } = await this.clientProvider.getClient()
-      .fromSchema<'car_repair', 'setting_price_repair_type_coefficient'>('car_repair', 'setting_price_repair_type_coefficient')
+      .from('setting_price_repair_type_coefficient')
       .delete()
       .eq('id', bodyMaterialId)
       .eq('user_id', userId);

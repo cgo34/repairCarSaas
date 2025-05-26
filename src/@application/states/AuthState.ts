@@ -10,6 +10,8 @@ import { ILogoutUseCase } from '@domain/useCases/auth/ILogoutUseCase';
 import { SYMBOLS } from '@infrastructure/ioc/symbols';
 import { inject, injectable } from 'inversify';
 import { ref } from 'vue';
+import { SubscriptionDto } from '../dtos/SubscriptionDto';
+import { ISubscriptionState } from './interfaces/ISubscriptionState';
 
 @injectable()
 export class AuthState implements IAuthState {
@@ -18,6 +20,7 @@ export class AuthState implements IAuthState {
     password: '',
     fullName: ''
   });
+  public subscription = ref<SubscriptionDto | null>(null)
   public isAuthenticated = ref<boolean>(false);
 
   private subscribers = new Set<(state: IAuthStateSnapshot) => void>();
@@ -26,6 +29,7 @@ export class AuthState implements IAuthState {
   private _isAuthReady = false;
 
   constructor(
+    @inject(SYMBOLS.States.SubscriptionState) private subscriptionState: ISubscriptionState,
     @inject(SYMBOLS.UseCases.Auth.Container) private authUseCase: IAuthUseCase,
     @inject(SYMBOLS.UseCases.Auth.LoginUseCase) private loginUseCase: ILoginUseCase,
     @inject(SYMBOLS.UseCases.Auth.LogoutUseCase) private logoutUseCase: ILogoutUseCase,
@@ -54,6 +58,7 @@ export class AuthState implements IAuthState {
     return {
       user: this.user.value,
       isAuthenticated: this.isAuthenticated.value,
+      subscription: this.subscription.value,
       timestamp: new Date()
     };
   }
@@ -85,6 +90,7 @@ export class AuthState implements IAuthState {
         const snapshot: IAuthStateSnapshot = JSON.parse(stored);
         this.user.value = snapshot.user;
         this.isAuthenticated.value = snapshot.isAuthenticated;
+        this.subscription.value = snapshot.subscription;
         this.stateHistory.push(snapshot);
       }
     } catch (error) {

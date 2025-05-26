@@ -14,7 +14,7 @@ export class SettingPriceBodyPartCoefficientRepository implements ISettingPriceB
 
   async getByUserId(userId: string): Promise<SettingPriceBodyPartCoefficientDto[]> {
     const { data, error } = await this.clientProvider.getClient()
-      .fromSchema<'car_repair', 'setting_price_body_part_coefficient'>('car_repair', 'setting_price_body_part_coefficient')
+      .from('setting_price_body_part_coefficient')
       .select('*, body_parts(*)')
       .eq('user_id', userId)
       .returns<SettingPriceBodyPartCoefficientApiModel[]>();
@@ -28,7 +28,7 @@ export class SettingPriceBodyPartCoefficientRepository implements ISettingPriceB
     const settingApi = SettingPriceBodyPartCoefficientMapper.dtoToApi(setting);
 
     const { data, error } = await this.clientProvider.getClient()
-      .fromSchema<'car_repair', 'setting_price_body_part_coefficient'>('car_repair', 'setting_price_body_part_coefficient')
+      .from('setting_price_body_part_coefficient')
       .insert({
         difficulty_coefficient: settingApi.difficulty_coefficient,
         body_part_id: settingApi.body_parts?.id,
@@ -48,7 +48,7 @@ export class SettingPriceBodyPartCoefficientRepository implements ISettingPriceB
     if (!settingApi.body_part_id) throw new Error('Setting ID is required');
 
     const { data, error } = await this.clientProvider.getClient()
-      .fromSchema<'car_repair', 'setting_price_body_part_coefficient'>('car_repair', 'setting_price_body_part_coefficient')
+      .from('setting_price_body_part_coefficient')
       .update({
         difficulty_coefficient: settingApi.difficulty_coefficient,
         body_part_id: settingApi.body_parts?.id,
@@ -66,7 +66,7 @@ export class SettingPriceBodyPartCoefficientRepository implements ISettingPriceB
 
   async delete(id: string): Promise<void> {
     const { error } = await this.clientProvider.getClient()
-      .fromSchema<'car_repair', 'setting_price_body_part_coefficient'>('car_repair', 'setting_price_body_part_coefficient')
+      .from('setting_price_body_part_coefficient')
       .delete()
       .eq('id', id);
 

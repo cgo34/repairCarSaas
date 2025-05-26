@@ -222,9 +222,9 @@ export const buildInvoiceHtmlTemplate = (invoice: InvoiceDto, lines: LineItemDto
                 </td>
                 <td width="50%">
                   <div class="block block-right">
-                    <p>${invoice.garage.name}</p>
-                    <p>${invoice.garage.address ?? ''}</p>
-                    <p>${invoice.garage.zipCode ?? ''} - ${invoice.garage.city ?? ''}</p>
+                    <p>${invoice.garage?.name ?? invoice.garageName ?? ''}</p>
+                    <p>${invoice.garage?.address ?? invoice.garageAddress ?? ''}</p>
+                    <p>${invoice.garage?.zipCode ?? invoice.garageZipCode ?? ''} - ${invoice.garage?.city ?? invoice.garageCity ?? ''}</p>
                   </div>
                 </td>
               </tr>

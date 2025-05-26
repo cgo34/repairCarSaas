@@ -2,7 +2,6 @@ import { IQuoteRepository } from '@/@domain/repositories/IQuoteRepository';
 import { QuoteApiModel } from '@/@infrastructure/database/api/QuoteApiModel';
 import { SupabaseClient } from '@/@infrastructure/database/clients/SupabaseClient';
 import { QuoteDto } from '@/@infrastructure/dtos/QuoteDto';
-import { QuoteStatusDto } from '@/@infrastructure/dtos/QuoteStatusDto';
 import { IClientProvider } from '@/@infrastructure/interfaces/IClientProvider';
 import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
 import { QuoteMapper } from '@/@infrastructure/mappers/QuoteMapper';
@@ -25,7 +24,8 @@ export class QuoteRepository implements IQuoteRepository {
       throw new Error('Error generating quote number');
 
     const year = new Date().getFullYear().toString().slice(-2);
-    const quoteNumber = `D${year}${(count! + 1).toString().padStart(5, '0')}`;
+    const month = new Date().getMonth().toString().slice(-2);
+    const quoteNumber = `D${year}${month}${(count! + 1).toString().padStart(4, '0')}`;
     
     return quoteNumber;
   }

@@ -11,24 +11,54 @@ import { inject, injectable } from 'inversify';
 @injectable()
 export class SettingPriceGeneralRepository implements ISettingPriceGeneralRepository {
   constructor(@inject(SYMBOLS.Providers.ClientProvider) private clientProvider: IClientProvider<SupabaseClient>) {}
+  
+    async getAdmin(): Promise<SettingPriceGeneralDto> {
+      console.log('repository SettingPriceGeneralRepository getAdmin');
+      
+      const { data, error } = await this.clientProvider.getClient()
+        .from('setting_price_general')
+        .select('*')
+        .single<SettingPriceGeneralApiModel>();
+  
+      if (error)
+        throw new Error('Error fetching impact count to UT settings');
+      console.log(data);
+      
+      return SettingPriceGeneralMapper.apiToDto(data);
+    }
 
-  async getByUserId(userId: string): Promise<SettingPriceGeneralDto[]> {
+  async getByUserId(userId: string): Promise<SettingPriceGeneralDto> {
     const { data, error } = await this.clientProvider.getClient()
-      .fromSchema<'car_repair', 'setting_price_general'>('car_repair', 'setting_price_general')
+      .from('setting_price_general')
       .select('*')
       .eq('user_id', userId)
-      .returns<SettingPriceGeneralApiModel[]>();
+      .single<SettingPriceGeneralApiModel>();
 
     if (error) throw new Error('Error fetching general settings');
 
-    return data.map(SettingPriceGeneralMapper.apiToDto);
+    return SettingPriceGeneralMapper.apiToDto(data);
+  }
+
+  async save(setting: SettingPriceGeneralDto): Promise<SettingPriceGeneralDto> {
+    const settingApi = SettingPriceGeneralMapper.dtoToApi(setting);
+    console.log('save settingApi', settingApi);
+    
+    const { data, error } = await this.clientProvider.getClient()
+      .from('setting_price_general')
+      .upsert(settingApi)
+      .select('*')
+      .single<SettingPriceGeneralApiModel>();
+
+    if (error) throw new Error('Error saving general setting');
+
+    return SettingPriceGeneralMapper.apiToDto(data);
   }
 
   async create(setting: SettingPriceGeneralDto): Promise<SettingPriceGeneralDto> {
     const settingApi = SettingPriceGeneralMapper.dtoToApi(setting);
     
     const { data, error } = await this.clientProvider.getClient()
-      .fromSchema<'car_repair', 'setting_price_general'>('car_repair', 'setting_price_general')
+      .from('setting_price_general')
       .insert(settingApi)
       .select('*')
       .single<SettingPriceGeneralApiModel>();
@@ -44,7 +74,7 @@ export class SettingPriceGeneralRepository implements ISettingPriceGeneralReposi
     if (!settingApi.id) throw new Error('Setting ID is required');
 
     const { data, error } = await this.clientProvider.getClient()
-      .fromSchema<'car_repair', 'setting_price_general'>('car_repair', 'setting_price_general')
+      .from('setting_price_general')
       .update(settingApi)
       .eq('id', settingApi.id)
       .select('*')
@@ -57,7 +87,7 @@ export class SettingPriceGeneralRepository implements ISettingPriceGeneralReposi
 
   async delete(id: string): Promise<void> {
     const { error } = await this.clientProvider.getClient()
-      .fromSchema<'car_repair', 'setting_price_general'>('car_repair', 'setting_price_general')
+      .from('setting_price_general')
       .delete()
       .eq('id', id);
 

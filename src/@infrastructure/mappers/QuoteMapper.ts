@@ -59,7 +59,7 @@ export class QuoteMapper {
       start_date: dto.startDate,
       end_date: dto.endDate,
       status_id: dto.status_id,
-      status: dto.status,
+      // status: dto.status,
       country: (typeof dto.country === 'string') ? dto.country : dto.country?.code ?? '',
       currency: dto.currency,
       is_sent: dto.isSent,

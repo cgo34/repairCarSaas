@@ -1,5 +1,6 @@
 // application/useCases/subscription/GetCurrentSubscriptionUseCase.ts
-import { SubscriptionDto } from '@domain/models/SubscriptionDto'
+
+import { SubscriptionDto } from '@/@application/dtos/SubscriptionDto'
 import { ISubscriptionRepository } from '@domain/repositories/ISubscriptionRepository'
 import { SYMBOLS } from '@infrastructure/ioc/symbols'
 import { inject, injectable } from 'inversify'
@@ -11,7 +12,7 @@ export class GetCurrentSubscriptionUseCase {
     private readonly repository: ISubscriptionRepository
   ) {}
 
-  async execute(userId: string): Promise<SubscriptionDto | null> {
+  async execute(userId: string): Promise<SubscriptionDto> {
     return await this.repository.getSubscriptionByUserId(userId)
   }
 }

@@ -14,7 +14,9 @@ export class UserRepository implements IUserRepository {
   async getUsers(): Promise<UserDto[]> {
     const { data, error } = await this.clientProvider.getClient()
       .from('users')
-      .select('*')
+      .select(`
+        *
+      `)
       .returns<UserApiModel[]>();
 
     if (error)
@@ -27,11 +29,15 @@ export class UserRepository implements IUserRepository {
   async getUserById(id: string): Promise<UserDto | null> {
     const { data, error } = await this.clientProvider.getClient()
       .from('users')
-      .select('*')
+      .select(`
+        *
+      `)
       .eq('id', id)
       .returns<UserApiModel>();
   
     if (error) throw new Error('Error fetching user by ID');
+    console.log(data);
+    
     return data ? UserMapper.apiToDto(data) : null;
   }
   

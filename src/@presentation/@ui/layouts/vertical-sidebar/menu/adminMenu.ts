@@ -1,4 +1,7 @@
 // src/@presentation/@ui/layouts/vertical-sidebar/menus/adminMenu.ts
+import { IAuthState } from '@/@application/states/interfaces/IAuthState';
+import { container } from '@/@infrastructure/ioc/inversify.config';
+import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
 import {
   BuildingWarehouseIcon,
   CarIcon,
@@ -11,6 +14,14 @@ import {
   ToolIcon,
   UserIcon
 } from 'vue-tabler-icons';
+
+
+const authState = container.get<IAuthState>(SYMBOLS.States.AuthState);
+
+const { user, subscription } = authState
+
+console.log(user.value, subscription.value);
+
 
 export const adminMenu = [
   { header: 'Dashboard' },
@@ -93,6 +104,8 @@ export const adminMenu = [
     title: 'Users',
     icon: UserIcon,
     to: '/Users',
+    // chip: subscription.value.subscriptionPlan.name === 'free' ? 'PRO' : '',
+    // disabled: subscription.value.subscriptionPlan.name === 'free' 
   },
   { divider: true },
   { header: 'Garage' },
@@ -100,6 +113,8 @@ export const adminMenu = [
     title: 'Garages',
     icon: BuildingWarehouseIcon,
     to: '/garages',
+    // chip: subscription.value.subscriptionPlan.name === 'free' ? 'PRO' : '',
+    // disabled: subscription.value.subscriptionPlan.name === 'free' 
   },
   { divider: true },
   { header: 'Billing' },

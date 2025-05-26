@@ -1,16 +1,20 @@
+import { SubscriptionDto } from '@/@application/dtos/SubscriptionDto';
+import { ISubscriptionState } from '@/@application/states/interfaces/ISubscriptionState';
 import { User } from '@domain/entities/User';
 import { AuthError } from '@domain/errors/AuthError';
 import { IAuthState } from '@domain/states/IAuthState';
 import { container } from '@infrastructure/ioc/inversify.config';
 import { SYMBOLS } from '@infrastructure/ioc/symbols';
-import { onUnmounted, ref } from 'vue';
+import { computed, onUnmounted, ref } from 'vue';
 
 const authState = container.get<IAuthState>(SYMBOLS.States.AuthState);
+const subscriptionState = container.get<ISubscriptionState>(SYMBOLS.States.SubscriptionState);
 
 // Formulaire spécifique à l'authentification
 const user = ref<User | undefined>(authState.user.value);
 const error = ref<AuthError | null>(null);
 const loading = ref(false);
+const subcription = ref<SubscriptionDto>()
 
 export function useAuthState() {
 
@@ -26,6 +30,11 @@ export function useAuthState() {
     
     try {
       await authState.login(user.value?.email, user.value?.password);
+      // await subscriptionState.load(user.value.id).then((data) => {
+      //   console.log('data', data);
+        
+      //   subcription.value = data;
+      // })
     } catch (e) {
       error.value = e as AuthError;
       throw e;
@@ -64,6 +73,12 @@ export function useAuthState() {
   // Observer l'état
   const unsubscribe = authState.subscribe((state) => {
     console.log('Auth state changed:', state);
+    
+      // subscriptionState.load(state.user.id).then((data) => {
+      //   console.log('call subscriptionState load from useAuthState');
+        
+      //   subcription.value = data
+      // })
   });
 
   // Nettoyage à la destruction du composant
@@ -78,6 +93,7 @@ export function useAuthState() {
     register,
     logout,
     user,
+    subcription: computed(() => subcription.value),
     isAuthenticated: ref<boolean>(authState.isAuthenticated.value)
   };
 }

@@ -14,7 +14,7 @@ export class SettingPriceBodyMaterialCoefficientRepository implements ISettingPr
 
   async getByUserId(userId: string): Promise<SettingPriceBodyMaterialCoefficientDto[]> {
     const { data, error } = await this.clientProvider.getClient()
-      .fromSchema<'car_repair', 'setting_price_body_material_coefficient'>('car_repair', 'setting_price_body_material_coefficient')
+      .from('setting_price_body_material_coefficient')
       .select('*, body_materials(*)')
       .eq('user_id', userId)
       .returns<SettingPriceBodyMaterialCoefficientApiModel[]>();
@@ -28,7 +28,7 @@ export class SettingPriceBodyMaterialCoefficientRepository implements ISettingPr
     const settingApi = SettingPriceBodyMaterialCoefficientMapper.dtoToApi(setting);
 
     const { data, error } = await this.clientProvider.getClient()
-      .fromSchema<'car_repair', 'setting_price_body_material_coefficient'>('car_repair', 'setting_price_body_material_coefficient')
+      .from('setting_price_body_material_coefficient')
       .insert({
         material_coefficient: settingApi.material_coefficient,
         body_material_id: settingApi.body_materials?.id,
@@ -48,7 +48,7 @@ export class SettingPriceBodyMaterialCoefficientRepository implements ISettingPr
     if (!settingApi.body_material_id) throw new Error('Setting ID is required');
 
     const { data, error } = await this.clientProvider.getClient()
-      .fromSchema<'car_repair', 'setting_price_body_material_coefficient'>('car_repair', 'setting_price_body_material_coefficient')
+      .from('setting_price_body_material_coefficient')
       .update({
         material_coefficient: settingApi.material_coefficient,
         body_material_id: settingApi.body_materials?.id,
@@ -66,9 +66,9 @@ export class SettingPriceBodyMaterialCoefficientRepository implements ISettingPr
 
   async delete(bodyMaterialId: string, userId: string): Promise<void> {
     const { error } = await this.clientProvider.getClient()
-      .fromSchema<'car_repair', 'setting_price_body_material_coefficient'>('car_repair', 'setting_price_body_material_coefficient')
+      .from('setting_price_body_material_coefficient')
       .delete()
-      .eq('id', bodyMaterialId)
+      .eq('body_material_id', bodyMaterialId)
       .eq('user_id', userId);
 
     if (error) throw new Error('Error deleting body material coefficient setting');

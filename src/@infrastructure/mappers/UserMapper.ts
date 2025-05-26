@@ -14,6 +14,7 @@ export class UserMapper {
       // firstName: dto.user_metadata?.firstName,
       // lastName: dto.user_metadata?.lastName,
       role: api.role,
+      subscription: api.subscription
     };
   }
 
