@@ -16,7 +16,7 @@ export class SettingPriceBodyPartCoefficientMapper {
       user_id: dto.userId,
       body_part_id: dto.bodyPartId,
       difficulty_coefficient: dto.coefficient,
-      body_parts: dto.bodyParts
+      // body_parts: dto.bodyParts
     };
   }
 }

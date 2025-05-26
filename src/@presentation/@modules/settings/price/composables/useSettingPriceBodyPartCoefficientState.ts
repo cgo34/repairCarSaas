@@ -3,7 +3,6 @@ import { IBodyPartUseCase } from '@/@domain/useCases/carRepair/IBodyPartUseCase'
 import { ISettingPriceBodyPartCoefficientUseCase } from '@/@domain/useCases/settings/price/ISettingPriceBodyPartCoefficientUseCase';
 import { container } from '@/@infrastructure/ioc/inversify.config';
 import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
-import { SettingPriceBodyPartCoefficientMapper } from '@/@presentation/mappers/settings/price/SettingPriceBodyPartCoefficientMapper';
 import { IUseSettingPriceBodyPartCoefficientState } from '@/@presentation/types/composables/settings/price/IUseSettingPriceBodyPartCoefficientState';
 import { BodyPartViewModel } from '@/@presentation/types/models/carRepair/BodyPartViewModel';
 import { SettingPriceBodyPartCoefficientViewModel } from '@/@presentation/types/models/settings/price/SettingPriceBodyPartCoefficientViewModel';
@@ -17,17 +16,7 @@ export function useSettingPriceBodyPartCoefficientState(): IUseSettingPriceBodyP
   const bodyPartUseCase = container.get<IBodyPartUseCase>(SYMBOLS.UseCases.CarRepair.BodyPartUseCase);
   const _bodyParts = ref<BodyPartViewModel[]>([]);
   const _settings = ref<SettingPriceBodyPartCoefficientViewModel[]>([]);
-  const _selectedSetting = ref<SettingPriceBodyPartCoefficientViewModel>({
-    userId: '',
-    bodyPartId: '',
-    coefficient: 0,
-    bodyParts: {
-      id: '',
-      name: '',
-      code: '',
-      color: ''
-    }
-  });
+
   const loading = ref<boolean>(false);
   const error = ref<unknown>(null);
 
@@ -61,10 +50,27 @@ export function useSettingPriceBodyPartCoefficientState(): IUseSettingPriceBodyP
     try {
       if (!authState.user?.value?.id) throw new Error('User does not exist');
 
-      return useCase.getByUserId(authState.user?.value?.id).then((data) => {
-        _settings.value = data.map((d) => SettingPriceBodyPartCoefficientMapper.dtoToView(d));
+      return useCase.getByUserId(authState.user?.value?.id).then((data) => {    
+            
+        if (!data.length) {
+          useCase.getAdmin().then((adminData) => {         
+            _settings.value = adminData.map((data) => {
+              return {
+                ...data,
+                id: undefined,
+                userId: authState.user?.value?.id
+              }
+            })
+            
+            return _settings.value;
+          })
+
+          return _settings.value
+        }
+        _settings.value = data;
         return _settings.value;
       });
+
     } catch (e) {
       throw e;
     } finally {
@@ -72,77 +78,25 @@ export function useSettingPriceBodyPartCoefficientState(): IUseSettingPriceBodyP
     }
   };
 
-  const selectSetting = (setting: SettingPriceBodyPartCoefficientViewModel): void => {
-    _selectedSetting.value = setting;
-  };
-
-  const resetSelectedSetting = (): void => {
-    _selectedSetting.value = {
-      userId: '',
-      bodyPartId: '',
-      coefficient: 0,
-      bodyParts: {
-        id: '',
-        name: '',
-        code: '',
-        color: ''
-      }
-    };
-  };
-
-  const addSetting = async (setting: SettingPriceBodyPartCoefficientViewModel) => {
+  const saveSettingBodyPartCoefficient = async () => {
+    console.log('saveSettingBodyPartCoefficient');
+    
     loading.value = true;
     try {
-      setting.userId = authState.user?.value?.id || '';
-      return useCase.create(setting).then((data) => {
-        _settings.value.push(SettingPriceBodyPartCoefficientMapper.dtoToView(data));
-        resetSelectedSetting();
-        return SettingPriceBodyPartCoefficientMapper.dtoToView(data);
-      });
+      return useCase.save(_settings.value)
+    } catch (e) {
+      error.value = e;
+      // throw e;
     } finally {
       loading.value = false;
     }
-  };
-
-  const updateSetting = async (setting: SettingPriceBodyPartCoefficientViewModel) => {
-    loading.value = true;
-    try {
-      return useCase.update(setting).then((data) => {
-        _settings.value = _settings.value.map((s) => (
-          s.bodyPartId === setting.bodyPartId
-          ? SettingPriceBodyPartCoefficientMapper.dtoToView(data)
-          : s
-        ));
-        return SettingPriceBodyPartCoefficientMapper.dtoToView(data);
-      });
-    } finally {
-      loading.value = false;
-    }
-  };
-
-  const deleteSetting = async (id: string) => {
-    loading.value = true;
-    try {
-      return useCase.delete(id).then(() => {
-        _settings.value = _settings.value.filter((s) => s.bodyPartId !== id);
-      });
-    } finally {
-      loading.value = false;
-    }
-  };
+  }
 
   return {
     settings: computed(() => _settings.value),
-    selectedSetting: computed(() => _selectedSetting.value),
     loading,
     error,
     init,
-    fetchSettings,
-    selectSetting,
-    addSetting,
-    updateSetting,
-    deleteSetting,
-    resetSelectedSetting,
-    bodyParts: computed(() => _bodyParts.value)
+    saveSettingBodyPartCoefficient
   };
 }
