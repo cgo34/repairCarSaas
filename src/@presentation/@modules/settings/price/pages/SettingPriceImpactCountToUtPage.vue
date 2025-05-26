@@ -1,131 +1,73 @@
 <template>
-  <MainLayout>
-    <v-container fluid>
+  <MainLayout><v-container fluid>
       <v-row>
-        <v-alert
-          class="mb-2"
-          type="info"
-          icon="$info"
-          variant="tonal"
-          text="Le nombre de bosses est traduit en Unités de temps (UT) paramétrables 1UT = 6 minutes"
-        ></v-alert>
-        <v-data-table
-          :headers="headers"
-          :items="settings"
-          :sort-by="[{ key: 'impactCountMin', order: 'asc' }]"
-        >
-          <!-- #REGION -> TOP BAR -->
-          <template #top>
-            <v-toolbar flat>
-              <v-toolbar-title>Paramètres de Comptage des Impacts</v-toolbar-title>
-              <v-divider
-                class="mx-4"
-                inset
-                vertical
-              />
-              <v-spacer />
-
-              <!-- #REGION -> ADD/EDIT ITEM DIALOG -->
-              <v-dialog
-                v-model="dialog"
-                max-width="500px"
-              >
-                <template #activator="{ props }">
-                  <v-btn
-                    class="mb-2"
-                    color="primary"
-                    v-bind="props"
-                  >
-                    Ajouter un Paramètre
-                  </v-btn>
-                </template>
-                <v-card>
-                  <v-card-title>
-                    <span class="text-h5">{{ formTitle }}</span>
-                  </v-card-title>
-
-                  <v-card-text>
-                    <v-container>
-                      <v-row>
-                        <v-col
-                          cols="12"
-                          md="4"
-                          sm="6"
-                        >
-                          <v-text-field
-                            v-model="selectedSetting.impactCountMin"
-                            label="Impact Min"
-                            type="number"
-                          />
-                        </v-col>
-                        <v-col
-                          cols="12"
-                          md="4"
-                          sm="6"
-                        >
-                          <v-text-field
-                            v-model="selectedSetting.impactCountMax"
-                            label="Impact Max"
-                            type="number"
-                          />
-                        </v-col>
-                        <v-col
-                          cols="12"
-                          md="4"
-                          sm="6"
-                        >
-                          <v-text-field
-                            v-model="selectedSetting.unitTime"
-                            label="Unité de Temps (UT)"
-                            type="number"
-                          />
-                        </v-col>
-                      </v-row>
-                    </v-container>
-                  </v-card-text>
-
-                  <v-card-actions>
-                    <v-spacer />
-                    <v-btn
-                      color="blue-darken-1"
-                      variant="text"
-                      @click="onCloseEditDialogBtnClick"
+        <v-card>
+          <v-alert
+            class="mb-2"
+            type="info"
+            icon="$info"
+            variant="tonal"
+            text="Le nombre de bosses est traduit en Unités de temps (UT) paramétrables 1UT = 6 minutes"
+          ></v-alert>
+          <v-form>
+            <v-container>
+              <v-row>
+                <v-col
+                  cols="6"
+                  md="6"
+                >
+                  <div v-for="(line, idex) in settings.slice(0,13)">
+                    <span
+                      v-if="line.impactCountMin === line.impactCountMax"
                     >
-                      Annuler
-                    </v-btn>
-                    <v-btn
-                      color="blue-darken-1"
-                      variant="text"
-                      @click="onSaveEditDialogBtnClick"
-                    >
-                      Sauvegarder
-                    </v-btn>
-                  </v-card-actions>
-                </v-card>
-              </v-dialog>
-              <!-- #ENDREGION -->
-            </v-toolbar>
-          </template>
-          <!-- #ENDREGION -->
+                      {{ line.impactCountMin }} impacts
+                    </span>
+                    <span v-else>
+                      {{ line.impactCountMin }} - {{ line.impactCountMax }} impacts
+                    </span>
+                    <v-text-field
+                      v-model="line.unitTime"
+                      label="Unit time"
+                      required
+                    ></v-text-field>
+                  </div>
+                </v-col>
 
-          <!-- #REGION -> ITEM ACTIONS -->
-          <template #item.actions="{ item }">
-            <v-icon
-              class="me-2"
-              size="small"
-              @click="onEditBtnClick(item)"
+                <v-col
+                  cols="6"
+                  md="6"
+                >
+                  <div v-for="(line, idex) in settings.slice(13, -1)">
+                    <span
+                      v-if="line.impactCountMin === line.impactCountMax"
+                    >
+                      {{ line.impactCountMin }} impacts
+                    </span>
+                    <span v-else>
+                      {{ line.impactCountMin }} - {{ line.impactCountMax }} impacts
+                    </span>
+                    <v-text-field
+                      v-model="line.unitTime"
+                      label="Unit time"
+                      required
+                    ></v-text-field>
+                  </div>
+                </v-col>
+              </v-row>
+            </v-container>
+          </v-form>
+          <v-card-actions>
+            <v-spacer />
+            <v-btn
+              class="mb-2"
+              color="primary"
+              variant="flat"
+              @click="onSaveSettingUnitTimeBtnClick"
             >
-              mdi-pencil
-            </v-icon>
-            <v-icon
-              size="small"
-              @click="onDeleteBtnClick(item)"
-            >
-              mdi-delete
-            </v-icon>
-          </template>
-          <!-- #ENDREGION -->
-        </v-data-table>
+              Enregistrer
+            </v-btn>
+          </v-card-actions>
+        </v-card>
       </v-row>
     </v-container>
   </MainLayout>
@@ -136,8 +78,7 @@ import { container } from '@/@infrastructure/ioc/inversify.config';
 import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
 import MainLayout from '@/@presentation/@ui/layouts/MainLayout.vue';
 import { IUseSettingPriceImpactCountToUtState } from '@/@presentation/types/composables/settings/price/IUseSettingPriceImpactCountToUtState';
-import { SettingPriceImpactCountToUtViewModel } from '@/@presentation/types/models/settings/price/SettingPriceImpactCountToUtViewModel';
-import { computed, onMounted, ref } from 'vue';
+import { onMounted } from 'vue';
 
 // Injection du state depuis Inversify
 const useSettingPriceImpactCountToUtState = container.get<IUseSettingPriceImpactCountToUtState>(
@@ -146,53 +87,14 @@ const useSettingPriceImpactCountToUtState = container.get<IUseSettingPriceImpact
 
 const {
   settings,
-  selectedSetting,
   init,
-  selectSetting,
-  addSetting,
-  updateSetting,
-  deleteSetting,
-  resetSelectedSetting
+  saveSettingUnitTime
 } = useSettingPriceImpactCountToUtState;
 
-const dialog = ref<boolean>(false);
 
-const headers = [
-  { title: 'Impact Min', align: 'start', key: 'impactCountMin' },
-  { title: 'Impact Max', key: 'impactCountMax' },
-  { title: 'Unité de Temps (UT)', key: 'unitTime' },
-  { title: 'Actions', sortable: false, key: 'actions' }
-] as const;
-
-const formTitle = computed(() =>
-  selectedSetting.value?.id ? 'Modifier le paramètre' : 'Nouveau paramètre'
-);
-
-const onEditBtnClick = (item: SettingPriceImpactCountToUtViewModel) => {
-  selectSetting(item);
-  dialog.value = true;
-};
-
-const onDeleteBtnClick = (item: SettingPriceImpactCountToUtViewModel) => {
-  if (!item.id) return;
-
-  // TODO: Ajouter un dialogue de confirmation avant suppression
-  deleteSetting(item.id);
-};
-
-const onCloseEditDialogBtnClick = () => {
-  resetSelectedSetting();
-  dialog.value = false;
-};
-
-const onSaveEditDialogBtnClick = async () => {
-  if (selectedSetting.value?.id) {
-    await updateSetting(selectedSetting.value);
-  } else {
-    await addSetting(selectedSetting.value);
-  }
-  dialog.value = false;
-};
+const onSaveSettingUnitTimeBtnClick = () => {
+  saveSettingUnitTime()
+}
 
 onMounted(async () => {
   await init();

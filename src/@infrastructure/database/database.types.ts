@@ -628,7 +628,7 @@ export type Database = {
           user_id: string | null
         }
         Insert: {
-          id: string
+          id?: string
           impact_count_max?: number | null
           impact_count_min?: number | null
           unit_time?: number | null

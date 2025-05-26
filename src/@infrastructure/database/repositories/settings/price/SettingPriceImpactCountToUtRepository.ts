@@ -16,7 +16,14 @@ export class SettingPriceImpactCountToUtRepository implements ISettingPriceImpac
     
     const { data, error } = await this.clientProvider.getClient()
       .from('setting_price_impact_count_to_ut')
-      .select('*')
+      .select(`
+        *,
+        users (
+          id,
+          role
+        )
+      `)
+      .eq('users.role', 'admin')
       .returns<SettingPriceImpactCountToUtApiModel[]>();
 
     if (error)
@@ -29,12 +36,28 @@ export class SettingPriceImpactCountToUtRepository implements ISettingPriceImpac
     const { data, error } = await this.clientProvider.getClient()
       .from('setting_price_impact_count_to_ut')
       .select('*')
+      .eq('user_id', userId)
       .returns<SettingPriceImpactCountToUtApiModel[]>();
 
     if (error)
       throw new Error('Error fetching impact count to UT settings');
 
     return data.map(SettingPriceImpactCountToUtMapper.apiToDto);
+  }
+  
+  async save(settings: SettingPriceImpactCountToUtDto[]): Promise<SettingPriceImpactCountToUtDto[]> {
+    const settingsApi = settings.map(s => SettingPriceImpactCountToUtMapper.dtoToApi(s));
+    console.log('save settingApi', settingsApi);
+    
+    const { data, error } = await this.clientProvider.getClient()
+      .from('setting_price_impact_count_to_ut')
+      .upsert(settingsApi, { onConflict: ['id'], defaultToNull: false })
+      .select('*')
+      .returns<SettingPriceImpactCountToUtApiModel[]>();
+
+    if (error) throw new Error('Error saving general setting');
+
+    return data.map(d => SettingPriceImpactCountToUtMapper.apiToDto(d));
   }
 
   async create(setting: SettingPriceImpactCountToUtDto): Promise<SettingPriceImpactCountToUtDto> {

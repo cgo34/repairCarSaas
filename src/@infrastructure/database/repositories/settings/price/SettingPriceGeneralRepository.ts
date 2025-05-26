@@ -17,7 +17,15 @@ export class SettingPriceGeneralRepository implements ISettingPriceGeneralReposi
       
       const { data, error } = await this.clientProvider.getClient()
         .from('setting_price_general')
-        .select('*')
+        .select(`
+          *,
+          users (
+            id,
+            role
+          )
+        `)
+        .eq('users.role', 'admin')
+        .limit(1)
         .single<SettingPriceGeneralApiModel>();
   
       if (error)
@@ -27,16 +35,16 @@ export class SettingPriceGeneralRepository implements ISettingPriceGeneralReposi
       return SettingPriceGeneralMapper.apiToDto(data);
     }
 
-  async getByUserId(userId: string): Promise<SettingPriceGeneralDto> {
+  async getByUserId(userId: string): Promise<SettingPriceGeneralDto | null> {
     const { data, error } = await this.clientProvider.getClient()
       .from('setting_price_general')
       .select('*')
       .eq('user_id', userId)
-      .single<SettingPriceGeneralApiModel>();
+      .maybeSingle<SettingPriceGeneralApiModel>();
 
     if (error) throw new Error('Error fetching general settings');
 
-    return SettingPriceGeneralMapper.apiToDto(data);
+    return data ? SettingPriceGeneralMapper.apiToDto(data) : null;
   }
 
   async save(setting: SettingPriceGeneralDto): Promise<SettingPriceGeneralDto> {

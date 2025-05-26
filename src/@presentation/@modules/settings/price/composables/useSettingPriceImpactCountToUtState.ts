@@ -29,15 +29,29 @@ export function useSettingPriceImpactCountToUtState(): IUseSettingPriceImpactCou
   const fetchSettings = async (): Promise<SettingPriceImpactCountToUtViewModel[]> => {
     loading.value = true;
     try {
-      if (!authState.user?.value?.id) throw new Error('User does not exist');
-
-      useCase.getAdmin().then((data) =>{
-        console.log('get admin setting for impact count', data)
-      })
+      if (!authState.user?.value?.id)
+        throw new Error('User does not exist');
 
       return useCase.getByUserId(authState.user?.value?.id).then((data) => {
+            
+        if (!data.length) {
+          useCase.getAdmin().then((adminData) => {         
+            _settings.value = adminData.map((data) => {
+              return {
+                ...data,
+                id: undefined,
+                userId: authState.user?.value?.id
+              }
+            })
+            
+            return _settings.value;
+          })
+
+          return _settings.value
+        }
+
         _settings.value = data;
-        return data;
+        return _settings.value;
       });
     } catch (e) {
       throw e;
@@ -96,6 +110,20 @@ export function useSettingPriceImpactCountToUtState(): IUseSettingPriceImpactCou
     }
   };
 
+  const saveSettingUnitTime = async () => {
+    console.log('saveSettingUnitTime');
+    
+    loading.value = true;
+    try {
+      return useCase.save(_settings.value)
+    } catch (e) {
+      error.value = e;
+      // throw e;
+    } finally {
+      loading.value = false;
+    }
+  }
+
   return {
     settings: computed(() => _settings.value),
     selectedSetting: computed(() => _selectedSetting.value),
@@ -107,6 +135,7 @@ export function useSettingPriceImpactCountToUtState(): IUseSettingPriceImpactCou
     addSetting,
     updateSetting,
     deleteSetting,
-    resetSelectedSetting
+    resetSelectedSetting,
+    saveSettingUnitTime
   };
 }
