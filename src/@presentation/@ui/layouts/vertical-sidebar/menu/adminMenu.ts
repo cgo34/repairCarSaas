@@ -86,16 +86,6 @@ export const adminMenu = [
         icon: CircleIcon,
         to: '/settings/price/coefficient/variation'
       },
-      {
-        title: 'Diameter Coefficient Price Parameter',
-        icon: CircleIcon,
-        to: '/settings/price/coefficient/diameter'
-      },
-      {
-        title: 'Repair Type Coefficient Price Parameter',
-        icon: CircleIcon,
-        to: '/settings/price/coefficient/repair-type'
-      }
     ]
   },
   { divider: true },

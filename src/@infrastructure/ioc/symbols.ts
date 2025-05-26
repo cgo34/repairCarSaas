@@ -35,10 +35,8 @@ const SYMBOLS = {
       Price: {
         SettingPriceGeneralRepository: Symbol.for(SYMBOL_NAMES.SETTING_PRICE_GENERAL_REPOSITORY),
         SettingPriceImpactCountToUtRepository: Symbol.for(SYMBOL_NAMES.SETTING_PRICE_IMPACT_COUNT_TO_UT_REPOSITORY),
-        SettingPriceBodyMaterialCoefficient: Symbol.for(SYMBOL_NAMES.SETTING_PRICE_BODY_MATERIAL_COEFFICIENT),
         SettingPriceBodyPartCoefficient: Symbol.for(SYMBOL_NAMES.SETTING_PRICE_BODY_PART_COEFFICIENT),
-        SettingPriceDiameterCoefficient: Symbol.for(SYMBOL_NAMES.SETTING_PRICE_DIAMETER_COEFFICIENT),
-        RepairTypeCoefficient: Symbol.for(SYMBOL_NAMES.SETTING_PRICE_REPAIR_TYPE_COEFFICIENT),
+        SettingPriceTechnicityCoefficient: Symbol.for(SYMBOL_NAMES.SETTING_PRICE_TECHNICITY_COEFFICIENT_REPOSITORY),
       }
     }
   },
@@ -57,9 +55,8 @@ const SYMBOLS = {
       Price: {
         SettingPriceGeneralService: Symbol.for(SYMBOL_NAMES.SETTING_PRICE_GENERAL_SERVICE),
         SettingPriceImpactCountToUtService: Symbol.for(SYMBOL_NAMES.SETTING_PRICE_IMPACT_COUNT_TO_UT_SERVICE),
-        SettingPriceBodyMaterialCoefficientService: Symbol.for(SYMBOL_NAMES.SETTING_PRICE_BODY_MATERIAL_COEFFICIENT_SERVICE),
         SettingPriceBodyPartCoefficientService: Symbol.for(SYMBOL_NAMES.SETTING_PRICE_BODY_PART_COEFFICIENT_SERVICE),
-        SettingPriceDiameterCoefficientService: Symbol.for(SYMBOL_NAMES.SETTING_PRICE_DIAMETER_COEFFICIENT_SERVICE),
+        SettingPriceTechnicityCoefficientService: Symbol.for(SYMBOL_NAMES.SETTING_PRICE_TECHNICITY_COEFFICIENT_SERVICE),
       }
     },
     PdfGeneratorService: Symbol.for(SYMBOL_NAMES.PDF_GENERATOR_SERVICE),
@@ -97,10 +94,8 @@ const SYMBOLS = {
         AllUseCase: Symbol.for(SYMBOL_NAMES.SETTING_PRICE_USE_CASE),
         GeneralUseCase: Symbol.for(SYMBOL_NAMES.SETTING_PRICE_GENERAL_USE_CASE),
         ImpactCountToUtUseCase: Symbol.for(SYMBOL_NAMES.SETTING_PRICE_IMPACT_COUNT_TO_UT_USE_CASE),
-        BodyMaterialCoefficientUseCase: Symbol.for(SYMBOL_NAMES.SETTING_PRICE_BODY_MATERIAL_COEFFICIENT_USE_CASE),
         BodyPartCoefficientUseCase: Symbol.for(SYMBOL_NAMES.SETTING_PRICE_BODY_PART_COEFFICIENT_USE_CASE),
-        DiameterCoefficientUseCase: Symbol.for(SYMBOL_NAMES.SETTING_PRICE_DIAMETER_COEFFICIENT_USE_CASE),
-        RepairTypeCoefficientUseCase: Symbol.for(SYMBOL_NAMES.SETTING_PRICE_REPAIR_TYPE_COEFFICIENT_USE_CASE),
+        TechnicityCoefficientUseCase: Symbol.for(SYMBOL_NAMES.SETTING_PRICE_TECHNICITY_COEFFICIENT_USE_CASE),
       }
     },
     CostCalculator: {
@@ -167,10 +162,8 @@ const SYMBOLS = {
         All: Symbol.for(SYMBOL_NAMES.SETTING_PRICE_STATE),
         GeneralState: Symbol.for(SYMBOL_NAMES.SETTING_PRICE_GENERAL_STATE),
         ImpactCountToUtState: Symbol.for(SYMBOL_NAMES.SETTING_PRICE_IMPACT_COUNT_TO_UT_STATE),
-        BodyMaterialCoefficientState: Symbol.for(SYMBOL_NAMES.SETTING_PRICE_BODY_MATERIAL_COEFFICIENT_STATE),
         BodyPartCoefficientState: Symbol.for(SYMBOL_NAMES.SETTING_PRICE_BODY_PART_COEFFICIENT_STATE),
-        DiameterCoefficientState: Symbol.for(SYMBOL_NAMES.SETTING_PRICE_DIAMETER_COEFFICIENT_STATE),
-        RepairTypeCoefficientState: Symbol.for(SYMBOL_NAMES.SETTING_PRICE_REPAIR_TYPE_COEFFICIENT_STATE),
+        TechnicityCoefficientState: Symbol.for(SYMBOL_NAMES.SETTING_PRICE_TECHNICITY_COEFFICIENT_STATE),
       }
     },
     // -- Quotes States

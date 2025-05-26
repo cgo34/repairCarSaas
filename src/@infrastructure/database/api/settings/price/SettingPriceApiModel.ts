@@ -4,7 +4,7 @@ import {
 import { SettingPriceBodyPartCoefficientApiModel } from "@infrastructure/database/api/settings/price/SettingPriceBodyPartCoefficientApiModel";
 import {
   SettingPriceDiameterCoefficientApiModel,
-} from "@infrastructure/database/api/settings/price/SettingPriceDiameterCoefficientApiModel";
+} from "@/@infrastructure/database/api/settings/price/SettingPriceTechnicityCoefficientApiModel";
 import {
   SettingPriceGeneralApiModel,
 } from "@infrastructure/database/api/settings/price/SettingPriceGeneralApiModel";

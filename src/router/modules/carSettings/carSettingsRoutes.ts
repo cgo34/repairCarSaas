@@ -3,12 +3,11 @@ import DashboardPage from '@/@presentation/@modules/dashboard/pages/DashboardPag
 import CarBodyMaterialPage from '@/@presentation/@modules/settings/carRepair/pages/CarBodyMaterialPage.vue';
 import CarBodyPartPage from '@/@presentation/@modules/settings/carRepair/pages/CarBodyPartPage.vue';
 import DentRepairTypePage from '@/@presentation/@modules/settings/carRepair/pages/DentRepairTypePage.vue';
-import SettingPriceBodyMaterialCoefficientPage from '@/@presentation/@modules/settings/price/pages/SettingPriceBodyMaterialCoefficientPage.vue';
 import SettingPriceBodyPartCoefficientPage from '@/@presentation/@modules/settings/price/pages/SettingPriceBodyPartCoefficientPage.vue';
-import SettingPriceDiameterCoefficientPage from '@/@presentation/@modules/settings/price/pages/SettingPriceDiameterCoefficientPage.vue';
 import SettingPriceGeneralPage from '@/@presentation/@modules/settings/price/pages/SettingPriceGeneralPage.vue';
 import SettingPriceImpactCountToUtPage from '@/@presentation/@modules/settings/price/pages/SettingPriceImpactCountToUtPage.vue';
 import SettingPriceRepairTypeCoefficientPage from '@/@presentation/@modules/settings/price/pages/SettingPriceRepairTypeCoefficientPage.vue';
+import SettingPriceTechnicityCoefficientPage from '@/@presentation/@modules/settings/price/pages/SettingPriceTechnicityCoefficientPage.vue';
 import { RouteRecordRaw } from 'vue-router';
 
 export const carSettingsRoutes: RouteRecordRaw[] = [
@@ -96,21 +95,6 @@ export const carSettingsRoutes: RouteRecordRaw[] = [
     }
   },
   {
-    path: '/settings/price/coefficient/technicity',
-    name: 'SettingPriceTechnicityCoefficientList',
-    component: SettingPriceBodyMaterialCoefficientPage,
-    meta: {
-      requiresAuth: true,
-      breadcrumb: [
-        { title: 'Dashboard', href: '/dashboard' },
-        { title: 'Settings', href: '/settings' },
-        { title: 'Prices', href: '/price' },
-        { title: 'Coefficient', href: '/coefficent' },
-        { title: 'Technicity', href: '/technicity' }
-      ]
-    }
-  },
-  {
     path: '/settings/price/coefficient/variation',
     name: 'SettingPriceVariationCoefficientList',
     component: SettingPriceBodyPartCoefficientPage,
@@ -126,9 +110,9 @@ export const carSettingsRoutes: RouteRecordRaw[] = [
     }
   },
   {
-    path: '/settings/price/coefficient/diameter',
-    name: 'SettingPriceDiameterCoefficientList',
-    component: SettingPriceDiameterCoefficientPage,
+    path: '/settings/price/coefficient/technicity',
+    name: 'SettingPriceTechnicityCoefficientList',
+    component: SettingPriceTechnicityCoefficientPage,
     meta: {
       requiresAuth: true,
       breadcrumb: [
@@ -136,22 +120,7 @@ export const carSettingsRoutes: RouteRecordRaw[] = [
         { title: 'Settings', href: '/settings' },
         { title: 'Prices', href: '/price' },
         { title: 'Coefficient', href: '/coefficent' },
-        { title: 'Diameter', href: '/diameter' }
-      ]
-    }
-  },
-  {
-    path: '/settings/price/coefficient/repair-type',
-    name: 'SettingPriceRepairTypeCoefficientList',
-    component: SettingPriceRepairTypeCoefficientPage,
-    meta: {
-      requiresAuth: true,
-      breadcrumb: [
-        { title: 'Dashboard', href: '/dashboard' },
-        { title: 'Settings', href: '/settings' },
-        { title: 'Prices', href: '/price' },
-        { title: 'Coefficient', href: '/coefficent' },
-        { title: 'Repair Type', href: '/repair-type' }
+        { title: 'Technicity', href: '/technicity' }
       ]
     }
   },
