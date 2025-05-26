@@ -31,6 +31,10 @@ export function useSettingPriceImpactCountToUtState(): IUseSettingPriceImpactCou
     try {
       if (!authState.user?.value?.id) throw new Error('User does not exist');
 
+      useCase.getAdmin().then((data) =>{
+        console.log('get admin setting for impact count', data)
+      })
+
       return useCase.getByUserId(authState.user?.value?.id).then((data) => {
         _settings.value = data;
         return data;

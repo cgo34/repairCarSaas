@@ -1,4 +1,6 @@
+import { SubscriptionDto } from '@/@application/dtos/SubscriptionDto';
 import { SupabaseClient } from '@/@infrastructure/database/clients/SupabaseClient';
+import { SubscriptionMapper } from '@/@infrastructure/mappers/SubscriptionMapper';
 import { ISubscriptionRepository, SubscriptionInsertDto } from '@domain/repositories/ISubscriptionRepository';
 import { IClientProvider } from '@infrastructure/interfaces/IClientProvider';
 import { SYMBOLS } from '@infrastructure/ioc/symbols';
@@ -41,5 +43,24 @@ export class SubscriptionRepository implements ISubscriptionRepository {
       console.error('[SubscriptionRepo] createSubscription error:', error)
       throw error
     }
+  }
+
+  async getSubscriptionByUserId(userId: string): Promise<SubscriptionDto> {
+    const { data, error } = await this.clientProvider.getClient()
+      .from('subscriptions')
+      .select(`
+        *,
+        subscriptionPlan:subscription_plans(*)
+        `)
+      .eq('user_id', userId)
+      .limit(1)
+      .single()
+
+    if (error) {
+      console.error('[SubscriptionRepo] getPlanByName error:', error)
+      throw error
+    }
+
+    return SubscriptionMapper.apiToDto(data)
   }
 }

@@ -123,7 +123,6 @@ export type Database = {
           impact_count_35: number | null
           invoice_id: string | null
           price: number | null
-          quote_detail_id: string | null
           repair_type_id: string | null
         }
         Insert: {
@@ -135,7 +134,6 @@ export type Database = {
           impact_count_35?: number | null
           invoice_id?: string | null
           price?: number | null
-          quote_detail_id?: string | null
           repair_type_id?: string | null
         }
         Update: {
@@ -147,7 +145,6 @@ export type Database = {
           impact_count_35?: number | null
           invoice_id?: string | null
           price?: number | null
-          quote_detail_id?: string | null
           repair_type_id?: string | null
         }
         Relationships: [
@@ -170,13 +167,6 @@ export type Database = {
             columns: ["invoice_id"]
             isOneToOne: false
             referencedRelation: "invoices"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "invoice_details_quote_detail_id_fkey"
-            columns: ["quote_detail_id"]
-            isOneToOne: false
-            referencedRelation: "quote_details"
             referencedColumns: ["id"]
           },
           {
@@ -289,7 +279,7 @@ export type Database = {
             columns: ["quote_number"]
             isOneToOne: false
             referencedRelation: "quotes"
-            referencedColumns: ["quote_number"]
+            referencedColumns: ["id"]
           },
           {
             foreignKeyName: "invoices_technician_id_fkey"
@@ -609,9 +599,9 @@ export type Database = {
         }
         Insert: {
           hourly_rate?: number | null
-          id: string
+          id?: string
           unit_time?: number | null
-          user_id: string
+          user_id?: string
         }
         Update: {
           hourly_rate?: number | null

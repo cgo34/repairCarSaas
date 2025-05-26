@@ -11,11 +11,24 @@ import { inject, injectable } from 'inversify';
 export class SettingPriceImpactCountToUtRepository implements ISettingPriceImpactCountToUtRepository {
   constructor(@inject(SYMBOLS.Providers.ClientProvider) private clientProvider: IClientProvider<SupabaseClient>) {}
 
+  async getAdmin(): Promise<SettingPriceImpactCountToUtDto[]> {
+    console.log('repository getAdmin');
+    
+    const { data, error } = await this.clientProvider.getClient()
+      .from('setting_price_impact_count_to_ut')
+      .select('*')
+      .returns<SettingPriceImpactCountToUtApiModel[]>();
+
+    if (error)
+      throw new Error('Error fetching impact count to UT settings');
+
+    return data.map(SettingPriceImpactCountToUtMapper.apiToDto);
+  }
+
   async getByUserId(userId: string): Promise<SettingPriceImpactCountToUtDto[]> {
     const { data, error } = await this.clientProvider.getClient()
-      .fromSchema<'car_repair', 'setting_price_impact_count_to_ut'>('car_repair', 'setting_price_impact_count_to_ut')
+      .from('setting_price_impact_count_to_ut')
       .select('*')
-      .eq('user_id', userId)
       .returns<SettingPriceImpactCountToUtApiModel[]>();
 
     if (error)
@@ -28,7 +41,7 @@ export class SettingPriceImpactCountToUtRepository implements ISettingPriceImpac
     const apiModel = SettingPriceImpactCountToUtMapper.dtoToApi(setting);
 
     const { data, error } = await this.clientProvider.getClient()
-      .fromSchema<'car_repair', 'setting_price_impact_count_to_ut'>('car_repair', 'setting_price_impact_count_to_ut')
+      .from('setting_price_impact_count_to_ut')
       .insert(apiModel)
       .select('*')
       .single<SettingPriceImpactCountToUtApiModel>();
@@ -46,7 +59,7 @@ export class SettingPriceImpactCountToUtRepository implements ISettingPriceImpac
       throw new Error('Setting ID is required');
 
     const { data, error } = await this.clientProvider.getClient()
-      .fromSchema<'car_repair', 'setting_price_impact_count_to_ut'>('car_repair', 'setting_price_impact_count_to_ut')
+      .from('setting_price_impact_count_to_ut')
       .update(apiModel)
       .eq('id', apiModel.id)
       .eq('user_id', apiModel.user_id)
@@ -61,7 +74,7 @@ export class SettingPriceImpactCountToUtRepository implements ISettingPriceImpac
 
   async delete(id: string): Promise<void> {
     const { error } = await this.clientProvider.getClient()
-      .fromSchema<'car_repair', 'setting_price_impact_count_to_ut'>('car_repair', 'setting_price_impact_count_to_ut')
+      .from('setting_price_impact_count_to_ut')
       .delete()
       .eq('id', id);
 

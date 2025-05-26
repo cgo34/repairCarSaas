@@ -9,7 +9,12 @@ import { computed, ref } from 'vue';
 export function useSettingPriceGeneralState(): IUseSettingPriceGeneralState {
   const authState = container.get<IAuthState>(SYMBOLS.States.AuthState);
   const settingPriceGeneralUseCase = container.get<ISettingPriceGeneralUseCase>(SYMBOLS.UseCases.Setting.Price.GeneralUseCase);
-  const _settings = ref<SettingPriceGeneralViewModel[]>([]);
+  const _settings = ref<SettingPriceGeneralViewModel>({
+    id: undefined,
+    userId: '',
+    hourlyRate: 0,
+    unitTime: 0,
+  });
   const _selectedSetting = ref<SettingPriceGeneralViewModel>({
     id: undefined,
     userId: '',
@@ -25,15 +30,29 @@ export function useSettingPriceGeneralState(): IUseSettingPriceGeneralState {
     })
   }
 
-  const fetchSettings = async (): Promise<SettingPriceGeneralViewModel[]> => {
+  const fetchSettings = async (): Promise<SettingPriceGeneralViewModel> => {
     loading.value = true;
     try {
       if (!authState.user?.value?.id)
         throw new Error('User does not exist');
 
       return settingPriceGeneralUseCase.getByUserId(authState.user?.value?.id).then((data) => {
+        console.log('getByUSer', data);
+        
+        if (!data.id) {
+          settingPriceGeneralUseCase.getAdmin().then((adminData) => {
+            console.log(adminData)
+            
+            _settings.value.hourlyRate = adminData.hourlyRate;
+            _settings.value.unitTime = adminData.unitTime;
+            _settings.value.userId = authState.user?.value?.id ?? ''
+            console.log(_settings.value)
+            return _settings.value;
+          })
+        }
+
         _settings.value = data;
-        return data;
+        return _settings.value;
       });
     } catch (e) {
       // error.value = e;
@@ -61,6 +80,22 @@ export function useSettingPriceGeneralState(): IUseSettingPriceGeneralState {
       hourlyRate: 0,
       unitTime: 0,
     };
+  }
+
+  const saveSettingPriceGeneral = async () => {
+    loading.value = true;
+    try {
+      return settingPriceGeneralUseCase.save(_settings.value).then((data) => {
+        // _settings.value.push(data);
+        // resetSelectedSetting();
+        return data;
+      });
+    } catch (e) {
+      // error.value = e;
+      throw e;
+    } finally {
+      loading.value = false;
+    }
   }
 
   const addSetting = async (settingPriceGeneral: SettingPriceGeneralViewModel): Promise<SettingPriceGeneralViewModel> => {
@@ -130,6 +165,7 @@ export function useSettingPriceGeneralState(): IUseSettingPriceGeneralState {
     error,
     init,
     fetchSettings,
+    saveSettingPriceGeneral,
     selectSetting,
     addSetting,
     updateSetting,

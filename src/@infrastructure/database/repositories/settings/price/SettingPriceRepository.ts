@@ -14,7 +14,7 @@ export class SettingPriceRepository implements ISettingPriceRepository {
 
   async getByUserId(userId: string): Promise<SettingPriceDto[]> {
     const { data, error } = await this.clientProvider.getClient()
-      .fromSchema<'car_repair', 'setting_price_general'>('car_repair', 'setting_price_general')
+      .from('setting_price_general')
       .select('*')
       .eq('user_id', userId)
       .returns<SettingPriceApiModel[]>();

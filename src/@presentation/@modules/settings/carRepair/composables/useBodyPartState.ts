@@ -21,7 +21,12 @@ export function useBodyPartState(): IBodyPartState {
   const error = ref<unknown>(null);
 
   const init = async () => {
-    return fetchBodyParts().then(() => {
+    return fetchBodyParts().then((data) => {
+      console.log('fetchBodyParts', data)
+      if (!data.length) {
+        fetchBodyPartsFromAdminSetting
+      }
+
       return;
     });
   };

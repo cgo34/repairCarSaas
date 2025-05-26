@@ -15,7 +15,7 @@ export class BodyPartRepository implements IBodyPartRepository {
   async getAll(): Promise<BodyPartDto[]> {
     
     const { data, error } = await this.clientProvider.getClient()
-      .fromSchema<'car_repair', 'body_parts'>('car_repair', 'body_parts')
+      .from('body_parts')
       .select('*')
       .returns<BodyPartApiModel[]>();
 
@@ -29,7 +29,7 @@ export class BodyPartRepository implements IBodyPartRepository {
     const bodyPartApi = BodyPartMapper.dtoToApi(bodyPart);
     
     const { data, error } = await this.clientProvider.getClient()
-      .fromSchema<'car_repair', 'body_parts'>('car_repair', 'body_parts')
+      .from('body_parts')
       .insert(bodyPartApi)
       .select('*')
       .single<BodyPartApiModel>();
@@ -47,7 +47,7 @@ export class BodyPartRepository implements IBodyPartRepository {
       throw new Error('Body part id is required');
 
     const { data, error } = await this.clientProvider.getClient()
-      .fromSchema<'car_repair', 'body_parts'>('car_repair', 'body_parts')
+      .from('body_parts')
       .update(bodyPartApi)
       .eq('id', bodyPartApi.id)
       .select('*')
@@ -61,7 +61,7 @@ export class BodyPartRepository implements IBodyPartRepository {
 
   async delete(id: string): Promise<void> {
     const { error } = await this.clientProvider.getClient()
-      .fromSchema<'car_repair', 'body_parts'>('car_repair', 'body_parts')
+      .from('body_parts')
       .delete()
       .eq('id', id);
       
