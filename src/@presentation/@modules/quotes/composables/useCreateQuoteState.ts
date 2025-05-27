@@ -48,6 +48,7 @@ export function useCreateQuoteState() {
   });
 
   const _isForfait = ref<boolean>(false);
+  const _forfaitAmount = ref<number | undefined>(undefined);
   const _isDisplayUnitPrice = ref<boolean>(true);
   const _isComputeCommissionWithoutDentRemoval = ref<boolean>(true);
   const _selectedCountry = ref<CountryViewModel>();
@@ -67,6 +68,7 @@ export function useCreateQuoteState() {
       _quote.value = {
         quoteNumber: '',
         isForfait: false,
+        forfaitAmount: undefined,
         status: 'draft',
         country: 'FR',
         currency: 'EUR',
@@ -102,24 +104,7 @@ export function useCreateQuoteState() {
         ]);
 
       _garages.value = garageData.map((g) => GarageMapper.dtoToView(g));
-      _technicians.value = [
-        ...technicianData,
-        // TODO: (gce) -> REMOVE MOCK
-          {
-            id: '1',
-            fullName: 'John Doe',
-            email: 'technicien1@gmail.com',
-            password: '123456789',
-            createdAt: '2021-09-01T00:00:00',
-          },
-          {
-            id: '2',
-            fullName: 'Albert Dupont',
-            email: 'technicien2@gmail.com',
-            password: '123456789',
-            createdAt: '2021-09-01T00:00:00',
-          },
-      ];
+      _technicians.value = technicianData;
 
       _selectedTechnician.value = _technicians.value.find((t) => t.id === authState.user.value?.id);
       
@@ -215,6 +200,10 @@ export function useCreateQuoteState() {
     //   _isComputeCommissionWithoutDentRemoval.value = false;
     // }
   }
+  
+  const setForfaitAmount = (amount: number) => {
+    _forfaitAmount.value = amount;
+  }
 
   const setIsDisplayUnitPrice = (isDisplayUnitPrice: boolean) => {
     _isDisplayUnitPrice.value = isDisplayUnitPrice;
@@ -251,6 +240,7 @@ export function useCreateQuoteState() {
         carDateEntryCirculation: _carInformations.value.dateEntryCirculation,
 
         isForfait: _isForfait.value,
+        forfaitAmount: _forfaitAmount.value,
         isDisplayUnitPrice: _isDisplayUnitPrice.value,
         isComputeCommissionWithoutDentRemoval: _isComputeCommissionWithoutDentRemoval.value,
         
@@ -304,9 +294,11 @@ export function useCreateQuoteState() {
     setCarDateEntryCirculation,
     
     isForfait: computed(() => _isForfait.value),
+    forfaitAmount: computed(() => _forfaitAmount.value),
     isDisplayUnitPrice: computed(() => _isDisplayUnitPrice.value),
     isComputeCommissionWithoutDentRemoval: computed(() => _isComputeCommissionWithoutDentRemoval.value),
     setIsForfait,
+    setForfaitAmount,
     setIsDisplayUnitPrice,
     setIsComputeCommissionWithoutDentRemoval,
     

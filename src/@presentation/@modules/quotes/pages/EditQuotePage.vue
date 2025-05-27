@@ -367,7 +367,7 @@
               <v-spacer></v-spacer>
               <v-btn
                 v-if="quoteInformations.status?.code !== 'accepted'"
-                variant="tonal"
+                variant="flat"
                 class="mt-3"
                 color="primary"
                 @click="onUpdateBtnClick"

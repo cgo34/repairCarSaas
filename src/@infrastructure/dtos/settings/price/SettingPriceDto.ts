@@ -1,6 +1,3 @@
-import {
-  SettingPriceBodyMaterialCoefficientDto
-} from "@/@infrastructure/dtos/settings/price/SettingPriceBodyMaterialCoefficientDto";
 import { SettingPriceBodyPartCoefficientDto } from "@/@infrastructure/dtos/settings/price/SettingPriceBodyPartCoefficientDto";
 import {
   SettingPriceGeneralDto,
@@ -8,16 +5,13 @@ import {
 import {
   SettingPriceImpactCountToUtDto
 } from "@/@infrastructure/dtos/settings/price/SettingPriceImpactCountToUtDto";
-import { SettingPriceRepairTypeCoefficientDto } from "@/@infrastructure/dtos/settings/price/SettingPriceRepairTypeCoefficientDto";
 import {
-  SettingPriceDiameterCoefficientDto,
+  SettingPriceTechnicityCoefficientDto
 } from "@/@infrastructure/dtos/settings/price/SettingPriceTechnicityCoefficientDto";
 
 export interface SettingPriceDto {
   general: SettingPriceGeneralDto;
-  bodyMaterials: SettingPriceBodyMaterialCoefficientDto[];
   bodyParts: SettingPriceBodyPartCoefficientDto[];
-  diameters: SettingPriceDiameterCoefficientDto[];
+  technicity: SettingPriceTechnicityCoefficientDto;
   impactsCount: SettingPriceImpactCountToUtDto[];
-  repairTypes: SettingPriceRepairTypeCoefficientDto[];
 }

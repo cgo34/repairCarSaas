@@ -5,7 +5,7 @@
         <v-data-table
           :headers="headers"
           :items="quotes"
-          :sort-by="[{ key: 'quoteNumber', order: 'asc' }]"
+          :sort-by="[{ key: 'createdAt', order: 'desc' }]"
         >
           <!-- #REGION -> TOP BAR -->
           <template #top>
@@ -112,12 +112,12 @@ const router = useRouter();
 
 const headers = [
   { title: 'Numéro de devis', align: 'start', key: 'quoteNumber' },
+  { title: 'Date', align: 'start', key: 'createdAt' },
+  { title: 'Statut', align: 'start', key: 'status' },
   { title: 'Garage', key: 'garage.name' },
   { title: 'Technicien', key: 'technician.fullName' },
   { title: 'Forfait', key: 'isForfait' },
   { title: 'Total', key: 'total' },
-  { title: 'Date', align: 'start', key: 'createdAt' },
-  { title: 'Statut', align: 'start', key: 'status' },
   { title: 'Actions', sortable: false, key: 'actions' }
 ] as const;
 

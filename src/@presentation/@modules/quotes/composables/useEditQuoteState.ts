@@ -192,6 +192,8 @@ export function useEditQuoteState() {
       _bodyMaterials.value = bodyMaterialData.map((bm) => BodyMaterialMapper.dtoToView(bm));
       _repairTypes.value = repairTypeData.map((rt) => RepairTypeMapper.dtoToView(rt));
       _priceParams.value = SettingPriceMapper.dtoToView(priceParamsData);
+      console.log('init price prams', _priceParams.value, priceParamsData);
+      
       
     } catch (e) {
       error.value = e;
@@ -291,6 +293,9 @@ export function useEditQuoteState() {
   // }
 
   const addLine = async (line: LineItemViewModel) => {
+    console.log(line);
+    console.log(_priceParams.value);
+    
     if (!_priceParams.value)
       throw new Error('Price params not found');
     

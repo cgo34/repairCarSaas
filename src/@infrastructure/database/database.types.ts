@@ -495,39 +495,6 @@ export type Database = {
         }
         Relationships: []
       }
-      setting_price_body_material_coefficient: {
-        Row: {
-          body_material_id: string
-          material_coefficient: number | null
-          user_id: string
-        }
-        Insert: {
-          body_material_id: string
-          material_coefficient?: number | null
-          user_id: string
-        }
-        Update: {
-          body_material_id?: string
-          material_coefficient?: number | null
-          user_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "fk_body_material"
-            columns: ["body_material_id"]
-            isOneToOne: false
-            referencedRelation: "body_materials"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "setting_price_body_material_coefficient_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       setting_price_body_part_coefficient: {
         Row: {
           body_part_id: string
@@ -622,39 +589,6 @@ export type Database = {
           },
         ]
       }
-      setting_price_repair_type_coefficient: {
-        Row: {
-          repair_type_coefficient: number | null
-          repair_type_id: string
-          user_id: string
-        }
-        Insert: {
-          repair_type_coefficient?: number | null
-          repair_type_id: string
-          user_id: string
-        }
-        Update: {
-          repair_type_coefficient?: number | null
-          repair_type_id?: string
-          user_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "fk_repair_type"
-            columns: ["repair_type_id"]
-            isOneToOne: false
-            referencedRelation: "repair_types"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "setting_price_repair_type_coefficient_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       setting_price_technicity_coefficient: {
         Row: {
           aluminium_coefficient: number
@@ -685,7 +619,7 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "setting_price_diameter_coefficient_user_id_fkey"
+            foreignKeyName: "setting_price_technicity_coefficient_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "users"
@@ -771,7 +705,7 @@ export type Database = {
         Insert: {
           email: string
           full_name?: string | null
-          id?: string
+          id: string
           role?: string | null
         }
         Update: {

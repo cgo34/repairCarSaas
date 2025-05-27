@@ -1,5 +1,6 @@
 import { AuthError } from '@/@domain/errors/AuthError';
 import { IAuthUseCase } from '@/@domain/useCases/auth/IAuthUseCase';
+import { IGetCurrentSubscriptionUseCase } from '@/@domain/useCases/subscription/IGetCurrentSubscriptionUseCase';
 import { ICreateUserUseCase } from '@/@domain/useCases/user/ICreateUserUseCase';
 import { AuthErrorCode } from '@/@domain/valueObjects/AuthErrorCode';
 import { User } from '@domain/entities/User';
@@ -11,7 +12,6 @@ import { SYMBOLS } from '@infrastructure/ioc/symbols';
 import { inject, injectable } from 'inversify';
 import { ref } from 'vue';
 import { SubscriptionDto } from '../dtos/SubscriptionDto';
-import { ISubscriptionState } from './interfaces/ISubscriptionState';
 
 @injectable()
 export class AuthState implements IAuthState {
@@ -29,7 +29,7 @@ export class AuthState implements IAuthState {
   private _isAuthReady = false;
 
   constructor(
-    @inject(SYMBOLS.States.SubscriptionState) private subscriptionState: ISubscriptionState,
+    @inject(SYMBOLS.UseCases.Subscription.GetCurrentSubscriptionUseCase) private getCurrentSubscription: IGetCurrentSubscriptionUseCase,
     @inject(SYMBOLS.UseCases.Auth.Container) private authUseCase: IAuthUseCase,
     @inject(SYMBOLS.UseCases.Auth.LoginUseCase) private loginUseCase: ILoginUseCase,
     @inject(SYMBOLS.UseCases.Auth.LogoutUseCase) private logoutUseCase: ILogoutUseCase,
@@ -110,6 +110,12 @@ export class AuthState implements IAuthState {
         );
       }
 
+      
+     const subscription = await this.getCurrentSubscription.execute(user.id)
+     console.log('login get subscription', subscription);
+     
+
+      this.subscription.value = subscription;
       this.user.value = user;
       this.isAuthenticated.value = true;
       this.pushState();
@@ -203,6 +209,10 @@ export class AuthState implements IAuthState {
 
   get isAuthReady() {
     return this._isAuthReady;
+  }
+
+  get isFreePlan() {
+    return this.subscription.value?.subscriptionPlan.name === 'free'
   }
 
   setAuthReady(value: boolean) {

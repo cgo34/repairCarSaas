@@ -36,6 +36,8 @@ export class SettingPriceTechnicityCoefficientRepository implements ISettingPric
   }
 
   async getByUserId(userId: string): Promise<SettingPriceTechnicityCoefficientDto | null> {
+    console.log('technicity getByUserId');
+    
     const { data, error } = await this.clientProvider.getClient()
       .from('setting_price_technicity_coefficient')
       .select('*')
