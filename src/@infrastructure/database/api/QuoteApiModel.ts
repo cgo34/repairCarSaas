@@ -1,5 +1,6 @@
 import { DocumentStatusApiModel } from "./DocumentStatuseApiModel";
 import { GarageApiModel } from "./GarageApiModel";
+import { QuoteDetailApiModel } from "./QuoteDetailApiModel";
 import { UserApiModel } from "./UserApiModel";
 
 export interface QuoteApiModel {
@@ -36,4 +37,6 @@ export interface QuoteApiModel {
   garage_phone?: string;
   garage_email?: string;
   garage_percentage_commission?: number;
+
+  quote_details: QuoteDetailApiModel[];
 }

@@ -13,8 +13,6 @@ export class SettingPriceTechnicityCoefficientRepository implements ISettingPric
   constructor(@inject(SYMBOLS.Providers.ClientProvider) private clientProvider: IClientProvider<SupabaseClient>) {}
     
   async getAdmin(): Promise<SettingPriceTechnicityCoefficientDto> {
-    console.log('repository SettingPriceTechnicityCoefficientRepository getAdmin');
-    
     const { data, error } = await this.clientProvider.getClient()
       .from('setting_price_technicity_coefficient')
       .select(`
@@ -30,14 +28,11 @@ export class SettingPriceTechnicityCoefficientRepository implements ISettingPric
 
     if (error)
       throw new Error('Error fetching technicity coefficient settings');
-    console.log(data);
     
     return SettingPriceTechnicityCoefficientMapper.apiToDto(data);
   }
 
   async getByUserId(userId: string): Promise<SettingPriceTechnicityCoefficientDto | null> {
-    console.log('technicity getByUserId');
-    
     const { data, error } = await this.clientProvider.getClient()
       .from('setting_price_technicity_coefficient')
       .select('*')
@@ -51,7 +46,6 @@ export class SettingPriceTechnicityCoefficientRepository implements ISettingPric
 
   async save(setting: SettingPriceTechnicityCoefficientDto): Promise<SettingPriceTechnicityCoefficientDto> {
     const settingApi = SettingPriceTechnicityCoefficientMapper.dtoToApi(setting);
-    console.log('save settingApi', settingApi);
     
     const { data, error } = await this.clientProvider.getClient()
       .from('setting_price_technicity_coefficient')

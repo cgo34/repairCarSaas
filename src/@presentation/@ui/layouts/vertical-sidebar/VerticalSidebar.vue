@@ -18,6 +18,7 @@ const authState = container.get<IAuthState>(SYMBOLS.States.AuthState);
 const { user, subscription } = authState
 
 const {
+    setMiniSidebar,
     sidebarDrawer,
     miniSidebar
   } = useCustomizerState();
@@ -40,6 +41,17 @@ const sidebarMenu = computed(() => {
 </script>
 
 <template>
+  <v-btn
+      class="hidden-md-and-down text-secondary"
+      color="lightsecondary"
+      icon
+      rounded="sm"
+      variant="flat"
+      @click.stop="setMiniSidebar(!miniSidebar)"
+      size="small"
+    >
+      <Menu2Icon size="20" stroke-width="1.5" />
+    </v-btn>
   <v-navigation-drawer
     v-model="sidebarDrawer"
     left
@@ -93,7 +105,7 @@ const sidebarMenu = computed(() => {
           <!---End Single Item-->
         </template>
       </v-list>
-      <div v-if="subscription.subscriptionPlan.name === 'free'" class="pa-4">
+      <div v-if="subscription?.subscriptionPlan?.name === 'free'" class="pa-4">
         <ExtraBox />
       </div>
       <div class="pa-4 text-center">

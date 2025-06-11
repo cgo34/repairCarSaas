@@ -16,38 +16,44 @@ export class CostCalculatorService implements ICostCalculatorService {
       throw new Error("Missing required attributes to calculate cost.");
     }
 
-    console.log('lineItem', lineItem)
     const bodyPartCoefficient = this.getBodyPartCoefficient(lineItem.bodyPartId, priceParams.bodyParts);
     const materialCoefficient = priceParams.technicity.aluminiumCoefficient;
     const repairTypeCoefficient = this.getRepairTypeCoefficient(lineItem.repairType.code, priceParams.technicity);
     const diameter25Coefficient = priceParams.technicity.diameter25Coefficient;
     const diameter35Coefficient = priceParams.technicity.diameter35Coefficient;
-    const unitTime = this.getUnitTimeImpact(lineItem, priceParams.impactsCount);
     
-    const hourlyRate = priceParams.general.hourlyRate ?? 50;
+    const hourlyRate = priceParams.general.hourlyRate ?? 180;
     const unitTimeValue = priceParams.general.unitTime ?? 6;
 
-    const timeInMinutes = unitTime * unitTimeValue;
-    const baseCost = (timeInMinutes * hourlyRate) / 60;
+    const unitTime = this.getUnitTimeImpact(lineItem, priceParams.impactsCount);
 
-    let finalCost = baseCost 
+    // compute price for each diameter
+    const basePriceDiameter25 = (((unitTime.diameter25 * unitTimeValue) * hourlyRate) / 60)
       * bodyPartCoefficient 
       * materialCoefficient 
       * repairTypeCoefficient
       * diameter25Coefficient 
-      * diameter35Coefficient
-
-    const strippingCost = (lineItem.dentRemovalPrice ?? 0) / 100;
-    finalCost += finalCost * strippingCost;
+    
+    const basePriceDiameter35 = (((unitTime.diameter35 * unitTimeValue) * hourlyRate) / 60)
+      * bodyPartCoefficient 
+      * materialCoefficient 
+      * repairTypeCoefficient
+      * diameter35Coefficient 
+    
+    let finalCost = basePriceDiameter25 + basePriceDiameter35
 
     return Math.round(finalCost * 100) / 100;
   }
 
-  private getUnitTimeImpact(lineItem: QuoteLineItem, impactsCountPrice: SettingPriceImpactCountToUtViewDto[]): number {
+  private getUnitTimeImpact(lineItem: QuoteLineItem, impactsCountPrice: SettingPriceImpactCountToUtViewDto[]): { diameter25: number, diameter35: number } {
+    
     const unitTimeImpact25 = impactsCountPrice.find(ic => ic.impactCountMin <= lineItem.impactCount25 && ic.impactCountMax >= lineItem.impactCount25);
     const unitTimeImpact35 = impactsCountPrice.find(ic => ic.impactCountMin <= lineItem.impactCount35 && ic.impactCountMax >= lineItem.impactCount35);
     
-    return (unitTimeImpact25?.unitTime ?? 0) + (unitTimeImpact35?.unitTime ?? 0);
+    return {
+      diameter25: unitTimeImpact25?.unitTime,
+      diameter35: unitTimeImpact35?.unitTime
+    }
   }
 
   private getBodyPartCoefficient(bodyPartId: string, bodyPartsPrice: SettingPriceBodyPartCoefficientViewDto[]): number {

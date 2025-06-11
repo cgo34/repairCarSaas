@@ -5,7 +5,7 @@
         <v-data-table
           :headers="headers"
           :items="invoices"
-          :sort-by="[{ key: 'invoiceNumber', order: 'asc' }]"
+          :sort-by="[{ key: 'createdAt', order: 'desc' }]"
         >
           <!-- #REGION -> TOP BAR -->
           <template #top>
@@ -36,9 +36,13 @@
           <template #item.createdAt="{ value }">
             {{  regionManager.formatDate(value) }}
           </template>
+          
+          <template #item.garage="{ value }">
+            {{ value.name }}
+          </template>
 
           <template #item.status="{ value }">
-            <v-chip :text="value" color="orange"></v-chip>
+            <v-chip :text="value.label" :color="value.code === 'processing' ? 'blue' : value.code === 'accepted' ? 'green' : 'red'"></v-chip>
           </template>
 
           
@@ -109,12 +113,12 @@ const router = useRouter();
 
 const headers = [
   { title: 'Numéro de facture', align: 'start', key: 'invoiceNumber' },
+  { title: 'Date', align: 'start', key: 'createdAt' },
+  { title: 'Statut', align: 'start', key: 'status' },
   { title: 'Garage', key: 'garage.name' },
   { title: 'Technicien', key: 'technician.fullName' },
   { title: 'Forfait', key: 'isForfait' },
   { title: 'Total', key: 'total' },
-  { title: 'Date', align: 'start', key: 'createdAt' },
-  { title: 'Statut', align: 'start', key: 'status' },
   { title: 'Actions', sortable: false, key: 'actions' }
 ] as const;
 

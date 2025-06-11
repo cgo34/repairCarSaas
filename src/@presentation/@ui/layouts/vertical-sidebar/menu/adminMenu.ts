@@ -111,9 +111,9 @@ const adminMenu = [
     icon: FileInvoiceIcon,
     children: [
       {
-        title: 'New',
+        title: 'Add',
         icon: FileInvoiceIcon,
-        to: '/quotes/new'
+        to: '/quotes/add'
       },
       {
         title: 'List',
@@ -190,7 +190,7 @@ const userMenu = [
     title: 'Users',
     icon: UserIcon,
     to: '/Users',
-    chip: subscription.value.subscriptionPlan.name === 'free' ? 'PRO' : '',
+    chip: subscription.value?.subscriptionPlan.name === 'free' ? 'PRO' : '',
     // disabled: subscription.value.subscriptionPlan.name === 'free' 
   },
   { divider: true },
@@ -199,7 +199,7 @@ const userMenu = [
     title: 'Garages',
     icon: BuildingWarehouseIcon,
     to: '/garages',
-    chip: subscription.value.subscriptionPlan.name === 'free' ? 'PRO' : '',
+    chip: subscription.value?.subscriptionPlan.name === 'free' ? 'PRO' : '',
     // disabled: subscription.value.subscriptionPlan.name === 'free' 
   },
   { divider: true },
@@ -210,9 +210,9 @@ const userMenu = [
     icon: FileInvoiceIcon,
     children: [
       {
-        title: 'New',
+        title: 'Add',
         icon: FileInvoiceIcon,
-        to: '/quotes/new'
+        to: '/quotes/add'
       },
       {
         title: 'List',

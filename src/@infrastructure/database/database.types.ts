@@ -203,7 +203,7 @@ export type Database = {
           quote_number: string | null
           sent_at: string | null
           start_date: string | null
-          status: string | null
+          status_id: string | null
           technician_id: string | null
           updated_at: string
           user_id: string | null
@@ -232,7 +232,7 @@ export type Database = {
           quote_number?: string | null
           sent_at?: string | null
           start_date?: string | null
-          status?: string | null
+          status_id?: string | null
           technician_id?: string | null
           updated_at?: string
           user_id?: string | null
@@ -261,7 +261,7 @@ export type Database = {
           quote_number?: string | null
           sent_at?: string | null
           start_date?: string | null
-          status?: string | null
+          status_id?: string | null
           technician_id?: string | null
           updated_at?: string
           user_id?: string | null
@@ -279,6 +279,13 @@ export type Database = {
             columns: ["quote_number"]
             isOneToOne: false
             referencedRelation: "quotes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "invoices_status_fkey"
+            columns: ["status_id"]
+            isOneToOne: false
+            referencedRelation: "document_statuses"
             referencedColumns: ["id"]
           },
           {

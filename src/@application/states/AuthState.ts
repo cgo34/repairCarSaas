@@ -101,7 +101,6 @@ export class AuthState implements IAuthState {
   async login(email: string, password: string): Promise<void> {
     try {      
       const user = await this.authUseCase.login.execute(email, password);
-      console.log('login user', user);
       
       if (!user) {
         throw new AuthError(
@@ -112,7 +111,6 @@ export class AuthState implements IAuthState {
 
       
      const subscription = await this.getCurrentSubscription.execute(user.id)
-     console.log('login get subscription', subscription);
      
 
       this.subscription.value = subscription;
@@ -142,7 +140,6 @@ export class AuthState implements IAuthState {
   async register(email: string, password: string, fullName: string): Promise<void> {
     try {
       const { data, error } = await this.authUseCase.register.execute(email, password, fullName);
-      console.log('register session', data);
       
       if (!data?.user) {
         throw new AuthError(
@@ -162,7 +159,6 @@ export class AuthState implements IAuthState {
       // Mise à jour de l'état
       this.user.value = user;
       this.isAuthenticated.value = true;
-      console.log('data user id created', data.user.id);
 
       // TODO: (GCE) -> ADD USE CASE TO INSERT USER PROFILE TO PUBLIC.USERS TABLE SUPABASE
 

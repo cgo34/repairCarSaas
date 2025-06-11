@@ -8,6 +8,8 @@ export class InvoiceMapper {
    * Convertit un `InvoiceApiModel` (BDD) en `InvoiceDto` (Application)
    */
   static apiToDto(api: InvoiceApiModel): InvoiceDto {
+    console.log(api);
+    
     return {
       id: api.id,
       invoiceNumber: api.invoice_number,
@@ -18,6 +20,7 @@ export class InvoiceMapper {
       // isComputeCommissionWithoutDentRemoval: api.is_compute_commission_without_dent_removal,
       startDate: api.start_date,
       endDate: api.end_date,
+      status_id: api.status_id,
       status: api.status,
       country: api.country,
       currency: api.currency,
@@ -59,7 +62,8 @@ export class InvoiceMapper {
       // is_compute_commission_without_dent_removal: dto.isComputeCommissionWithoutDentRemoval,
       start_date: dto.startDate,
       end_date: dto.endDate,
-      status: dto.status,
+      // status: dto.status,
+      status_id: dto.statusId,
       country: (typeof dto.country === 'string') ? dto.country : dto.country?.code ?? '',
       currency: dto.currency,
       is_sent: dto.isSent,

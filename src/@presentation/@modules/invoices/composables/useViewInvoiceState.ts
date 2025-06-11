@@ -29,12 +29,11 @@ export function useViewInvoiceState() {
     loading.value = true;
     try {
       const { invoice, lines } = await viewInvoiceUseCase.execute(invoiceId);
-      console.log('state', invoice)
 
       if (!invoice || !lines) {
         throw new Error('Invoice or invoice details not found');
       }
-      console.log('invoice to pdf', invoice)
+      
       _invoice.value = InvoiceMapper.dtoToView(invoice);
       _pdfUrl.value = await generatePdfUseCase.execute(invoice, lines);
     } catch (e) {

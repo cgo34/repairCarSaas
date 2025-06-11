@@ -1,4 +1,7 @@
+import { DocumentStatuseApiModel } from "./DocumentStatuseApiModel";
 import { GarageApiModel } from "./GarageApiModel";
+import { InvoiceDetailApiModel } from "./InvoiceDetailApiModel";
+import { QuoteApiModel } from "./QuoteApiModel";
 import { UserApiModel } from "./UserApiModel";
 
 export interface InvoiceApiModel {
@@ -11,7 +14,8 @@ export interface InvoiceApiModel {
   // is_compute_commission_without_dent_removal: boolean;
   start_date: string; // Stocké en format ISO (YYYY-MM-DDTHH:mm:ss.sssZ)
   end_date: string;
-  status: 'pending' | 'cancel' | 'draft' | 'validated' | 'accepted' | 'signed' | 'sent';
+  status?: DocumentStatuseApiModel;
+  status_id: string,
   country: string;
   currency: string;
   is_sent: boolean;
@@ -35,4 +39,6 @@ export interface InvoiceApiModel {
   garage_phone?: string;
   garage_email?: string;
   garage_percentage_commission?: number;
+  invoice_details: InvoiceDetailApiModel[];
+  quote: QuoteApiModel;
 }

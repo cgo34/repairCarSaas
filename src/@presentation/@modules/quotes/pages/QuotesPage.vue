@@ -67,12 +67,14 @@
             >
               mdi-pencil
             </v-icon>
-            <v-icon
-              size="small"
-              @click="onDeleteBtnClick(item.id)"
-            >
-              mdi-delete
-            </v-icon>
+
+              <v-icon
+                size="small"
+                :disabled="item.status.code === 'accepted' || item.status.code === 'refused' || item.status.code === 'invoiced'"
+                @click="onDeleteBtnClick(item.id)"
+              >
+                mdi-delete
+              </v-icon>
           </template>
           <!-- #ENDREGION -->
         </v-data-table>
@@ -125,11 +127,11 @@ const deleteQuoteConfirmDialogRef = ref<ConfirmDialogExposed>()
 const _quoteToDelete = ref<string | undefined>(undefined)
 
 const onAddQuote = () => {
-  router.push('/quotes/new');
+  router.push('/quotes/add');
 };
 
 const onEditQuote = (item: QuoteViewModel) => {
-  router.push(`/quotes/edit/${item.id}`);
+  router.push(`/quotes/${item.id}/edit/`);
 };
 
 const onDeleteBtnClick = (id: string | undefined) => {

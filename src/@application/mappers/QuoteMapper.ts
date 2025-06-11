@@ -8,7 +8,7 @@ export class QuoteMapper {
       return {
         quoteNumber: quoteDto.quoteNumber,
 
-        status_id: quoteDto.status_id,
+        statusId: quoteDto.status_id,
         status: quoteDto.status,
 
         startDate: quoteDto.startDate,
@@ -75,8 +75,6 @@ export class QuoteMapper {
    * Convertit un `Quote` (Entité Domain Model) en `QuoteDto`
    */
   static domainToDto(quote: Quote): QuoteDto {
-    console.log('QuoteMapper.domainToDto', quote);
-    
     return {
       id: quote.id,
       quoteNumber: quote.quoteNumber,

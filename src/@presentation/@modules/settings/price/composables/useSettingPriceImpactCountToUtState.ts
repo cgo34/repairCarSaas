@@ -111,8 +111,6 @@ export function useSettingPriceImpactCountToUtState(): IUseSettingPriceImpactCou
   };
 
   const saveSettingUnitTime = async () => {
-    console.log('saveSettingUnitTime');
-    
     loading.value = true;
     try {
       return useCase.save(_settings.value).then(data => {

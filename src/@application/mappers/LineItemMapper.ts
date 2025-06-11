@@ -3,7 +3,6 @@ import { LineItemDto } from "@/@infrastructure/dtos/LineItemDto";
 export class LineItemMapper {
   static quoteLineToInvoice(quoteLine: LineItemDto): LineItemDto {
     return {
-      quoteDetailId: quoteLine.id,
       bodyPartId: quoteLine.bodyPartId,
       bodyMaterialId: quoteLine.bodyMaterialId,
       repairTypeId: quoteLine.repairTypeId,

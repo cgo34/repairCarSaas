@@ -7,8 +7,6 @@ import { LineItemMapper } from "./LineItemMapper";
 
 export class QuoteMapper {
   static viewToDto(view: QuoteViewModel): QuoteDto {
-    console.log('viewToDto', view);
-    
     let garage: GarageDto = view.garage ? GarageMapper.viewToDto(view.garage) : {
       id: view.garageId,
       name: view.garageName ?? '',

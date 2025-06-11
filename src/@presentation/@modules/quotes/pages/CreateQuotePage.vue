@@ -126,7 +126,6 @@
                     >
                       <!-- INFO -> IMPLEMENTATION TO PAID USER -->
                       <v-select
-                        v-if="!isFreePlan"
                         :model-value="selectedGarage"
                         label="Select Garage"
                         :items="garagesList"
@@ -402,7 +401,7 @@ const onSelectCountry = (country: CountryViewModel | undefined) => {
 
 const onSaveBtnClick = () => {
   save().then(() => {
-    router.push(`/quotes/edit/${quote.value.id}`);
+    router.push(`/quotes/${quote.value.id}/edit`);
   });
 };
 // #endregion

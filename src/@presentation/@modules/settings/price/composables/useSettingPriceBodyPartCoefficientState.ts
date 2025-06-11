@@ -79,8 +79,6 @@ export function useSettingPriceBodyPartCoefficientState(): IUseSettingPriceBodyP
   };
 
   const saveSettingBodyPartCoefficient = async () => {
-    console.log('saveSettingBodyPartCoefficient');
-    
     loading.value = true;
     try {
       return useCase.save(_settings.value).then(data => {

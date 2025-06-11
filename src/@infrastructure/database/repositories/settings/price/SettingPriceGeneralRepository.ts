@@ -13,8 +13,6 @@ export class SettingPriceGeneralRepository implements ISettingPriceGeneralReposi
   constructor(@inject(SYMBOLS.Providers.ClientProvider) private clientProvider: IClientProvider<SupabaseClient>) {}
   
     async getAdmin(): Promise<SettingPriceGeneralDto> {
-      console.log('repository SettingPriceGeneralRepository getAdmin');
-      
       const { data, error } = await this.clientProvider.getClient()
         .from('setting_price_general')
         .select(`
@@ -30,7 +28,6 @@ export class SettingPriceGeneralRepository implements ISettingPriceGeneralReposi
   
       if (error)
         throw new Error('Error fetching impact count to UT settings');
-      console.log(data);
       
       return SettingPriceGeneralMapper.apiToDto(data);
     }
@@ -49,7 +46,6 @@ export class SettingPriceGeneralRepository implements ISettingPriceGeneralReposi
 
   async save(setting: SettingPriceGeneralDto): Promise<SettingPriceGeneralDto> {
     const settingApi = SettingPriceGeneralMapper.dtoToApi(setting);
-    console.log('save settingApi', settingApi);
     
     const { data, error } = await this.clientProvider.getClient()
       .from('setting_price_general')

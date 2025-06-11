@@ -22,7 +22,6 @@ export function useBodyPartState(): IBodyPartState {
 
   const init = async () => {
     return fetchBodyParts().then((data) => {
-      console.log('fetchBodyParts', data)
       if (!data.length) {
         fetchBodyPartsFromAdminSetting
       }

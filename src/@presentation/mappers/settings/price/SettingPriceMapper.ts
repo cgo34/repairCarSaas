@@ -8,7 +8,7 @@ import { SettingPriceTechnicityCoefficientMapper } from "./SettingPriceTechnicit
 export class SettingPriceMapper {
   static viewToDto(viewModel: SettingPriceViewModel): SettingPriceViewDto {
     return {
-      general: SettingPriceGeneralMapper.viewToDto(viewModel.general),
+      general: SettingPriceGeneralMapper.viewToDto(viewModel.general) ?? undefined,
       technicity: SettingPriceTechnicityCoefficientMapper.viewToDto(viewModel.technicity),
       bodyParts: viewModel.bodyParts.map((bp) => SettingPriceBodyPartCoefficientMapper.viewToDto(bp)),
       impactsCount: viewModel.impactsCount.map((bp) => SettingPriceImpactCountToUtMapper.viewToDto(bp)),
@@ -17,10 +17,10 @@ export class SettingPriceMapper {
 
   static dtoToView(dto: SettingPriceViewDto): SettingPriceViewModel {
     return {
-      general: dto.general,
-      bodyParts: dto.bodyParts.map((bp) => SettingPriceBodyPartCoefficientMapper.dtoToView(bp)),
-      technicity: SettingPriceTechnicityCoefficientMapper.dtoToView(dto.technicity),
-      impactsCount: dto.impactsCount.map((bp) => SettingPriceImpactCountToUtMapper.dtoToView(bp)),
+      general: dto.general ?? undefined,
+      bodyParts: dto.bodyParts.map((bp) => SettingPriceBodyPartCoefficientMapper.dtoToView(bp)) ?? undefined,
+      technicity: SettingPriceTechnicityCoefficientMapper.dtoToView(dto.technicity) ?? undefined,
+      impactsCount: dto.impactsCount.map((bp) => SettingPriceImpactCountToUtMapper.dtoToView(bp)) ?? undefined,
     };
   }
 }

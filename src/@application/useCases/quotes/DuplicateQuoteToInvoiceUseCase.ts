@@ -27,25 +27,20 @@ export class DuplicateQuoteToInvoiceUseCase {
   async execute(quote: QuoteDto, quoteLines: LineItemDto[]): Promise<InvoiceDto> {
     
       const pendingStatus = (await this.getDocumentStatuseUseCase.execute()).find(s => s.code === 'processing')
-      const invoicedStatus = (await this.getDocumentStatuseUseCase.execute()).find(s => s.code === 'invoiced')
-    console.log('DuplicateQuoteToInvoiceUseCase', quote, quoteLines);
-
-    
+      const invoicedStatus = (await this.getDocumentStatuseUseCase.execute()).find(s => s.code === 'invoiced')    
     
     const invoiceNumber = await this.invoiceRepository.generateInvoiceNumber(this.authState.user.value.id);
-    console.log('invoiceNumber', invoiceNumber);
     
     let invoice = QuoteMapper.quoteToInvoice(quote)
     invoice = {
       ...invoice,
       invoiceNumber: invoiceNumber,
-      status_id: pendingStatus?.id,
+      quoteNumber: quote.id,
+      // Set new status for invoice
+      statusId: pendingStatus?.id,
       status: pendingStatus
     }
-    console.log('invoice', invoice);
-
-
-
+    console.log('invoice to create', invoice);
     
     // const invoiceLines = QuoteMapper.quoteLinesToInvoiceLines(quoteLines)
     

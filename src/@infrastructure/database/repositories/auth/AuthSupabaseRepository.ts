@@ -30,8 +30,6 @@ export class AuthSupabaseRepository implements IAuthRepository {
   }
 
   async register(email: string, password: string, fullName: string): Promise<AuthResponse> {
-    console.log('register user repository');
-    
     return await this.clientProvider.getClient().auth.signUp(email, password, fullName );
 
 

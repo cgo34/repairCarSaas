@@ -54,7 +54,8 @@ export class InvoiceRepository implements IInvoiceRepository {
       .select(`
         *,
         technician:users!invoices_technician_id_fkey(*),
-        garage:garages(*)
+        garage:garages(*),
+        status:document_statuses(*)
       `)
       .eq('user_id', userId)
       .returns<InvoiceApiModel[]>();
@@ -74,7 +75,9 @@ export class InvoiceRepository implements IInvoiceRepository {
       .select(`
         *,
         technician:users!invoices_technician_id_fkey(*),
-        garage:garages(*)
+        garage:garages(*),
+        status:document_statuses(*),
+        quote:quotes(*)
       `)
       .eq('id', id)
       .single<InvoiceApiModel>();

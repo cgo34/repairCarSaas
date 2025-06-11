@@ -9,7 +9,6 @@ import { computed, onUnmounted, ref } from 'vue';
 
 const authState = container.get<IAuthState>(SYMBOLS.States.AuthState);
 const subscriptionState = container.get<ISubscriptionState>(SYMBOLS.States.SubscriptionState);
-console.log(authState.subcription)
 // Formulaire spécifique à l'authentification
 const user = ref<User | undefined>(authState.user.value);
 const error = ref<AuthError | null>(null);
@@ -30,11 +29,6 @@ export function useAuthState() {
     
     try {
       await authState.login(user.value?.email, user.value?.password);
-      // await subscriptionState.load(user.value.id).then((data) => {
-      //   console.log('data', data);
-        
-      //   subcription.value = data;
-      // })
     } catch (e) {
       error.value = e as AuthError;
       throw e;
@@ -72,14 +66,10 @@ export function useAuthState() {
 
   // Observer l'état
   const unsubscribe = authState.subscribe((state) => {
-    console.log('Auth state changed:', state);
-
     if (!state.isAuthenticated)
       return
     
     subscriptionState.load(state.user.id).then((data) => {
-      console.log('call subscriptionState load from useAuthState', data);
-      
       subcription.value = data
     })
   });

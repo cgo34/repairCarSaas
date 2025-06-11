@@ -10,7 +10,6 @@ import { buildQuoteHtmlTemplate } from './templates/quoteTemplate'
 @injectable()
 export class Html2PdfGenerator implements IPdfGenerator {
   async generate(quote: QuoteDto, lines: LineItemDto[]): Promise<string> {
-    console.log('generate', quote);
     
     const html = buildQuoteHtmlTemplate(quote, lines)
 
@@ -23,11 +22,8 @@ export class Html2PdfGenerator implements IPdfGenerator {
   }
   
   async generateInvoice(invoice: InvoiceDto, lines: LineItemDto[]): Promise<string> {
-    console.log('generateInvoice');
     
     const html = buildInvoiceHtmlTemplate(invoice, lines)
-    console.log('generateInvoice invoice', invoice)
-    console.log('generateInvoice lines', lines)
 
     const blob = await html2pdf()
       .set({ margin: 0, filename: `invoice-${invoice.quoteNumber}.pdf`, html2canvas: {}, jsPDF: {} })

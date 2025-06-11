@@ -22,7 +22,6 @@ export class SettingPriceUseCase implements ISettingPriceUseCase {
   ) {}
 
   async getByUserId(userId: string): Promise<SettingPriceDto> {
-    console.log('get use price  general param use case', userId)
     const general = await this.settingPriceGeneralRepository.getByUserId(userId);
     const bodyPartCoefficient = await this.settingPriceBodyPartCoefficientRepository.getByUserId(userId);
     const technicityCoefficient = await this.settingPriceTechnicityCoefficientRepository.getByUserId(userId);
@@ -34,7 +33,6 @@ export class SettingPriceUseCase implements ISettingPriceUseCase {
       technicity: technicityCoefficient,
       impactsCount: impactCountToUt,
     };
-    console.log(priceParam);
 
     return priceParam
   }
