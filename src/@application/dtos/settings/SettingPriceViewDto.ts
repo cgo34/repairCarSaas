@@ -1,15 +1,11 @@
-import { SettingPriceBodyMaterialCoefficientViewDto } from "./SettingPriceBodyMaterialCoefficientViewDto";
+import { SettingPriceTechnicityCoefficientDto } from "@/@infrastructure/dtos/settings/price/SettingPriceTechnicityCoefficientDto";
 import { SettingPriceBodyPartCoefficientViewDto } from "./SettingPriceBodyPartCoefficientViewType";
 import { SettingPriceGeneralViewDto } from "./SettingPriceGeneralViewDto";
 import { SettingPriceImpactCountToUtViewDto } from "./SettingPriceImpactCountToUtViewDto";
-import { SettingPriceRepairTypeCoefficientViewDto } from "./SettingPriceRepairTypeCoefficientViewDto";
-import { SettingPriceDiameterCoefficientViewDto } from "./SettingPriceTechnicityCoefficientDto";
 
 export interface SettingPriceViewDto {
   general: SettingPriceGeneralViewDto,
-  bodyMaterials: SettingPriceBodyMaterialCoefficientViewDto[],
   bodyParts: SettingPriceBodyPartCoefficientViewDto[],
-  diameters: SettingPriceDiameterCoefficientViewDto[],
+  technicity: SettingPriceTechnicityCoefficientDto,
   impactsCount: SettingPriceImpactCountToUtViewDto[],
-  repairTypes: SettingPriceRepairTypeCoefficientViewDto[]
 }

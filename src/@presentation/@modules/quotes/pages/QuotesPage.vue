@@ -5,7 +5,7 @@
         <v-data-table
           :headers="headers"
           :items="quotes"
-          :sort-by="[{ key: 'quoteNumber', order: 'asc' }]"
+          :sort-by="[{ key: 'createdAt', order: 'desc' }]"
         >
           <!-- #REGION -> TOP BAR -->
           <template #top>
@@ -67,12 +67,14 @@
             >
               mdi-pencil
             </v-icon>
-            <v-icon
-              size="small"
-              @click="onDeleteBtnClick(item.id)"
-            >
-              mdi-delete
-            </v-icon>
+
+              <v-icon
+                size="small"
+                :disabled="item.status.code === 'accepted' || item.status.code === 'refused' || item.status.code === 'invoiced'"
+                @click="onDeleteBtnClick(item.id)"
+              >
+                mdi-delete
+              </v-icon>
           </template>
           <!-- #ENDREGION -->
         </v-data-table>
@@ -112,12 +114,12 @@ const router = useRouter();
 
 const headers = [
   { title: 'Numéro de devis', align: 'start', key: 'quoteNumber' },
+  { title: 'Date', align: 'start', key: 'createdAt' },
+  { title: 'Statut', align: 'start', key: 'status' },
   { title: 'Garage', key: 'garage.name' },
   { title: 'Technicien', key: 'technician.fullName' },
   { title: 'Forfait', key: 'isForfait' },
   { title: 'Total', key: 'total' },
-  { title: 'Date', align: 'start', key: 'createdAt' },
-  { title: 'Statut', align: 'start', key: 'status' },
   { title: 'Actions', sortable: false, key: 'actions' }
 ] as const;
 
@@ -125,11 +127,11 @@ const deleteQuoteConfirmDialogRef = ref<ConfirmDialogExposed>()
 const _quoteToDelete = ref<string | undefined>(undefined)
 
 const onAddQuote = () => {
-  router.push('/quotes/new');
+  router.push('/quotes/add');
 };
 
 const onEditQuote = (item: QuoteViewModel) => {
-  router.push(`/quotes/edit/${item.id}`);
+  router.push(`/quotes/${item.id}/edit/`);
 };
 
 const onDeleteBtnClick = (id: string | undefined) => {

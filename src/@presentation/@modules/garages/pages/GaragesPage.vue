@@ -1,5 +1,7 @@
 <template>
   <MainLayout>
+    <!-- Superposition si l'utilisateur est en plan 'free' -->
+    <SubscriptionOverlay v-if="isFreePlan" />
     <v-container fluid>
       <v-row>
         <v-data-table
@@ -153,8 +155,10 @@
 </template>
 
 <script setup lang="ts">
+import { IAuthState } from '@/@application/states/interfaces/IAuthState';
 import { container } from '@/@infrastructure/ioc/inversify.config';
 import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
+import SubscriptionOverlay from '@/@presentation/@ui/components/SubscriptionOverlay.vue';
 import MainLayout from '@/@presentation/@ui/layouts/MainLayout.vue';
 import { IUseGarageState } from '@/@presentation/types/composables/IUseGarageState';
 import { GarageViewModel } from '@/@presentation/types/models/GarageViewModel';
@@ -162,6 +166,8 @@ import { computed, onMounted, ref } from 'vue';
 
 // Injection du state depuis Inversify
 const useGarageState = container.get<IUseGarageState>(SYMBOLS.States.GarageState);
+const authState = container.get<IAuthState>(SYMBOLS.States.AuthState);
+const { isFreePlan } = authState
 
 const {
     garages,

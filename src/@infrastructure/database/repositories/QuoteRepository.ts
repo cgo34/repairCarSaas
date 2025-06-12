@@ -63,8 +63,6 @@ export class QuoteRepository implements IQuoteRepository {
 
     if (error)
       throw new Error('Error fetching user quotes');
-
-    console.log(data);
     
     return data.map(QuoteMapper.apiToDto);
   }
@@ -86,10 +84,7 @@ export class QuoteRepository implements IQuoteRepository {
       .single<QuoteApiModel>();
 
     if (error)
-      throw new Error('Error fetching quote');
-
-    console.log(data);
-    
+      throw new Error('Error fetching quote');    
 
     return data ? QuoteMapper.apiToDto(data) : null;
   }

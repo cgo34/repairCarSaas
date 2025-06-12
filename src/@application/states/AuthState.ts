@@ -1,5 +1,6 @@
 import { AuthError } from '@/@domain/errors/AuthError';
 import { IAuthUseCase } from '@/@domain/useCases/auth/IAuthUseCase';
+import { IGetCurrentSubscriptionUseCase } from '@/@domain/useCases/subscription/IGetCurrentSubscriptionUseCase';
 import { ICreateUserUseCase } from '@/@domain/useCases/user/ICreateUserUseCase';
 import { AuthErrorCode } from '@/@domain/valueObjects/AuthErrorCode';
 import { User } from '@domain/entities/User';
@@ -11,7 +12,6 @@ import { SYMBOLS } from '@infrastructure/ioc/symbols';
 import { inject, injectable } from 'inversify';
 import { ref } from 'vue';
 import { SubscriptionDto } from '../dtos/SubscriptionDto';
-import { ISubscriptionState } from './interfaces/ISubscriptionState';
 
 @injectable()
 export class AuthState implements IAuthState {
@@ -29,7 +29,7 @@ export class AuthState implements IAuthState {
   private _isAuthReady = false;
 
   constructor(
-    @inject(SYMBOLS.States.SubscriptionState) private subscriptionState: ISubscriptionState,
+    @inject(SYMBOLS.UseCases.Subscription.GetCurrentSubscriptionUseCase) private getCurrentSubscription: IGetCurrentSubscriptionUseCase,
     @inject(SYMBOLS.UseCases.Auth.Container) private authUseCase: IAuthUseCase,
     @inject(SYMBOLS.UseCases.Auth.LoginUseCase) private loginUseCase: ILoginUseCase,
     @inject(SYMBOLS.UseCases.Auth.LogoutUseCase) private logoutUseCase: ILogoutUseCase,
@@ -101,7 +101,6 @@ export class AuthState implements IAuthState {
   async login(email: string, password: string): Promise<void> {
     try {      
       const user = await this.authUseCase.login.execute(email, password);
-      console.log('login user', user);
       
       if (!user) {
         throw new AuthError(
@@ -110,6 +109,11 @@ export class AuthState implements IAuthState {
         );
       }
 
+      
+     const subscription = await this.getCurrentSubscription.execute(user.id)
+     
+
+      this.subscription.value = subscription;
       this.user.value = user;
       this.isAuthenticated.value = true;
       this.pushState();
@@ -136,7 +140,6 @@ export class AuthState implements IAuthState {
   async register(email: string, password: string, fullName: string): Promise<void> {
     try {
       const { data, error } = await this.authUseCase.register.execute(email, password, fullName);
-      console.log('register session', data);
       
       if (!data?.user) {
         throw new AuthError(
@@ -156,7 +159,6 @@ export class AuthState implements IAuthState {
       // Mise à jour de l'état
       this.user.value = user;
       this.isAuthenticated.value = true;
-      console.log('data user id created', data.user.id);
 
       // TODO: (GCE) -> ADD USE CASE TO INSERT USER PROFILE TO PUBLIC.USERS TABLE SUPABASE
 
@@ -203,6 +205,10 @@ export class AuthState implements IAuthState {
 
   get isAuthReady() {
     return this._isAuthReady;
+  }
+
+  get isFreePlan() {
+    return this.subscription.value?.subscriptionPlan.name === 'free'
   }
 
   setAuthReady(value: boolean) {

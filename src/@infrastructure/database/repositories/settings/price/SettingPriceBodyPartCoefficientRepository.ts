@@ -13,7 +13,6 @@ export class SettingPriceBodyPartCoefficientRepository implements ISettingPriceB
   constructor(@inject(SYMBOLS.Providers.ClientProvider) private clientProvider: IClientProvider<SupabaseClient>) {}
   
     async getAdmin(): Promise<SettingPriceBodyPartCoefficientDto[]> {
-      console.log('repository getAdmin');
       
       const { data, error } = await this.clientProvider.getClient()
         .from('setting_price_body_part_coefficient')
@@ -30,8 +29,6 @@ export class SettingPriceBodyPartCoefficientRepository implements ISettingPriceB
   
       if (error)
         throw new Error('Error fetching body part coefficient settings');
-
-      console.log('data', data);
       
   
       return data.map(SettingPriceBodyPartCoefficientMapper.apiToDto);
@@ -51,7 +48,6 @@ export class SettingPriceBodyPartCoefficientRepository implements ISettingPriceB
     
   async save(settings: SettingPriceBodyPartCoefficientApiModel[]): Promise<SettingPriceBodyPartCoefficientApiModel[]> {
     const settingsApi = settings.map(s => SettingPriceBodyPartCoefficientMapper.dtoToApi(s));
-    console.log('save settingApi', settingsApi);
     
     const { data, error } = await this.clientProvider.getClient()
       .from('setting_price_body_part_coefficient')

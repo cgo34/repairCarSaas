@@ -1,5 +1,5 @@
-import { SubscriptionInsertDto } from "@/@domain/repositories/ISubscriptionRepository";
+import { SubscriptionDto } from "@/@application/dtos/SubscriptionDto";
 
 export interface IGetCurrentSubscriptionUseCase {
-  execute(userId: string): Promise<SubscriptionInsertDto>;
+  execute(userId: string): Promise<SubscriptionDto>;
 }

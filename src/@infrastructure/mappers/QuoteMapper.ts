@@ -8,6 +8,8 @@ export class QuoteMapper {
    * Convertit un `QuoteApiModel` (BDD) en `QuoteDto` (Application)
    */
   static apiToDto(api: QuoteApiModel): QuoteDto {
+    console.log(api.quote_details);
+    
     return {
       id: api.id,
       quoteNumber: api.quote_number,
@@ -41,7 +43,9 @@ export class QuoteMapper {
       garageCity: api.garage_city,
       garagePhone: api.garage_phone,
       garageEmail: api.garage_email,
-      garagePercentageCommission: api.garage_percentage_commission
+      garagePercentageCommission: api.garage_percentage_commission,
+
+      // lineItems: api.quote_details?.map((qd) => LineItemMapper.apiToDto(qd)) ?? []
     };
   }
 

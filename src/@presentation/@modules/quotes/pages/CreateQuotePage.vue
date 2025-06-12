@@ -230,6 +230,19 @@
                 <div v-if="!isForfait"><v-switch label="Calculer la commission sans le dégarnissage ?" :modelValue="isComputeCommissionWithoutDentRemoval" @update:modelValue="onUpdateIsComputeCommissionWithoutDentRemoval" color="primary" inset></v-switch></div>
               </div>
             </div>
+            <div v-if="isForfait">
+              <h4 class="text-h4">
+                Montant du forfait
+              </h4>
+              <v-text-field
+                :modelValue="forfaitAmount"
+                placeholder="Montant du forfait"
+                type="number"
+                dense
+                outlined
+                @update:modelValue="onUpdateForfaitAmount"
+              />
+            </div>
             <CountrySelect :modelValue="selectedCountry" @select="onSelectCountry"/>
           </v-card-text>
         </v-card>
@@ -257,6 +270,7 @@
 </template>
 
 <script setup lang="ts">
+import { IAuthState } from '@/@application/states/interfaces/IAuthState';
 import { container } from '@/@infrastructure/ioc/inversify.config';
 import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
 import MainLayout from '@/@presentation/@ui/layouts/MainLayout.vue';
@@ -272,6 +286,8 @@ import { onMounted, ref } from 'vue';
 
 // Injection du state depuis Inversify
 const useCreateQuoteState = container.get<IUseCreateQuoteState>(SYMBOLS.States.Quote.CreateQuoteState);
+const authState = container.get<IAuthState>(SYMBOLS.States.AuthState);
+const { isFreePlan } = authState
 
 const {
   init,
@@ -296,6 +312,8 @@ const {
   isForfait,
   isDisplayUnitPrice,
   isComputeCommissionWithoutDentRemoval,
+  setForfaitAmount,
+  forfaitAmount,
   setIsForfait,
   setIsDisplayUnitPrice,
   setIsComputeCommissionWithoutDentRemoval,
@@ -362,6 +380,10 @@ const onUpdateIsForfait = (value: boolean) => {
   setIsForfait(value);
 };
 
+const onUpdateForfaitAmount = (value: number) => {
+  setForfaitAmount(Number(value));
+};
+
 const onUpdateIsDisplayUnitPrice = (value: boolean) => {
   setIsDisplayUnitPrice(value);
 };
@@ -379,7 +401,7 @@ const onSelectCountry = (country: CountryViewModel | undefined) => {
 
 const onSaveBtnClick = () => {
   save().then(() => {
-    router.push(`/quotes/edit/${quote.value.id}`);
+    router.push(`/quotes/${quote.value.id}/edit`);
   });
 };
 // #endregion

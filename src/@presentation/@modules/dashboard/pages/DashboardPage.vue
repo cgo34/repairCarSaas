@@ -9,7 +9,7 @@
         >
           <DashboardStatCard
             title="Abonnement"
-            :value="loading ? '...' : 1"
+            :value="loading ? '...' : subscription.subscriptionPlan.name"
             icon="UserIcon"
             color="primary"
           />
@@ -45,10 +45,8 @@
 
 <script setup lang="ts">
 import { IAuthState } from '@/@application/states/interfaces/IAuthState';
-import { ISubscriptionState } from '@/@application/states/interfaces/ISubscriptionState';
 import { container } from '@/@infrastructure/ioc/inversify.config';
 import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
-import { useAuthState } from '@/@presentation/@modules/auth/composables/useAuthState';
 import { useAdminDashboardState } from '@/@presentation/@modules/dashboard/composables/useAdminDashboardState';
 import DashboardStatCard from '@/@presentation/@ui/components/DashboardStatCard.vue';
 import MainLayout from '@/@presentation/@ui/layouts/MainLayout.vue';
@@ -56,18 +54,14 @@ import { onMounted } from 'vue';
 
 
 const authState = container.get<IAuthState>(SYMBOLS.States.AuthState);
-const subscriptionState = container.get<ISubscriptionState>(SYMBOLS.States.SubscriptionState);
-
-const { user, subcription } = useAuthState();
-// Icons
-// import { BuildingStoreIcon, UserIcon } from 'lucide-vue-next';
+const { user, subscription } = authState
 
 // Récupération des statistiques du dashboard
 const { totalUsers, totalGarages, fetchDashboardStats, loading } = useAdminDashboardState();
 
 // Chargement des données au montage du composant
 onMounted(async () => {
-  console.log('user auth', user, subcription.value)
+  console.log('user auth', user.value, subscription.value)
   await fetchDashboardStats();
 });
 </script>

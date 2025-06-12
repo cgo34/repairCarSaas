@@ -40,7 +40,6 @@ export class InvoiceDetailRepository implements IInvoiceDetailRepository {
   }
 
   async insert(item: LineItemDto): Promise<LineItemDto> {
-    console.log('invoice line item to insert', LineItemMapper.dtoToApi(item));
     
     const { data, error } = await this.clientProvider.getClient()
       .from('invoice_details')
@@ -63,7 +62,6 @@ export class InvoiceDetailRepository implements IInvoiceDetailRepository {
   
 
   async insertMultiple(items: LineItemDto[]): Promise<LineItemDto[]> {
-    console.log('invoice lines items to insert', items.map(LineItemMapper.invoiceDtoToApi));
     
     const { data, error } = await this.clientProvider.getClient()
       .from('invoice_details')

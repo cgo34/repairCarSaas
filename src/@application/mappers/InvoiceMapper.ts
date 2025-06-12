@@ -32,8 +32,6 @@ export class InvoiceMapper {
    * Convertit un `Invoice` (Entité Domain Model) en `InvoiceDto`
    */
   static domainToDto(invoice: Invoice): InvoiceDto {
-    console.log('InvoiceMapper.domainToDto', invoice);
-    
     return {
       id: invoice.id,
       invoiceNumber: invoice.invoiceNumber,

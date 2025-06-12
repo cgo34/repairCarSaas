@@ -17,38 +17,38 @@ export const quoteRoutes: RouteRecordRaw[] = [
     },
   },
   {
-    path: '/quotes/new',
+    path: '/quotes/add',
     name: 'New Quote',
     component: CreateQuotePage,
     meta: {
       requiresAuth: true,
       breadcrumb: [
         { title: 'Quotes', href: '/quotes' },
-        { title: 'New Quote', href: '/quotes/new' },
+        { title: 'New Quote', href: '/quotes/add' },
       ]
     },
   },
   {
-    path: '/quotes/view/:id',
+    path: '/quotes/:id/view',
     name: 'View Quote',
     component: ViewQuotePage,
     meta: {
       requiresAuth: true,
       breadcrumb: [
         { title: 'Quotes', href: '/quotes' },
-        { title: 'View Quote', href: '/quotes/view/:id' },
+        { title: 'View Quote', href: '/quotes/:id/view' },
       ]
     },
   },
   {
-    path: '/quotes/edit/:id',
+    path: '/quotes/:id/edit',
     name: 'Edit Quote',
     component: EditQuotePage,
     meta: {
       requiresAuth: true,
       breadcrumb: [
         { title: 'Quotes', href: '/quotes' },
-        { title: 'Edit Quote', href: '/quotes/edit/:id' },
+        { title: 'Edit Quote', href: '/quotes/:id/edit' },
       ]
     },
   },

@@ -11,12 +11,12 @@ export class SubscribeToFreePlanUseCase {
   ) {}
 
   async execute(userId: string): Promise<void> {
-    console.log('use case get free plan userId', userId);
     
     const freePlan = await this.subscriptionRepository.getPlanByName('free')
-    if (!freePlan) throw new Error('Free plan not found')
+    
+    if (!freePlan)
+      throw new Error('Free plan not found')
 
-      console.log('use case get free plan', freePlan);
     await this.subscriptionRepository.createSubscription({
       userId,
       planId: freePlan.id,

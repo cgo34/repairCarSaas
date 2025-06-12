@@ -7,34 +7,36 @@
       <VerticalSidebarVue />
       <VerticalHeaderVue />
 
-      <!-- <v-navigation-drawer
-        v-model="sidebarDrawer"
-        :mini-variant="miniSidebar"
-        app
-      ></v-navigation-drawer> -->
 
       <v-main>
         <v-container
           fluid
           class="page-wrapper"
         >
-          <BaseBreadcrumb
-            :title="pageTitle"
-            :breadcrumbs="breadcrumbs"
-          />
+          <div>
+            <BaseBreadcrumb
+              :title="pageTitle"
+              :breadcrumbs="breadcrumbs"
+            />
             <RouterView>
               <slot />
             </RouterView>
-            <v-btn
-              class="customizer-btn"
-              size="large"
-              icon
-              variant="flat"
-              color="secondary"
-              @click.stop=""
-            >
-              <SettingsIcon class="icon" />
-            </v-btn>
+              <v-btn
+                class="customizer-btn"
+                size="large"
+                icon
+                variant="flat"
+                color="secondary"
+                @click.stop=""
+              >
+                <SettingsIcon class="icon" />
+              </v-btn>
+            </div>
+        </v-container>
+        <v-container fluid class="pt-0">
+          <div>
+            <FooterPanel />
+          </div>
         </v-container>
       </v-main>
     </v-app>
@@ -48,6 +50,7 @@ import VerticalSidebarVue from '@ui/layouts/vertical-sidebar/VerticalSidebar.vue
 import BaseBreadcrumb from '@/shared/BaseBreadcrumb.vue';
 import { ref, computed } from 'vue';
 import { useRoute } from 'vue-router';
+import FooterPanel from './footer/FooterPanel.vue';
 
 type Breadcrumb = {
   title: string;
@@ -66,6 +69,7 @@ const breadcrumbs = computed(() => {
 });
 
 const {
+  sidebarDrawer,
   miniSidebar,
   fontTheme,
   inputBg

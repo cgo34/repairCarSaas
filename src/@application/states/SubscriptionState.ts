@@ -18,8 +18,6 @@ export class SubscriptionState implements ISubscriptionState {
   async load(userId: string): Promise<SubscriptionDto> {
     this.isLoading.value = true
     this.subscription.value = await this.getCurrentSubscription.execute(userId)
-    console.log('subscription', this.subscription.value);
-    
     this.isLoading.value = false
 
     return this.subscription.value

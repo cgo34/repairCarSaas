@@ -8,7 +8,7 @@ export interface InvoiceDto {
   invoiceNumber?: string;
   quoteNumber: string;
   
-  status_id: string;
+  statusId: string;
   status: any;
   
   userId: string; // 🔹 Ajout pour suivre le créateur du devis

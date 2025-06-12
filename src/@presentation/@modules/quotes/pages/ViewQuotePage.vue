@@ -5,7 +5,7 @@
       <!-- Actions du devis -->
       <v-toolbar title="" color="transparent">
         <template v-slot:prepend>
-          <BackButton :fallbackPath="`/quotes/edit/${quote?.id}`" />
+          <BackButton :fallbackPath="`/quotes/${quote?.id}/edit`" />
         </template>
         <template v-slot:append>
           <DownloadButton
@@ -14,6 +14,7 @@
           />
 
           <GenericButton
+            v-if="!isFreePlan"
             class="me-2 text-none"
             color="primary"
             prepend-icon="mdi-send"
@@ -44,6 +45,7 @@
 </template>
 
 <script setup lang="ts">
+import { IAuthState } from '@/@application/states/interfaces/IAuthState';
 import { container } from '@/@infrastructure/ioc/inversify.config';
 import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
 import BackButton from '@/@presentation/@ui/components/buttons/BackButton.vue';
@@ -60,15 +62,9 @@ const route = useRoute();
 
 
 const useViewQuoteState = container.get<IUseViewQuoteState>(SYMBOLS.States.Quote.ViewQuoteState);
+const authState = container.get<IAuthState>(SYMBOLS.States.AuthState);
+const { isFreePlan } = authState
 const { init, downloadPdf, sendQuote, quote, pdfUrl, filename  } = useViewQuoteState;
-
-const onBackBtnClick = () => {
-  router.back();
-};
-
-const onDownloadBtnClick = () => {
-  downloadPdf();
-};
 
 const onSendBtnClick = () => {
   console.log('onSendBtnClick');

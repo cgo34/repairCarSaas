@@ -21,7 +21,6 @@ export class UserRepository implements IUserRepository {
 
     if (error)
       throw new Error('Error fetching users');
-    console.log('getUsers', data);
     
     return data.map(UserMapper.apiToDto);
   }
@@ -36,14 +35,12 @@ export class UserRepository implements IUserRepository {
       .returns<UserApiModel>();
   
     if (error) throw new Error('Error fetching user by ID');
-    console.log(data);
-    
+
     return data ? UserMapper.apiToDto(data) : null;
   }
   
   async createUser(user: UserDto): Promise<void> {
     const apiModel = UserMapper.dtoToApi(user);
-    console.log('createUser', apiModel);
     
     const { error } = await this.clientProvider.getClient()
       .from('users')

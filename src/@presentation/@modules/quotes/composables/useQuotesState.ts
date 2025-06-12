@@ -22,8 +22,6 @@ export function useQuotesState() {
     
     if (authState.isAuthenticated && authState.user.value) {
       const quotesDto = await getQuotesUseCase.execute(authState.user.value?.id);
-      console.log('before mapper');
-      
       _quotes.value = quotesDto.map(quote => QuoteMapper.dtoToView(quote));
     }
   }

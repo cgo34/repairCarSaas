@@ -12,8 +12,6 @@ export class SettingPriceImpactCountToUtRepository implements ISettingPriceImpac
   constructor(@inject(SYMBOLS.Providers.ClientProvider) private clientProvider: IClientProvider<SupabaseClient>) {}
 
   async getAdmin(): Promise<SettingPriceImpactCountToUtDto[]> {
-    console.log('repository getAdmin');
-    
     const { data, error } = await this.clientProvider.getClient()
       .from('setting_price_impact_count_to_ut')
       .select(`
@@ -47,7 +45,6 @@ export class SettingPriceImpactCountToUtRepository implements ISettingPriceImpac
   
   async save(settings: SettingPriceImpactCountToUtDto[]): Promise<SettingPriceImpactCountToUtDto[]> {
     const settingsApi = settings.map(s => SettingPriceImpactCountToUtMapper.dtoToApi(s));
-    console.log('save settingApi', settingsApi);
     
     const { data, error } = await this.clientProvider.getClient()
       .from('setting_price_impact_count_to_ut')

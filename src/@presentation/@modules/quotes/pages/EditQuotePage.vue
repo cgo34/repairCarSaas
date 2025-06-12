@@ -11,16 +11,7 @@
         <template v-slot:append>
 
           <GenericButton
-            class="me-2 text-none"
-            color="secondary"
-            prepend-icon="mdi-file-pdf-box"
-            variant="flat"
-            @click="onViewPdfBtnClick"
-          >
-            Preview
-          </GenericButton>
-
-          <GenericButton
+            v-if="!isFreePlan"
             class="me-2 text-none"
             color="primary"
             prepend-icon="mdi-send"
@@ -30,7 +21,7 @@
             Send
           </GenericButton>
 
-          <GenericButton
+          <!-- <GenericButton
             v-if="!isReadOnly"
             class="me-2 text-none"
             color="success"
@@ -39,6 +30,23 @@
             @click="onFinalizeBtnClick"
           >
             Finalize
+          </GenericButton> -->
+          <GenericMenu
+            v-if="!isReadOnly"
+            @accepted="onAcceptedBtnClick"
+            @refused="onRefusedBtnClick"
+          ></GenericMenu>
+
+          
+
+          <GenericButton
+            class="me-2 text-none"
+            color="secondary"
+            prepend-icon="mdi-file-pdf-box"
+            variant="flat"
+            @click="onViewPdfBtnClick"
+          >
+            Preview
           </GenericButton>
 
           <GenericButton
@@ -75,6 +83,13 @@
           <v-card-title class="text-h3">
             Modifier un Devis
           </v-card-title>
+          <v-card-subtitle v-if="isReadOnly">
+            <span
+            :class="[quoteInformations.status?.code === 'accepted' ? 'text-green' : quoteInformations.status?.code === 'refused' ? 'text-red' : '']"
+            >
+              {{ quoteInformations.status?.code }}
+            </span>
+          </v-card-subtitle>
 
           <v-card-text>
             <!-- Informations du devis -->
@@ -367,7 +382,7 @@
               <v-spacer></v-spacer>
               <v-btn
                 v-if="quoteInformations.status?.code !== 'accepted'"
-                variant="tonal"
+                variant="flat"
                 class="mt-3"
                 color="primary"
                 @click="onUpdateBtnClick"
@@ -555,6 +570,7 @@
 </template>
 
 <script setup lang="ts">
+import { IAuthState } from '@/@application/states/interfaces/IAuthState';
 import { IRegionManager } from '@/@core/managers/interfaces/IRegionManager';
 import { container } from '@/@infrastructure/ioc/inversify.config';
 import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
@@ -567,12 +583,10 @@ import ConfirmDialog from '@/@presentation/components/ConfirmDialog.vue';
 import CountrySelect from '@/@presentation/components/CountrySelect.vue';
 import { GarageDialogExposed } from '@/@presentation/components/GarageDialog';
 import GarageDialog from '@/@presentation/components/GarageDialog.vue';
+import GenericMenu from '@/@presentation/components/GenericMenu.vue';
 import GenericSelect from '@/@presentation/components/GenericSelect.vue';
 import type { AddLineItemDialogExposed } from '@/@presentation/types/components';
 import { IUseEditQuoteState } from '@/@presentation/types/composables/IUseEditQuoteState';
-import { BodyMaterialViewModel } from '@/@presentation/types/models/carRepair/BodyMaterialViewModel';
-import { BodyPartViewModel } from '@/@presentation/types/models/carRepair/BodyPartViewModel';
-import { DentRepairTypeViewModel } from '@/@presentation/types/models/carRepair/DentRepairTypeViewModel';
 import { CountryViewModel } from '@/@presentation/types/models/CountryViewModel';
 import { GarageViewModel } from '@/@presentation/types/models/GarageViewModel';
 import { LineItemViewModel } from '@/@presentation/types/models/LineItemViewModel';
@@ -582,6 +596,8 @@ import { useRoute, useRouter } from 'vue-router';
 
 
 const regionManager = container.get<IRegionManager>(SYMBOLS.Managers.regionManager);
+const authState = container.get<IAuthState>(SYMBOLS.States.AuthState);
+const { isFreePlan } = authState
 
 
 const garageDialogRef = ref<GarageDialogExposed>()
@@ -613,7 +629,6 @@ const {
   setCarDateEntryCirculation,
 
   availableBodyParts,
-  bodyMaterials,
 
   isForfait,
   isDisplayUnitPrice,
@@ -626,14 +641,9 @@ const {
   selectCountry,
   selectedCountry,
 
-  repairTypes,
   quoteLines,
   addLine,
   removeLine,
-
-  selectBodyPart,
-  selectBodyMaterial,
-  selectRepairType,
   
   subtotal,
   totalDegarnissage,
@@ -644,7 +654,11 @@ const {
   updateQuote,
   deleteQuote,
   duplicateQuoteToInvoice,
-  isReadOnly
+  isReadOnly,
+  isAccepted,
+  isRefused,
+
+  updateQuoteStatus
 } = useEditQuoteState;
 
 const router = useRouter();
@@ -670,9 +684,6 @@ const headers = [
 
 
 // #region -> METHODS
-const onBackBtnClick = () => {
-  router.back();
-};
 
 const onSearchTechnician = (event: InputEvent) => {
   const search = (event.target as HTMLInputElement).value;
@@ -751,33 +762,15 @@ const onRemoveItemBtnClick = (item: LineItemViewModel) => {
 const onAddLineItem = (item: LineItemViewModel) =>  {
   addLine(item)
 }
-
-
-const onSelectBodyPart = (bodyPart: BodyPartViewModel | undefined, lineId: number) => {
-  if (!bodyPart)
-    return;
-
-  selectBodyPart(lineId, bodyPart);
-};
-
-const onSelectBodyMaterial = (bodyMaterial: BodyMaterialViewModel | undefined, lineId: number) => {
-  if (!bodyMaterial)
-    return;
-
-  selectBodyMaterial(lineId, bodyMaterial);
-};
-
-const onSelectRepairType = (repairType: DentRepairTypeViewModel | undefined, lineId: number) => {
-  if (!repairType)
-    return;
-
-  selectRepairType(lineId, repairType);
-};
 // #endregion
 
 // #REGION -> ACTION METHODS
-const onFinalizeBtnClick = () => {
-  console.log('onFinalizeBtnClick -> finalize quote');
+const onAcceptedBtnClick = () => {
+  updateQuoteStatus('accepted')
+};
+
+const onRefusedBtnClick = () => {
+  updateQuoteStatus('refused')
 };
 
 const onSendBtnClick = () => {
@@ -789,7 +782,7 @@ const onDuplicateQuoteToInvoiceBtnClick = () => {
 }
 
 const onViewPdfBtnClick = () => {
-  router.push(`/quotes/view/${route.params.id}`);
+  router.push(`/quotes/${route.params.id}/view`);
 };
 
 const onDeleteBtnClick = () => {
@@ -800,10 +793,6 @@ const onConfirmDeleteQuote = () => {
   deleteQuote(quoteInformations.value.number)
   router.push(`/quotes/`)
 }
-
-const onUpdateItemsBtnClick = () => {
-  console.log('onUpdateItemsBtnClick -> update items');
-};
 
 const onUpdateBtnClick = () => {
   updateQuote();

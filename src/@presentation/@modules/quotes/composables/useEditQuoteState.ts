@@ -148,7 +148,6 @@ export function useEditQuoteState() {
       // const expirationDate = new Date(startDate);
       // expirationDate.setMonth(expirationDate.getMonth() + 1);
       // _quoteInformations.value.expirationDate = expirationDate.toISOString().split('T')[0];
-      console.log('quote value', _quote.value);
       
       _quoteInformations.value.status = _quote.value.status;
 
@@ -168,30 +167,19 @@ export function useEditQuoteState() {
           repairTypeUseCase.executeGetAll(),
           priceParamsUseCase.getByUserId(authState.user.value?.id),
         ]);
+        
 
       _garages.value = garageData.map((g) => GarageMapper.dtoToView(g));
-      _technicians.value = [
-        ...technicianData,
-        // TODO: (gce) -> REMOVE MOCK
-          {
-            id: '1',
-            fullName: 'John Doe',
-            email: 'technicien1@gmail.com',
-            password: '123456789',
-            createdAt: '2021-09-01T00:00:00',
-          },
-          {
-            id: '2',
-            fullName: 'Albert Dupont',
-            email: 'technicien2@gmail.com',
-            password: '123456789',
-            createdAt: '2021-09-01T00:00:00',
-          },
-      ];
       _bodyParts.value = bodyPartData.map((bp) => BodyPartMapper.dtoToView(bp));
       _bodyMaterials.value = bodyMaterialData.map((bm) => BodyMaterialMapper.dtoToView(bm));
       _repairTypes.value = repairTypeData.map((rt) => RepairTypeMapper.dtoToView(rt));
       _priceParams.value = SettingPriceMapper.dtoToView(priceParamsData);
+      _priceParams.value = SettingPriceMapper.dtoToView(priceParamsData);
+      
+      _technicians.value = [
+        ...technicianData,
+      ];
+      
       
     } catch (e) {
       error.value = e;
@@ -456,7 +444,7 @@ export function useEditQuoteState() {
     try {
       _quote.value = {
         ..._quote.value,
-        status: 'pending',
+        // status: 'pending',
         userId: authState.user.value.id,
         
         garage: _selectedGarage.value,
@@ -490,7 +478,6 @@ export function useEditQuoteState() {
 
 
       //   const quoteLinesDto = await updateQuoteDetailsUseCase.executeQuote(quote.id, _quoteLines.value.map((line) => LineItemMapper.viewToDto(line)));
-      //   console.log('Quote lines saved', quoteLinesDto);
 
       //   _quoteLines.value = quoteLinesDto.map(LineItemMapper.dtoToView);
 
@@ -515,6 +502,17 @@ export function useEditQuoteState() {
   });
   // #endregion
 
+  const updateQuoteStatus = async (status: 'accepted' | 'refused') => {
+    const statusObject = _statuses.value.find(s => s.code === status)
+
+    _quote.value.status = statusObject
+    _quote.value.status_id = statusObject?.id
+
+    _quoteInformations.value.status = statusObject
+
+    updateQuoteUseCase.execute(QuoteMapper.viewToDto(_quote.value))
+  }
+
   const duplicateQuoteToInvoice = () => {
     if (!_quote.value)
       return
@@ -527,8 +525,13 @@ export function useEditQuoteState() {
   }
 
   const isReadOnly = computed(()=> {
-    return _quoteInformations.value.status?.code === 'accepted' || _quoteInformations.value.status?.code === 'invoiced'
+    return _quoteInformations.value.status?.code === 'accepted'
+    || _quoteInformations.value.status?.code === 'refused'
+    || _quoteInformations.value.status?.code === 'invoiced'
   })
+
+  const isAccepted = computed(() => _quoteInformations.value.status?.code === 'accepted' )
+  const isRefused = computed(() => _quoteInformations.value.status?.code === 'refused' )
 
   return {
     loading,
@@ -584,8 +587,12 @@ export function useEditQuoteState() {
     total,
 
     updateQuote,
+    updateQuoteStatus,
     deleteQuote,
     duplicateQuoteToInvoice,
-    isReadOnly
+
+    isReadOnly,
+    isAccepted,
+    isRefused
   };
 }
