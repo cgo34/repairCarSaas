@@ -148,33 +148,19 @@ export class AuthState implements IAuthState {
 
   async register(email: string, password: string, fullName: string): Promise<void> {
     try {
-      const { data, error } = await this.authUseCase.register.execute(email, password, fullName);
-      
-      if (!data?.user) {
+      const { user, error } = await this.authUseCase.register.execute(email, password, fullName);
+      if (!user) {
         throw new AuthError(
           AuthErrorCode.REGISTRATION_FAILED,
           'Registration failed: no user returned'
         );
       }
-
-      const user = {
-        id: data.user.id,
-        email: data.user.email ?? '',
-        password: data.user.user_metadata?.password ?? '',
-        role: 'technician',
-        fullName: data.user.user_metadata?.fullName ?? '',
-        createdAt: new Date(data.user.created_at)
-
-      };
-
-  
       // Mise à jour de l'état
       this.isAuthenticated.value = true;
-
       // ➕ Lier automatiquement le plan 'free'
-      const subscription = await this.authUseCase.subscribeToFreePlan.execute(data.user.id);
-      
-      this.user.value = user;
+      const subscription = await this.authUseCase.subscribeToFreePlan.execute(user.id);
+      // Mapper UserDto -> UserViewModel
+      this.user.value = PresentationUserMapper.dtoToView(user);
       this.subscription.value = subscription;
       this.user.value.subscription = subscription;
 

@@ -1,7 +1,7 @@
 import { IAuthService } from '@/@domain/services/IAuthService';
 import { IRegisterUseCase } from '@/@domain/useCases/auth/IRegisterUseCase';
 import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
-import { AuthResponse } from '@supabase/supabase-js';
+import { UserDto } from '@/@infrastructure/dtos/UserDto';
 import { inject, injectable } from 'inversify';
 
 @injectable()
@@ -14,7 +14,7 @@ export class RegisterUseCase implements IRegisterUseCase {
     }
   }
 
-  async execute(email: string, password: string, fullName: string): Promise<AuthResponse> {
+  async execute(email: string, password: string, fullName: string): Promise<{ user: UserDto | null, error: any }> {
     return await this.authService.register(email, password, fullName);
   }
 }

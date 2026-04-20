@@ -49,8 +49,26 @@ export class AuthSupabaseRepository implements IAuthRepository {
     }
   }
 
-  async register(email: string, password: string, fullName: string): Promise<AuthResponse> {
-    return await this.clientProvider.getClient().auth.signUp(email, password, fullName );
+  async register(email: string, password: string, fullName: string): Promise<{ user: UserDto | null, error: any }> {
+    const { data, error } = await this.clientProvider.getClient().auth.signUp(email, password, fullName ) as SupabaseAuthResponse;
+    if (!data?.user) {
+      return { user: null, error };
+    }
+    // Récupérer le profil utilisateur depuis la table public.users pour obtenir le rôle custom
+    const { data: userProfile } = await this.clientProvider
+      .getClient()
+      .from('users')
+      .select('id, email, full_name, role')
+      .eq('id', data.user.id)
+      .single();
+    const userDto: UserDto = UserMapper.apiToDto({
+      id: data.user.id,
+      email: data.user.email ?? '',
+      full_name: userProfile?.full_name ?? (data.user.user_metadata as any)?.fullName ?? '',
+      role: (userProfile?.role as UserRole) ?? 'technician',
+      subscription: undefined // à adapter selon ta logique
+    });
+    return { user: userDto, error };
   }
 
   async logout(): Promise<{ error: AuthError | null }> {

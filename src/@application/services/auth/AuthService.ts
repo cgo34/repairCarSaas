@@ -25,7 +25,7 @@ export class AuthService implements IAuthService {
     return await this.authRepository.login(email, password);
   }
 
-  async register(email: string, password: string, fullName: string): Promise<AuthResponse> {
+  async register(email: string, password: string, fullName: string): Promise<{ user: UserDto | null, error: any }> {
     return await this.authRepository.register(email, password, fullName);
   }
 
@@ -33,7 +33,7 @@ export class AuthService implements IAuthService {
     return await this.authRepository.logout();
   }
 
-  async getCurrentUser(): Promise<User> {
+  async getCurrentUser(): Promise<UserDto> {
     return await this.authRepository.getCurrentUser();
   }
 
