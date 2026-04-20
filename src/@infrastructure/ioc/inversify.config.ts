@@ -9,6 +9,8 @@ import { BodyPartService } from '@/@application/services/carRepair/BodyPartServi
 import { DentRepairTypeService } from '@/@application/services/carRepair/DentRepairTypeService';
 import { CostCalculatorService } from '@/@application/services/CostCalculatorService';
 import { GarageService } from '@/@application/services/GarageService';
+import { VehicleService } from '@/@application/services/VehicleService';
+import { SettingPriceBodyMaterialCoefficientService } from '@/@application/services/settings/price/SettingPriceBodyMaterialCoefficientService';
 import { SettingPriceBodyPartCoefficientService } from '@/@application/services/settings/price/SettingPriceBodyPartCoefficientService';
 import { SettingPriceGeneralService } from '@/@application/services/settings/price/SettingPriceGeneralService';
 import { SettingPriceImpactCountToUtService } from '@/@application/services/settings/price/SettingPriceImpactCountToUtService';
@@ -23,6 +25,7 @@ import { DentRepairTypeUseCase } from '@/@application/useCases/carRepair/DentRep
 import { CalculateLineCostUseCase } from '@/@application/useCases/cost/CalculateLineCostUseCase';
 import { CalculateTotalCostUseCase } from '@/@application/useCases/cost/CalculateTotalCostUseCase';
 import { GarageUseCase } from '@/@application/useCases/GarageUseCase';
+import { VehicleUseCase } from '@/@application/useCases/VehicleUseCase';
 import { GetDocumentStatuseUseCase } from '@/@application/useCases/GetDocumentStatuseUseCase';
 import { ILoginUseCase } from '@/@application/useCases/interfaces/auth/ILoginUseCase';
 import { AddInvoiceLineItemUseCase } from '@/@application/useCases/invoices/AddInvoiceLineItemUseCase';
@@ -66,6 +69,7 @@ import { IBodyPartRepository } from '@/@domain/repositories/carRepair/IBodyPartR
 import { IDentRepairTypeRepository } from '@/@domain/repositories/carRepair/IDentRepairTypeRepository';
 import { IDocumentStatuseRepository } from '@/@domain/repositories/IDocumentStatuseRepository';
 import { IGarageRepository } from '@/@domain/repositories/IGarageRepository';
+import { IVehicleRepository } from '@/@domain/repositories/IVehicleRepository';
 import { IInvoiceDetailRepository } from '@/@domain/repositories/IInvoiceDetailRepository';
 import { IInvoiceRepository } from '@/@domain/repositories/IInvoiceRepository';
 import { IQuoteDetailRepository } from '@/@domain/repositories/IQuoteDetailRepository';
@@ -83,6 +87,7 @@ import { IDentRepairTypeService } from '@/@domain/services/carRepair/IDentRepair
 import { ICostCalculatorService } from '@/@domain/services/ICostCalculatorService';
 import { IDownloadService } from '@/@domain/services/IDownloadService';
 import { IGarageService } from '@/@domain/services/IGarageService';
+import { IVehicleService } from '@/@domain/services/IVehicleService';
 import { IPdfGenerator } from '@/@domain/services/IPdfGenerator';
 import { IUserService } from '@/@domain/services/IUserService';
 import { ISettingPriceBodyPartCoefficientService } from '@/@domain/services/settings/price/ISettingPriceBodyPartCoefficientService';
@@ -98,6 +103,7 @@ import { IDentRepairTypeUseCase } from '@/@domain/useCases/carRepair/IDentRepair
 import { ICalculateLineCostUseCase } from '@/@domain/useCases/cost/ICalculateLineCostUseCase';
 import { ICalculateTotalCostUseCase } from '@/@domain/useCases/cost/ICalculateTotalCostUseCase';
 import { IGarageUseCase } from '@/@domain/useCases/IGarageUseCase';
+import { IVehicleUseCase } from '@/@domain/useCases/IVehicleUseCase';
 import { IGetDocumentStatuseUseCase } from '@/@domain/useCases/IGetDocumentStatuseUseCase';
 import { IAddInvoiceLineItemUseCase } from '@/@domain/useCases/invoices/IAddInvoiceLineItemUseCase';
 import { ICreateInvoiceUseCase } from '@/@domain/useCases/invoices/ICreateInvoiceUseCase';
@@ -184,6 +190,7 @@ import { BodyMaterialRepository } from '../database/repositories/carRepair/BodyM
 import { DentRepairTypeRepository } from '../database/repositories/carRepair/DentRepairTypeRepository';
 import { DocumentStatuseRepository } from '../database/repositories/DocumentStatuseRepository';
 import { GarageRepository } from '../database/repositories/GarageRepository';
+import { VehicleRepository } from '../database/repositories/VehicleRepository';
 import { InvoiceDetailRepository } from '../database/repositories/InvoiceDetailRepository';
 import { InvoiceRepository } from '../database/repositories/InvoiceRepository';
 import { QuoteDetailRepository } from '../database/repositories/QuoteDetailRepository';
@@ -217,6 +224,7 @@ container.bind<IAuthRepository>(SYMBOLS.Repositories.AuthRepository).to(AuthSupa
 container.bind<ISubscriptionRepository>(SYMBOLS.Repositories.SubscriptionRepository).to(SubscriptionRepository).inSingletonScope();
 /** 3.1. -- Garage CarRepair Repository */
 container.bind<IGarageRepository>(SYMBOLS.Repositories.GarageRepository).to(GarageRepository).inSingletonScope();
+container.bind<IVehicleRepository>(SYMBOLS.Repositories.VehicleRepository).to(VehicleRepository).inSingletonScope();
 /** 3.2. -- Settings CarRepair Repositories */
 container.bind<IBodyPartRepository>(SYMBOLS.Repositories.BodyPartRepository).to(BodyPartRepository).inSingletonScope();
 container.bind<IBodyMaterialRepository>(SYMBOLS.Repositories.BodyMaterialRepository).to(BodyMaterialRepository).inSingletonScope();
@@ -244,6 +252,7 @@ container.bind<IInvoiceDetailRepository>(SYMBOLS.Repositories.InvoiceDetailRepos
 container.bind<IAuthService>(SYMBOLS.Services.AuthService).to(AuthService).inSingletonScope();
 /** 4.1. -- Garage CarRepair Services */
 container.bind<IGarageService>(SYMBOLS.Services.GarageService).to(GarageService).inSingletonScope();
+container.bind<IVehicleService>(SYMBOLS.Services.VehicleService).to(VehicleService).inSingletonScope();
 /** 4.2. -- Settings CarRepair Services */
 container.bind<IBodyPartService>(SYMBOLS.Services.BodyPartService).to(BodyPartService).inSingletonScope();
 container.bind<IBodyMaterialService>(SYMBOLS.Services.BodyMaterialService).to(BodyMaterialService).inSingletonScope();
@@ -274,6 +283,7 @@ container.bind<ISubscribeToFreePlanUseCase>(SYMBOLS.UseCases.Subscription.Subscr
 container.bind<IGetCurrentSubscriptionUseCase>(SYMBOLS.UseCases.Subscription.GetCurrentSubscriptionUseCase).to(GetCurrentSubscriptionUseCase).inSingletonScope();
 /** 5.1. -- Garage CarRepair UseCases */
 container.bind<IGarageUseCase>(SYMBOLS.UseCases.Garage).to(GarageUseCase).inSingletonScope();
+container.bind<IVehicleUseCase>(SYMBOLS.UseCases.Vehicle).to(VehicleUseCase).inSingletonScope();
 /** 5.1. -- Document Statuse UseCases */
 container.bind<IGetDocumentStatuseUseCase>(SYMBOLS.UseCases.GetDocumentStatuse).to(GetDocumentStatuseUseCase).inSingletonScope();
 /** 5.2. -- Settings CarRepair UseCases */

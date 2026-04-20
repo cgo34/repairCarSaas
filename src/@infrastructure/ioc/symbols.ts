@@ -18,6 +18,7 @@ const SYMBOLS = {
     // Subscription Repositories
     SubscriptionRepository: Symbol.for(SYMBOL_NAMES.SUBSCRIPTION_REPOSITORY),
     GarageRepository: Symbol.for(SYMBOL_NAMES.GARAGE_REPOSITORY),
+    VehicleRepository: Symbol.for(SYMBOL_NAMES.VEHICLE_REPOSITORY),
     
     // Document Statuse Repositories
     DocumentStatuseRepository: Symbol.for(SYMBOL_NAMES.DOCUMENT_STATUSE_REPOSITORY),
@@ -45,6 +46,7 @@ const SYMBOLS = {
     AuthService: Symbol.for(SYMBOL_NAMES.AUTH_SERVICE),
     UserService: Symbol.for(SYMBOL_NAMES.USER_SERVICE),
     GarageService: Symbol.for(SYMBOL_NAMES.GARAGE_SERVICE),
+    VehicleService: Symbol.for(SYMBOL_NAMES.VEHICLE_SERVICE),
     NotificationService: Symbol.for(SYMBOL_NAMES.NOTIFICATION_SERVICE),
     CostCalculatorService: Symbol.for(SYMBOL_NAMES.COST_CALCULATOR_SERVICE),
     // -- Settings CarRepair Services
@@ -82,6 +84,7 @@ const SYMBOLS = {
       CreateUserUseCase: Symbol.for(SYMBOL_NAMES.CREATE_USER_USE_CASE),
     },
     Garage: Symbol.for(SYMBOL_NAMES.GARAGE_USE_CASE),
+    Vehicle: Symbol.for(SYMBOL_NAMES.VEHICLE_USE_CASE),
     GetDocumentStatuse: Symbol.for(SYMBOL_NAMES.GET_DOCUMENT_STATUSE_USE_CASE),
 
     CarRepair: {

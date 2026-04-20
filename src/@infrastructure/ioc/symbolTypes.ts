@@ -18,6 +18,7 @@ export enum SYMBOL_NAMES {
     SUBSCRIPTION_REPOSITORY = 'SubscriptionRepository',
 
     GARAGE_REPOSITORY = 'GarageRepository',
+    VEHICLE_REPOSITORY = 'VehicleRepository',
 
     // -- Document Statuses REPOSITORIES
     DOCUMENT_STATUSE_REPOSITORY = 'DocumentStatuseRepository',
@@ -42,6 +43,7 @@ export enum SYMBOL_NAMES {
     AUTH_SERVICE = 'AuthService',
     USER_SERVICE = 'UserService',
     GARAGE_SERVICE = 'GarageService',
+    VEHICLE_SERVICE = 'VehicleService',
     NOTIFICATION_SERVICE = 'NotificationService',
     COST_CALCULATOR_SERVICE = 'CostCalculatorService',
     // Settings CarRepair Services
@@ -71,6 +73,7 @@ export enum SYMBOL_NAMES {
     CREATE_USER_USE_CASE = 'CreateUserUseCase',
     // -- Garage UseCases
     GARAGE_USE_CASE = 'GarageUseCase',
+    VEHICLE_USE_CASE = 'VehicleUseCase',
     // -- Settings CarRepair UseCases
     BODY_PART_USE_CASE = 'BodyPartUseCase',
     BODY_MATERIAL_USE_CASE = 'BodyMaterialUseCase',
