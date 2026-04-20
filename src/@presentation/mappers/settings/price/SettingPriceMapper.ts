@@ -4,6 +4,7 @@ import { SettingPriceBodyPartCoefficientMapper } from "./SettingPriceBodyPartCoe
 import { SettingPriceGeneralMapper } from "./SettingPriceGeneralMapper";
 import { SettingPriceImpactCountToUtMapper } from "./SettingPriceImpactCountToUtMapper";
 import { SettingPriceTechnicityCoefficientMapper } from "./SettingPriceTechnicityCoefficientMapper";
+import { SettingPriceDto } from "@/@infrastructure/dtos/settings/price/SettingPriceDto";
 
 export class SettingPriceMapper {
   static viewToDto(viewModel: SettingPriceViewModel): SettingPriceViewDto {
@@ -15,7 +16,7 @@ export class SettingPriceMapper {
     };
   }
 
-  static dtoToView(dto: SettingPriceViewDto): SettingPriceViewModel {
+  static dtoToView(dto: SettingPriceDto): SettingPriceViewModel {
     return {
       general: dto.general ?? undefined,
       bodyParts: dto.bodyParts.map((bp) => SettingPriceBodyPartCoefficientMapper.dtoToView(bp)) ?? undefined,

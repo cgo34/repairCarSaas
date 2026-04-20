@@ -1,4 +1,5 @@
 import { SettingPriceGeneralViewDto } from '@/@application/dtos/settings/SettingPriceGeneralViewDto';
+import { SettingPriceGeneralDto } from '@/@infrastructure/dtos/settings/price/SettingPriceGeneralDto';
 import { SettingPriceGeneralViewModel } from '@/@presentation/types/models/settings/price/SettingPriceGeneralViewModel';
 
 export class SettingPriceGeneralMapper {
@@ -11,7 +12,7 @@ export class SettingPriceGeneralMapper {
     };
   }
 
-  static dtoToView(dto: SettingPriceGeneralViewDto): SettingPriceGeneralViewModel {
+  static dtoToView(dto: SettingPriceGeneralDto): SettingPriceGeneralViewModel {
     return {
       id: dto.id,
       userId: dto.userId,
