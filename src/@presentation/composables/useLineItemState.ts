@@ -48,16 +48,21 @@ export function useLineItemState() {
       if (!authState.user.value)
         throw new Error('User not found');      
 
-      const [bodyMaterialData, repairTypeData, priceParamsData] =
-        await Promise.all([
+      const [bodyMaterialResult, repairTypeResult, priceParamsResult] =
+        await Promise.allSettled([
           bodyMaterialUseCase.executeGetAll(),
           repairTypeUseCase.executeGetAll(),
           priceParamsUseCase.getByUserId(authState.user.value?.id),
         ]);
 
-      _bodyMaterials.value = bodyMaterialData.map((bm) => BodyMaterialMapper.dtoToView(bm));
-      _repairTypes.value = repairTypeData.map((rt) => RepairTypeMapper.dtoToView(rt));
-      _priceParams.value = SettingPriceMapper.dtoToView(priceParamsData);
+      if (bodyMaterialResult.status === 'fulfilled')
+        _bodyMaterials.value = bodyMaterialResult.value.map((bm) => BodyMaterialMapper.dtoToView(bm));
+
+      if (repairTypeResult.status === 'fulfilled')
+        _repairTypes.value = repairTypeResult.value.map((rt) => RepairTypeMapper.dtoToView(rt));
+
+      if (priceParamsResult.status === 'fulfilled')
+        _priceParams.value = SettingPriceMapper.dtoToView(priceParamsResult.value);
       
     } catch (e: any) {
       error.value = e;
