@@ -1,6 +1,7 @@
 import { ISettingPriceImpactCountToUtRepository } from '@/@domain/repositories/settings/price/ISettingPriceImpactCountToUtRepository';
 import { SettingPriceImpactCountToUtApiModel } from '@/@infrastructure/database/api/settings/price/SettingPriceImpactCountToUtApiModel';
 import { SupabaseClient } from '@/@infrastructure/database/clients/SupabaseClient';
+import { DEFAULT_SETTINGS_USER_ID } from '@/@infrastructure/database/helpers/getAdminUserIdWithSettings';
 import { SettingPriceImpactCountToUtDto } from '@/@infrastructure/dtos/settings/price/SettingPriceImpactCountToUtDto';
 import { IClientProvider } from '@/@infrastructure/interfaces/IClientProvider';
 import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
@@ -14,14 +15,8 @@ export class SettingPriceImpactCountToUtRepository implements ISettingPriceImpac
   async getAdmin(): Promise<SettingPriceImpactCountToUtDto[]> {
     const { data, error } = await this.clientProvider.getClient()
       .from('setting_price_impact_count_to_ut')
-      .select(`
-        *,
-        users (
-          id,
-          role
-        )
-      `)
-      .eq('users.role', 'admin')
+      .select('*')
+      .eq('user_id', DEFAULT_SETTINGS_USER_ID)
       .returns<SettingPriceImpactCountToUtApiModel[]>();
 
     if (error)
@@ -66,8 +61,10 @@ export class SettingPriceImpactCountToUtRepository implements ISettingPriceImpac
       .select('*')
       .single<SettingPriceImpactCountToUtApiModel>();
 
-    if (error)
+    if (error) {
+      console.error('[ImpactCountToUtRepo] create error:', error);
       throw new Error('Error creating impact count to UT setting');
+    }
 
     return SettingPriceImpactCountToUtMapper.apiToDto(data);
   }

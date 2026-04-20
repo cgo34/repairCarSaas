@@ -25,12 +25,11 @@ export class SettingPriceBodyPartCoefficientRepository implements ISettingPriceB
           )
         `)
         .eq('users.role', 'admin')
-        .returns<SettingPriceBodyPartCoefficientDto[]>();
+        .returns<SettingPriceBodyPartCoefficientApiModel[]>();
   
       if (error)
         throw new Error('Error fetching body part coefficient settings');
       
-  
       return data.map(SettingPriceBodyPartCoefficientMapper.apiToDto);
     }
 
@@ -67,13 +66,16 @@ export class SettingPriceBodyPartCoefficientRepository implements ISettingPriceB
       .from('setting_price_body_part_coefficient')
       .insert({
         difficulty_coefficient: settingApi.difficulty_coefficient,
-        body_part_id: settingApi.body_parts?.id,
+        body_part_id: settingApi.body_part_id,
         user_id: settingApi.user_id
       })
       .select('*, body_parts(*)')
       .single<SettingPriceBodyPartCoefficientApiModel>();
 
-    if (error) throw new Error('Error creating body part coefficient setting');
+    if (error) {
+      console.error('[BodyPartCoefficientRepo] create error:', error);
+      throw new Error('Error creating body part coefficient setting');
+    }
 
     return SettingPriceBodyPartCoefficientMapper.apiToDto(data);
   }

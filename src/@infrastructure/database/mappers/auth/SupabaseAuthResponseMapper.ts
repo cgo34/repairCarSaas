@@ -7,7 +7,6 @@ export class SupabaseAuthResponseMapper implements IAuthResponseMapper<SupabaseA
     if (!dto) {
       throw new Error('Invalid Supabase response');
     }
-
     return {
       user: {
         id: dto.user.id,
