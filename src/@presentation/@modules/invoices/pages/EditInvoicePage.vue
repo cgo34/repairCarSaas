@@ -574,7 +574,8 @@ const {
 
   updateInvoice,
 
-  deleteInvoice
+  deleteInvoice,
+  sendInvoice
 } = useEditInvoiceState;
 
 const router = useRouter();
@@ -710,8 +711,16 @@ const onFinalizeBtnClick = () => {
   console.log('onFinalizeBtnClick -> finalize invoice');
 };
 
-const onSendBtnClick = () => {
-  console.log('onSendBtnClick -> send invoice');
+const onSendBtnClick = async () => {
+  console.log('onSendBtnClick - Sending invoice...');
+  try {
+    await sendInvoice();
+    console.log('Invoice sent successfully!');
+    alert('Facture envoyée avec succès!');
+  } catch (error) {
+    console.error('Error sending invoice:', error);
+    alert('Erreur lors de l\'envoi de la facture');
+  }
 };
 
 const onViewPdfBtnClick = () => {

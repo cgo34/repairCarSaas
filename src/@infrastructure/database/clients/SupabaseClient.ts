@@ -58,4 +58,8 @@ export class SupabaseClient implements IClient {
   get storage() {
     return this.client.storage;
   }
+
+  get functions() {
+    return this.client.functions;
+  }
 }

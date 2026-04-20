@@ -20,7 +20,7 @@ export class InvoiceMapper {
       // isComputeCommissionWithoutDentRemoval: api.is_compute_commission_without_dent_removal,
       startDate: api.start_date,
       endDate: api.end_date,
-      status_id: api.status_id,
+      statusId: api.status_id,
       status: api.status,
       country: api.country,
       currency: api.currency,
