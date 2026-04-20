@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { defineProps } from 'vue';
 
-// Définition des props du composant
 defineProps<{
   title: string;
   value: number | string;
+  amount?: string;
   icon: any;
   color: string;
 }>();
@@ -35,7 +35,10 @@ defineProps<{
           <h4 class="text-h4 font-weight-medium">
             {{ value }}
           </h4>
-          <span class="text-subtitle-2 text-disabled font-weight-medium">
+          <span v-if="amount" class="text-subtitle-1 font-weight-medium" :class="`text-${color}`">
+            {{ amount }}
+          </span>
+          <span class="text-subtitle-2 text-disabled font-weight-medium d-block">
             {{ title }}
           </span>
         </div>
