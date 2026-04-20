@@ -176,6 +176,19 @@
                 >
                 <v-card-text>
                   <v-row>
+                    <v-col cols="12" md="12">
+                      <v-select
+                        :model-value="selectedVehicle"
+                        label="Véhicule existant (optionnel)"
+                        :items="vehiclesList"
+                        :item-title="v => v.immatriculation + ' — ' + v.marque + (v.annee ? ' ' + v.annee : '')"
+                        item-value="id"
+                        return-object
+                        clearable
+                        :disabled="!selectedGarage"
+                        @update:model-value="onSelectVehicle"
+                      />
+                    </v-col>
                     <v-col
                       cols="12"
                       md="4"
@@ -282,7 +295,8 @@ import { CountryViewModel } from '@/@presentation/types/models/CountryViewModel'
 import { GarageViewModel } from '@/@presentation/types/models/GarageViewModel';
 import { UserViewModel } from '@/@presentation/types/models/UserViewModel';
 import router from '@/router';
-import { onMounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
+import { VehicleViewModel } from '@/@presentation/types/models/VehicleViewModel';
 
 // Injection du state depuis Inversify
 const useCreateQuoteState = container.get<IUseCreateQuoteState>(SYMBOLS.States.Quote.CreateQuoteState);
@@ -301,6 +315,9 @@ const {
   selectedTechnician,
   selectedGarage,
   selectGarage,
+  vehicles,
+  selectedVehicle,
+  selectVehicle,
   selectTechnician,
   setGarage,
 
@@ -328,6 +345,7 @@ const garageDialogRef = ref<GarageDialogExposed>()
 
 const techniciansList = ref<UserViewModel[]>(technicians.value);
 const garagesList = ref<GarageViewModel[]>(garages.value);
+const vehiclesList = computed(() => vehicles.value);
 
 // #region -> METHODS
 const onSearchTechnician = (event: InputEvent) => {
@@ -354,6 +372,10 @@ const onSelectTechnician = (technician: UserViewModel) => {
 
 const onSelectGarage = (garage: GarageViewModel) => {
   selectGarage(garage);
+};
+
+const onSelectVehicle = (vehicle: VehicleViewModel | undefined) => {
+  selectVehicle(vehicle);
 };
 
 const onEditCustomerBtnClick = () => {
@@ -410,5 +432,6 @@ onMounted(async () => {
   await init();
   techniciansList.value = technicians.value;
   garagesList.value = garages.value;
+  // vehiclesList is reactive via computed
 });
 </script>

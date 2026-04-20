@@ -229,6 +229,19 @@
                 >
                 <v-card-text>
                   <v-row>
+                    <v-col cols="12" md="12">
+                      <v-select
+                        :model-value="selectedVehicle"
+                        label="Véhicule existant (optionnel)"
+                        :items="vehiclesList"
+                        :item-title="v => v.immatriculation + ' — ' + v.marque + (v.annee ? ' ' + v.annee : '')"
+                        item-value="id"
+                        return-object
+                        clearable
+                        :disabled="!selectedGarage"
+                        @update:model-value="onSelectVehicle"
+                      />
+                    </v-col>
                     <v-col
                       cols="12"
                       md="4"
@@ -424,8 +437,11 @@
                 <h5 class="py-2 text-subtitle-1 text-no-wrap">
                   TVA ({{ selectedCountry?.taxRate || 0 }}%) :
                 </h5>
+                <h5 v-if="selectedGarage?.percentageCommission" class="py-2 text-subtitle-1 text-no-wrap text-orange">
+                  Commission ({{ selectedGarage.percentageCommission }}%) :
+                </h5>
                 <h5 class="py-2 text-subtitle-1 text-primary mt-7">
-                  Total H.T
+                  Total TTC
                 </h5>
               </v-col>
               <v-col
@@ -439,13 +455,15 @@
                 </h5>
                 <h5 v-if="!isForfait" class="py-2 text-subtitle-1 text-disabled">
                   {{ regionManager.formatNumber(totalDegarnissage) }} {{ selectedCountry?.currencySymbol || '€' }}
-                  <!-- {{ totalDegarnissage.toFixed(2) || '0.00' }} {{ selectedCountry?.currencySymbol || '€' }} -->
                 </h5>
                 <h5 v-if="!isForfait" class="py-2 text-subtitle-1 text-disabled">
                   {{ regionManager.formatNumber(subTotalWithDegarnissage) }} {{ selectedCountry?.currencySymbol || '€' }}
                 </h5>
                 <h5 class="py-2 text-subtitle-1 text-disabled">
                   {{ regionManager.formatNumber(totalTaxRate) }} {{ selectedCountry?.currencySymbol || '€' }}
+                </h5>
+                <h5 v-if="selectedGarage?.percentageCommission" class="py-2 text-subtitle-1 text-orange">
+                  {{ regionManager.formatNumber(totalCommission) }} {{ selectedCountry?.currencySymbol || '€' }}
                 </h5>
                 <h5 class="py-2 text-subtitle-1 text-primary mt-7">
                   {{ regionManager.formatNumber(total) }} {{ selectedCountry?.currencySymbol || '€' }}
@@ -509,7 +527,8 @@ import { CountryViewModel } from '@/@presentation/types/models/CountryViewModel'
 import { GarageViewModel } from '@/@presentation/types/models/GarageViewModel';
 import { LineItemViewModel } from '@/@presentation/types/models/LineItemViewModel';
 import { UserViewModel } from '@/@presentation/types/models/UserViewModel';
-import { onMounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
+import { VehicleViewModel } from '@/@presentation/types/models/VehicleViewModel';
 import { useRoute, useRouter } from 'vue-router';
 
 
@@ -537,6 +556,9 @@ const {
   selectGarage,
   selectTechnician,
   setGarage,
+  vehicles,
+  selectedVehicle,
+  selectVehicle,
 
   carInformations,
   setCarImmatriculation,
@@ -570,6 +592,7 @@ const {
   totalDegarnissage,
   subTotalWithDegarnissage,
   totalTaxRate,
+  totalCommission,
   total,
 
   updateInvoice,
@@ -584,6 +607,7 @@ const route = useRoute();
 const invoiceId = route.params.id as string;
 const techniciansList = ref<UserViewModel[]>(technicians.value);
 const garagesList = ref<GarageViewModel[]>(garages.value);
+const vehiclesList = computed(() => vehicles.value);
 
 const headers = [
     { title: 'Element de carrosserie', key: 'bodyPart.name', width: '25%', minWidth: '25%', align: 'start' },
@@ -629,6 +653,10 @@ const onSearchGarage = (event: InputEvent) => {
 
 const onSelectGarage = (garage: GarageViewModel) => {
   selectGarage(garage);
+};
+
+const onSelectVehicle = (vehicle: VehicleViewModel | undefined) => {
+  selectVehicle(vehicle);
 };
 
 const onEditCustomerBtnClick = () => {

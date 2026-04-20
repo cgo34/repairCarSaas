@@ -7,6 +7,7 @@ import { DocumentStatuseViewModel } from '../models/DocumentStatuseViewModel';
 import { GarageViewModel } from '../models/GarageViewModel';
 import { LineItemViewModel } from '../models/LineItemViewModel';
 import { UserViewModel } from '../models/UserViewModel';
+import { VehicleViewModel } from '../models/VehicleViewModel';
 
 export interface IUseEditQuoteState {
   loading: Ref<boolean>;
@@ -23,6 +24,10 @@ export interface IUseEditQuoteState {
   selectedGarage: Ref<GarageViewModel | undefined>;
   selectTechnician(technician: UserViewModel): void;
   selectGarage(garage: GarageViewModel): void;
+  setGarage(garage: GarageViewModel): void;
+  vehicles: ComputedRef<VehicleViewModel[]>;
+  selectedVehicle: ComputedRef<VehicleViewModel | undefined>;
+  selectVehicle(vehicle: VehicleViewModel | undefined): void;
 
   carInformations: ComputedRef<{ immatriculation: string; brand: string; dateEntryCirculation: string; }>;
   setCarImmatriculation(value: string): void;
@@ -55,6 +60,7 @@ export interface IUseEditQuoteState {
   removeLine(lineId: number): void;
 
   totalDegarnissage,
-  total: ComputedRef<number>,
+  totalCommission: ComputedRef<number>;
+  total: ComputedRef<number>;
   save(): Promise<void>;
 }

@@ -1,6 +1,7 @@
 // region -> IMPORTS
 import { IAuthState } from '@/@application/states/interfaces/IAuthState';
 import { IGarageUseCase } from '@/@domain/useCases/IGarageUseCase';
+import { IVehicleUseCase } from '@/@domain/useCases/IVehicleUseCase';
 import { IGetDocumentStatuseUseCase } from '@/@domain/useCases/IGetDocumentStatuseUseCase';
 import { IUserUseCase } from '@/@domain/useCases/IUserUseCase';
 import { IBodyMaterialUseCase } from '@/@domain/useCases/carRepair/IBodyMaterialUseCase';
@@ -21,6 +22,7 @@ import { DocumentStatuseMapper } from '@/@presentation/mappers/DocumentStatuseMa
 import { GarageMapper } from '@/@presentation/mappers/GarageMapper';
 import { LineItemMapper } from '@/@presentation/mappers/LineItemMapper';
 import { QuoteMapper } from '@/@presentation/mappers/QuoteMapper';
+import { VehicleMapper } from '@/@presentation/mappers/VehicleMapper';
 import { BodyMaterialMapper } from '@/@presentation/mappers/settings/BodyMaterialMapper';
 import { BodyPartMapper } from '@/@presentation/mappers/settings/BodyPartMapper';
 import { RepairTypeMapper } from '@/@presentation/mappers/settings/RepairTypeMapper';
@@ -31,6 +33,7 @@ import { GarageViewModel } from '@/@presentation/types/models/GarageViewModel';
 import { LineItemViewModel } from '@/@presentation/types/models/LineItemViewModel';
 import { QuoteViewModel } from '@/@presentation/types/models/QuoteViewModel';
 import { UserViewModel } from '@/@presentation/types/models/UserViewModel';
+import { VehicleViewModel } from '@/@presentation/types/models/VehicleViewModel';
 import { BodyMaterialViewModel } from '@/@presentation/types/models/carRepair/BodyMaterialViewModel';
 import { BodyPartViewModel } from '@/@presentation/types/models/carRepair/BodyPartViewModel';
 import { DentRepairTypeViewModel } from '@/@presentation/types/models/carRepair/DentRepairTypeViewModel';
@@ -49,6 +52,7 @@ export function useEditQuoteState() {
   const deleteQuoteUseCase = container.get<IDeleteQuoteUseCase>(SYMBOLS.UseCases.Quote.DeleteQuoteUseCase)
 
   const garageUseCase = container.get<IGarageUseCase>(SYMBOLS.UseCases.Garage);
+  const vehicleUseCase = container.get<IVehicleUseCase>(SYMBOLS.UseCases.Vehicle);
   const technicianUseCase = container.get<IUserUseCase>(SYMBOLS.UseCases.UserUseCase);
 
   const bodyPartUseCase = container.get<IBodyPartUseCase>(SYMBOLS.UseCases.CarRepair.BodyPartUseCase);
@@ -85,6 +89,8 @@ export function useEditQuoteState() {
   const _garages = ref<GarageViewModel[]>([]);
   const _selectedTechnician = ref<UserViewModel>();
   const _selectedGarage = ref<GarageViewModel>();
+  const _vehicles = ref<VehicleViewModel[]>([]);
+  const _selectedVehicle = ref<VehicleViewModel | undefined>(undefined);
 
   const _carInformations = ref({
     immatriculation: '',
@@ -153,13 +159,20 @@ export function useEditQuoteState() {
 
       _selectedTechnician.value = _quote.value.technician;
       _selectedGarage.value = _quote.value.garage;
+      if (_quote.value.garage?.id) {
+        const vehiclesResult = await vehicleUseCase.getByGarageId(_quote.value.garage.id).catch(() => []);
+        _vehicles.value = vehiclesResult.map(VehicleMapper.dtoToView);
+        if (_quote.value.vehicleId) {
+          _selectedVehicle.value = _vehicles.value.find(v => v.id === _quote.value.vehicleId);
+        }
+      }
 
       _carInformations.value.immatriculation = _quote.value.carImmatriculation ?? '';
       _carInformations.value.brand = _quote.value.carBrand ?? '';
       _carInformations.value.dateEntryCirculation = _quote.value.carDateEntryCirculation ?? '';
 
-      const [garageData, technicianData, bodyPartData, bodyMaterialData, repairTypeData, priceParamsData] =
-        await Promise.all([
+      const [garageResult, technicianResult, bodyPartResult, bodyMaterialResult, repairTypeResult, priceParamsResult] =
+        await Promise.allSettled([
           garageUseCase.getByUserId(authState.user.value?.id),
           technicianUseCase.getUsers(),
           bodyPartUseCase.executeGetAll(),
@@ -169,17 +182,28 @@ export function useEditQuoteState() {
         ]);
         
 
-      _garages.value = garageData.map((g) => GarageMapper.dtoToView(g));
-      _bodyParts.value = bodyPartData.map((bp) => BodyPartMapper.dtoToView(bp));
-      _bodyMaterials.value = bodyMaterialData.map((bm) => BodyMaterialMapper.dtoToView(bm));
-      _repairTypes.value = repairTypeData.map((rt) => RepairTypeMapper.dtoToView(rt));
-      _priceParams.value = SettingPriceMapper.dtoToView(priceParamsData);
-      _priceParams.value = SettingPriceMapper.dtoToView(priceParamsData);
-      
-      _technicians.value = [
-        ...technicianData,
-      ];
-      
+      if (garageResult.status === 'fulfilled')
+        _garages.value = garageResult.value.map((g) => GarageMapper.dtoToView(g));
+
+      if (technicianResult.status === 'fulfilled')
+        _technicians.value = [
+          ...technicianResult.value,
+          // TODO: (gce) -> REMOVE MOCK
+          { id: '1', fullName: 'John Doe', email: 'technicien1@gmail.com', password: '123456789', createdAt: '2021-09-01T00:00:00' },
+          { id: '2', fullName: 'Albert Dupont', email: 'technicien2@gmail.com', password: '123456789', createdAt: '2021-09-01T00:00:00' },
+        ];
+
+      if (bodyPartResult.status === 'fulfilled')
+        _bodyParts.value = bodyPartResult.value.map((bp) => BodyPartMapper.dtoToView(bp));
+
+      if (bodyMaterialResult.status === 'fulfilled')
+        _bodyMaterials.value = bodyMaterialResult.value.map((bm) => BodyMaterialMapper.dtoToView(bm));
+
+      if (repairTypeResult.status === 'fulfilled')
+        _repairTypes.value = repairTypeResult.value.map((rt) => RepairTypeMapper.dtoToView(rt));
+
+      if (priceParamsResult.status === 'fulfilled')
+        _priceParams.value = SettingPriceMapper.dtoToView(priceParamsResult.value);
       
     } catch (e) {
       error.value = e;
@@ -229,8 +253,26 @@ export function useEditQuoteState() {
     _selectedTechnician.value = technician;
   }
 
-  const selectGarage = (garage: GarageViewModel) => {
+  const selectGarage = async (garage: GarageViewModel) => {
     _selectedGarage.value = garage;
+    _selectedVehicle.value = undefined;
+    if (garage?.id) {
+      const result = await vehicleUseCase.getByGarageId(garage.id).catch(() => []);
+      _vehicles.value = result.map(VehicleMapper.dtoToView);
+    } else {
+      _vehicles.value = [];
+    }
+  }
+
+  const selectVehicle = (vehicle: VehicleViewModel | undefined) => {
+    _selectedVehicle.value = vehicle;
+    if (vehicle) {
+      _carInformations.value = {
+        immatriculation: vehicle.immatriculation,
+        brand: vehicle.marque,
+        dateEntryCirculation: vehicle.annee?.toString() ?? '',
+      };
+    }
   }
 
   const setGarage = (garage: GarageViewModel) => {
@@ -279,11 +321,12 @@ export function useEditQuoteState() {
   // }
 
   const addLine = async (line: LineItemViewModel) => {
-    if (!_priceParams.value)
-      throw new Error('Price params not found');
-    
     line.quoteId = _quoteId.value
-    computePrice(line)
+
+    if (_priceParams.value)
+      computePrice(line)
+    else
+      line.price = 0
 
     const quoteLinesDto = await addQuoteDetailsUseCase.executeQuote(LineItemMapper.viewToDto(line));
 
@@ -416,11 +459,19 @@ export function useEditQuoteState() {
     return _forfaitAmount.value *  (_selectedCountry.value?.taxRate / 100);
   });
 
+  const totalCommission = computed(() => {
+    const rate = (_selectedGarage.value?.percentageCommission ?? 0) / 100;
+    if (!rate) return 0;
+    if (_isForfait.value) return (_forfaitAmount.value ?? 0) * rate;
+    const base = _isComputeCommissionWithoutDentRemoval.value ? subtotal.value : subTotalWithDegarnissage.value;
+    return base * rate;
+  });
+
   const total = computed(() => {
     if (!_isForfait.value) {
       return subTotalWithDegarnissage.value + totalTaxRate.value;
-    }    
-    
+    }
+
     if (!_forfaitAmount.value)
       return 0;
 
@@ -453,13 +504,13 @@ export function useEditQuoteState() {
         carBrand: _carInformations.value.brand,
         carImmatriculation: _carInformations.value.immatriculation,
         carDateEntryCirculation: _carInformations.value.dateEntryCirculation,
+        vehicleId: _selectedVehicle.value?.id,
 
         isForfait: _isForfait.value,
         forfaitAmount: _forfaitAmount.value,
         isDisplayUnitPrice: _isDisplayUnitPrice.value,
         isComputeCommissionWithoutDentRemoval: _isComputeCommissionWithoutDentRemoval.value,
-        
-        
+        totalHt: subTotalWithDegarnissage.value,
       }
       
       const quoteDto = await updateQuoteUseCase.execute(QuoteMapper.viewToDto(_quote.value)).then(async (quote) => {
@@ -547,8 +598,11 @@ export function useEditQuoteState() {
     technicians: computed(() => _technicians.value),
     selectedTechnician: computed(() => _selectedTechnician.value),
     selectedGarage: computed(() => _selectedGarage.value),
+    vehicles: computed(() => _vehicles.value),
+    selectedVehicle: computed(() => _selectedVehicle.value),
     selectTechnician,
     selectGarage,
+    selectVehicle,
     setGarage,
 
     carInformations: computed(() => _carInformations.value),
@@ -584,6 +638,7 @@ export function useEditQuoteState() {
     totalDegarnissage,
     subTotalWithDegarnissage,
     totalTaxRate,
+    totalCommission,
     total,
 
     updateQuote,

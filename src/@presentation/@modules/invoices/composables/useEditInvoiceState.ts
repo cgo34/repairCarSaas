@@ -1,6 +1,7 @@
 // region -> IMPORTS
 import { IAuthState } from '@/@application/states/interfaces/IAuthState';
 import { IGarageUseCase } from '@/@domain/useCases/IGarageUseCase';
+import { IVehicleUseCase } from '@/@domain/useCases/IVehicleUseCase';
 import { IUserUseCase } from '@/@domain/useCases/IUserUseCase';
 import { IBodyMaterialUseCase } from '@/@domain/useCases/carRepair/IBodyMaterialUseCase';
 import { IBodyPartUseCase } from '@/@domain/useCases/carRepair/IBodyPartUseCase';
@@ -19,12 +20,14 @@ import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
 import { GarageMapper } from '@/@presentation/mappers/GarageMapper';
 import { LineItemMapper } from '@/@presentation/mappers/LineItemMapper';
 import { InvoiceMapper } from '@/@presentation/mappers/InvoiceMapper';
+import { VehicleMapper } from '@/@presentation/mappers/VehicleMapper';
 import { BodyMaterialMapper } from '@/@presentation/mappers/settings/BodyMaterialMapper';
 import { BodyPartMapper } from '@/@presentation/mappers/settings/BodyPartMapper';
 import { RepairTypeMapper } from '@/@presentation/mappers/settings/RepairTypeMapper';
 import { SettingPriceMapper } from '@/@presentation/mappers/settings/price/SettingPriceMapper';
 import { CountryViewModel } from '@/@presentation/types/models/CountryViewModel';
 import { GarageViewModel } from '@/@presentation/types/models/GarageViewModel';
+import { VehicleViewModel } from '@/@presentation/types/models/VehicleViewModel';
 import { LineItemViewModel } from '@/@presentation/types/models/LineItemViewModel';
 import { InvoiceViewModel } from '@/@presentation/types/models/InvoiceViewModel';
 import { UserViewModel } from '@/@presentation/types/models/UserViewModel';
@@ -45,6 +48,7 @@ export function useEditInvoiceState() {
   const sendInvoiceUseCase = container.get<ISendInvoiceUseCase>(SYMBOLS.UseCases.Invoice.SendInvoiceUseCase);
 
   const garageUseCase = container.get<IGarageUseCase>(SYMBOLS.UseCases.Garage);
+  const vehicleUseCase = container.get<IVehicleUseCase>(SYMBOLS.UseCases.Vehicle);
   const technicianUseCase = container.get<IUserUseCase>(SYMBOLS.UseCases.UserUseCase);
 
   const bodyPartUseCase = container.get<IBodyPartUseCase>(SYMBOLS.UseCases.CarRepair.BodyPartUseCase);
@@ -79,6 +83,8 @@ export function useEditInvoiceState() {
   const _garages = ref<GarageViewModel[]>([]);
   const _selectedTechnician = ref<UserViewModel>();
   const _selectedGarage = ref<GarageViewModel>();
+  const _vehicles = ref<VehicleViewModel[]>([]);
+  const _selectedVehicle = ref<VehicleViewModel | undefined>(undefined);
 
   const _carInformations = ref({
     immatriculation: '',
@@ -143,13 +149,20 @@ export function useEditInvoiceState() {
 
       _selectedTechnician.value = _invoice.value.technician;
       _selectedGarage.value = _invoice.value.garage;
+      if (_invoice.value.garage?.id) {
+        const vehiclesResult = await vehicleUseCase.getByGarageId(_invoice.value.garage.id).catch(() => []);
+        _vehicles.value = vehiclesResult.map(VehicleMapper.dtoToView);
+        if (_invoice.value.vehicleId) {
+          _selectedVehicle.value = _vehicles.value.find(v => v.id === _invoice.value.vehicleId);
+        }
+      }
 
       _carInformations.value.immatriculation = _invoice.value.carImmatriculation ?? '';
       _carInformations.value.brand = _invoice.value.carBrand ?? '';
       _carInformations.value.dateEntryCirculation = _invoice.value.carDateEntryCirculation ?? '';
 
-      const [garageData, technicianData, bodyPartData, bodyMaterialData, repairTypeData, priceParamsData] =
-        await Promise.all([
+      const [garageResult, technicianResult, bodyPartResult, bodyMaterialResult, repairTypeResult, priceParamsResult] =
+        await Promise.allSettled([
           garageUseCase.getByUserId(authState.user.value?.id),
           technicianUseCase.getUsers(),
           bodyPartUseCase.executeGetAll(),
@@ -158,29 +171,28 @@ export function useEditInvoiceState() {
           priceParamsUseCase.getByUserId(authState.user.value?.id),
         ]);
 
-      _garages.value = garageData.map((g) => GarageMapper.dtoToView(g));
-      _technicians.value = [
-        ...technicianData,
-        // TODO: (gce) -> REMOVE MOCK
-          {
-            id: '1',
-            fullName: 'John Doe',
-            email: 'technicien1@gmail.com',
-            password: '123456789',
-            createdAt: '2021-09-01T00:00:00',
-          },
-          {
-            id: '2',
-            fullName: 'Albert Dupont',
-            email: 'technicien2@gmail.com',
-            password: '123456789',
-            createdAt: '2021-09-01T00:00:00',
-          },
-      ];
-      _bodyParts.value = bodyPartData.map((bp) => BodyPartMapper.dtoToView(bp));
-      _bodyMaterials.value = bodyMaterialData.map((bm) => BodyMaterialMapper.dtoToView(bm));
-      _repairTypes.value = repairTypeData.map((rt) => RepairTypeMapper.dtoToView(rt));
-      _priceParams.value = SettingPriceMapper.dtoToView(priceParamsData);
+      if (garageResult.status === 'fulfilled')
+        _garages.value = garageResult.value.map((g) => GarageMapper.dtoToView(g));
+
+      if (technicianResult.status === 'fulfilled')
+        _technicians.value = [
+          ...technicianResult.value,
+          // TODO: (gce) -> REMOVE MOCK
+          { id: '1', fullName: 'John Doe', email: 'technicien1@gmail.com', password: '123456789', createdAt: '2021-09-01T00:00:00' },
+          { id: '2', fullName: 'Albert Dupont', email: 'technicien2@gmail.com', password: '123456789', createdAt: '2021-09-01T00:00:00' },
+        ];
+
+      if (bodyPartResult.status === 'fulfilled')
+        _bodyParts.value = bodyPartResult.value.map((bp) => BodyPartMapper.dtoToView(bp));
+
+      if (bodyMaterialResult.status === 'fulfilled')
+        _bodyMaterials.value = bodyMaterialResult.value.map((bm) => BodyMaterialMapper.dtoToView(bm));
+
+      if (repairTypeResult.status === 'fulfilled')
+        _repairTypes.value = repairTypeResult.value.map((rt) => RepairTypeMapper.dtoToView(rt));
+
+      if (priceParamsResult.status === 'fulfilled')
+        _priceParams.value = SettingPriceMapper.dtoToView(priceParamsResult.value);
       
     } catch (e) {
       error.value = e;
@@ -230,8 +242,26 @@ export function useEditInvoiceState() {
     _selectedTechnician.value = technician;
   }
 
-  const selectGarage = (garage: GarageViewModel) => {
+  const selectGarage = async (garage: GarageViewModel) => {
     _selectedGarage.value = garage;
+    _selectedVehicle.value = undefined;
+    if (garage?.id) {
+      const result = await vehicleUseCase.getByGarageId(garage.id).catch(() => []);
+      _vehicles.value = result.map(VehicleMapper.dtoToView);
+    } else {
+      _vehicles.value = [];
+    }
+  }
+
+  const selectVehicle = (vehicle: VehicleViewModel | undefined) => {
+    _selectedVehicle.value = vehicle;
+    if (vehicle) {
+      _carInformations.value = {
+        immatriculation: vehicle.immatriculation,
+        brand: vehicle.marque,
+        dateEntryCirculation: vehicle.annee?.toString() ?? '',
+      };
+    }
   }
 
   const setGarage = (garage: GarageViewModel) => {
@@ -280,11 +310,12 @@ export function useEditInvoiceState() {
   // }
 
   const addLine = async (line: LineItemViewModel) => {
-    if (!_priceParams.value)
-      throw new Error('Price params not found');
-    
     line.invoiceId = _invoiceId.value
-    computePrice(line)
+
+    if (_priceParams.value)
+      computePrice(line)
+    else
+      line.price = 0
 
     const invoiceLinesDto = await addInvoiceDetailsUseCase.executeInvoice(LineItemMapper.viewToDto(line));
 
@@ -417,11 +448,19 @@ export function useEditInvoiceState() {
     return _forfaitAmount.value *  (_selectedCountry.value?.taxRate / 100);
   });
 
+  const totalCommission = computed(() => {
+    const rate = (_selectedGarage.value?.percentageCommission ?? 0) / 100;
+    if (!rate) return 0;
+    if (_isForfait.value) return (_forfaitAmount.value ?? 0) * rate;
+    const base = _isComputeCommissionWithoutDentRemoval.value ? subtotal.value : subTotalWithDegarnissage.value;
+    return base * rate;
+  });
+
   const total = computed(() => {
     if (!_isForfait.value) {
       return subTotalWithDegarnissage.value + totalTaxRate.value;
-    }    
-    
+    }
+
     if (!_forfaitAmount.value)
       return 0;
 
@@ -454,15 +493,15 @@ export function useEditInvoiceState() {
         carBrand: _carInformations.value.brand,
         carImmatriculation: _carInformations.value.immatriculation,
         carDateEntryCirculation: _carInformations.value.dateEntryCirculation,
+        vehicleId: _selectedVehicle.value?.id,
 
         isForfait: _isForfait.value,
         forfaitAmount: _forfaitAmount.value,
         isDisplayUnitPrice: _isDisplayUnitPrice.value,
         isComputeCommissionWithoutDentRemoval: _isComputeCommissionWithoutDentRemoval.value,
-        
-        
+        totalHt: subTotalWithDegarnissage.value,
       }
-      
+
       const invoiceDto = await updateInvoiceUseCase.execute(InvoiceMapper.viewToDto(_invoice.value)).then(async (invoice) => {
         // _invoice.value = InvoiceMapper.dtoToView(invoice);
         // if (!invoice.id)
@@ -528,8 +567,11 @@ export function useEditInvoiceState() {
     technicians: computed(() => _technicians.value),
     selectedTechnician: computed(() => _selectedTechnician.value),
     selectedGarage: computed(() => _selectedGarage.value),
+    vehicles: computed(() => _vehicles.value),
+    selectedVehicle: computed(() => _selectedVehicle.value),
     selectTechnician,
     selectGarage,
+    selectVehicle,
     setGarage,
 
     carInformations: computed(() => _carInformations.value),
@@ -565,6 +607,7 @@ export function useEditInvoiceState() {
     totalDegarnissage,
     subTotalWithDegarnissage,
     totalTaxRate,
+    totalCommission,
     total,
 
     updateInvoice,
