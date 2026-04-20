@@ -1,9 +1,9 @@
-import { SubscriptionApiModel } from "../database/api/SubscriptionApiModel";
+import { SubscriptionApiModel } from '../database/api/SubscriptionApiModel';
 
 export interface UserDto {
   id?: string;
   email: string;
   fullName: string;
-  role: 'technician' | 'garage' | 'admin'; // mise à jour ici
-  subscription: SubscriptionApiModel
+  role: 'admin' | 'garage' | 'technician' | 'independant_technician' | 'user'; // mise à jour ici
+  subscription?: SubscriptionApiModel
 }
