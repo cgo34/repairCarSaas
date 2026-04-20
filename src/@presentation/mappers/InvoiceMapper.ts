@@ -21,8 +21,9 @@ export class InvoiceMapper {
       garageId: view.garageId,
 
       carBrand: view.carBrand ?? '',
-      carId: view.carImmatriculation ?? '',
+      carImmatriculation: view.carImmatriculation ?? '',
       carDate: view.carDateEntryCirculation ?? '',
+      vehicleId: view.vehicleId,
 
       isForfait: view.isForfait,
       // isDisplayUnitPrice: view.isDisplayUnitPrice,
@@ -45,7 +46,8 @@ export class InvoiceMapper {
       garageCity: view.garageCity,
       garagePhone: view.garagePhone,
       garageEmail: view.garageEmail,
-      garagePercentageCommission: view.garagePercentageCommission
+      garagePercentageCommission: view.garagePercentageCommission,
+      totalHt: view.totalHt,
     };
   }
 
@@ -67,8 +69,9 @@ export class InvoiceMapper {
       garageId: dto.garageId,
 
       carBrand: dto.carBrand,
-      carImmatriculation: dto.carId,
+      carImmatriculation: dto.carImmatriculation,
       carDateEntryCirculation: dto.carDate,
+      vehicleId: dto.vehicleId,
 
       isForfait: dto.isForfait,
       isDisplayUnitPrice: false,
@@ -89,7 +92,8 @@ export class InvoiceMapper {
       garageCity: dto.garageCity,
       garagePhone: dto.garagePhone,
       garageEmail: dto.garageEmail,
-      garagePercentageCommission: dto.garagePercentageCommission
+      garagePercentageCommission: dto.garagePercentageCommission,
+      totalHt: dto.totalHt,
     };
   }
 }

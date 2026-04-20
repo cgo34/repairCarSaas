@@ -7,6 +7,7 @@ import { GarageViewModel } from '../models/GarageViewModel';
 import { InvoiceStatusViewType } from '../models/InvoiceStatusViewType';
 import { LineItemViewModel } from '../models/LineItemViewModel';
 import { UserViewModel } from '../models/UserViewModel';
+import { VehicleViewModel } from '../models/VehicleViewModel';
 
 export interface IUseEditInvoiceState {
   loading: Ref<boolean>;
@@ -22,6 +23,10 @@ export interface IUseEditInvoiceState {
   selectedGarage: Ref<GarageViewModel | undefined>;
   selectTechnician(technician: UserViewModel): void;
   selectGarage(garage: GarageViewModel): void;
+  setGarage(garage: GarageViewModel): void;
+  vehicles: ComputedRef<VehicleViewModel[]>;
+  selectedVehicle: ComputedRef<VehicleViewModel | undefined>;
+  selectVehicle(vehicle: VehicleViewModel | undefined): void;
 
   carInformations: ComputedRef<{ immatriculation: string; brand: string; dateEntryCirculation: string; }>;
   setCarImmatriculation(value: string): void;
@@ -54,7 +59,8 @@ export interface IUseEditInvoiceState {
   removeLine(lineId: number): void;
 
   totalDegarnissage,
-  total: ComputedRef<number>,
+  totalCommission: ComputedRef<number>;
+  total: ComputedRef<number>;
   save(): Promise<void>;
   sendInvoice(): Promise<void>;
 }

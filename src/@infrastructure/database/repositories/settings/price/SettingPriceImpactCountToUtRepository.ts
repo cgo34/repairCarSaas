@@ -54,6 +54,7 @@ export class SettingPriceImpactCountToUtRepository implements ISettingPriceImpac
 
   async create(setting: SettingPriceImpactCountToUtDto): Promise<SettingPriceImpactCountToUtDto> {
     const apiModel = SettingPriceImpactCountToUtMapper.dtoToApi(setting);
+    apiModel.id = apiModel.id ?? crypto.randomUUID();
 
     const { data, error } = await this.clientProvider.getClient()
       .from('setting_price_impact_count_to_ut')

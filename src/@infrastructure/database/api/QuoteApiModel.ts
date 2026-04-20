@@ -19,8 +19,9 @@ export interface QuoteApiModel {
   is_sent: boolean;
   sent_at: string | null; // NULL si non envoyé
   car_brand: string;
-  car_id: string;
+  car_immatriculation: string;
   car_date: number;
+  vehicle_id?: string;
   technician_id: string;
   technician?: UserApiModel
   garage_id: string | null;
@@ -38,5 +39,6 @@ export interface QuoteApiModel {
   garage_email?: string;
   garage_percentage_commission?: number;
 
-  quote_details: QuoteDetailApiModel[];
+  total_ht?: number;
+  quote_details?: { price: number; dent_removal_price: number }[];
 }

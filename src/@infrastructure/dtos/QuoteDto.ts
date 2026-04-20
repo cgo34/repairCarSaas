@@ -15,9 +15,10 @@ export interface QuoteDto {
   startDate: string; // 🔹 ISO String (format pour le stockage en BDD et transmission API)
   endDate: string; // 🔹 ISO String (idem)
 
-  carId: string;
+  carImmatriculation: string;
   carBrand: string;
   carDate: string;
+  vehicleId?: string;
   
   technicianId?: string;
   technician?: UserDto; // 🔹 Ajout pour le nom du technicien
@@ -46,4 +47,5 @@ export interface QuoteDto {
   garagePhone?: string;
   garageEmail?: string;
   garagePercentageCommission?: number;
+  totalHt?: number;
 }

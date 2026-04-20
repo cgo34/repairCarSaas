@@ -4,6 +4,7 @@ import { GarageViewModel } from '../models/GarageViewModel';
 import { QuoteStatusViewType } from '../models/QuoteStatusViewType';
 import { QuoteViewModel } from '../models/QuoteViewModel';
 import { UserViewModel } from '../models/UserViewModel';
+import { VehicleViewModel } from '../models/VehicleViewModel';
 
 export interface IUseCreateQuoteState {
   loading: Ref<boolean>;
@@ -22,6 +23,9 @@ export interface IUseCreateQuoteState {
   selectTechnician(technician: UserViewModel): void;
   selectGarage(garage: GarageViewModel): void;
   setGarage(garage: GarageViewModel): void;
+  vehicles: ComputedRef<VehicleViewModel[]>;
+  selectedVehicle: ComputedRef<VehicleViewModel | undefined>;
+  selectVehicle(vehicle: VehicleViewModel | undefined): void;
 
   carInformations: ComputedRef<{ immatriculation: string; brand: string; dateEntryCirculation: string; }>;
   setCarImmatriculation(value: string): void;

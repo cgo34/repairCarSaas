@@ -1,6 +1,7 @@
 // region -> IMPORTS
 import { IAuthState } from '@/@application/states/interfaces/IAuthState';
 import { IGarageUseCase } from '@/@domain/useCases/IGarageUseCase';
+import { IVehicleUseCase } from '@/@domain/useCases/IVehicleUseCase';
 import { IUserUseCase } from '@/@domain/useCases/IUserUseCase';
 import { ICreateInvoiceUseCase } from '@/@domain/useCases/invoices/ICreateInvoiceUseCase';
 import { IInsertInvoiceUseCase } from '@/@domain/useCases/invoices/IInsertInvoiceUseCase';
@@ -8,10 +9,12 @@ import { container } from '@/@infrastructure/ioc/inversify.config';
 import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
 import { GarageMapper } from '@/@presentation/mappers/GarageMapper';
 import { InvoiceMapper } from '@/@presentation/mappers/InvoiceMapper';
+import { VehicleMapper } from '@/@presentation/mappers/VehicleMapper';
 import { CountryViewModel } from '@/@presentation/types/models/CountryViewModel';
 import { GarageViewModel } from '@/@presentation/types/models/GarageViewModel';
 import { InvoiceViewModel } from '@/@presentation/types/models/InvoiceViewModel';
 import { UserViewModel } from '@/@presentation/types/models/UserViewModel';
+import { VehicleViewModel } from '@/@presentation/types/models/VehicleViewModel';
 import { computed, ref } from 'vue';
 // endregion
 
@@ -21,6 +24,7 @@ export function useCreateInvoiceState() {
   const createInvoiceUseCase = container.get<ICreateInvoiceUseCase>(SYMBOLS.UseCases.Invoice.CreateInvoiceUseCase);
   const insertInvoiceUseCase = container.get<IInsertInvoiceUseCase>(SYMBOLS.UseCases.Invoice.InsertInvoiceUseCase);
   const garageUseCase = container.get<IGarageUseCase>(SYMBOLS.UseCases.Garage);
+  const vehicleUseCase = container.get<IVehicleUseCase>(SYMBOLS.UseCases.Vehicle);
   const technicianUseCase = container.get<IUserUseCase>(SYMBOLS.UseCases.UserUseCase);
   // #endregion
 
@@ -40,6 +44,8 @@ export function useCreateInvoiceState() {
   const _garages = ref<GarageViewModel[]>([]);
   const _selectedTechnician = ref<UserViewModel>();
   const _selectedGarage = ref<GarageViewModel>();
+  const _vehicles = ref<VehicleViewModel[]>([]);
+  const _selectedVehicle = ref<VehicleViewModel | undefined>(undefined);
 
   const _carInformations = ref({
     immatriculation: '',
@@ -94,31 +100,22 @@ export function useCreateInvoiceState() {
       // _invoiceInformations.value.expirationDate = expirationDate.toISOString().split('T')[0];
       _invoiceInformations.value.status = _invoice.value.status;
 
-      const [garageData, technicianData] =
-        await Promise.all([
+      const [garageResult, technicianResult] =
+        await Promise.allSettled([
           garageUseCase.getByUserId(authState.user.value?.id),
           technicianUseCase.getUsers(),
         ]);
 
-      _garages.value = garageData.map((g) => GarageMapper.dtoToView(g));
-      _technicians.value = [
-        ...technicianData,
-        // TODO: (gce) -> REMOVE MOCK
-          {
-            id: '1',
-            fullName: 'John Doe',
-            email: 'technicien1@gmail.com',
-            password: '123456789',
-            createdAt: '2021-09-01T00:00:00',
-          },
-          {
-            id: '2',
-            fullName: 'Albert Dupont',
-            email: 'technicien2@gmail.com',
-            password: '123456789',
-            createdAt: '2021-09-01T00:00:00',
-          },
-      ];
+      if (garageResult.status === 'fulfilled')
+        _garages.value = garageResult.value.map((g) => GarageMapper.dtoToView(g));
+
+      if (technicianResult.status === 'fulfilled')
+        _technicians.value = [
+          ...technicianResult.value,
+          // TODO: (gce) -> REMOVE MOCK
+          { id: '1', fullName: 'John Doe', email: 'technicien1@gmail.com', password: '123456789', createdAt: '2021-09-01T00:00:00' },
+          { id: '2', fullName: 'Albert Dupont', email: 'technicien2@gmail.com', password: '123456789', createdAt: '2021-09-01T00:00:00' },
+        ];
 
       _selectedTechnician.value = _technicians.value.find((t) => t.id === authState.user.value?.id);
       
@@ -165,8 +162,26 @@ export function useCreateInvoiceState() {
     _selectedTechnician.value = technician;
   }
 
-  const selectGarage = (garage: GarageViewModel) => {
+  const selectGarage = async (garage: GarageViewModel) => {
     _selectedGarage.value = garage;
+    _selectedVehicle.value = undefined;
+    if (garage?.id) {
+      const result = await vehicleUseCase.getByGarageId(garage.id).catch(() => []);
+      _vehicles.value = result.map(VehicleMapper.dtoToView);
+    } else {
+      _vehicles.value = [];
+    }
+  }
+
+  const selectVehicle = (vehicle: VehicleViewModel | undefined) => {
+    _selectedVehicle.value = vehicle;
+    if (vehicle) {
+      _carInformations.value = {
+        immatriculation: vehicle.immatriculation,
+        brand: vehicle.marque,
+        dateEntryCirculation: vehicle.annee?.toString() ?? '',
+      };
+    }
   }
 
   const setGarage = (garage: GarageViewModel) => {
@@ -237,6 +252,7 @@ export function useCreateInvoiceState() {
         carBrand: _carInformations.value.brand,
         carImmatriculation: _carInformations.value.immatriculation,
         carDateEntryCirculation: _carInformations.value.dateEntryCirculation,
+        vehicleId: _selectedVehicle.value?.id,
 
         isForfait: _isForfait.value,
         isDisplayUnitPrice: _isDisplayUnitPrice.value,
@@ -284,8 +300,11 @@ export function useCreateInvoiceState() {
     technicians: computed(() => _technicians.value),
     selectedTechnician: computed(() => _selectedTechnician.value),
     selectedGarage: computed(() => _selectedGarage.value),
+    vehicles: computed(() => _vehicles.value),
+    selectedVehicle: computed(() => _selectedVehicle.value),
     selectTechnician,
     selectGarage,
+    selectVehicle,
     setGarage,
 
     carInformations: computed(() => _carInformations.value),

@@ -46,6 +46,7 @@ export interface InvoiceViewModel {
   carImmatriculation?: string;
   carBrand?: string;
   carDateEntryCirculation?: string;
+  vehicleId?: string;
 
   isForfait: boolean;
   // isDisplayUnitPrice: boolean;
@@ -69,4 +70,5 @@ export interface InvoiceViewModel {
   garagePhone?: string;
   garageEmail?: string;
   garagePercentageCommission?: number;
+  totalHt?: number;
 }
