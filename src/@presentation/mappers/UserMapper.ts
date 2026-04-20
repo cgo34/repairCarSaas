@@ -6,9 +6,9 @@ export class UserMapper {
     return {
       id: viewModel.id,
       email: viewModel.email,
-      password: viewModel.password,
+      // password: viewModel.password,
       fullName: viewModel.fullName,
-      createdAt: viewModel.createdAt,
+      // createdAt: viewModel.createdAt,
       role: viewModel.role as any, // cast si besoin
       subscription: undefined // à adapter si besoin
     };

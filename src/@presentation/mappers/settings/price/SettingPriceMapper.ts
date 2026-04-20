@@ -1,4 +1,3 @@
-import { SettingPriceViewDto } from "@/@application/dtos/settings/SettingPriceViewDto";
 import { SettingPriceViewModel } from "@/@presentation/types/models/settings/price/SettingPriceViewModel";
 import { SettingPriceBodyPartCoefficientMapper } from "./SettingPriceBodyPartCoefficientMapper";
 import { SettingPriceGeneralMapper } from "./SettingPriceGeneralMapper";
@@ -7,7 +6,7 @@ import { SettingPriceTechnicityCoefficientMapper } from "./SettingPriceTechnicit
 import { SettingPriceDto } from "@/@infrastructure/dtos/settings/price/SettingPriceDto";
 
 export class SettingPriceMapper {
-  static viewToDto(viewModel: SettingPriceViewModel): SettingPriceViewDto {
+  static viewToDto(viewModel: SettingPriceViewModel): SettingPriceDto {
     return {
       general: SettingPriceGeneralMapper.viewToDto(viewModel.general) ?? undefined,
       technicity: SettingPriceTechnicityCoefficientMapper.viewToDto(viewModel.technicity),
