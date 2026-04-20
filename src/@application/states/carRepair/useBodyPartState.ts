@@ -2,6 +2,7 @@ import { IBodyPartUseCase } from '@/@domain/useCases/carRepair/IBodyPartUseCase'
 import { container } from '@/@infrastructure/ioc/inversify.config';
 import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
 import { BodyPartViewModel } from '@/@presentation/types/models/carRepair/BodyPartViewModel';
+import { BodyPartMapper } from '@/@presentation/mappers/settings/BodyPartMapper';
 import { computed, ref } from 'vue';
 
 export function useBodyPartState() {
@@ -26,8 +27,9 @@ export function useBodyPartState() {
     loading.value = true;
     try {
       return bodyPartUseCase.executeGetAll().then((data) => {
-        _bodyParts.value = data;
-        return data;
+        const viewModels = data.map(BodyPartMapper.dtoToView);
+        _bodyParts.value = viewModels;
+        return viewModels;
       });
     } catch (e) {
       // error.value = e;
@@ -60,10 +62,12 @@ export function useBodyPartState() {
   const addBodyPart = async (bodyPart: BodyPartViewModel): Promise<BodyPartViewModel> => {
     loading.value = true;
     try {
-      return bodyPartUseCase.executeCreate(bodyPart).then((data) => {
-        _bodyParts.value.push(data);
+      const dto = BodyPartMapper.viewToDto(bodyPart);
+      return bodyPartUseCase.executeCreate(dto).then((data) => {
+        const viewModel = BodyPartMapper.dtoToView(data);
+        _bodyParts.value.push(viewModel);
         resetSelectedBodyPart();
-        return data;
+        return viewModel;
       });
     } catch (e) {
       // error.value = e;
@@ -83,9 +87,11 @@ export function useBodyPartState() {
 
     loading.value = true;
     try {
-      return bodyPartUseCase.executeUpdate(bodyPart).then((data) => {
-        _bodyParts.value = _bodyParts.value.map((bp) => bp.id === bodyPart.id ? data : bp);
-        return data;
+      const dto = BodyPartMapper.viewToDto(bodyPart);
+      return bodyPartUseCase.executeUpdate(dto).then((data) => {
+        const viewModel = BodyPartMapper.dtoToView(data);
+        _bodyParts.value = _bodyParts.value.map((bp) => bp.id === bodyPart.id ? viewModel : bp);
+        return viewModel;
       });
     } catch (e) {
       // error.value = e;

@@ -27,9 +27,9 @@ export function useBodyMaterialState(): IBodyMaterialState {
   const fetchBodyMaterials = async (): Promise<BodyMaterialViewModel[]> => {
     loading.value = true;
     try {
-      return bodyMaterialUseCase.executeGetAll().then((data) => {
-        _bodyMaterials.value = data;
-        return data;
+      return bodyMaterialUseCase.executeGetAll().then((viewModels) => {
+        _bodyMaterials.value = viewModels;
+        return viewModels;
       });
     } catch (e) {
       throw e;
@@ -48,21 +48,21 @@ export function useBodyMaterialState(): IBodyMaterialState {
 
   const addBodyMaterial = async (bodyMaterial: BodyMaterialViewModel): Promise<BodyMaterialViewModel> => {
     bodyMaterial.code = slugify(bodyMaterial.name);
-    return bodyMaterialUseCase.executeCreate(bodyMaterial).then((data) => {
-      _bodyMaterials.value.push(data);
+    return bodyMaterialUseCase.executeCreate(bodyMaterial).then((viewModel) => {
+      _bodyMaterials.value.push(viewModel);
       resetSelectedBodyMaterial();
-      return data;
+      return viewModel;
     });
   };
 
   const updateBodyMaterial = async (bodyMaterial: BodyMaterialViewModel): Promise<BodyMaterialViewModel> => {
-    return bodyMaterialUseCase.executeUpdate(bodyMaterial).then((data) => {
-      const index = _bodyMaterials.value.findIndex((bm) => bm.id === data.id);
+    return bodyMaterialUseCase.executeUpdate(bodyMaterial).then((viewModel) => {
+      const index = _bodyMaterials.value.findIndex((bm) => bm.id === viewModel.id);
       if (index !== -1) {
-        _bodyMaterials.value[index] = data;
+        _bodyMaterials.value[index] = viewModel;
       }
       resetSelectedBodyMaterial();
-      return data;
+      return viewModel;
     });
   };
 

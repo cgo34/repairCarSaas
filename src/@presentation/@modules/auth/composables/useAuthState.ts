@@ -28,7 +28,7 @@ export function useAuthState() {
       return new Error('Password is required');
     
     try {
-      await authState.login(user.value?.email, user.value?.password);
+      user.value = await authState.login(user.value?.email, user.value?.password);
     } catch (e) {
       error.value = e as AuthError;
       throw e;

@@ -9,16 +9,19 @@ export class UserMapper {
       password: viewModel.password,
       fullName: viewModel.fullName,
       createdAt: viewModel.createdAt,
+      role: viewModel.role as any, // cast si besoin
+      subscription: undefined // à adapter si besoin
     };
   }
 
   static dtoToView(dto: UserDto): UserViewModel {
     return {
-      id: dto.id,
+      id: dto.id ?? '',
       email: dto.email,
-      password: dto.password,
+      password: '', // jamais exposé côté UI
       fullName: dto.fullName,
-      createdAt: dto.createdAt,
+      createdAt: '', // à adapter si besoin
+      role: dto.role
     };
   }
 }

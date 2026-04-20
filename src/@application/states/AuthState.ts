@@ -23,7 +23,8 @@ export class AuthState implements IAuthState {
     email: '',
     password: '',
     fullName: '',
-    createdAt: ''
+    createdAt: '',
+    role: ''
   });
   public subscription = ref<SubscriptionDto | null>(null)
   public isAuthenticated = ref<boolean>(false);
