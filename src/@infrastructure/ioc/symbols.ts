@@ -33,6 +33,7 @@ const SYMBOLS = {
     // -- Settings Prices CarRepair Repositories
     Setting: {
       Price: {
+        SettingPriceRepository: Symbol.for(SYMBOL_NAMES.SETTING_PRICE_REPOSITORY),
         SettingPriceGeneralRepository: Symbol.for(SYMBOL_NAMES.SETTING_PRICE_GENERAL_REPOSITORY),
         SettingPriceImpactCountToUtRepository: Symbol.for(SYMBOL_NAMES.SETTING_PRICE_IMPACT_COUNT_TO_UT_REPOSITORY),
         SettingPriceBodyPartCoefficient: Symbol.for(SYMBOL_NAMES.SETTING_PRICE_BODY_PART_COEFFICIENT),

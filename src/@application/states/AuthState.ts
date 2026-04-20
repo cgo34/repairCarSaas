@@ -1,5 +1,6 @@
 import { AuthError } from '@/@domain/errors/AuthError';
 import { IAuthUseCase } from '@/@domain/useCases/auth/IAuthUseCase';
+import { ISettingPriceUseCase } from '@/@domain/useCases/settings/price/ISettingPriceUseCase';
 import { IGetCurrentSubscriptionUseCase } from '@/@domain/useCases/subscription/IGetCurrentSubscriptionUseCase';
 import { ICreateUserUseCase } from '@/@domain/useCases/user/ICreateUserUseCase';
 import { AuthErrorCode } from '@/@domain/valueObjects/AuthErrorCode';
@@ -16,9 +17,11 @@ import { SubscriptionDto } from '../dtos/SubscriptionDto';
 @injectable()
 export class AuthState implements IAuthState {
   public user = ref<User>({
+    id: '0',
     email: '',
-    password: '',
-    fullName: ''
+    fullName: '',
+    role: 'technician',
+    createdAt: new Date()
   });
   public subscription = ref<SubscriptionDto | null>(null)
   public isAuthenticated = ref<boolean>(false);
@@ -34,6 +37,7 @@ export class AuthState implements IAuthState {
     @inject(SYMBOLS.UseCases.Auth.LoginUseCase) private loginUseCase: ILoginUseCase,
     @inject(SYMBOLS.UseCases.Auth.LogoutUseCase) private logoutUseCase: ILogoutUseCase,
     @inject(SYMBOLS.UseCases.User.CreateUserUseCase) private createUserUseCase: ICreateUserUseCase,
+    @inject(SYMBOLS.UseCases.Setting.Price.AllUseCase) private settingPriceUseCase: ISettingPriceUseCase,
   ) {
     this.loadPersistedState();
   }
@@ -99,7 +103,7 @@ export class AuthState implements IAuthState {
   }
 
   async login(email: string, password: string): Promise<void> {
-    try {      
+    try {
       const user = await this.authUseCase.login.execute(email, password);
       
       if (!user) {
@@ -109,9 +113,13 @@ export class AuthState implements IAuthState {
         );
       }
 
-      
-     const subscription = await this.getCurrentSubscription.execute(user.id)
-     
+      // Récupérer la subscription (non-bloquant si erreur)
+      let subscription = null;
+      try {
+        subscription = await this.getCurrentSubscription.execute(user.id);
+      } catch (subError) {
+        console.warn('[AuthState] Could not fetch subscription, continuing login:', subError);
+      }
 
       this.subscription.value = subscription;
       this.user.value = user;
@@ -123,12 +131,14 @@ export class AuthState implements IAuthState {
       
       // Réinitialisation de l'état en cas d'erreur
       this.user.value = {
+        id: '0',
         email: '',
-        password: '',
-        fullName: ''
+        fullName: '',
+        role: 'technician',
+        createdAt: new Date()
       };
       this.isAuthenticated.value = false;
-
+      this.subscription.value = null;
       throw new AuthError(
         AuthErrorCode.LOGIN_FAILED,
         'Login failed',
@@ -151,26 +161,36 @@ export class AuthState implements IAuthState {
       const user = {
         id: data.user.id,
         email: data.user.email ?? '',
+        password: data.user.user_metadata?.password ?? '',
         role: 'technician',
-        fullName: data.user.user_metadata?.fullName ?? ''
+        fullName: data.user.user_metadata?.fullName ?? '',
+        createdAt: new Date(data.user.created_at)
+
       };
 
   
       // Mise à jour de l'état
-      this.user.value = user;
       this.isAuthenticated.value = true;
 
-      // TODO: (GCE) -> ADD USE CASE TO INSERT USER PROFILE TO PUBLIC.USERS TABLE SUPABASE
-
       // ➕ Lier automatiquement le plan 'free'
-      await this.authUseCase.subscribeToFreePlan.execute(data.user.id);
+      const subscription = await this.authUseCase.subscribeToFreePlan.execute(data.user.id);
       
+      this.user.value = user;
+      this.subscription.value = subscription;
+      this.user.value.subscription = subscription;
+
       // Utilisation des méthodes communes
       this.pushState();
       
       // Une fois inscrit, créer son profil dans public.users
       await this.createUserUseCase.execute(user)
-      
+
+      // Copier les settings de prix par défaut (admin) pour le nouvel utilisateur
+      try {
+        await this.settingPriceUseCase.createSettingsForUser(user.id);
+      } catch (settingsError) {
+        console.error('[AuthState] Could not copy default price settings:', settingsError);
+      }      
     } catch (error) {
       throw new AuthError(
         AuthErrorCode.REGISTRATION_FAILED,

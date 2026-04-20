@@ -5,6 +5,7 @@ export interface SupabaseUser {
   email: string;
   email_confirmed_at: string;
   phone: string;
+  role: string;
   confirmation_sent_at: string;
   confirmed_at: string;
   last_sign_in_at: string;
@@ -16,6 +17,7 @@ export interface SupabaseUser {
     email: string;
     email_verified: boolean;
     phone_verified: boolean;
+    role: string;
     sub: string;
   };
   identities: Array<{

@@ -75,6 +75,7 @@ import { IUserRepository } from '@/@domain/repositories/IUserRepository';
 import { ISettingPriceBodyPartCoefficientRepository } from '@/@domain/repositories/settings/price/ISettingPriceBodyPartCoefficientRepository';
 import { ISettingPriceGeneralRepository } from '@/@domain/repositories/settings/price/ISettingPriceGeneralRepository';
 import { ISettingPriceImpactCountToUtRepository } from '@/@domain/repositories/settings/price/ISettingPriceImpactCountToUtRepository';
+import { ISettingPriceRepository } from '@/@domain/repositories/settings/price/ISettingPriceRepository';
 import { ISettingPriceTechnicityCoefficientRepository } from '@/@domain/repositories/settings/price/ISettingPriceTechnicityCoefficientRepository';
 import { IBodyMaterialService } from '@/@domain/services/carRepair/IBodyMaterialService';
 import { IBodyPartService } from '@/@domain/services/carRepair/IBodyPartService';
@@ -190,6 +191,7 @@ import { QuoteRepository } from '../database/repositories/QuoteRepository';
 import { SettingPriceBodyPartCoefficientRepository } from '../database/repositories/settings/price/SettingPriceBodyPartCoefficientRepository';
 import { SettingPriceGeneralRepository } from '../database/repositories/settings/price/SettingPriceGeneralRepository';
 import { SettingPriceImpactCountToUtRepository } from '../database/repositories/settings/price/SettingPriceImpactCountToUtRepository';
+import { SettingPriceRepository } from '../database/repositories/settings/price/SettingPriceRepository';
 import { SettingPriceTechnicityCoefficientRepository } from '../database/repositories/settings/price/SettingPriceTechnicityCoefficientRepository';
 import { SubscriptionRepository } from '../database/repositories/SubscriptionRepository';
 import { UserRepository } from '../database/repositories/UserRepository';
@@ -220,6 +222,7 @@ container.bind<IBodyPartRepository>(SYMBOLS.Repositories.BodyPartRepository).to(
 container.bind<IBodyMaterialRepository>(SYMBOLS.Repositories.BodyMaterialRepository).to(BodyMaterialRepository).inSingletonScope();
 container.bind<IDentRepairTypeRepository>(SYMBOLS.Repositories.DentRepairTypeRepository).to(DentRepairTypeRepository).inSingletonScope();
 /** 3.3 -- Settings CarRepair Repositories */
+container.bind<ISettingPriceRepository>(SYMBOLS.Repositories.Setting.Price.SettingPriceRepository).to(SettingPriceRepository).inSingletonScope();
 container.bind<ISettingPriceGeneralRepository>(SYMBOLS.Repositories.Setting.Price.SettingPriceGeneralRepository).to(SettingPriceGeneralRepository).inSingletonScope();
 container.bind<ISettingPriceBodyPartCoefficientRepository>(SYMBOLS.Repositories.Setting.Price.SettingPriceBodyPartCoefficient).to(SettingPriceBodyPartCoefficientRepository).inSingletonScope();
 container.bind<ISettingPriceTechnicityCoefficientRepository>(SYMBOLS.Repositories.Setting.Price.SettingPriceTechnicityCoefficient).to(SettingPriceTechnicityCoefficientRepository).inSingletonScope();

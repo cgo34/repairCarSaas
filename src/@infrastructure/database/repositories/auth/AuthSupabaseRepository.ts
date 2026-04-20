@@ -1,11 +1,12 @@
 import { IClientProvider } from '@/@infrastructure/interfaces/IClientProvider';
+import { User } from '@domain/entities/User';
+import { UserRole } from '@domain/enums/UserRole';
 import { IAuthRepository } from '@domain/repositories/IAuthRepository';
 import { SupabaseAuthResponse } from '@infrastructure/database/dtos/supabase/SupabaseAuthResponse';
 import { SYMBOLS } from '@infrastructure/ioc/symbols';
 import { AuthError, AuthResponse } from '@supabase/supabase-js';
 import { inject, injectable } from 'inversify';
 import { SupabaseClient } from '../../clients/SupabaseClient';
-import { User } from '../../dtos/supabase/SupabaseUser';
 
 @injectable()
 export class AuthSupabaseRepository implements IAuthRepository {
@@ -20,9 +21,28 @@ export class AuthSupabaseRepository implements IAuthRepository {
         throw new Error('No user data in response');
       }
 
-      const userDto: User = data.user;
+      // Récupérer le profil utilisateur depuis la table public.users pour obtenir le rôle custom
+      const { data: userProfile, error: profileError } = await this.clientProvider
+        .getClient()
+        .from('users')
+        .select('id, email, full_name, role')
+        .eq('id', data.user.id)
+        .single();
 
-      return userDto // UserMapper.toDomain(userDto);
+      if (profileError) {
+        console.warn('[AuthRepository] Could not fetch user profile:', profileError);
+      }
+
+      // Construire l'entité User avec le rôle custom (ou fallback sur 'technician')
+      const user: User = {
+        id: data.user.id,
+        email: data.user.email ?? '',
+        fullName: userProfile?.full_name ?? (data.user.user_metadata as any)?.fullName ?? '',
+        role: (userProfile?.role as UserRole) ?? 'technician',
+        createdAt: new Date(data.user.created_at)
+      };
+
+      return user;
     } catch (error) {
       console.error('[AuthRepository] login error:', error);
       throw error;
@@ -39,8 +59,30 @@ export class AuthSupabaseRepository implements IAuthRepository {
     return await this.clientProvider.getClient().auth.signOut();
   }
 
-  async getCurrentUser(): Promise<any> {
-    return await this.clientProvider.getClient().auth.user();
+  async getCurrentUser(): Promise<User | null> {
+    const { data: authData } = await this.clientProvider.getClient().auth.user();
+    
+    if (!authData?.user) {
+      return null;
+    }
+
+    // Récupérer le profil utilisateur depuis la table public.users pour obtenir le rôle custom
+    const { data: userProfile } = await this.clientProvider
+      .getClient()
+      .from('users')
+      .select('id, email, full_name, role')
+      .eq('id', authData.user.id)
+      .single();
+
+    const user: User = {
+      id: authData.user.id,
+      email: authData.user.email ?? '',
+      fullName: userProfile?.full_name ?? (authData.user.user_metadata as any)?.fullName ?? '',
+      role: (userProfile?.role as UserRole) ?? 'technician',
+      createdAt: new Date(authData.user.created_at)
+    };
+
+    return user;
   }
 
   async getUserSession(): Promise<any> {

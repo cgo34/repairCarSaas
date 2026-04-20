@@ -1,11 +1,16 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { LogoutIcon, SettingsIcon, UserIcon } from 'vue-tabler-icons';
-// import { useAuthStore } from '@/stores/auth';
+import { IAuthState } from '@/@application/states/interfaces/IAuthState';
+import { container } from '@/@infrastructure/ioc/inversify.config';
+import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
+
+const authState = container.get<IAuthState>(SYMBOLS.States.AuthState);
+const { user } = authState;
+console.log('User from authState:', user);
 
 const swt1 = ref(true);
 const swt2 = ref(false);
-// const authStore = useAuthStore();
 </script>
 
 <template>
@@ -14,9 +19,9 @@ const swt2 = ref(false);
   <!-- ---------------------------------------------- -->
   <div class="pa-4">
     <h4 class="mb-n1">
-      Good Morning, <span class="font-weight-regular">John Doe</span>
+      Good Morning, <span class="font-weight-regular">{{ user?.fullName }}</span>
     </h4>
-    <span class="text-subtitle-2 text-medium-emphasis">Project admin</span>
+    <span class="text-subtitle-2 text-medium-emphasis">{{ user?.role }}</span>
 
     <v-text-field
       persistent-placeholder
@@ -131,6 +136,7 @@ const swt2 = ref(false);
         <v-list-item
           color="secondary"
           rounded="md"
+          to="/logout"
         >
           <template #prepend>
             <LogoutIcon

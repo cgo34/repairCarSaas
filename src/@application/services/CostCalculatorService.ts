@@ -67,13 +67,14 @@ export class CostCalculatorService implements ICostCalculatorService {
   }
 
   private getRepairTypeCoefficient(repairTypeCode: string, technicitySetting: SettingPriceTechnicityCoefficientDto): number {
-    if (repairTypeCode === 'DAP'){
-      technicitySetting.dapCoefficient
-     }
+
+    if (repairTypeCode === 'DAP') {
+      return technicitySetting.dapCoefficient ?? 1;
+    }
      
-     if (repairTypeCode === 'DSP'){
-      technicitySetting.dspCoefficient
-     }
+    if (repairTypeCode === 'DSP') {
+      return technicitySetting.dspCoefficient ?? 1;
+    }
 
     return 1;
   }

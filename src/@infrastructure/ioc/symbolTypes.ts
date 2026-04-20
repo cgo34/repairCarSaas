@@ -31,6 +31,7 @@ export enum SYMBOL_NAMES {
     BODY_MATERIAL_REPOSITORY = 'BodyMaterialRepository',
     DENT_REPAIR_TYPE_REPOSITORY = 'DentRepairTypeRepository',
     // -- Settings Prices CarRepair Repositories
+    SETTING_PRICE_REPOSITORY = 'SettingPriceRepository',
     SETTING_PRICE_GENERAL_REPOSITORY = 'SettingPriceGeneralRepository',
     SETTING_PRICE_IMPACT_COUNT_TO_UT_REPOSITORY = 'SettingPriceImpactCountToUtRepository',
     SETTING_PRICE_BODY_PART_COEFFICIENT = 'SettingPriceBodyPartCoefficient',

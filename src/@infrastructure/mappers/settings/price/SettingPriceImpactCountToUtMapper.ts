@@ -13,12 +13,15 @@ export class SettingPriceImpactCountToUtMapper {
   }
 
   static dtoToApi(dto: SettingPriceImpactCountToUtDto): SettingPriceImpactCountToUtApiModel {
-    return {
-      id: dto.id,
+    const result: SettingPriceImpactCountToUtApiModel = {
       impact_count_min: dto.impactCountMin,
       impact_count_max: dto.impactCountMax,
       unit_time: dto.unitTime,
       user_id: dto.userId,
     };
+    if (dto.id) {
+      result.id = dto.id;
+    }
+    return result;
   }
 }
