@@ -1,4 +1,4 @@
-import { User } from '@domain/entities/User';
+import { UserDto } from '@/@infrastructure/dtos/UserDto';
 import { IAuthRepository } from '@domain/repositories/IAuthRepository';
 import { IAuthService } from '@domain/services/IAuthService';
 import { SYMBOLS } from '@infrastructure/ioc/symbols';
@@ -21,14 +21,8 @@ export class AuthService implements IAuthService {
     );
   }
 
-  async login(email: string, password: string): Promise<User> {
-    const user = await this.authRepository.login(email, password);
-    
-    // if (!this.isUser(user)) {
-    //   throw new Error('Invalid user data structure');
-    // }
-
-    return user;
+  async login(email: string, password: string): Promise<UserDto> {
+    return await this.authRepository.login(email, password);
   }
 
   async register(email: string, password: string, fullName: string): Promise<AuthResponse> {

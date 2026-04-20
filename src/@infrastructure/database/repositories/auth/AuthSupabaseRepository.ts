@@ -1,5 +1,6 @@
 import { IClientProvider } from '@/@infrastructure/interfaces/IClientProvider';
-import { User } from '@domain/entities/User';
+import { UserDto } from '@/@infrastructure/dtos/UserDto';
+import { UserMapper } from '@/@infrastructure/mappers/UserMapper';
 import { UserRole } from '@domain/enums/UserRole';
 import { IAuthRepository } from '@domain/repositories/IAuthRepository';
 import { SupabaseAuthResponse } from '@infrastructure/database/dtos/supabase/SupabaseAuthResponse';
@@ -13,7 +14,7 @@ export class AuthSupabaseRepository implements IAuthRepository {
   constructor(@inject(SYMBOLS.Providers.ClientProvider) private clientProvider: IClientProvider<SupabaseClient>) {
   }
 
-  async login(email: string, password: string): Promise<User> {
+  async login(email: string, password: string): Promise<UserDto> {
     try {
       const { data } = await this.clientProvider.getClient().auth.signIn(email, password) as SupabaseAuthResponse;
 
@@ -33,16 +34,15 @@ export class AuthSupabaseRepository implements IAuthRepository {
         console.warn('[AuthRepository] Could not fetch user profile:', profileError);
       }
 
-      // Construire l'entité User avec le rôle custom (ou fallback sur 'technician')
-      const user: User = {
+      // Construire un UserDto via UserMapper
+      const userDto: UserDto = UserMapper.apiToDto({
         id: data.user.id,
         email: data.user.email ?? '',
-        fullName: userProfile?.full_name ?? (data.user.user_metadata as any)?.fullName ?? '',
+        full_name: userProfile?.full_name ?? (data.user.user_metadata as any)?.fullName ?? '',
         role: (userProfile?.role as UserRole) ?? 'technician',
-        createdAt: new Date(data.user.created_at)
-      };
-
-      return user;
+        subscription: undefined // ou à compléter selon ta logique
+      });
+      return userDto;
     } catch (error) {
       console.error('[AuthRepository] login error:', error);
       throw error;
@@ -51,21 +51,17 @@ export class AuthSupabaseRepository implements IAuthRepository {
 
   async register(email: string, password: string, fullName: string): Promise<AuthResponse> {
     return await this.clientProvider.getClient().auth.signUp(email, password, fullName );
-
-
   }
 
   async logout(): Promise<{ error: AuthError | null }> {
     return await this.clientProvider.getClient().auth.signOut();
   }
 
-  async getCurrentUser(): Promise<User | null> {
+  async getCurrentUser(): Promise<UserDto | null> {
     const { data: authData } = await this.clientProvider.getClient().auth.user();
-    
     if (!authData?.user) {
       return null;
     }
-
     // Récupérer le profil utilisateur depuis la table public.users pour obtenir le rôle custom
     const { data: userProfile } = await this.clientProvider
       .getClient()
@@ -73,16 +69,14 @@ export class AuthSupabaseRepository implements IAuthRepository {
       .select('id, email, full_name, role')
       .eq('id', authData.user.id)
       .single();
-
-    const user: User = {
+    const userDto: UserDto = UserMapper.apiToDto({
       id: authData.user.id,
       email: authData.user.email ?? '',
-      fullName: userProfile?.full_name ?? (authData.user.user_metadata as any)?.fullName ?? '',
+      full_name: userProfile?.full_name ?? (authData.user.user_metadata as any)?.fullName ?? '',
       role: (userProfile?.role as UserRole) ?? 'technician',
-      createdAt: new Date(authData.user.created_at)
-    };
-
-    return user;
+      subscription: undefined // à adapter selon ta logique
+    });
+    return userDto;
   }
 
   async getUserSession(): Promise<any> {

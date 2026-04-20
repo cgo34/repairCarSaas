@@ -4,7 +4,9 @@ import { ISettingPriceUseCase } from '@/@domain/useCases/settings/price/ISetting
 import { IGetCurrentSubscriptionUseCase } from '@/@domain/useCases/subscription/IGetCurrentSubscriptionUseCase';
 import { ICreateUserUseCase } from '@/@domain/useCases/user/ICreateUserUseCase';
 import { AuthErrorCode } from '@/@domain/valueObjects/AuthErrorCode';
-import { User } from '@domain/entities/User';
+import { UserDto } from '@/@infrastructure/dtos/UserDto';
+import { UserViewModel } from '@/@presentation/types/models/UserViewModel';
+import { UserMapper as PresentationUserMapper } from '@/@presentation/mappers/UserMapper';
 import { IAuthState } from '@domain/states/IAuthState';
 import { IAuthStateSnapshot } from '@domain/states/IAuthStateSnapshot';
 import { ILoginUseCase } from '@domain/useCases/auth/ILoginUseCase';
@@ -16,12 +18,12 @@ import { SubscriptionDto } from '../dtos/SubscriptionDto';
 
 @injectable()
 export class AuthState implements IAuthState {
-  public user = ref<User>({
-    id: '0',
+  public user = ref<UserViewModel>({
+    id: '',
     email: '',
+    password: '',
     fullName: '',
-    role: 'technician',
-    createdAt: new Date()
+    createdAt: ''
   });
   public subscription = ref<SubscriptionDto | null>(null)
   public isAuthenticated = ref<boolean>(false);
@@ -104,25 +106,22 @@ export class AuthState implements IAuthState {
 
   async login(email: string, password: string): Promise<void> {
     try {
-      const user = await this.authUseCase.login.execute(email, password);
-      
-      if (!user) {
+      const userDto: UserDto = await this.authUseCase.login.execute(email, password);
+      if (!userDto) {
         throw new AuthError(
           AuthErrorCode.AUTH_NO_USER_RETURNED,
           'No user returned after login'
         );
       }
-
       // Récupérer la subscription (non-bloquant si erreur)
       let subscription = null;
       try {
-        subscription = await this.getCurrentSubscription.execute(user.id);
+        subscription = await this.getCurrentSubscription.execute(userDto.id);
       } catch (subError) {
         console.warn('[AuthState] Could not fetch subscription, continuing login:', subError);
       }
-
       this.subscription.value = subscription;
-      this.user.value = user;
+      this.user.value = PresentationUserMapper.dtoToView(userDto);
       this.isAuthenticated.value = true;
       this.pushState();
       
@@ -131,11 +130,11 @@ export class AuthState implements IAuthState {
       
       // Réinitialisation de l'état en cas d'erreur
       this.user.value = {
-        id: '0',
+        id: '',
         email: '',
+        password: '',
         fullName: '',
-        role: 'technician',
-        createdAt: new Date()
+        createdAt: ''
       };
       this.isAuthenticated.value = false;
       this.subscription.value = null;
