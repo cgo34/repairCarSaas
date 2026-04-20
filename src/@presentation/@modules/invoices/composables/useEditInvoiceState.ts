@@ -11,6 +11,7 @@ import { IAddInvoiceLineItemUseCase } from '@/@domain/useCases/invoices/IAddInvo
 import { IDeleteInvoiceUseCase } from '@/@domain/useCases/invoices/IDeleteInvoiceUseCase';
 import { IGetInvoiceDetailUseCase } from '@/@domain/useCases/invoices/IGetInvoiceDetailUseCase';
 import { IGetInvoiceUseCase } from '@/@domain/useCases/invoices/IGetInvoiceUseCase';
+import { ISendInvoiceUseCase } from '@/@domain/useCases/invoices/ISendInvoiceUseCase';
 import { IUpdateInvoiceUseCase } from '@/@domain/useCases/invoices/IUpdateInvoiceUseCase';
 import { ISettingPriceUseCase } from '@/@domain/useCases/settings/price/ISettingPriceUseCase';
 import { container } from '@/@infrastructure/ioc/inversify.config';
@@ -41,6 +42,7 @@ export function useEditInvoiceState() {
   const getInvoiceUseCase = container.get<IGetInvoiceUseCase>(SYMBOLS.UseCases.Invoice.GetInvoiceUseCase);
   const getInvoiceDetailUseCase = container.get<IGetInvoiceDetailUseCase>(SYMBOLS.UseCases.Invoice.GetInvoiceDetailsUseCase);
   const deleteInvoiceUseCase = container.get<IDeleteInvoiceUseCase>(SYMBOLS.UseCases.Invoice.DeleteInvoiceUseCase)
+  const sendInvoiceUseCase = container.get<ISendInvoiceUseCase>(SYMBOLS.UseCases.Invoice.SendInvoiceUseCase);
 
   const garageUseCase = container.get<IGarageUseCase>(SYMBOLS.UseCases.Garage);
   const technicianUseCase = container.get<IUserUseCase>(SYMBOLS.UseCases.UserUseCase);
@@ -506,6 +508,13 @@ export function useEditInvoiceState() {
     deleteInvoiceUseCase.execute(_invoiceId.value)
   }
 
+  const sendInvoice = async () => {
+    if (!_invoiceId.value) {
+      throw new Error('Invoice ID not found');
+    }
+    await sendInvoiceUseCase.execute(_invoiceId.value);
+  };
+
   return {
     loading,
     error,
@@ -559,6 +568,7 @@ export function useEditInvoiceState() {
     total,
 
     updateInvoice,
-    deleteInvoice
+    deleteInvoice,
+    sendInvoice
   };
 }

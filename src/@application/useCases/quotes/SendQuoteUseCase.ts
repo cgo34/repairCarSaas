@@ -3,7 +3,7 @@
 import { IGenerateQuotePdfUseCase } from '@/@domain/useCases/quotes/IGenerateQuotePdfUseCase';
 import { ISendQuoteUseCase } from '@/@domain/useCases/quotes/ISendQuoteUseCase';
 import { IViewQuoteUseCase } from '@/@domain/useCases/quotes/IViewQuoteUseCase';
-import { IEmailService } from '@/@infrastructure/interfaces/IEmailService';
+import { IEmailService } from '@/@domain/services/IEmailService';
 import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
 import { inject, injectable } from 'inversify';
 
@@ -27,19 +27,28 @@ export class SendQuoteUseCase implements ISendQuoteUseCase {
       throw new Error('Quote or quote details not found');
     }
     
-    // Generate the PDF 
-    const pdfBlob = await this.generatePdfUseCase.execute(quote, lines);
-    if (!pdfBlob) {
+    // Generate the PDF (returns a data URL string)
+    const pdfDataUrl = await this.generatePdfUseCase.execute(quote, lines);
+    if (!pdfDataUrl) {
       throw new Error('Failed to generate PDF');
     }
-
-    const filename = `quote-${quote.quoteNumber}.pdf`;
-    const subject = `Votre devis ${quote.quoteNumber}`;
 
     if (!quote.garage?.email) {
       throw new Error('Garage email not found');
     }
 
-    await this.emailService.sendQuotePdf(quote.garage.email, subject, pdfBlob, filename);
+    // Extract base64 from data URL (format: "data:application/pdf;base64,...")
+    const pdfBase64 = this.extractBase64FromDataUrl(pdfDataUrl);
+
+    await this.emailService.sendQuoteEmail(quote.garage.email, quote.quoteNumber, pdfBase64);
+  }
+
+  private extractBase64FromDataUrl(dataUrl: string): string {
+    const base64Marker = ';base64,';
+    const base64Index = dataUrl.indexOf(base64Marker);
+    if (base64Index === -1) {
+      throw new Error('Invalid data URL format');
+    }
+    return dataUrl.substring(base64Index + base64Marker.length);
   }
 }

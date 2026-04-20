@@ -56,4 +56,5 @@ export interface IUseEditInvoiceState {
   totalDegarnissage,
   total: ComputedRef<number>,
   save(): Promise<void>;
+  sendInvoice(): Promise<void>;
 }
