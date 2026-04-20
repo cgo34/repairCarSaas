@@ -55,7 +55,7 @@
 
           <!-- #REGION -> BODY : TOTAL -->
           <template #item.total="{ item }">
-            {{ item.isForfait ? `${ item.forfaitAmount } €` : `${ item.total ?? 0 } €` }}
+            {{ item.totalHt ? `${ item.totalHt } €` : (item.isForfait ? `${ item.forfaitAmount ?? 0 } €` : '0 €') }}
           </template>
 
 

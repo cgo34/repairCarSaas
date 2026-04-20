@@ -56,7 +56,8 @@ export class QuoteRepository implements IQuoteRepository {
         user:users!quotes_user_id_fkey(*),
         technician:users!quotes_technician_id_fkey(*),
         garage:garages(*),
-        status:document_statuses(*)
+        status:document_statuses(*),
+        quote_details(price, dent_removal_price)
       `)
       .eq('user_id', userId)
       .returns<QuoteApiModel[]>();

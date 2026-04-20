@@ -55,7 +55,8 @@ export class InvoiceRepository implements IInvoiceRepository {
         *,
         technician:users!invoices_technician_id_fkey(*),
         garage:garages(*),
-        status:document_statuses(*)
+        status:document_statuses(*),
+        invoice_details(price, dent_removal_price)
       `)
       .eq('user_id', userId)
       .returns<InvoiceApiModel[]>();

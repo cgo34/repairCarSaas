@@ -21,8 +21,9 @@ export interface InvoiceApiModel {
   is_sent: boolean;
   sent_at: string | null; // NULL si non envoyé
   car_brand: string;
-  car_id: string;
+  car_immatriculation: string;
   car_date: number;
+  vehicle_id?: string;
   technician_id: string;
   technician?: UserApiModel
   garage_id: string | null;
@@ -39,6 +40,7 @@ export interface InvoiceApiModel {
   garage_phone?: string;
   garage_email?: string;
   garage_percentage_commission?: number;
-  invoice_details: InvoiceDetailApiModel[];
-  quote: QuoteApiModel;
+  total_ht?: number;
+  invoice_details?: { price: number; dent_removal_price: number }[];
+  quote?: any;
 }
