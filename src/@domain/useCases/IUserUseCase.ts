@@ -1,5 +1,5 @@
-import { UserDto } from "@/@infrastructure/dtos/UserDto";
+import { UserViewModel } from "@/@presentation/types/models/UserViewModel";
 
 export interface IUserUseCase {
-  getUsers(): Promise<UserDto[]>;
+  getUsers(): Promise<UserViewModel[]>;
 }

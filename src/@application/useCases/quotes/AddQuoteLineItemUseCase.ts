@@ -1,6 +1,7 @@
 import { IQuoteDetailRepository } from '@/@domain/repositories/IQuoteDetailRepository';
 import { IQuoteRepository } from '@/@domain/repositories/IQuoteRepository';
-import { LineItemDto } from '@/@infrastructure/dtos/LineItemDto';
+import { LineItemViewModel } from '@/@presentation/types/models/LineItemViewModel';
+import { LineItemViewMapper } from '@/@presentation/mappers/LineItemViewMapper';
 import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
 import { inject, injectable } from 'inversify';
 
@@ -11,10 +12,9 @@ export class AddQuoteLineItemUseCase {
     @inject(SYMBOLS.Repositories.QuoteDetailRepository) private quoteDetailRepository: IQuoteDetailRepository
   ) {}
 
-  async executeQuote(lineItem: LineItemDto): Promise<LineItemDto> {
-    const updatedQuoteDto = await this.quoteDetailRepository.insert(lineItem);
-
-    // 🔹 6. Retourner l’entité en DTO pour la présentation
-    return updatedQuoteDto;
+  async executeQuote(lineItem: LineItemViewModel): Promise<LineItemViewModel> {
+    const dto = LineItemViewMapper.viewToDto(lineItem);
+    const updatedQuoteDto = await this.quoteDetailRepository.insert(dto);
+    return LineItemViewMapper.dtoToView(updatedQuoteDto);
   }
 }

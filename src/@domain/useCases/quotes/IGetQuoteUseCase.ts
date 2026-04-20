@@ -1,5 +1,5 @@
-import { QuoteDto } from "@/@infrastructure/dtos/QuoteDto";
+import { QuoteViewModel } from "@/@presentation/types/models/QuoteViewModel";
 
 export interface IGetQuoteUseCase {
-  execute(userId: string): Promise<QuoteDto | null>;
+  execute(userId: string): Promise<QuoteViewModel | null>;
 }

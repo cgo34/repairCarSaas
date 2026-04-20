@@ -20,7 +20,7 @@ import { container } from '@/@infrastructure/ioc/inversify.config';
 import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
 import { DocumentStatuseMapper } from '@/@presentation/mappers/DocumentStatuseMapper';
 import { GarageMapper } from '@/@presentation/mappers/GarageMapper';
-import { LineItemMapper } from '@/@presentation/mappers/LineItemMapper';
+import { LineItemViewMapper } from '@/@presentation/mappers/LineItemViewMapper';
 import { QuoteMapper } from '@/@presentation/mappers/QuoteMapper';
 import { VehicleMapper } from '@/@presentation/mappers/VehicleMapper';
 import { BodyMaterialMapper } from '@/@presentation/mappers/settings/BodyMaterialMapper';
@@ -126,23 +126,20 @@ export function useEditQuoteState() {
       // resetQuote();
       _quoteId.value = id;     
       
-      const quoteDto = await getQuoteUseCase.execute(id);
+      const quote = await getQuoteUseCase.execute(id);
       const quoteDetailDto = await getQuoteDetailUseCase.execute(id);
       const statusesDto = await getDocumentStatuseUseCase.execute();
 
       _statuses.value = statusesDto.map(m => DocumentStatuseMapper.dtoToView(m))
       
-      _quote.value = QuoteMapper.dtoToView(quoteDto);
-      _isForfait.value = quoteDto?.isForfait ?? false
-      _forfaitAmount.value = quoteDto?.forfaitAmount
+      _quote.value = quote;
+      _isForfait.value = quote?.isForfait ?? false
+      _forfaitAmount.value = quote?.forfaitAmount
       
-      _quoteLines.value = quoteDetailDto?.map((line, idx) => {
-        
-        return {
-          ...LineItemMapper.dtoToView(line),
-          lineId: idx + 1,
-        }
-      }) ?? [];
+      _quoteLines.value = quoteDetailDto?.map((line, idx) => ({
+        ...LineItemViewMapper.dtoToView(line),
+        lineId: idx + 1,
+      })) ?? [];
       
       
       // TODO: (gce) -> MOVE TO MAPPER
@@ -328,11 +325,8 @@ export function useEditQuoteState() {
     else
       line.price = 0
 
-    const quoteLinesDto = await addQuoteDetailsUseCase.executeQuote(LineItemMapper.viewToDto(line));
-
-    const quoteAdded =  LineItemMapper.dtoToView(quoteLinesDto);
-
-    _quoteLines.value.push({...quoteAdded});    
+    const quoteAdded = await addQuoteDetailsUseCase.executeQuote(line);
+    _quoteLines.value.push({...quoteAdded});
   }
 
   const removeLine = (lineId: string) => {
@@ -418,8 +412,7 @@ export function useEditQuoteState() {
   // }
 
   const computePrice = (line: LineItemViewModel) => {
-    const lineItemViewDto = LineItemMapper.viewToDto(line);
-    line.price = calculateLineCostUseCase.execute(lineItemViewDto, SettingPriceMapper.viewToDto(_priceParams.value));
+    line.price = calculateLineCostUseCase.execute(line, _priceParams.value);
   }
 
   
@@ -568,7 +561,7 @@ export function useEditQuoteState() {
     if (!_quote.value)
       return
     
-    duplicateQuoteToInvoiceUseCase.execute(QuoteMapper.viewToDto(_quote.value), _quoteLines.value.map(LineItemMapper.viewToDto))
+    duplicateQuoteToInvoiceUseCase.execute(QuoteMapper.viewToDto(_quote.value), _quoteLines.value.map(LineItemViewMapper.viewToDto))
   }
 
   const deleteQuote = (quoteNumber: string) => {

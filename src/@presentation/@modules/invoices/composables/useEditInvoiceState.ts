@@ -18,7 +18,7 @@ import { ISettingPriceUseCase } from '@/@domain/useCases/settings/price/ISetting
 import { container } from '@/@infrastructure/ioc/inversify.config';
 import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
 import { GarageMapper } from '@/@presentation/mappers/GarageMapper';
-import { LineItemMapper } from '@/@presentation/mappers/LineItemMapper';
+import { LineItemViewMapper } from '@/@presentation/mappers/LineItemViewMapper';
 import { InvoiceMapper } from '@/@presentation/mappers/InvoiceMapper';
 import { VehicleMapper } from '@/@presentation/mappers/VehicleMapper';
 import { BodyMaterialMapper } from '@/@presentation/mappers/settings/BodyMaterialMapper';
@@ -407,7 +407,7 @@ export function useEditInvoiceState() {
   // }
 
   const computePrice = (line: LineItemViewModel) => {
-    const lineItemViewDto = LineItemMapper.viewToDto(line);
+    const lineItemViewDto = LineItemViewMapper.viewToDto(line);
     line.price = calculateLineCostUseCase.execute(lineItemViewDto, SettingPriceMapper.viewToDto(_priceParams.value));
   }
 
