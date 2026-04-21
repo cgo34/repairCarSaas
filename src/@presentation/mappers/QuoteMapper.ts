@@ -1,9 +1,21 @@
 import { GarageDto } from "@/@infrastructure/dtos/GarageDto";
 import { QuoteDto } from "@/@infrastructure/dtos/QuoteDto";
 import { GarageViewModel } from "../types/models/GarageViewModel";
+import { QuoteStatusViewType } from "../types/models/QuoteStatusViewType";
 import { QuoteViewModel } from "../types/models/QuoteViewModel";
 import { GarageMapper } from "./GarageMapper";
 import { LineItemMapper } from "./LineItemMapper";
+
+const _dbCodeToViewStatus = (status: any): QuoteStatusViewType => {
+  const code = typeof status === 'string' ? status : status?.code;
+  return ({
+    processing: 'pending',
+    finalized: 'validated',
+    accepted: 'accepted',
+    refused: 'cancel',
+    cancelled: 'cancel',
+  } as Record<string, QuoteStatusViewType>)[code ?? ''] ?? 'pending';
+};
 
 export class QuoteMapper {
   static viewToDto(view: QuoteViewModel): QuoteDto {
@@ -86,7 +98,7 @@ export class QuoteMapper {
       id: dto.id ?? undefined,
       quoteNumber: dto.quoteNumber,
       status_id: dto.status_id,
-      status: dto.status,
+      status: _dbCodeToViewStatus(dto.status),
 
       userId: dto.userId,
 
