@@ -6,19 +6,19 @@ export class UserMapper {
     return {
       id: viewModel.id,
       email: viewModel.email,
-      password: viewModel.password,
       fullName: viewModel.fullName,
-      createdAt: viewModel.createdAt,
+      role: viewModel.role as UserDto['role'],
+      percentageCommission: viewModel.percentageCommission,
     };
   }
 
   static dtoToView(dto: UserDto): UserViewModel {
     return {
-      id: dto.id,
+      id: dto.id ?? '',
       email: dto.email,
-      password: dto.password,
       fullName: dto.fullName,
-      createdAt: dto.createdAt,
+      role: dto.role,
+      percentageCommission: dto.percentageCommission,
     };
   }
 }

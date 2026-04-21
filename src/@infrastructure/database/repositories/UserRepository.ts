@@ -51,21 +51,21 @@ export class UserRepository implements IUserRepository {
   
   async updateUser(id: string, user: Partial<UserDto>): Promise<void> {
     const apiModel = UserMapper.dtoToApi(user);
-  
+
     const { error } = await this.clientProvider.getClient()
-      .fromSchema<'public', 'users'>('public', 'users')
+      .from('users')
       .update(apiModel)
       .eq('id', id);
-  
+
     if (error) throw new Error('Error updating user');
   }
-  
+
   async deleteUser(id: string): Promise<void> {
     const { error } = await this.clientProvider.getClient()
-      .fromSchema<'public', 'users'>('public', 'users')
+      .from('users')
       .delete()
       .eq('id', id);
-  
+
     if (error) throw new Error('Error deleting user');
   }
   

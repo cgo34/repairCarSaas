@@ -54,11 +54,23 @@
                             label="Email"
                           />
                         </v-col>
-                        <v-col cols="12">
+                        <v-col cols="12" md="6">
+                          <v-select
+                            v-model="selectedUser.role"
+                            :items="roleOptions"
+                            item-title="label"
+                            item-value="value"
+                            label="Rôle"
+                          />
+                        </v-col>
+                        <v-col cols="12" md="6">
                           <v-text-field
-                            v-model="selectedUser.password"
-                            label="Mot de passe"
-                            type="password"
+                            v-model.number="selectedUser.percentageCommission"
+                            label="Commission (%)"
+                            type="number"
+                            min="0"
+                            max="100"
+                            suffix="%"
                           />
                         </v-col>
                       </v-row>
@@ -86,6 +98,24 @@
               </v-dialog>
               <!-- #ENDREGION -->
             </v-toolbar>
+          </template>
+          <!-- #ENDREGION -->
+
+          <!-- #REGION -> ROLE CHIP -->
+          <template #item.role="{ item }">
+            <v-chip
+              :color="roleColor(item.role)"
+              size="small"
+              label
+            >
+              {{ roleLabel(item.role) }}
+            </v-chip>
+          </template>
+          <!-- #ENDREGION -->
+
+          <!-- #REGION -> COMMISSION -->
+          <template #item.percentageCommission="{ item }">
+            {{ item.percentageCommission ? `${item.percentageCommission} %` : '—' }}
           </template>
           <!-- #ENDREGION -->
 
@@ -144,8 +174,30 @@ const dialog = ref<boolean>(false);
 const headers = [
   { title: 'Nom Complet', align: 'start', key: 'fullName' },
   { title: 'Email', key: 'email' },
-  { title: 'Actions', sortable: false, key: 'actions' }
+  { title: 'Rôle', key: 'role', sortable: false },
+  { title: 'Commission', key: 'percentageCommission', sortable: false },
+  { title: 'Actions', sortable: false, key: 'actions' },
 ] as const;
+
+const roleOptions = [
+  { label: 'Admin', value: 'admin' },
+  { label: 'Garage', value: 'garage' },
+  { label: 'Technicien', value: 'technician' },
+  { label: 'Technicien indépendant', value: 'independant_technician' },
+  { label: 'Utilisateur', value: 'user' },
+];
+
+const roleLabel = (role?: string) => roleOptions.find(r => r.value === role)?.label ?? role ?? '—';
+
+const roleColor = (role?: string) => {
+  switch (role) {
+    case 'admin': return 'red';
+    case 'garage': return 'blue';
+    case 'technician': return 'green';
+    case 'independant_technician': return 'orange';
+    default: return 'grey';
+  }
+};
 
 const formTitle = computed(() => (selectedUser.value?.id ? "Modifier l'Utilisateur" : 'Nouvel Utilisateur'));
 

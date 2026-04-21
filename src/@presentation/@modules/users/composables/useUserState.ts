@@ -15,9 +15,9 @@ export function useUserState(): IUseUserState {
   const _selectedUser = ref<UserViewModel>({
     id: '',
     email: '',
-    password: '',
     fullName: '',
-    createdAt: '',
+    role: 'technician',
+    percentageCommission: 0,
   });
   const loading = ref<boolean>(false);
   const error = ref<unknown>(null);
@@ -49,9 +49,9 @@ export function useUserState(): IUseUserState {
     _selectedUser.value = {
       id: '',
       email: '',
-      password: '',
       fullName: '',
-      createdAt: '',
+      role: 'technician',
+      percentageCommission: 0,
     };
   };
 
@@ -69,14 +69,13 @@ export function useUserState(): IUseUserState {
     }
   };
 
-  const updateUser = async (user: UserViewModel) => {
+  const updateUser = async (user: UserViewModel): Promise<UserViewModel> => {
     loading.value = true;
     try {
-      return userUseCase.update(UserMapper.viewToDto(user)).then((data) => {
-        const updatedUser = UserMapper.dtoToView(data);
-        _users.value = _users.value.map((u) => (u.id === user.id ? updatedUser : u));
-        return updatedUser;
-      });
+      const dto = UserMapper.viewToDto(user);
+      await userUseCase.updateUser(user.id, dto);
+      _users.value = _users.value.map((u) => (u.id === user.id ? { ...user } : u));
+      return { ...user };
     } finally {
       loading.value = false;
     }
