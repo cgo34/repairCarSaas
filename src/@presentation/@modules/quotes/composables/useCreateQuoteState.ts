@@ -71,15 +71,17 @@ export function useCreateQuoteState() {
 
       // Conversion DTO → ViewModel
       const status = DocumentStatuseMapper.dtoToView(statusDto);
-      const startDate = new Date().toISOString();
+      const startDate = new Date();
+      const endDate = new Date(startDate);
+      endDate.setMonth(endDate.getMonth() + 1);
 
       // Construction du ViewModel (brouillon - l'id sera généré par Supabase à l'INSERT)
       _quote.value = {
         quoteNumber,
         status_id: status.id,
         status,
-        startDate,
-        endDate: '',
+        startDate: startDate.toISOString(),
+        endDate: endDate.toISOString(),
         userId: authState.user.value.id,
         isForfait: false,
         isDisplayUnitPrice: true,
@@ -275,9 +277,9 @@ export function useCreateQuoteState() {
     loading.value = true;
     try {
       // Récupération du status "pending" et mise à jour de la quote
-      const pendingStatusDto = await getDocumentStatusUseCase.getByCode('pending');
-      _quote.value.status = DocumentStatuseMapper.dtoToView(pendingStatusDto);
-      _quote.value.status_id = pendingStatusDto.id;
+      // const pendingStatusDto = await getDocumentStatusUseCase.getByCode('pending');
+      // _quote.value.status = DocumentStatuseMapper.dtoToView(pendingStatusDto);
+      // _quote.value.status_id = pendingStatusDto.id;
 
       // Conversion ViewModel → DTO et appel UseCase
       const savedQuoteDto = await insertQuoteUseCase.execute(QuoteMapper.viewToDto(_quote.value));
