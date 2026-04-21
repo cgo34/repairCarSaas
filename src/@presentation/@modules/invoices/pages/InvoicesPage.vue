@@ -330,10 +330,10 @@ const onBulkDownload = async () => {
 const deleteInvoiceConfirmDialogRef = ref<ConfirmDialogExposed>();
 const _invoiceToDelete = ref<string | undefined>();
 
-const onAddInvoice            = () => router.push('/invoices/new');
-const onEditInvoice           = (item: InvoiceViewModel) => router.push(`/invoices/edit/${item.id}`);
-const onDeleteBtnClick        = (id?: string) => { if (!id) return; _invoiceToDelete.value = id; deleteInvoiceConfirmDialogRef.value?.open(); };
-const onConfirmDeleteInvoice  = () => { if (_invoiceToDelete.value) deleteInvoice(_invoiceToDelete.value); };
+const onAddInvoice           = () => router.push('/invoices/new');
+const onEditInvoice          = (item: InvoiceViewModel) => router.push(`/invoices/edit/${item.id}`);
+const onDeleteBtnClick       = (id?: string) => { if (!id) return; _invoiceToDelete.value = id; deleteInvoiceConfirmDialogRef.value?.open(); };
+const onConfirmDeleteInvoice = () => { if (_invoiceToDelete.value) deleteInvoice(_invoiceToDelete.value); };
 
 const statusColor = (s?: string) => ({ pending: 'orange', validated: 'success', accepted: 'success', signed: 'success', sent: 'blue', draft: 'grey', cancel: 'error' } as Record<string,string>)[s ?? ''] ?? 'default';
 const statusLabel = (s?: string) => ({ pending: 'En attente', validated: 'Payé', accepted: 'Accepté', signed: 'Signé', sent: 'Envoyé', draft: 'Brouillon', cancel: 'Annulé' } as Record<string,string>)[s ?? ''] ?? (s ?? '');

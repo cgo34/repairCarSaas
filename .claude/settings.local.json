@@ -61,7 +61,10 @@
       "Bash(curl -s 'https://afeqjyfntwujsyqpuimi.supabase.co/rest/v1/invoices?id=eq.da0868ae-f822-4587-a5fd-db869d688cb8&select=*,technician:users!invoices_technician_id_fkey\\(*\\),garage:garages\\(*\\),status:document_statuses\\(*\\),quote:quotes\\(*\\)' -H 'apikey: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFmZXFqeWZudHd1anN5cXB1aW1pIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NjY3ODc3NCwiZXhwIjoyMDkyMjU0Nzc0fQ.QhP1tWjn39MLL_vkYeKP9co4Y_rXxzAz9Pw8noSggD0' -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFmZXFqeWZudHd1anN5cXB1aW1pIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NjY3ODc3NCwiZXhwIjoyMDkyMjU0Nzc0fQ.QhP1tWjn39MLL_vkYeKP9co4Y_rXxzAz9Pw8noSggD0' -w '\\\\nSTATUS:%{http_code}')",
       "Bash(curl -s https://afeqjyfntwujsyqpuimi.supabase.co/auth/v1/admin/users -H 'apikey: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFmZXFqeWZudHd1anN5cXB1aW1pIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NjY3ODc3NCwiZXhwIjoyMDkyMjU0Nzc0fQ.QhP1tWjn39MLL_vkYeKP9co4Y_rXxzAz9Pw8noSggD0' -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFmZXFqeWZudHd1anN5cXB1aW1pIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NjY3ODc3NCwiZXhwIjoyMDkyMjU0Nzc0fQ.QhP1tWjn39MLL_vkYeKP9co4Y_rXxzAz9Pw8noSggD0')",
       "Bash(grep -E \"\\\\.\\(ts|js|vue\\)$\")",
-      "Bash(gh pr *)"
+      "Bash(gh pr *)",
+      "Bash(cat src/@presentation/mappers/LineItemMapper.ts)",
+      "Bash(cat src/@presentation/mappers/LineItemViewMapper.ts)",
+      "Bash(git merge *)"
     ]
   }
 }
