@@ -23,11 +23,24 @@ export class SettingPriceRepository implements ISettingPriceRepository {
 
   async getByUserId(userId: string): Promise<SettingPriceDto> {
     const general = await this.settingPriceGeneralRepository.getByUserId(userId);
-    const bodyParts = await this.settingPriceBodyPartCoefficientRepository.getByUserId(userId);
-    const technicity = await this.settingPriceTechnicityCoefficientRepository.getByUserId(userId);
-    const impactsCount = await this.settingPriceImpactCountToUtRepository.getByUserId(userId);
 
-    return { general, bodyParts, technicity, impactsCount };
+    // Si l'utilisateur n'a pas encore configuré ses paramètres, on retourne les paramètres par défaut
+    if (!general) {
+      return this.getDefault();
+    }
+
+    const [bodyParts, technicity, impactsCount] = await Promise.all([
+      this.settingPriceBodyPartCoefficientRepository.getByUserId(userId),
+      this.settingPriceTechnicityCoefficientRepository.getByUserId(userId),
+      this.settingPriceImpactCountToUtRepository.getByUserId(userId),
+    ]);
+
+    // Fallback sur les defaults si certains sous-paramètres manquent
+    if (!technicity) {
+      return this.getDefault();
+    }
+
+    return { general, bodyParts: bodyParts ?? [], technicity, impactsCount: impactsCount ?? [] };
   }
 
   async getDefault(): Promise<SettingPriceDto> {

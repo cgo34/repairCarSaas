@@ -2,6 +2,7 @@
 import { ISettingPriceBodyPartCoefficientRepository } from '@/@domain/repositories/settings/price/ISettingPriceBodyPartCoefficientRepository';
 import { SettingPriceBodyPartCoefficientApiModel } from '@/@infrastructure/database/api/settings/price/SettingPriceBodyPartCoefficientApiModel';
 import { SupabaseClient } from '@/@infrastructure/database/clients/SupabaseClient';
+import { DEFAULT_SETTINGS_USER_ID } from '@/@infrastructure/database/helpers/getAdminUserIdWithSettings';
 import { SettingPriceBodyPartCoefficientDto } from '@/@infrastructure/dtos/settings/price/SettingPriceBodyPartCoefficientDto';
 import { IClientProvider } from '@/@infrastructure/interfaces/IClientProvider';
 import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
@@ -12,26 +13,17 @@ import { inject, injectable } from 'inversify';
 export class SettingPriceBodyPartCoefficientRepository implements ISettingPriceBodyPartCoefficientRepository {
   constructor(@inject(SYMBOLS.Providers.ClientProvider) private clientProvider: IClientProvider<SupabaseClient>) {}
   
-    async getAdmin(): Promise<SettingPriceBodyPartCoefficientDto[]> {
-      
-      const { data, error } = await this.clientProvider.getClient()
-        .from('setting_price_body_part_coefficient')
-        .select(`
-          *,
-          body_parts(*),
-          users (
-            id,
-            role
-          )
-        `)
-        .eq('users.role', 'admin')
-        .returns<SettingPriceBodyPartCoefficientApiModel[]>();
-  
-      if (error)
-        throw new Error('Error fetching body part coefficient settings');
-      
-      return data.map(SettingPriceBodyPartCoefficientMapper.apiToDto);
-    }
+  async getAdmin(): Promise<SettingPriceBodyPartCoefficientDto[]> {
+    const { data, error } = await this.clientProvider.getClient()
+      .from('setting_price_body_part_coefficient')
+      .select(`*, body_parts(*)`)
+      .eq('user_id', DEFAULT_SETTINGS_USER_ID)
+      .returns<SettingPriceBodyPartCoefficientApiModel[]>();
+
+    if (error) throw new Error('Error fetching default body part coefficient settings');
+
+    return data.map(SettingPriceBodyPartCoefficientMapper.apiToDto);
+  }
 
   async getByUserId(userId: string): Promise<SettingPriceBodyPartCoefficientDto[]> {
     const { data, error } = await this.clientProvider.getClient()

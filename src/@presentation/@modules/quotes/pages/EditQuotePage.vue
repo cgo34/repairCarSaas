@@ -1,590 +1,580 @@
 <template>
   <MainLayout>
-    <v-container fluid class="px-0 py-0">
-      
-      <!-- Actions du devis -->
-      <v-toolbar title="" color="transparent">
-        <template v-slot:prepend>
-          
-          <BackButton fallbackPath="/quotes" />
-        </template>
-        <template v-slot:append>
+    <v-container fluid class="pa-0 edit-quote-container">
 
-          <GenericButton
-            v-if="!isFreePlan"
-            class="me-2 text-none"
-            color="primary"
-            prepend-icon="mdi-send"
-            variant="flat"
-            @click="onSendBtnClick"
-          >
-            Send
-          </GenericButton>
+      <!-- ═══════════════════════════════════════════════════
+           HEADER sticky
+      ════════════════════════════════════════════════════ -->
+      <div class="page-header px-3 py-2">
+        <div class="d-flex align-center justify-space-between">
 
-          <!-- <GenericButton
-            v-if="!isReadOnly"
-            class="me-2 text-none"
-            color="success"
-            prepend-icon="mdi-check-bold"
-            variant="flat"
-            @click="onFinalizeBtnClick"
-          >
-            Finalize
-          </GenericButton> -->
-          <GenericMenu
-            v-if="!isReadOnly"
-            @accepted="onAcceptedBtnClick"
-            @refused="onRefusedBtnClick"
-          ></GenericMenu>
+          <!-- Gauche : retour + titre -->
+          <div class="d-flex align-center gap-2 min-w-0">
+            <BackButton fallbackPath="/quotes" />
+            <div class="min-w-0">
+              <div class="d-flex align-center gap-2 flex-wrap">
+                <span class="text-subtitle-1 font-weight-bold text-truncate">
+                  {{ quoteInformations.number || 'Devis' }}
+                </span>
+                <v-chip
+                  v-if="quoteInformations.status"
+                  :color="statusColor(quoteInformations.status?.code)"
+                  size="x-small"
+                  variant="tonal"
+                  label
+                >
+                  {{ statusLabel(quoteInformations.status?.code) }}
+                </v-chip>
+              </div>
+            </div>
+          </div>
 
-          
-
-          <GenericButton
-            class="me-2 text-none"
-            color="secondary"
-            prepend-icon="mdi-file-pdf-box"
-            variant="flat"
-            @click="onViewPdfBtnClick"
-          >
-            Preview
-          </GenericButton>
-
-          <GenericButton
-            v-if="quoteInformations.status?.code === 'accepted'"
-            class="me-2 text-none"
-            color="success"
-            prepend-icon="mdi-file-plus"
-            variant="flat"
-            :readonly="quoteInformations.status?.code !== 'accepted'"
-            @click="onDuplicateQuoteToInvoiceBtnClick"
-          >
-            Convert to invoice
-          </GenericButton>
-
-          <GenericButton
-            v-if="!isReadOnly"
-            class="me-2 text-none"
-            color="error"
-            prepend-icon="mdi-delete"
-            variant="flat"
-            @click="onDeleteBtnClick"
-          >
-            Delete
-          </GenericButton>
-        </template>
-
-      </v-toolbar>
-      
-      <v-form ref="form">
-        <v-card
-          class="rounded-lg"
-          outlined
-        >
-          <v-card-title class="text-h3">
-            Modifier un Devis
-          </v-card-title>
-          <v-card-subtitle v-if="isReadOnly">
-            <span
-            :class="[quoteInformations.status?.code === 'accepted' ? 'text-green' : quoteInformations.status?.code === 'refused' ? 'text-red' : '']"
+          <!-- Droite : actions rapides + menu overflow -->
+          <div class="d-flex align-center gap-1 flex-shrink-0">
+            <!-- PDF toujours visible -->
+            <v-btn
+              icon
+              variant="text"
+              size="small"
+              title="Aperçu PDF"
+              @click="onViewPdfBtnClick"
             >
-              {{ quoteInformations.status?.code }}
-            </span>
-          </v-card-subtitle>
+              <v-icon>mdi-file-pdf-box</v-icon>
+            </v-btn>
 
-          <v-card-text>
-            <!-- Informations du devis -->
-            <h4 class="text-h4 my-4">
-              Informations générales
-            </h4>
-            <v-row>
-              <v-col
-                cols="12"
-                md="3"
-              >
-                <v-text-field
-                  v-model="quoteInformations.number"
-                  label="Numéro de devis"
-                  readonly
-                  disabled
-                  outlined
+            <!-- Menu overflow -->
+            <v-menu location="bottom end">
+              <template #activator="{ props: menuProps }">
+                <v-btn icon variant="text" size="small" v-bind="menuProps">
+                  <v-icon>mdi-dots-vertical</v-icon>
+                </v-btn>
+              </template>
+              <v-list density="compact" rounded="lg" min-width="200">
+                <v-list-item
+                  v-if="!isFreePlan"
+                  prepend-icon="mdi-send-outline"
+                  title="Envoyer"
+                  @click="onSendBtnClick"
                 />
-              </v-col>
-              <v-col
-                cols="12"
-                md="3"
-              >
-                <GenericSelect
-                  :model-value="quoteInformations.status"
-                  :items="statuses"
-                  label="Status"
-                  item-title="label"
-                  readonly
-                  disabled
+                <v-list-item
+                  v-if="!isReadOnly"
+                  prepend-icon="mdi-check-circle-outline"
+                  title="Marquer accepté"
+                  @click="onAcceptedBtnClick"
                 />
-              </v-col>
-              <v-col
-                cols="12"
-                md="3"
-              >
-                <v-text-field
-                  v-model="quoteInformations.date"
-                  label="Date"
-                  type="date"
-                  outlined
-                  :readonly="isReadOnly"
+                <v-list-item
+                  v-if="!isReadOnly"
+                  prepend-icon="mdi-close-circle-outline"
+                  title="Marquer refusé"
+                  @click="onRefusedBtnClick"
                 />
-              </v-col>
-              <v-col
-                cols="12"
-                md="3"
-              >
-                <v-text-field
-                  v-model="expirationDate"
-                  label="Validité jusqu'à"
-                  type="date"
-                  outlined
-                  required
-                  :readonly="isReadOnly"
+                <v-list-item
+                  v-if="isAccepted"
+                  prepend-icon="mdi-file-plus-outline"
+                  title="Convertir en facture"
+                  @click="onDuplicateQuoteToInvoiceBtnClick"
                 />
-              </v-col>
-            </v-row>
+                <v-divider v-if="!isReadOnly" />
+                <v-list-item
+                  v-if="!isReadOnly"
+                  prepend-icon="mdi-delete-outline"
+                  title="Supprimer"
+                  class="text-error"
+                  base-color="error"
+                  @click="onDeleteBtnClick"
+                />
+              </v-list>
+            </v-menu>
+          </div>
 
-            <!-- Informations du Technicien et du Garage -->
-            <v-row>
-              <v-col md="6">
-                <v-card
-                  elevation="0"
-                  class="pa-4"
-                >
-                  <div class="d-flex flex-column justify-space-between">
-                    <div>
-                      <h4 class="text-h4">
-                        Technicien :
-                      </h4>
-                    </div>
+        </div>
+      </div>
 
-                    <v-flex
-                      xs12
-                      sm12
-                      md12
-                    >
-                      <v-select
-                        :model-value="selectedTechnician"
-                        label="Select Technician"
-                        :items="techniciansList"
-                        :item-props="true"
-                        item-title="fullName"
-                        item-value
-                        return-object
-                        :clearable="!isReadOnly"
-                        @update:model-value="onSelectTechnician"
-                        :readonly="isReadOnly"
-                      >
-                        <template #prepend-item>
-                          <v-list-tile>
-                            <v-text-field
-                              label="Search"
-                              @input="onSearchTechnician"
-                            />
-                          </v-list-tile>
-                        </template>
-                      </v-select>
-                    </v-flex>
-                  </div>
-                </v-card>
-              </v-col>
+      <!-- ═══════════════════════════════════════════════════
+           FORM
+      ════════════════════════════════════════════════════ -->
+      <v-form ref="form" class="px-3 pt-3 pb-28">
 
-              <v-col md="6">
-                <v-card
-                  outlined
-                  elevation="0"
-                  class="pa-4"
-                >
-                  <div class="d-flex flex-column justify-space-between">
-                    <div class="d-flex align-center justify-space-between mb-2">
-                      <h5 class="text-h6">
-                        Garage :
-                      </h5>
+        <!-- ── Section 1 : Dates ── -->
+        <div class="section-card mb-4">
+          <div class="section-header mb-3">
+            <div class="section-icon">
+              <v-icon size="18" color="primary">mdi-calendar-outline</v-icon>
+            </div>
+            <span class="text-subtitle-2 font-weight-semibold">Dates</span>
+          </div>
+          <v-row dense>
+            <v-col cols="12" sm="6">
+              <v-text-field
+                v-model="quoteInformations.date"
+                label="Date de création"
+                type="date"
+                variant="outlined"
+                density="comfortable"
+                :readonly="isReadOnly"
+                hide-details="auto"
+              />
+            </v-col>
+            <v-col cols="12" sm="6">
+              <v-text-field
+                :model-value="expirationDate"
+                label="Valide jusqu'au"
+                type="date"
+                variant="outlined"
+                density="comfortable"
+                readonly
+                hide-details="auto"
+              />
+            </v-col>
+          </v-row>
+        </div>
 
-                      <!-- TODO: (GCE) -> ADD IMPLEMENTATION TO FREE USER -->
-                      <v-btn
-                        v-if="!isReadOnly"
-                        color="primary"
-                        variant="text"
-                        @click="onEditCustomerBtnClick"
-                      >
-                        Edit customer
-                      </v-btn>
+        <!-- ── Section 2 : Technicien ── -->
+        <div class="section-card mb-4">
+          <div class="section-header mb-3">
+            <div class="section-icon">
+              <v-icon size="18" color="primary">mdi-account-wrench-outline</v-icon>
+            </div>
+            <span class="text-subtitle-2 font-weight-semibold">Technicien</span>
+          </div>
+          <v-autocomplete
+            :model-value="selectedTechnician"
+            :items="technicians"
+            item-title="fullName"
+            item-value="id"
+            return-object
+            label="Sélectionner un technicien"
+            variant="outlined"
+            density="comfortable"
+            :clearable="!isReadOnly"
+            :readonly="isReadOnly"
+            hide-details="auto"
+            prepend-inner-icon="mdi-account-search-outline"
+            @update:model-value="onSelectTechnician"
+          >
+            <template #item="{ props: itemProps, item }">
+              <v-list-item v-bind="itemProps">
+                <template #prepend>
+                  <v-avatar color="primary" size="36">
+                    <span class="text-caption font-weight-bold text-white">
+                      {{ initials(item.raw.fullName) }}
+                    </span>
+                  </v-avatar>
+                </template>
+              </v-list-item>
+            </template>
+            <template #selection="{ item }">
+              <div class="d-flex align-center gap-2">
+                <v-avatar color="primary" size="24">
+                  <span style="font-size:10px" class="text-white">{{ initials(item.raw.fullName) }}</span>
+                </v-avatar>
+                <span>{{ item.raw.fullName }}</span>
+              </div>
+            </template>
+          </v-autocomplete>
+        </div>
 
-                    </div>
-                    
+        <!-- ── Section 3 : Client / Garage ── -->
+        <div class="section-card mb-4">
+          <div class="section-header mb-3">
+            <div class="section-icon">
+              <v-icon size="18" color="primary">mdi-garage-open-variant</v-icon>
+            </div>
+            <span class="text-subtitle-2 font-weight-semibold">Client / Garage</span>
+          </div>
 
-                    <v-flex
-                      xs12
-                      sm12
-                      md12
-                    >
-                      <v-select
-                        :model-value="selectedGarage"
-                        label="Select Garage"
-                        :items="garagesList"
-                        item-title="name"
-                        :item-props="true"
-                        item-value
-                        return-object
-                        :clearable="!isReadOnly"
-                        @update:model-value="onSelectGarage"
-                        :readonly="isReadOnly"
-                      >
-                        <template #prepend-item>
-                          <v-list-tile>
-                            <v-text-field
-                              label="Search"
-                              @input="onSearchGarage"
-                            />
-                          </v-list-tile>
-                        </template>
-                      </v-select>
-                    </v-flex>
+          <v-autocomplete
+            :model-value="selectedGarage"
+            :items="garages"
+            item-title="name"
+            item-value="id"
+            return-object
+            label="Sélectionner un garage"
+            variant="outlined"
+            density="comfortable"
+            :clearable="!isReadOnly"
+            :readonly="isReadOnly"
+            hide-details="auto"
+            prepend-inner-icon="mdi-store-search-outline"
+            @update:model-value="onSelectGarage"
+          >
+            <template #item="{ props: itemProps, item }">
+              <v-list-item v-bind="itemProps" :subtitle="item.raw.city ?? ''">
+                <template #prepend>
+                  <v-icon color="primary">mdi-garage-variant</v-icon>
+                </template>
+              </v-list-item>
+            </template>
+          </v-autocomplete>
 
-                    <!-- <v-btn
-                      variant="outlined"
-                      color="primary"
-                      @click="selectGarage"
-                    >
-                      {{ quote.garage ? 'Changer' : 'Ajouter' }}
-                    </v-btn> -->
-                  </div>
-                </v-card>
-              </v-col>
-            </v-row>
-          </v-card-text>
+          <v-btn
+            v-if="!isReadOnly"
+            variant="tonal"
+            color="primary"
+            size="small"
+            class="mt-2"
+            prepend-icon="mdi-pencil-outline"
+            @click="onEditCustomerBtnClick"
+          >
+            Modifier le client
+          </v-btn>
 
-          <v-divider class="my-4" />
-
-          <!-- Informations du véhicule -->
-          
-          <v-card-text>
-            <v-row>
-              <v-col md="12">
-                <h4 class="text-h4 my-4">
-                  Informations du véhicule
-                </h4>
-                <v-card
-                  outlined
-                  elevation="0"
-                  class="pa-4"
-                >
-                <v-card-text>
-                  <v-row>
-                    <v-col cols="12" md="12">
-                      <v-select
-                        :model-value="selectedVehicle"
-                        label="Véhicule existant (optionnel)"
-                        :items="vehiclesList"
-                        :item-title="v => v.immatriculation + ' — ' + v.marque + (v.annee ? ' ' + v.annee : '')"
-                        item-value="id"
-                        return-object
-                        clearable
-                        :disabled="!selectedGarage || isReadOnly"
-                        @update:model-value="onSelectVehicle"
-                      />
-                    </v-col>
-                    <v-col
-                      cols="12"
-                      md="4"
-                    >
-                      <v-text-field
-                        v-model="carInformations.immatriculation"
-                        label="Immatriculation"
-                        outlined
-                        @update:model-value="(value) => onCarImmatriculationUpdated(value)"
-                        :readonly="isReadOnly"
-                      />
-                    </v-col>
-                    <v-col
-                      cols="12"
-                      md="4"
-                    >
-                      <v-text-field
-                        v-model="carInformations.brand"
-                        label="Marque"
-                        outlined
-                        @update:model-value="(value) => onCarBrandUpdated(value)"
-                        :readonly="isReadOnly"
-                      />
-                    </v-col>
-                    <v-col
-                      cols="12"
-                      md="4"
-                    >
-                      <v-text-field
-                        v-model="carInformations.dateEntryCirculation"
-                        label="Année"
-                        outlined
-                        @update:model-value="(value) => onCarYearUpdated(value)"
-                        :readonly="isReadOnly"
-                      />
-                    </v-col>
-                  </v-row>
-                </v-card-text>
-                </v-card>
-              </v-col>
-            </v-row>
-          </v-card-text>
-        
-          <v-divider class="my-4" />
-
-          <!-- Tableau des éléments du devis -->
-          <v-card-text>
-            <div>
-              <h4 class="text-h4">
-                Options du devis
-              </h4>
-              <div class="d-flex justify-space-between">
-                <div>
-                  <v-switch
-                    label="Appliquer un forfait ?" :modelValue="isForfait"
-                    @update:modelValue="onUpdateIsForfait"
-                    color="primary"
-                    inset
-                    :readonly="isReadOnly">
-                  </v-switch>
-                  </div>
-                <div v-if="!isForfait">
-                    <v-switch
-                    label="Afficher les prix unitaires ?" :modelValue="isDisplayUnitPrice"
-                    @update:modelValue="onUpdateIsDisplayUnitPrice"
-                    color="primary"
-                    inset
-                    :readonly="isReadOnly">
-                  </v-switch>
+          <v-expand-transition>
+            <div v-if="selectedGarage" class="mt-3">
+              <v-card variant="tonal" color="primary" rounded="lg" class="pa-3">
+                <div class="d-flex align-center gap-2 mb-1">
+                  <v-icon size="18" color="primary">mdi-map-marker-outline</v-icon>
+                  <span class="text-body-2 font-weight-medium">{{ selectedGarage.name }}</span>
                 </div>
-                <div v-if="!isForfait">
-                  <v-switch
-                    label="Calculer la commission sans le dégarnissage ?"
-                    :modelValue="isComputeCommissionWithoutDentRemoval"
-                    @update:modelValue="onUpdateIsComputeCommissionWithoutDentRemoval"
-                    color="primary"
-                    inset
-                    :readonly="isReadOnly">
-                  </v-switch>
+                <div v-if="selectedGarage.address" class="text-caption text-medium-emphasis">
+                  {{ selectedGarage.address }}<span v-if="selectedGarage.zipCode">, {{ selectedGarage.zipCode }}</span><span v-if="selectedGarage.city"> {{ selectedGarage.city }}</span>
+                </div>
+                <div v-if="selectedGarage.percentageCommission" class="mt-1">
+                  <v-chip size="x-small" color="orange" variant="tonal">
+                    Commission {{ selectedGarage.percentageCommission }}%
+                  </v-chip>
+                </div>
+              </v-card>
+            </div>
+          </v-expand-transition>
+        </div>
+
+        <!-- ── Section 4 : Véhicule ── -->
+        <div class="section-card mb-4">
+          <div class="section-header mb-3">
+            <div class="section-icon">
+              <v-icon size="18" color="primary">mdi-car-outline</v-icon>
+            </div>
+            <span class="text-subtitle-2 font-weight-semibold">Véhicule</span>
+          </div>
+
+          <v-autocomplete
+            :model-value="selectedVehicle"
+            :items="vehiclesList"
+            :item-title="v => v.immatriculation + ' — ' + v.marque + (v.annee ? ' ' + v.annee : '')"
+            item-value="id"
+            return-object
+            label="Véhicule existant (optionnel)"
+            variant="outlined"
+            density="comfortable"
+            clearable
+            :disabled="!selectedGarage || isReadOnly"
+            :no-data-text="selectedGarage ? 'Aucun véhicule trouvé' : 'Sélectionnez d\'abord un garage'"
+            hide-details="auto"
+            prepend-inner-icon="mdi-car-search-outline"
+            class="mb-3"
+            @update:model-value="onSelectVehicle"
+          />
+
+          <div class="text-caption text-medium-emphasis mb-3 d-flex align-center gap-1">
+            <v-icon size="14">mdi-information-outline</v-icon>
+            Informations manuelles :
+          </div>
+
+          <v-row dense>
+            <v-col cols="12" sm="4">
+              <v-text-field
+                v-model="carInformations.immatriculation"
+                label="Immatriculation"
+                variant="outlined"
+                density="comfortable"
+                :readonly="isReadOnly"
+                hide-details="auto"
+                prepend-inner-icon="mdi-card-text-outline"
+                @update:model-value="onCarImmatriculationUpdated"
+              />
+            </v-col>
+            <v-col cols="12" sm="4">
+              <v-text-field
+                v-model="carInformations.brand"
+                label="Marque"
+                variant="outlined"
+                density="comfortable"
+                :readonly="isReadOnly"
+                hide-details="auto"
+                prepend-inner-icon="mdi-car-info"
+                @update:model-value="onCarBrandUpdated"
+              />
+            </v-col>
+            <v-col cols="12" sm="4">
+              <v-text-field
+                v-model="carInformations.dateEntryCirculation"
+                label="Année"
+                variant="outlined"
+                density="comfortable"
+                :readonly="isReadOnly"
+                hide-details="auto"
+                prepend-inner-icon="mdi-calendar-range-outline"
+                @update:model-value="onCarYearUpdated"
+              />
+            </v-col>
+          </v-row>
+        </div>
+
+        <!-- ── Section 5 : Options ── -->
+        <div class="section-card mb-4">
+          <div class="section-header mb-3">
+            <div class="section-icon">
+              <v-icon size="18" color="primary">mdi-tune-variant</v-icon>
+            </div>
+            <span class="text-subtitle-2 font-weight-semibold">Options</span>
+          </div>
+
+          <div class="mb-3">
+            <div class="text-caption text-medium-emphasis mb-1 font-weight-medium">Pays &amp; TVA</div>
+            <CountrySelect :modelValue="selectedCountry" @select="onSelectCountry" :readonly="isReadOnly" />
+          </div>
+
+          <v-divider class="my-3" />
+
+          <div class="d-flex align-center justify-space-between py-2">
+            <div>
+              <div class="text-body-2 font-weight-medium">Mode forfait</div>
+              <div class="text-caption text-medium-emphasis">Remplacer les lignes par un montant fixe</div>
+            </div>
+            <v-switch
+              :model-value="isForfait"
+              color="primary"
+              inset
+              hide-details
+              :readonly="isReadOnly"
+              @update:model-value="onUpdateIsForfait"
+            />
+          </div>
+
+          <v-expand-transition>
+            <div v-if="isForfait" class="pb-2">
+              <v-text-field
+                :model-value="forfaitAmount"
+                label="Montant du forfait (€)"
+                type="number"
+                variant="outlined"
+                density="comfortable"
+                hide-details="auto"
+                prepend-inner-icon="mdi-currency-eur"
+                :readonly="isReadOnly"
+                @update:model-value="onUpdateForfaitAmount"
+              />
+            </div>
+          </v-expand-transition>
+
+          <template v-if="!isForfait">
+            <v-divider class="my-1" />
+            <div class="d-flex align-center justify-space-between py-2">
+              <div>
+                <div class="text-body-2 font-weight-medium">Prix unitaires visibles</div>
+                <div class="text-caption text-medium-emphasis">Afficher le détail sur le devis</div>
+              </div>
+              <v-switch
+                :model-value="isDisplayUnitPrice"
+                color="primary"
+                inset
+                hide-details
+                :readonly="isReadOnly"
+                @update:model-value="onUpdateIsDisplayUnitPrice"
+              />
+            </div>
+
+            <v-divider class="my-1" />
+            <div class="d-flex align-center justify-space-between py-2">
+              <div>
+                <div class="text-body-2 font-weight-medium">Commission hors dégarnissage</div>
+                <div class="text-caption text-medium-emphasis">Exclure le dégarnissage de la base de commission</div>
+              </div>
+              <v-switch
+                :model-value="isComputeCommissionWithoutDentRemoval"
+                color="primary"
+                inset
+                hide-details
+                :readonly="isReadOnly"
+                @update:model-value="onUpdateIsComputeCommissionWithoutDentRemoval"
+              />
+            </div>
+          </template>
+        </div>
+
+        <!-- ── Section 6 : Lignes du devis ── -->
+        <div v-if="!isForfait" class="section-card mb-4">
+          <div class="section-header mb-3">
+            <div class="section-icon">
+              <v-icon size="18" color="primary">mdi-format-list-bulleted</v-icon>
+            </div>
+            <span class="text-subtitle-2 font-weight-semibold">Éléments du devis</span>
+            <v-spacer />
+            <v-chip size="x-small" variant="tonal" color="primary">
+              {{ quoteLines.length }}
+            </v-chip>
+          </div>
+
+          <!-- Liste mobile des lignes -->
+          <div v-if="quoteLines.length > 0" class="line-items-list">
+            <div
+              v-for="line in quoteLines"
+              :key="line.id"
+              class="line-item-card"
+            >
+              <div class="d-flex align-start justify-space-between">
+                <div class="flex-grow-1 min-w-0">
+                  <!-- Pièce + matériau -->
+                  <div class="d-flex align-center gap-2 mb-1 flex-wrap">
+                    <span class="text-body-2 font-weight-medium">
+                      {{ line.bodyPart?.name ?? '—' }}
+                    </span>
+                    <v-chip v-if="line.bodyMaterial" size="x-small" variant="tonal" color="blue-grey">
+                      {{ line.bodyMaterial.name }}
+                    </v-chip>
+                    <v-chip v-if="line.repairType" size="x-small" variant="tonal" color="indigo">
+                      {{ line.repairType.name }}
+                    </v-chip>
+                  </div>
+                  <!-- Impacts -->
+                  <div class="d-flex gap-3 text-caption text-medium-emphasis">
+                    <span>Ø 25 : <strong>{{ line.impactCount25 ?? 0 }}</strong></span>
+                    <span>Ø 35 : <strong>{{ line.impactCount35 ?? 0 }}</strong></span>
+                    <span v-if="line.dentRemovalPrice">
+                      Dégarn. : <strong>{{ line.dentRemovalPrice.toFixed(2) }} {{ selectedCountry?.currencySymbol || '€' }}</strong>
+                    </span>
+                  </div>
+                </div>
+                <!-- Prix + supprimer -->
+                <div class="d-flex flex-column align-end gap-1 ml-2 flex-shrink-0">
+                  <span class="text-body-2 font-weight-bold text-primary">
+                    {{ line.price?.toFixed(2) ?? '0.00' }} {{ selectedCountry?.currencySymbol || '€' }}
+                  </span>
+                  <v-btn
+                    v-if="!isReadOnly"
+                    icon
+                    variant="text"
+                    size="x-small"
+                    color="error"
+                    @click="onRemoveItemBtnClick(line)"
+                  >
+                    <v-icon size="16">mdi-delete-outline</v-icon>
+                  </v-btn>
                 </div>
               </div>
             </div>
-            
-            <div v-if="isForfait">
-              <h4 class="text-h4">
-                Montant du forfait
-              </h4>
-              <v-text-field
-                :modelValue="forfaitAmount"
-                placeholder="Montant du forfait"
-                type="number"
-                dense
-                outlined
-                @update:modelValue="onUpdateForfaitAmount"
-                :readonly="isReadOnly"
-              />
+          </div>
+
+          <!-- État vide -->
+          <div v-else class="text-center py-6 text-medium-emphasis">
+            <v-icon size="40" class="mb-2 opacity-40">mdi-playlist-plus</v-icon>
+            <div class="text-body-2">Aucun élément pour l'instant</div>
+          </div>
+
+          <!-- Bouton ajouter -->
+          <v-btn
+            v-if="!isReadOnly"
+            variant="tonal"
+            color="primary"
+            block
+            class="mt-3"
+            prepend-icon="mdi-plus"
+            @click="onAddItemBtnClick"
+          >
+            Ajouter un élément
+          </v-btn>
+        </div>
+
+        <!-- ── Section 7 : Totaux ── -->
+        <div class="section-card mb-4">
+          <div class="section-header mb-3">
+            <div class="section-icon">
+              <v-icon size="18" color="primary">mdi-calculator-variant-outline</v-icon>
             </div>
-            <CountrySelect :modelValue="selectedCountry" @select="onSelectCountry" :readonly="isReadOnly"/>
-          </v-card-text>
+            <span class="text-subtitle-2 font-weight-semibold">Récapitulatif</span>
+          </div>
 
-          
-          <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn
-                v-if="quoteInformations.status?.code !== 'accepted'"
-                variant="flat"
-                class="mt-3"
-                color="primary"
-                @click="onUpdateBtnClick"
-                :readonly="isReadOnly"
-              >
-                Update
-              </v-btn>
-          </v-card-actions>
-        </v-card>
-          
-        <v-card v-if="!isForfait"
-          class="rounded-lg mt-5"
-          outlined
-        >
-
-          <v-card-text>
-            <div class="d-flex align-center justify-space-between">
-              <h4 class="text-h4">
-                Liste des éléments
-              </h4>
+          <div class="totals-list">
+            <div class="total-row">
+              <span class="text-body-2 text-medium-emphasis">Total H.T</span>
+              <span class="text-body-2 font-weight-medium">
+                {{ regionManager.formatNumber(subtotal) }} {{ selectedCountry?.currencySymbol || '€' }}
+              </span>
             </div>
-            <v-data-table
-              :headers="headers"
-              :items="quoteLines"
-              class="elevation-1"
-              density="comfortable"
-            >
-              <!-- <template #[`item.bodyPart`]="{ item }">
-                  {{ item.bodyPart?.name }}
-              </template> -->
-              <!-- <template #[`item.impactCount25`]="{ item }">
-                  <v-text-field
-                    v-model="item.impactCount25"
-                    placeholder="Nb."
-                    dense
-                    outlined
-                  />
-              </template> -->
-              <!-- <template #[`item.impactCount35`]="{ item }">
-                <v-text-field
-                  v-model="item.impactCount35"
-                  placeholder="Nb."
-                  dense
-                  outlined
-                />
-              </template> -->
-              <!-- <template #[`item.repairType`]="{ item }">
-                <RepairTypeSelect
-                  :model-value="item.repairType"
-                  :repair-types="repairTypes"
-                  @select="onSelectRepairType($event, item.lineId)"
-                />
-              </template> -->
-              <!-- <template #[`item.dentRemovalPrice`]="{ item }">
-                <v-text-field
-                  :modelValue="item.dentRemovalPrice"
-                  placeholder="Montant"
-                  dense
-                  outlined
-                />
-              </template> -->
-              <template #[`item.price`]="{ item }">
-                <div class="text-right">
-                  {{ item.price.toFixed(2) }} €
-                </div>
-              </template>
-              <template #[`item.actions`]="{ item }">
-                <v-icon
-                  class="me-2"
-                  size="small"
-                  @click="onRemoveItemBtnClick(item)"
-                  :disabled="isReadOnly"
-                >
-                  mdi-delete
-                </v-icon>
-              </template>
-            </v-data-table>
-            <v-btn
-              v-if="!isReadOnly"
-              class="mt-3"
-              color="primary"
-              @click="onAddItemBtnClick"
-              :disabled="isReadOnly"
-            >
-              + Ajouter un élément
-            </v-btn>
-          </v-card-text>
-        </v-card>
-
-          <!-- Bloc des Totaux -->
-           
-        <v-card
-          class="rounded-lg mt-5"
-          outlined
-        >
-
-          <!-- <v-card-text>
-            <div class="d-flex align-center justify-space-between">
-              <h4 class="text-h4">
-                Totaux
-              </h4>
-            </div>
-          </v-card-text>   -->
-          <v-sheet class="rounded-sm pa-2 pa-sm-6">
-            <v-row justify="end">
-              <v-col
-                cols="6"
-                sm="3"
-                md="3"
-                class="text-end"
-              >
-                <h5 class="py-2 text-subtitle-1">
-                  Total H.T :
-                </h5>
-                <h5 v-if="!isForfait" class="py-2 text-subtitle-1 text-no-wrap">
-                  Total dégarnissage :
-                </h5>
-                <h5 v-if="!isForfait" class="py-2 text-subtitle-1 text-no-wrap">
-                  Total H.T + Total Dégarnissage :
-                </h5>
-                <h5 class="py-2 text-subtitle-1 text-no-wrap">
-                  TVA ({{ selectedCountry?.taxRate || 0 }}%) :
-                </h5>
-                <h5 v-if="selectedGarage?.percentageCommission" class="py-2 text-subtitle-1 text-no-wrap text-orange">
-                  Commission ({{ selectedGarage.percentageCommission }}%) :
-                </h5>
-                <h5 class="py-2 text-subtitle-1 text-primary mt-7">
-                  Total TTC
-                </h5>
-              </v-col>
-              <v-col
-                cols="6"
-                sm="3"
-                md="2"
-                class="text-end"
-              >
-                <h5 class="py-2 text-subtitle-1 text-disabled">
-                  {{ regionManager.formatNumber(subtotal) ?? 0 }} {{ selectedCountry?.currencySymbol || '€' }}
-                </h5>
-                <h5 v-if="!isForfait" class="py-2 text-subtitle-1 text-disabled">
+            <template v-if="!isForfait">
+              <div class="total-row">
+                <span class="text-body-2 text-medium-emphasis">Total dégarnissage</span>
+                <span class="text-body-2 font-weight-medium">
                   {{ regionManager.formatNumber(totalDegarnissage) }} {{ selectedCountry?.currencySymbol || '€' }}
-                </h5>
-                <h5 v-if="!isForfait" class="py-2 text-subtitle-1 text-disabled">
+                </span>
+              </div>
+              <div class="total-row">
+                <span class="text-body-2 text-medium-emphasis">H.T + Dégarnissage</span>
+                <span class="text-body-2 font-weight-medium">
                   {{ regionManager.formatNumber(subTotalWithDegarnissage) }} {{ selectedCountry?.currencySymbol || '€' }}
-                </h5>
-                <h5 class="py-2 text-subtitle-1 text-disabled">
-                  {{ regionManager.formatNumber(totalTaxRate) }} {{ selectedCountry?.currencySymbol || '€' }}
-                </h5>
-                <h5 v-if="selectedGarage?.percentageCommission" class="py-2 text-subtitle-1 text-orange">
-                  {{ regionManager.formatNumber(totalCommission) }} {{ selectedCountry?.currencySymbol || '€' }}
-                </h5>
-                <h5 class="py-2 text-subtitle-1 text-primary mt-7">
-                  {{ regionManager.formatNumber(total) }} {{ selectedCountry?.currencySymbol || '€' }}
-                </h5>
-              </v-col>
-            </v-row>
-          </v-sheet>
-        </v-card>
+                </span>
+              </div>
+            </template>
+            <div class="total-row">
+              <span class="text-body-2 text-medium-emphasis">TVA ({{ selectedCountry?.taxRate || 0 }}%)</span>
+              <span class="text-body-2 font-weight-medium">
+                {{ regionManager.formatNumber(totalTaxRate) }} {{ selectedCountry?.currencySymbol || '€' }}
+              </span>
+            </div>
+            <div v-if="selectedGarage?.percentageCommission" class="total-row text-orange">
+              <span class="text-body-2">Commission ({{ selectedGarage.percentageCommission }}%)</span>
+              <span class="text-body-2 font-weight-medium">
+                {{ regionManager.formatNumber(totalCommission) }} {{ selectedCountry?.currencySymbol || '€' }}
+              </span>
+            </div>
+            <v-divider class="my-2" />
+            <div class="total-row total-row--final">
+              <span class="text-subtitle-2 font-weight-bold">Total TTC</span>
+              <span class="text-subtitle-2 font-weight-bold text-primary">
+                {{ regionManager.formatNumber(total) }} {{ selectedCountry?.currencySymbol || '€' }}
+              </span>
+            </div>
+          </div>
+        </div>
+
       </v-form>
+
+      <!-- ═══════════════════════════════════════════════════
+           STICKY BOTTOM — Sauvegarder
+      ════════════════════════════════════════════════════ -->
+      <div v-if="!isReadOnly && quoteInformations.status?.code !== 'accepted'" class="sticky-bottom-bar">
+        <v-btn
+          color="primary"
+          size="large"
+          block
+          rounded="lg"
+          elevation="0"
+          prepend-icon="mdi-content-save-outline"
+          @click="onUpdateBtnClick"
+        >
+          Sauvegarder
+        </v-btn>
+      </div>
+
     </v-container>
   </MainLayout>
-  
+
+  <!-- ── Dialogs ── -->
   <GarageDialog
     ref="garageDialogRef"
-    title="Edit customer"
+    title="Modifier le client"
     persistent
     :maxWidth="500"
     @validated="onGarageValidated"
-  >
-  </GarageDialog>
+  />
 
   <AddLineItemDialog
     ref="addLineItemDialogRef"
     title="Ajouter un élément"
     :availableBodyParts="availableBodyParts"
     @add="onAddLineItem"
-  >
-  </AddLineItemDialog>  
+  />
 
   <ConfirmDialog
     ref="deleteQuoteConfirmDialogRef"
-    title="Delete quote"
-    message="You will delete this quote, are you sure ?"
-    confirmLabel="Confirmer"
+    title="Supprimer le devis"
+    message="Cette action est irréversible. Confirmer la suppression ?"
+    confirmLabel="Supprimer"
     cancelLabel="Annuler"
     type="warning"
     @confirm="onConfirmDeleteQuote"
-  >
-  </ConfirmDialog>
+  />
 </template>
 
 <script setup lang="ts">
@@ -593,7 +583,6 @@ import { IRegionManager } from '@/@core/managers/interfaces/IRegionManager';
 import { container } from '@/@infrastructure/ioc/inversify.config';
 import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
 import BackButton from '@/@presentation/@ui/components/buttons/BackButton.vue';
-import GenericButton from '@/@presentation/@ui/components/buttons/GenericButton.vue';
 import MainLayout from '@/@presentation/@ui/layouts/MainLayout.vue';
 import AddLineItemDialog from '@/@presentation/components/AddLineItemDialog.vue';
 import { ConfirmDialogExposed } from '@/@presentation/components/ConfirmDialog';
@@ -601,39 +590,34 @@ import ConfirmDialog from '@/@presentation/components/ConfirmDialog.vue';
 import CountrySelect from '@/@presentation/components/CountrySelect.vue';
 import { GarageDialogExposed } from '@/@presentation/components/GarageDialog';
 import GarageDialog from '@/@presentation/components/GarageDialog.vue';
-import GenericMenu from '@/@presentation/components/GenericMenu.vue';
-import GenericSelect from '@/@presentation/components/GenericSelect.vue';
 import type { AddLineItemDialogExposed } from '@/@presentation/types/components';
 import { IUseEditQuoteState } from '@/@presentation/types/composables/IUseEditQuoteState';
 import { CountryViewModel } from '@/@presentation/types/models/CountryViewModel';
 import { GarageViewModel } from '@/@presentation/types/models/GarageViewModel';
 import { LineItemViewModel } from '@/@presentation/types/models/LineItemViewModel';
 import { UserViewModel } from '@/@presentation/types/models/UserViewModel';
-import { computed, onMounted, ref } from 'vue';
 import { VehicleViewModel } from '@/@presentation/types/models/VehicleViewModel';
+import { computed, onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
-
+// ── Services ─────────────────────────────────────────────────────────────────
 const regionManager = container.get<IRegionManager>(SYMBOLS.Managers.regionManager);
 const authState = container.get<IAuthState>(SYMBOLS.States.AuthState);
-const { isFreePlan } = authState
+const { isFreePlan } = authState;
 
+// ── Refs dialogs ─────────────────────────────────────────────────────────────
+const garageDialogRef = ref<GarageDialogExposed>();
+const addLineItemDialogRef = ref<AddLineItemDialogExposed>();
+const deleteQuoteConfirmDialogRef = ref<ConfirmDialogExposed>();
 
-const garageDialogRef = ref<GarageDialogExposed>()
-const addLineItemDialogRef = ref<AddLineItemDialogExposed>()
-const deleteQuoteConfirmDialogRef = ref<ConfirmDialogExposed>()
-
-
-// Injection du state depuis Inversify
+// ── State ─────────────────────────────────────────────────────────────────────
 const useEditQuoteState = container.get<IUseEditQuoteState>(SYMBOLS.States.Quote.EditQuoteState);
 
 const {
   init,
-
   statuses,
   quoteInformations,
   expirationDate,
-
   technicians,
   garages,
   selectedTechnician,
@@ -644,14 +628,11 @@ const {
   vehicles,
   selectedVehicle,
   selectVehicle,
-
   carInformations,
   setCarImmatriculation,
   setCarBrand,
   setCarDateEntryCirculation,
-
   availableBodyParts,
-
   isForfait,
   isDisplayUnitPrice,
   isComputeCommissionWithoutDentRemoval,
@@ -662,174 +643,182 @@ const {
   forfaitAmount,
   selectCountry,
   selectedCountry,
-
   quoteLines,
   addLine,
   removeLine,
-  
   subtotal,
   totalDegarnissage,
   subTotalWithDegarnissage,
   totalTaxRate,
   totalCommission,
   total,
-
   updateQuote,
   deleteQuote,
   duplicateQuoteToInvoice,
   isReadOnly,
   isAccepted,
   isRefused,
-
-  updateQuoteStatus
+  updateQuoteStatus,
 } = useEditQuoteState;
 
 const router = useRouter();
 const route = useRoute();
-
-const quoteId = route.params.id as string;
-const techniciansList = ref<UserViewModel[]>(technicians.value);
-const garagesList = ref<GarageViewModel[]>(garages.value);
 const vehiclesList = computed(() => vehicles.value);
 
-const headers = [
-    { title: 'Element de carrosserie', key: 'bodyPart.name', width: '25%', minWidth: '25%', align: 'start' },
-    { title: 'Nombre d\'impacts',  width: '20%', minWidth: '20%', align: 'end',
-        children: [
-          { title: 'Ø 25', value: 'impactCount25' },
-          { title: 'Ø 35', value: 'impactCount35' },
-        ],  },
-    { title: 'Type de matériau', key: 'bodyMaterial.name', width: '20%', align: 'start' },
-    { title: 'Type de réparation', key: 'repairType.name', width: '20%', align: 'start' },
-    { title: 'Dégarnissage', key: 'dentRemovalPrice', align: 'start'},
-    { title: `Prix HT (${selectedCountry.value?.currencySymbol || '€'})`, key: 'price', align: 'end', width: '15%', minWidth: '15%' },
-    { title: 'Actions', key: 'actions', align: 'end', sortable: false }
-  ];
+// ── Helpers ───────────────────────────────────────────────────────────────────
+const initials = (name: string) => {
+  if (!name) return '?';
+  return name.split(' ').map(n => n[0]).slice(0, 2).join('').toUpperCase();
+};
 
-
-// #region -> METHODS
-
-const onSearchTechnician = (event: InputEvent) => {
-  const search = (event.target as HTMLInputElement).value;
-  if (search) {
-    techniciansList.value = techniciansList.value.filter(t => t.fullName.toLowerCase().includes(search));
-  } else {
-    techniciansList.value = technicians.value;
+const statusColor = (code?: string) => {
+  switch (code) {
+    case 'accepted':   return 'success';
+    case 'refused':    return 'error';
+    case 'invoiced':   return 'blue';
+    case 'pending':    return 'warning';
+    default:           return 'default';
   }
 };
 
-const onSelectTechnician = (technician: UserViewModel) => {
-  selectTechnician(technician);
-};
-
-const onSearchGarage = (event: InputEvent) => {
-  const search = (event.target as HTMLInputElement).value;
-  if (search) {
-    garagesList.value = garagesList.value.filter(g => g.name.toLowerCase().includes(search));
-  } else {
-    garagesList.value = garages.value;
+const statusLabel = (code?: string) => {
+  switch (code) {
+    case 'accepted':   return 'Accepté';
+    case 'refused':    return 'Refusé';
+    case 'invoiced':   return 'Facturé';
+    case 'pending':    return 'En attente';
+    case 'draft':      return 'Brouillon';
+    case 'processing': return 'En cours';
+    default:           return code ?? '';
   }
 };
 
-const onSelectGarage = (garage: GarageViewModel) => {
-  selectGarage(garage);
-};
+// ── Handlers form ─────────────────────────────────────────────────────────────
+const onSelectTechnician = (t: UserViewModel) => selectTechnician(t);
+const onSelectGarage = (g: GarageViewModel) => selectGarage(g);
+const onSelectVehicle = (v: VehicleViewModel | undefined) => selectVehicle(v);
+const onEditCustomerBtnClick = () => garageDialogRef.value?.open();
+const onGarageValidated = (g: GarageViewModel) => setGarage(g);
+const onCarImmatriculationUpdated = (v: string) => setCarImmatriculation(v);
+const onCarBrandUpdated = (v: string) => setCarBrand(v);
+const onCarYearUpdated = (v: string) => setCarDateEntryCirculation(v);
+const onUpdateIsForfait = (v: boolean) => setIsForfait(v);
+const onUpdateForfaitAmount = (v: number) => setForfaitAmount(Number(v));
+const onUpdateIsDisplayUnitPrice = (v: boolean) => setIsDisplayUnitPrice(v);
+const onUpdateIsComputeCommissionWithoutDentRemoval = (v: boolean) => setIsComputeCommissionWithoutDentRemoval(v);
+const onSelectCountry = (c: CountryViewModel | undefined) => { if (c) selectCountry(c); };
 
-const onSelectVehicle = (vehicle: VehicleViewModel | undefined) => {
-  selectVehicle(vehicle);
-};
+// ── Handlers lignes ───────────────────────────────────────────────────────────
+const onAddItemBtnClick = () => addLineItemDialogRef.value?.open();
+const onRemoveItemBtnClick = (item: LineItemViewModel) => removeLine(item.id);
+const onAddLineItem = (item: LineItemViewModel) => addLine(item);
 
-const onEditCustomerBtnClick = () => {
-  garageDialogRef.value?.open()
-}
-
-const onGarageValidated = (garage: GarageViewModel) => {
-  setGarage(garage)
-}
-
-const onCarImmatriculationUpdated = (value: string) => {
-  setCarImmatriculation(value);
-};
-
-const onCarBrandUpdated = (value: string) => {
-  setCarBrand(value);
-};
-
-const onCarYearUpdated = (value: string) => {
-  setCarDateEntryCirculation(value);
-};
-
-const onUpdateIsForfait = (value: boolean) => {
-  setIsForfait(value);
-};
-
-const onUpdateForfaitAmount = (value: number) => {
-  setForfaitAmount(Number(value));
-};
-
-const onUpdateIsDisplayUnitPrice = (value: boolean) => {
-  setIsDisplayUnitPrice(value);
-};
-
-const onUpdateIsComputeCommissionWithoutDentRemoval = (value: boolean) => {
-  setIsComputeCommissionWithoutDentRemoval(value);
-};
-
-const onSelectCountry = (country: CountryViewModel | undefined) => {
-  selectCountry(country);
-};
-
-const onAddItemBtnClick = () => {
-  addLineItemDialogRef.value?.open()
-};
-
-const onRemoveItemBtnClick = (item: LineItemViewModel) => {
-  removeLine(item.id);
-};
-
-const onAddLineItem = (item: LineItemViewModel) =>  {
-  addLine(item)
-}
-// #endregion
-
-// #REGION -> ACTION METHODS
-const onAcceptedBtnClick = () => {
-  updateQuoteStatus('accepted')
-};
-
-const onRefusedBtnClick = () => {
-  updateQuoteStatus('refused')
-};
-
-const onSendBtnClick = () => {
-  console.log('onSendBtnClick -> send quote');
-};
-
-const onDuplicateQuoteToInvoiceBtnClick = () => {
-  duplicateQuoteToInvoice()
-}
-
-const onViewPdfBtnClick = () => {
-  router.push(`/quotes/${route.params.id}/view`);
-};
-
-const onDeleteBtnClick = () => {
-  deleteQuoteConfirmDialogRef.value?.open()
-};
-
+// ── Handlers actions ──────────────────────────────────────────────────────────
+const onAcceptedBtnClick = () => updateQuoteStatus('accepted');
+const onRefusedBtnClick = () => updateQuoteStatus('refused');
+const onSendBtnClick = () => console.log('send quote');
+const onDuplicateQuoteToInvoiceBtnClick = () => duplicateQuoteToInvoice();
+const onViewPdfBtnClick = () => router.push(`/quotes/${route.params.id}/view`);
+const onDeleteBtnClick = () => deleteQuoteConfirmDialogRef.value?.open();
 const onConfirmDeleteQuote = () => {
-  deleteQuote(quoteInformations.value.number)
-  router.push(`/quotes/`)
-}
-
-const onUpdateBtnClick = () => {
-  updateQuote();
+  deleteQuote(quoteInformations.value.number);
+  router.push('/quotes/');
 };
-// #endregion
-  
+const onUpdateBtnClick = () => updateQuote();
+
 onMounted(async () => {
   await init(route.params.id);
-  techniciansList.value = technicians.value;
-  garagesList.value = garages.value;
 });
 </script>
+
+<style scoped>
+.edit-quote-container {
+  min-height: 100dvh;
+  background: rgb(var(--v-theme-background));
+}
+
+/* Header sticky */
+.page-header {
+  background: rgb(var(--v-theme-surface));
+  border-bottom: 1px solid rgba(var(--v-border-color), 0.12);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+/* Section cards */
+.section-card {
+  background: rgb(var(--v-theme-surface));
+  border-radius: 16px;
+  padding: 16px;
+  border: 1px solid rgba(var(--v-border-color), 0.08);
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.section-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: rgba(var(--v-theme-primary), 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* Line items */
+.line-items-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.line-item-card {
+  border: 1px solid rgba(var(--v-border-color), 0.15);
+  border-radius: 12px;
+  padding: 12px;
+  background: rgba(var(--v-theme-surface-variant), 0.3);
+}
+
+/* Totaux */
+.totals-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.total-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 0;
+}
+
+.total-row--final {
+  padding-top: 8px;
+}
+
+/* Sticky bottom */
+.sticky-bottom-bar {
+  position: sticky;
+  bottom: 0;
+  z-index: 10;
+  padding: 12px 16px;
+  padding-bottom: max(12px, env(safe-area-inset-bottom));
+  background: rgb(var(--v-theme-surface));
+  border-top: 1px solid rgba(var(--v-border-color), 0.12);
+}
+
+.pb-28 {
+  padding-bottom: 80px;
+}
+
+.min-w-0 {
+  min-width: 0;
+}
+</style>

@@ -202,8 +202,29 @@ export function useEditQuoteState() {
       if (repairTypeResult.status === 'fulfilled')
         _repairTypes.value = repairTypeResult.value.map((rt) => RepairTypeMapper.dtoToView(rt));
 
-      if (priceParamsResult.status === 'fulfilled')
+      if (priceParamsResult.status === 'fulfilled') {
         _priceParams.value = SettingPriceMapper.dtoToView(priceParamsResult.value);
+        console.log('[Quote] priceParams chargés:', JSON.stringify({
+          general: _priceParams.value?.general,
+          technicity: _priceParams.value?.technicity,
+          bodyPartsCount: _priceParams.value?.bodyParts?.length,
+          impactsCountCount: _priceParams.value?.impactsCount?.length,
+        }));
+        // Recalculer les lignes existantes dont le prix est 0
+        _quoteLines.value.forEach(line => {
+          console.log('[Quote] ligne:', line.lineId, 'price:', line.price, 'bodyPart:', line.bodyPart?.id, 'bodyMaterial:', line.bodyMaterial?.id, 'repairType:', line.repairType?.code);
+          if ((!line.price || line.price === 0) && line.bodyPart && line.bodyMaterial && line.repairType) {
+            try {
+              computePrice(line);
+              console.log('[Quote] prix recalculé ligne', line.lineId, ':', line.price);
+            } catch (err) {
+              console.warn('[Quote] computePrice a échoué pour la ligne', line.lineId, err);
+            }
+          }
+        });
+      } else {
+        console.warn('[Quote] priceParams rejeté:', priceParamsResult.reason);
+      }
       
     } catch (e) {
       error.value = e;
@@ -418,8 +439,20 @@ export function useEditQuoteState() {
   // }
 
   const computePrice = (line: LineItemViewModel) => {
-    const lineItemViewDto = LineItemMapper.viewToDto(line);
-    line.price = calculateLineCostUseCase.execute(lineItemViewDto, SettingPriceMapper.viewToDto(_priceParams.value));
+    if (!_priceParams.value) {
+      console.warn('[Quote] computePrice: _priceParams non chargé, prix = 0');
+      line.price = 0;
+      return;
+    }
+    try {
+      const lineItemViewDto = LineItemMapper.viewToDto(line);
+      const priceDto = SettingPriceMapper.viewToDto(_priceParams.value);
+      line.price = calculateLineCostUseCase.execute(lineItemViewDto, priceDto);
+      console.log('[Quote] computePrice:', line.price, '| impactCount25:', line.impactCount25, '| impactCount35:', line.impactCount35, '| repairType:', line.repairType?.code);
+    } catch (e) {
+      console.error('[Quote] computePrice erreur:', e);
+      line.price = 0;
+    }
   }
 
   
