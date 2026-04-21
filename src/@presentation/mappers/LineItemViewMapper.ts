@@ -1,3 +1,6 @@
+import { BodyPartViewModel } from "@/@presentation/types/models/carRepair/BodyPartViewModel";
+import { BodyMaterialViewModel } from "@/@presentation/types/models/carRepair/BodyMaterialViewModel";
+import { DentRepairTypeViewModel } from "@/@presentation/types/models/carRepair/DentRepairTypeViewModel";
 import { LineItemViewModel } from "@/@presentation/types/models/LineItemViewModel";
 import { LineItemViewDto } from "@/@application/dtos/LineItemViewDto";
 
@@ -27,6 +30,21 @@ export class LineItemViewMapper {
       impactCount35: dto.impactCount35,
       dentRemovalPrice: dto.dentRemovalPrice,
       price: dto.price ?? 0
+    };
+  }
+
+  static dtoToViewEnriched(
+    dto: LineItemViewDto,
+    bodyParts: BodyPartViewModel[],
+    bodyMaterials: BodyMaterialViewModel[],
+    repairTypes: DentRepairTypeViewModel[]
+  ): LineItemViewModel {
+    const base = LineItemViewMapper.dtoToView(dto);
+    return {
+      ...base,
+      bodyPart: bodyParts.find(bp => bp.id === base.bodyPartId),
+      bodyMaterial: bodyMaterials.find(bm => bm.id === base.bodyMaterialId),
+      repairType: repairTypes.find(rt => rt.id === base.repairTypeId),
     };
   }
 }

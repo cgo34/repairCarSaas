@@ -126,48 +126,8 @@ export function useEditQuoteState() {
       // resetQuote();
       _quoteId.value = id;     
       
-      const quote = await getQuoteUseCase.execute(id);
-      const quoteDetailDto = await getQuoteDetailUseCase.execute(id);
-      const statusesDto = await getDocumentStatuseUseCase.execute();
 
-      _statuses.value = statusesDto.map(m => DocumentStatuseMapper.dtoToView(m))
-      
-      _quote.value = quote;
-      _isForfait.value = quote?.isForfait ?? false
-      _forfaitAmount.value = quote?.forfaitAmount
-      
-      _quoteLines.value = quoteDetailDto?.map((line, idx) => ({
-        ...LineItemViewMapper.dtoToView(line),
-        lineId: idx + 1,
-      })) ?? [];
-      
-      
-      // TODO: (gce) -> MOVE TO MAPPER
-      _quoteInformations.value.number = _quote.value.quoteNumber;
-      const startDate = new Date(_quote.value.startDate);
-      _quoteInformations.value.date = startDate.toISOString().split('T')[0];
-
-      // Ajout d’un mois
-      // const expirationDate = new Date(startDate);
-      // expirationDate.setMonth(expirationDate.getMonth() + 1);
-      // _quoteInformations.value.expirationDate = expirationDate.toISOString().split('T')[0];
-      
-      _quoteInformations.value.status = _quote.value.status;
-
-      _selectedTechnician.value = _quote.value.technician;
-      _selectedGarage.value = _quote.value.garage;
-      if (_quote.value.garage?.id) {
-        const vehiclesResult = await vehicleUseCase.getByGarageId(_quote.value.garage.id).catch(() => []);
-        _vehicles.value = vehiclesResult.map(VehicleMapper.dtoToView);
-        if (_quote.value.vehicleId) {
-          _selectedVehicle.value = _vehicles.value.find(v => v.id === _quote.value.vehicleId);
-        }
-      }
-
-      _carInformations.value.immatriculation = _quote.value.carImmatriculation ?? '';
-      _carInformations.value.brand = _quote.value.carBrand ?? '';
-      _carInformations.value.dateEntryCirculation = _quote.value.carDateEntryCirculation ?? '';
-
+      // 1. Charger les référentiels d'abord
       const [garageResult, technicianResult, bodyPartResult, bodyMaterialResult, repairTypeResult, priceParamsResult] =
         await Promise.allSettled([
           garageUseCase.getByUserId(authState.user.value?.id),
@@ -177,7 +137,6 @@ export function useEditQuoteState() {
           repairTypeUseCase.executeGetAll(),
           priceParamsUseCase.getByUserId(authState.user.value?.id),
         ]);
-        
 
       if (garageResult.status === 'fulfilled')
         _garages.value = garageResult.value.map((g) => GarageMapper.dtoToView(g));
@@ -201,7 +160,53 @@ export function useEditQuoteState() {
 
       if (priceParamsResult.status === 'fulfilled')
         _priceParams.value = SettingPriceMapper.dtoToView(priceParamsResult.value);
-      
+
+      // 2. Charger le devis et les lignes après les référentiels
+      const quote = await getQuoteUseCase.execute(id);
+      const quoteDetailDto = await getQuoteDetailUseCase.execute(id);
+      const statusesDto = await getDocumentStatuseUseCase.execute();
+
+      _statuses.value = statusesDto.map(m => DocumentStatuseMapper.dtoToView(m))
+      _quote.value = quote;
+      _isForfait.value = quote?.isForfait ?? false
+      _forfaitAmount.value = quote?.forfaitAmount
+      _quoteLines.value = quoteDetailDto?.map((line, idx) =>
+        ({
+          ...LineItemViewMapper.dtoToViewEnriched(
+            line,
+            _bodyParts.value,
+            _bodyMaterials.value,
+            _repairTypes.value
+          ),
+          lineId: idx + 1,
+        })
+      ) ?? [];
+
+      // TODO: (gce) -> MOVE TO MAPPER
+      _quoteInformations.value.number = _quote.value.quoteNumber;
+      const startDate = new Date(_quote.value.startDate);
+      _quoteInformations.value.date = startDate.toISOString().split('T')[0];
+
+      // Ajout d’un mois
+      // const expirationDate = new Date(startDate);
+      // expirationDate.setMonth(expirationDate.getMonth() + 1);
+      // _quoteInformations.value.expirationDate = expirationDate.toISOString().split('T')[0];
+      _quoteInformations.value.status = _quote.value.status;
+
+      _selectedTechnician.value = _quote.value.technician;
+      _selectedGarage.value = _quote.value.garage;
+      if (_quote.value.garage?.id) {
+        const vehiclesResult = await vehicleUseCase.getByGarageId(_quote.value.garage.id).catch(() => []);
+        _vehicles.value = vehiclesResult.map(VehicleMapper.dtoToView);
+        if (_quote.value.vehicleId) {
+          _selectedVehicle.value = _vehicles.value.find(v => v.id === _quote.value.vehicleId);
+        }
+      }
+
+      _carInformations.value.immatriculation = _quote.value.carImmatriculation ?? '';
+      _carInformations.value.brand = _quote.value.carBrand ?? '';
+      _carInformations.value.dateEntryCirculation = _quote.value.carDateEntryCirculation ?? '';
+
     } catch (e) {
       error.value = e;
     } finally {
