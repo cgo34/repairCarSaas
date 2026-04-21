@@ -8,22 +8,22 @@ const customizerDrawer = ref(config.Customizer_drawer);
 const miniSidebar = ref(config.mini_sidebar);
 const fontTheme = ref(config.fontTheme);
 const inputBg = ref(config.inputBg);
-const currentTheme = ref('');
+const currentTheme = ref('PurpleLightTheme');
 
 export function useCustomizerState() {
   const theme = useTheme();
-  // theme.global.name.value = currentTheme.value;
 
-  // Fonction pour basculer entre les thèmes "light" et "dark"
-  const toggleTheme = (newValue: boolean | null) => {
-    const selectedTheme = newValue ? 'PinkDarkTheme' : 'PinkDarkTheme';
-    theme.global.name.value = selectedTheme;
-    currentTheme.value = selectedTheme; // Synchronise la variable globale
+  // Bascule entre le thème clair et sombre
+  const toggleTheme = () => {
+    const isDark = currentTheme.value === 'PurpleDarkTheme';
+    const next = isDark ? 'PurpleLightTheme' : 'PurpleDarkTheme';
+    theme.global.name.value = next;
+    currentTheme.value = next;
   };
 
-  const themeLabel = computed(() => {
-    return currentTheme.value === 'PinkDarkTheme' ? 'Dark' : 'Light';
-  });
+  const isDarkTheme = computed(() => currentTheme.value === 'PurpleDarkTheme');
+
+  const themeLabel = computed(() => isDarkTheme.value ? 'Sombre' : 'Clair');
 
   // Actions
   const toggleSidebarDrawer = () => {
@@ -50,6 +50,7 @@ export function useCustomizerState() {
     fontTheme,
     inputBg,
     currentTheme,
+    isDarkTheme,
     themeLabel,
 
     // Actions
