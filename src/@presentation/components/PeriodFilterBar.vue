@@ -75,7 +75,7 @@ interface Props {
   hasActiveFilter: boolean;
 }
 
-const props = defineProps<Props>();
+defineProps<Props>();
 
 const emit = defineEmits<{
   'update:dateFrom': [value: string];

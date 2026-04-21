@@ -211,16 +211,6 @@ const generatePdfUseCase = container.get<IGenerateQuotePdfUseCase>(SYMBOLS.UseCa
 const router = useRouter();
 const { mobile } = useDisplay();
 const { init, quotes, deleteQuote } = useQuoteState;
-// #endregion
-
-// #region -> REFS
-const selectedQuotes = ref<QuoteViewModel[]>([]);
-const downloading = ref(false);
-const deleteQuoteConfirmDialogRef = ref<ConfirmDialogExposed>();
-const _quoteIdToDelete = ref<string | undefined>();
-// #endregion
-
-// #region -> PERIOD FILTER
 const {
   dateFrom,
   dateTo,
@@ -234,6 +224,13 @@ const {
   items: quotes,
   getDate: (quote) => quote.createdAt,
 });
+// #endregion
+
+// #region -> REFS
+const selectedQuotes = ref<QuoteViewModel[]>([]);
+const downloading = ref(false);
+const deleteQuoteConfirmDialogRef = ref<ConfirmDialogExposed>();
+const _quoteIdToDelete = ref<string | undefined>();
 // #endregion
 
 const desktopHeaders = [
