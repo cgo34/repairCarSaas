@@ -158,22 +158,18 @@ export class AuthState implements IAuthState {
       }
       // Mise à jour de l'état
       this.isAuthenticated.value = true;
-      // ➕ Lier automatiquement le plan 'free'
-      const subscription = await this.authUseCase.subscribeToFreePlan.execute(user.id);
       // Mapper UserDto -> UserViewModel
       this.user.value = PresentationUserMapper.dtoToView(user);
-      this.subscription.value = subscription;
-      this.user.value.subscription = subscription;
 
       // Utilisation des méthodes communes
       this.pushState();
       
       // Une fois inscrit, créer son profil dans public.users
-      await this.createUserUseCase.execute(user)
+      await this.createUserUseCase.execute(this.user.value);
 
       // Copier les settings de prix par défaut (admin) pour le nouvel utilisateur
       try {
-        await this.settingPriceUseCase.createSettingsForUser(user.id);
+        await this.settingPriceUseCase.createSettingsForUser(this.user.value.id);
       } catch (settingsError) {
         console.error('[AuthState] Could not copy default price settings:', settingsError);
       }      
@@ -184,6 +180,13 @@ export class AuthState implements IAuthState {
         error
       );
     }
+
+    
+      // ➕ Lier automatiquement le plan 'free'
+      const subscription = await this.authUseCase.subscribeToFreePlan.execute(this.user.value.id);
+      
+      this.subscription.value = subscription;
+      this.user.value.subscription = subscription;
   }
 
  async logout(): Promise<void> {
