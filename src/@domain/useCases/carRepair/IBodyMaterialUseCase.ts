@@ -1,8 +1,8 @@
-import { BodyMaterialDto } from "@/@infrastructure/dtos/carRepair/BodyMaterialDto";
+import { BodyMaterialViewModel } from "@/@presentation/types/models/carRepair/BodyMaterialViewModel";
 
 export interface IBodyMaterialUseCase {
-  executeGetAll(): Promise<BodyMaterialDto[]>;
-  executeCreate(bodyMaterial: BodyMaterialDto): Promise<BodyMaterialDto>;
-  executeUpdate(bodyMaterial: BodyMaterialDto): Promise<BodyMaterialDto>;
+  executeGetAll(): Promise<BodyMaterialViewModel[]>;
+  executeCreate(bodyMaterial: BodyMaterialViewModel): Promise<BodyMaterialViewModel>;
+  executeUpdate(bodyMaterial: BodyMaterialViewModel): Promise<BodyMaterialViewModel>;
   executeDelete(id: string): Promise<void>;
 }

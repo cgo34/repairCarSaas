@@ -1,8 +1,8 @@
-import { SettingPriceBodyPartCoefficientViewDto } from '@/@application/dtos/settings/SettingPriceBodyPartCoefficientViewType';
+import { SettingPriceBodyPartCoefficientDto } from '@/@infrastructure/dtos/settings/price/SettingPriceBodyPartCoefficientDto';
 import { SettingPriceBodyPartCoefficientViewModel } from '@/@presentation/types/models/settings/price/SettingPriceBodyPartCoefficientViewModel';
 
 export class SettingPriceBodyPartCoefficientMapper {
-  static viewToDto(viewModel: SettingPriceBodyPartCoefficientViewModel): SettingPriceBodyPartCoefficientViewDto {
+  static viewToDto(viewModel: SettingPriceBodyPartCoefficientViewModel): SettingPriceBodyPartCoefficientDto {
     return {
       userId: viewModel.userId,
       bodyPartId: viewModel.bodyPartId ?? '',
@@ -16,10 +16,10 @@ export class SettingPriceBodyPartCoefficientMapper {
     };
   }
 
-  static dtoToView(dto: SettingPriceBodyPartCoefficientViewDto): SettingPriceBodyPartCoefficientViewModel {
+  static dtoToView(dto: SettingPriceBodyPartCoefficientDto): SettingPriceBodyPartCoefficientViewModel {
     return {
       userId: dto.userId,
-      bodyPartId: dto.bodyPartId,
+      bodyPartId: dto.bodyPartId ?? '',
       coefficient: dto.coefficient,
       bodyParts: {
         id: dto.bodyParts?.id ?? '',

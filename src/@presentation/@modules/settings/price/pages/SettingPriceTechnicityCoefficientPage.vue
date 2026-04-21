@@ -9,7 +9,7 @@
             icon="$info"
             variant="tonal"
             text="L'indice de difficulté 1 est un DSP sur de la tôle. L'aluminium est ici majoré d'un multiplicateur et le travail de DAP est, lui, minoré Le diammètre 2 est le diamètre de référence, le diamètre 1 permet de minorer le prix de référence, quelle que soit la méthode de chiffrage."
-          ></v-alert>
+          />
           <v-form>
             <v-container>
               <v-row>
@@ -21,7 +21,7 @@
                     v-model="settings.dapCoefficient"
                     label="DAP coefficient"
                     required
-                  ></v-text-field>
+                  />
                 </v-col>
 
                 <v-col
@@ -32,7 +32,7 @@
                     v-model="settings.dspCoefficient"
                     label="DSP coefficient"
                     required
-                  ></v-text-field>
+                  />
                 </v-col>
                 <v-col
                   cols="6"
@@ -42,7 +42,7 @@
                     v-model="settings.diameter25Coefficient"
                     label="Diameter 25 coefficient"
                     required
-                  ></v-text-field>
+                  />
                 </v-col>
 
                 <v-col
@@ -53,7 +53,7 @@
                     v-model="settings.diameter35Coefficient"
                     label="Diameter 35 coefficient"
                     required
-                  ></v-text-field>
+                  />
                 </v-col>
                 <v-col
                   cols="6"
@@ -63,7 +63,7 @@
                     v-model="settings.aluminiumCoefficient"
                     label="Aluminium coefficient"
                     required
-                  ></v-text-field>
+                  />
                 </v-col>
               </v-row>
             </v-container>

@@ -1,8 +1,8 @@
-import { SettingPriceRepairTypeCoefficientViewDto } from '@/@application/dtos/settings/SettingPriceRepairTypeCoefficientViewDto';
+import { SettingPriceRepairTypeCoefficientDto } from '@/@infrastructure/dtos/settings/price/SettingPriceRepairTypeCoefficientDto';
 import { SettingPriceRepairTypeCoefficientViewModel } from '@/@presentation/types/models/settings/price/SettingPriceRepairTypeCoefficientViewModel';
 
 export class SettingPriceRepairTypeCoefficientMapper {
-  static viewToDto(viewModel: SettingPriceRepairTypeCoefficientViewModel): SettingPriceRepairTypeCoefficientViewDto {
+  static viewToDto(viewModel: SettingPriceRepairTypeCoefficientViewModel): SettingPriceRepairTypeCoefficientDto {
     return {
       userId: viewModel.userId,
       repairTypeId: viewModel.repairTypeId,
@@ -15,7 +15,7 @@ export class SettingPriceRepairTypeCoefficientMapper {
     };
   }
 
-  static dtoToView(dto: SettingPriceRepairTypeCoefficientViewDto): SettingPriceRepairTypeCoefficientViewModel {
+  static dtoToView(dto: SettingPriceRepairTypeCoefficientDto): SettingPriceRepairTypeCoefficientViewModel {
     return {
       userId: dto.userId,
       repairTypeId: dto.repairTypeId,

@@ -33,9 +33,9 @@ export function useBodyPartState(): IBodyPartState {
   const fetchBodyParts = async (): Promise<BodyPartViewModel[]> => {
     loading.value = true;
     try {
-      return bodyPartUseCase.executeGetAll().then((data) => {
-        _bodyParts.value = data;
-        return data;
+      return bodyPartUseCase.executeGetAll().then((viewModels) => {
+        _bodyParts.value = viewModels;
+        return viewModels;
       });
     } catch (e) {
       throw e;
@@ -64,10 +64,10 @@ export function useBodyPartState(): IBodyPartState {
     loading.value = true;
     try {
       bodyPart.code = slugify(bodyPart.name);
-      return bodyPartUseCase.executeCreate(bodyPart).then((data) => {
-        _bodyParts.value.push(data);
+      return bodyPartUseCase.executeCreate(bodyPart).then((viewModel) => {
+        _bodyParts.value.push(viewModel);
         resetSelectedBodyPart();
-        return data;
+        return viewModel;
       });
     } catch (e) {
       throw e;
@@ -85,9 +85,9 @@ export function useBodyPartState(): IBodyPartState {
     loading.value = true;
     try {
       bodyPart.code = slugify(bodyPart.name);
-      return bodyPartUseCase.executeUpdate(bodyPart).then((data) => {
-        _bodyParts.value = _bodyParts.value.map((bp) => (bp.id === bodyPart.id ? data : bp));
-        return data;
+      return bodyPartUseCase.executeUpdate(bodyPart).then((viewModel) => {
+        _bodyParts.value = _bodyParts.value.map((bp) => (bp.id === bodyPart.id ? viewModel : bp));
+        return viewModel;
       });
     } catch (e) {
       throw e;

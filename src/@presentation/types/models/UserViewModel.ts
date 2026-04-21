@@ -3,6 +3,7 @@ export interface UserViewModel {
   email: string;
   password?: string;
   fullName: string;
+  createdAt?: string;
   role?: string;
   percentageCommission?: number;
 }

@@ -1,5 +1,6 @@
 <template>
-  <MainLayout><v-container fluid>
+  <MainLayout>
+    <v-container fluid>
       <v-row>
         <v-card>
           <v-alert
@@ -8,7 +9,7 @@
             icon="$info"
             variant="tonal"
             text="Le nombre de bosses est traduit en Unités de temps (UT) paramétrables 1UT = 6 minutes"
-          ></v-alert>
+          />
           <v-form>
             <v-container>
               <v-row>
@@ -29,7 +30,7 @@
                       v-model="line.unitTime"
                       label="Unit time"
                       required
-                    ></v-text-field>
+                    />
                   </div>
                 </v-col>
 
@@ -50,7 +51,7 @@
                       v-model="line.unitTime"
                       label="Unit time"
                       required
-                    ></v-text-field>
+                    />
                   </div>
                 </v-col>
               </v-row>

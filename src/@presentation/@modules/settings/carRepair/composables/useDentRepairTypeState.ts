@@ -3,6 +3,7 @@ import { container } from '@/@infrastructure/ioc/inversify.config';
 import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
 import { IDentRepairTypeState } from '@/@presentation/types/composables/IDentRepairTypeState';
 import { DentRepairTypeViewModel } from '@/@presentation/types/models/carRepair/DentRepairTypeViewModel';
+// mapping now handled in use case
 import { JsonHelper } from '@/helpers/jsonHelper';
 import { computed, ref } from 'vue';
 
@@ -26,12 +27,11 @@ export function useDentRepairTypeState(): IDentRepairTypeState {
   const fetchDentRepairTypes = async (): Promise<DentRepairTypeViewModel[]> => {
     loading.value = true;
     try {
-      return dentRepairTypeUseCase.executeGetAll().then((data) => {
-        _dentRepairTypes.value = data;
-        return data;
+      return dentRepairTypeUseCase.executeGetAll().then((viewModels) => {
+        _dentRepairTypes.value = viewModels;
+        return viewModels;
       });
     } catch (e) {
-      // error.value = e;
       throw e;
     } finally {
       loading.value = false;
@@ -57,13 +57,12 @@ export function useDentRepairTypeState(): IDentRepairTypeState {
   const addDentRepairType = async (dentRepairType: DentRepairTypeViewModel): Promise<DentRepairTypeViewModel> => {
     loading.value = true;
     try {
-      return dentRepairTypeUseCase.executeCreate(dentRepairType).then((data) => {
-        _dentRepairTypes.value.push(data);
+      return dentRepairTypeUseCase.executeCreate(dentRepairType).then((viewModel) => {
+        _dentRepairTypes.value.push(viewModel);
         resetSelectedDentRepairType();
-        return data;
+        return viewModel;
       });
     } catch (e) {
-      // error.value = e;
       throw e;
     } finally {
       loading.value = false;
@@ -80,12 +79,11 @@ export function useDentRepairTypeState(): IDentRepairTypeState {
 
     loading.value = true;
     try {
-      return dentRepairTypeUseCase.executeUpdate(dentRepairType).then((data) => {
-        _dentRepairTypes.value = _dentRepairTypes.value.map((drt) => drt.id === dentRepairType.id ? data : drt);
-        return data;
+      return dentRepairTypeUseCase.executeUpdate(dentRepairType).then((viewModel) => {
+        _dentRepairTypes.value = _dentRepairTypes.value.map((drt) => drt.id === dentRepairType.id ? viewModel : drt);
+        return viewModel;
       });
     } catch (e) {
-      // error.value = e;
       throw e;
     } finally {
       loading.value = false;

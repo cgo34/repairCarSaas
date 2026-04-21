@@ -2,9 +2,10 @@
 import { ISubscriptionRepository } from '@domain/repositories/ISubscriptionRepository';
 import { SYMBOLS } from '@infrastructure/ioc/symbols';
 import { inject, injectable } from 'inversify';
+import { ISubscribeToFreePlanUseCase } from '@domain/useCases/ISubscribeToFreePlanUseCase';
 
 @injectable()
-export class SubscribeToFreePlanUseCase {
+export class SubscribeToFreePlanUseCase implements ISubscribeToFreePlanUseCase {
   constructor(
     @inject(SYMBOLS.Repositories.SubscriptionRepository)
     private readonly subscriptionRepository: ISubscriptionRepository
