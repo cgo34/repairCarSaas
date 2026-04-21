@@ -1,127 +1,142 @@
 <template>
   <MainLayout>
-    <v-container fluid>
-      <v-row>
+    <v-container fluid class="pa-3 pa-sm-4">
+
+      <!-- ── HEADER PAGE ─────────────────────────────────────── -->
+      <div class="d-flex align-center justify-space-between mb-4">
+        <div>
+          <h1 class="text-h6 font-weight-bold">Gestion des Devis</h1>
+          <p class="text-caption text-medium-emphasis mt-n1">
+            {{ filteredQuotes.length }} devis<span v-if="dateFrom || dateTo"> · période sélectionnée</span>
+          </p>
+        </div>
+        <v-btn
+          color="primary"
+          prepend-icon="mdi-plus"
+          rounded="lg"
+          :size="mobile ? 'small' : 'default'"
+          @click="onAddQuote"
+        >
+          <span class="d-none d-sm-inline">Ajouter un Devis</span>
+          <span class="d-sm-none">Nouveau</span>
+        </v-btn>
+      </div>
+
+      <!-- ── FILTER CARD ─────────────────────────────────────── -->
+      <v-card flat rounded="lg" border class="mb-3">
+        <div class="px-3 pt-3 pb-2">
+
+          <!-- Presets scroll horizontal sur mobile -->
+          <div class="preset-scroll mb-2">
+            <v-btn
+              v-for="preset in datePresets"
+              :key="preset.key"
+              size="small"
+              :variant="activePreset === preset.key ? 'flat' : 'tonal'"
+              :color="activePreset === preset.key ? 'primary' : 'default'"
+              rounded="lg"
+              class="mr-1 flex-shrink-0"
+              @click="applyPreset(preset.key)"
+            >
+              {{ preset.label }}
+            </v-btn>
+          </div>
+
+          <!-- Date pickers + actions sélection desktop -->
+          <div class="d-flex align-center flex-wrap gap-2">
+            <v-text-field
+              v-model="dateFrom"
+              label="Du"
+              type="date"
+              density="compact"
+              variant="outlined"
+              hide-details
+              :style="mobile ? 'flex:1;min-width:130px' : 'max-width:160px'"
+              @update:model-value="activePreset = 'custom'"
+            />
+            <v-text-field
+              v-model="dateTo"
+              label="Au"
+              type="date"
+              density="compact"
+              variant="outlined"
+              hide-details
+              :style="mobile ? 'flex:1;min-width:130px' : 'max-width:160px'"
+              @update:model-value="activePreset = 'custom'"
+            />
+            <v-btn
+              v-if="dateFrom || dateTo"
+              icon="mdi-close"
+              size="small"
+              variant="text"
+              @click="clearFilter"
+            />
+            <v-spacer v-if="!mobile" />
+            <transition name="fade">
+              <div v-if="selectedQuotes.length > 0 && !mobile" class="d-flex align-center gap-2">
+                <span class="text-body-2 text-medium-emphasis">{{ selectedQuotes.length }} sélectionné(s)</span>
+                <v-btn
+                  color="primary"
+                  variant="flat"
+                  size="small"
+                  prepend-icon="mdi-download-multiple"
+                  :loading="downloading"
+                  rounded="lg"
+                  @click="onBulkDownload"
+                >
+                  Télécharger ZIP
+                </v-btn>
+                <v-btn variant="text" size="small" @click="selectedQuotes = []">
+                  Tout désélectionner
+                </v-btn>
+              </div>
+            </transition>
+          </div>
+        </div>
+
+        <!-- Barre sélection mobile -->
+        <transition name="slide-up">
+          <div v-if="selectedQuotes.length > 0 && mobile" class="selection-bar-mobile px-3 py-2 d-flex align-center gap-2">
+            <span class="text-body-2 font-weight-medium">{{ selectedQuotes.length }} sélectionné(s)</span>
+            <v-spacer />
+            <v-btn variant="text" size="small" @click="selectedQuotes = []">Annuler</v-btn>
+            <v-btn
+              color="primary"
+              variant="flat"
+              size="small"
+              prepend-icon="mdi-download-multiple"
+              :loading="downloading"
+              rounded="lg"
+              @click="onBulkDownload"
+            >
+              ZIP
+            </v-btn>
+          </div>
+        </transition>
+      </v-card>
+
+      <!-- ── TABLE ───────────────────────────────────────────── -->
+      <v-card flat rounded="lg" border>
         <v-data-table
           v-model="selectedQuotes"
-          :headers="headers"
+          :headers="activeHeaders"
           :items="filteredQuotes"
           :sort-by="[{ key: 'createdAt', order: 'desc' }]"
           show-select
           item-value="id"
           return-object
+          no-data-text="Aucun devis trouvé"
         >
-          <!-- ── TOP BAR ─────────────────────────────────────── -->
-          <template #top>
-            <v-toolbar flat class="pb-2">
-              <v-toolbar-title>Gestion des Devis</v-toolbar-title>
-              <v-divider class="mx-4" inset vertical />
-              <v-spacer />
-              <v-btn color="primary" @click="onAddQuote">
-                Ajouter un Devis
-              </v-btn>
-            </v-toolbar>
-
-            <!-- Barre de filtres -->
-            <div class="filter-bar px-4 pb-3">
-              <div class="d-flex align-center gap-3 flex-wrap">
-
-                <!-- Raccourcis rapides -->
-                <div class="d-flex gap-2">
-                  <v-btn
-                    v-for="preset in datePresets"
-                    :key="preset.key"
-                    size="small"
-                    :variant="activePreset === preset.key ? 'flat' : 'tonal'"
-                    :color="activePreset === preset.key ? 'primary' : 'default'"
-                    rounded="lg"
-                    @click="applyPreset(preset.key)"
-                  >
-                    {{ preset.label }}
-                  </v-btn>
-                </div>
-
-                <v-divider vertical class="mx-1" style="height:32px;" />
-
-                <!-- Plage personnalisée -->
-                <v-text-field
-                  v-model="dateFrom"
-                  label="Du"
-                  type="date"
-                  density="compact"
-                  variant="outlined"
-                  hide-details
-                  style="max-width:160px;"
-                  @update:model-value="activePreset = 'custom'"
-                />
-                <v-text-field
-                  v-model="dateTo"
-                  label="Au"
-                  type="date"
-                  density="compact"
-                  variant="outlined"
-                  hide-details
-                  style="max-width:160px;"
-                  @update:model-value="activePreset = 'custom'"
-                />
-
-                <v-btn
-                  v-if="dateFrom || dateTo"
-                  icon="mdi-close"
-                  size="small"
-                  variant="text"
-                  @click="clearFilter"
-                />
-
-                <v-spacer />
-
-                <!-- Résumé sélection + téléchargement groupé -->
-                <transition name="fade">
-                  <div v-if="selectedQuotes.length > 0" class="d-flex align-center gap-2">
-                    <span class="text-body-2 text-medium-emphasis">
-                      {{ selectedQuotes.length }} sélectionné(s)
-                    </span>
-                    <v-btn
-                      color="primary"
-                      variant="flat"
-                      size="small"
-                      prepend-icon="mdi-download-multiple"
-                      :loading="downloading"
-                      rounded="lg"
-                      @click="onBulkDownload"
-                    >
-                      Télécharger ZIP
-                    </v-btn>
-                    <v-btn
-                      variant="text"
-                      size="small"
-                      @click="selectedQuotes = []"
-                    >
-                      Tout désélectionner
-                    </v-btn>
-                  </div>
-                </transition>
-              </div>
-
-              <!-- Compteur résultats -->
-              <div class="mt-2 text-caption text-medium-emphasis">
-                {{ filteredQuotes.length }} devis
-                <span v-if="dateFrom || dateTo"> sur la période sélectionnée</span>
-              </div>
-            </div>
+          <template #item.quoteNumber="{ value }">
+            <span class="font-weight-semibold text-primary">#{{ value }}</span>
           </template>
 
-          <!-- ── Colonnes ────────────────────────────────────── -->
-          <template #item.quoteNumber="{ value }">
-            <span class="font-weight-medium">#{{ value }}</span>
+          <template #item.createdAt="{ value }">
+            <span class="text-no-wrap">{{ regionManager.formatDate(value) }}</span>
           </template>
 
           <template #item.garage="{ value }">
             {{ value?.name }}
-          </template>
-
-          <template #item.createdAt="{ value }">
-            {{ regionManager.formatDate(value) }}
           </template>
 
           <template #item.status="{ value }">
@@ -129,25 +144,50 @@
           </template>
 
           <template #item.total="{ item }">
-            {{ item.totalHt ? `${item.totalHt} €` : (item.isForfait ? `${item.forfaitAmount ?? 0} €` : '0 €') }}
+            <span class="font-weight-medium">
+              {{ item.totalHt ? `${item.totalHt} €` : (item.isForfait ? `${item.forfaitAmount ?? 0} €` : '0 €') }}
+            </span>
           </template>
 
           <template #item.actions="{ item }">
-            <v-icon class="me-2" size="small" @click="onEditQuote(item)">mdi-pencil</v-icon>
-            <v-icon
-              size="small"
-              :disabled="item.status === 'accepted' || item.status === 'cancel'"
-              @click="onDeleteBtnClick(item.id)"
-            >
-              mdi-delete
-            </v-icon>
+            <div class="d-flex align-center">
+              <v-btn icon="mdi-pencil" size="x-small" variant="text" @click="onEditQuote(item)" />
+              <v-btn
+                icon="mdi-delete"
+                size="x-small"
+                variant="text"
+                color="error"
+                :disabled="item.status === 'accepted' || item.status === 'cancel'"
+                @click="onDeleteBtnClick(item.id)"
+              />
+            </div>
+          </template>
+
+          <template #bottom="{ pageCount, page, itemsPerPage, setItemsPerPage, prevPage, nextPage }">
+            <div class="d-flex align-center justify-end flex-wrap gap-2 px-3 py-2">
+              <span class="text-caption text-medium-emphasis">Lignes par page</span>
+              <v-select
+                :model-value="itemsPerPage"
+                :items="[10, 25, 50, { value: -1, title: 'Tout' }]"
+                density="compact"
+                variant="outlined"
+                hide-details
+                style="max-width:90px"
+                @update:model-value="setItemsPerPage"
+              />
+              <span class="text-caption text-medium-emphasis">Page {{ page }} / {{ pageCount }}</span>
+              <div class="d-flex">
+                <v-btn icon="mdi-chevron-left" size="x-small" variant="text" :disabled="page <= 1" @click="prevPage" />
+                <v-btn icon="mdi-chevron-right" size="x-small" variant="text" :disabled="page >= pageCount" @click="nextPage" />
+              </div>
+            </div>
           </template>
         </v-data-table>
-      </v-row>
+      </v-card>
+
     </v-container>
   </MainLayout>
 
-  <!-- Snackbar progression -->
   <v-snackbar v-model="snackbar.show" :color="snackbar.color" timeout="4000" location="bottom right">
     {{ snackbar.message }}
   </v-snackbar>
@@ -177,6 +217,7 @@ import { IUseQuotesState } from '@/@presentation/types/composables/IUseQuotesSta
 import { QuoteViewModel } from '@/@presentation/types/models/QuoteViewModel';
 import JSZip from 'jszip';
 import { computed, onMounted, reactive, ref } from 'vue';
+import { useDisplay } from 'vuetify';
 import { useRouter } from 'vue-router';
 
 const regionManager = container.get<IRegionManager>(SYMBOLS.Managers.regionManager);
@@ -185,12 +226,11 @@ const generatePdfUseCase = container.get<IGenerateQuotePdfUseCase>(SYMBOLS.UseCa
 const { init, quotes, deleteQuote } = useQuoteState;
 
 const router = useRouter();
+const { mobile } = useDisplay();
 
-// ── Sélection ──────────────────────────────────────────────────
 const selectedQuotes = ref<QuoteViewModel[]>([]);
 const downloading = ref(false);
 
-// ── Filtres date ───────────────────────────────────────────────
 const dateFrom = ref('');
 const dateTo = ref('');
 const activePreset = ref<string>('all');
@@ -207,7 +247,6 @@ const applyPreset = (key: string) => {
   activePreset.value = key;
   const now = new Date();
   const fmt = (d: Date) => d.toISOString().split('T')[0];
-
   if (key === 'all')   { dateFrom.value = ''; dateTo.value = ''; return; }
   if (key === 'today') { dateFrom.value = fmt(now); dateTo.value = fmt(now); return; }
   if (key === 'week')  {
@@ -236,30 +275,44 @@ const filteredQuotes = computed(() => {
   });
 });
 
-// ── Téléchargement groupé ──────────────────────────────────────
-const snackbar = reactive({ show: false, message: '', color: 'success' });
+const desktopHeaders = [
+  { title: 'Numéro', align: 'start' as const, key: 'quoteNumber' },
+  { title: 'Date', align: 'start' as const, key: 'createdAt' },
+  { title: 'Statut', align: 'start' as const, key: 'status' },
+  { title: 'Modèle', key: 'carBrand' },
+  { title: 'Garage', key: 'garage.name' },
+  { title: 'Technicien', key: 'technician.fullName' },
+  { title: 'Total', key: 'total' },
+  { title: 'Actions', sortable: false, key: 'actions' },
+];
 
+const mobileHeaders = [
+  { title: 'N°', align: 'start' as const, key: 'quoteNumber' },
+  { title: 'Date', key: 'createdAt' },
+  { title: 'Statut', key: 'status' },
+  { title: 'Total', key: 'total' },
+  { title: '', sortable: false, key: 'actions' },
+];
+
+const activeHeaders = computed(() => mobile.value ? mobileHeaders : desktopHeaders);
+
+const snackbar = reactive({ show: false, message: '', color: 'success' });
 const showSnack = (message: string, color = 'success') => {
-  snackbar.message = message;
-  snackbar.color = color;
-  snackbar.show = true;
+  snackbar.message = message; snackbar.color = color; snackbar.show = true;
 };
 
 const onBulkDownload = async () => {
   if (!selectedQuotes.value.length) return;
   downloading.value = true;
-
   try {
     const zip = new JSZip();
     let success = 0;
-
     for (const quote of selectedQuotes.value) {
       try {
         const dto   = QuoteMapper.viewToDto(quote);
         const lines = (quote.lineItems ?? []).map(LineItemMapper.viewToDto);
         const url   = await generatePdfUseCase.execute(dto, lines);
-
-        const blob = await fetch(url).then(r => r.blob());
+        const blob  = await fetch(url).then(r => r.blob());
         zip.file(`devis-${quote.quoteNumber}.pdf`, blob);
         URL.revokeObjectURL(url);
         success++;
@@ -267,19 +320,13 @@ const onBulkDownload = async () => {
         console.error(`Erreur PDF devis ${quote.quoteNumber}:`, e);
       }
     }
-
-    if (success === 0) {
-      showSnack('Aucun PDF n\'a pu être généré.', 'error');
-      return;
-    }
-
+    if (success === 0) { showSnack("Aucun PDF n'a pu être généré.", 'error'); return; }
     const zipBlob = await zip.generateAsync({ type: 'blob' });
     const link = document.createElement('a');
     link.href = URL.createObjectURL(zipBlob);
     link.download = `devis_${new Date().toISOString().split('T')[0]}.zip`;
     link.click();
     URL.revokeObjectURL(link.href);
-
     showSnack(`${success} devis téléchargé(s) dans le ZIP.`);
     selectedQuotes.value = [];
   } finally {
@@ -287,28 +334,14 @@ const onBulkDownload = async () => {
   }
 };
 
-// ── Headers ────────────────────────────────────────────────────
-const headers = [
-  { title: 'Numéro de devis', align: 'start', key: 'quoteNumber' },
-  { title: 'Date', align: 'start', key: 'createdAt' },
-  { title: 'Statut', align: 'start', key: 'status' },
-  { title: 'Modèle', key: 'carBrand' },
-  { title: 'Garage', key: 'garage.name' },
-  { title: 'Technicien', key: 'technician.fullName' },
-  { title: 'Total', key: 'total' },
-  { title: 'Actions', sortable: false, key: 'actions' },
-] as const;
-
-// ── CRUD ───────────────────────────────────────────────────────
 const deleteQuoteConfirmDialogRef = ref<ConfirmDialogExposed>();
 const _quoteToDelete = ref<string | undefined>();
 
-const onAddQuote    = () => router.push('/quotes/add');
-const onEditQuote   = (item: QuoteViewModel) => router.push(`/quotes/${item.id}/edit/`);
-const onDeleteBtnClick = (id?: string) => { if (!id) return; _quoteToDelete.value = id; deleteQuoteConfirmDialogRef.value?.open(); };
+const onAddQuote           = () => router.push('/quotes/add');
+const onEditQuote          = (item: QuoteViewModel) => router.push(`/quotes/${item.id}/edit/`);
+const onDeleteBtnClick     = (id?: string) => { if (!id) return; _quoteToDelete.value = id; deleteQuoteConfirmDialogRef.value?.open(); };
 const onConfirmDeleteQuote = () => { if (_quoteToDelete.value) deleteQuote(_quoteToDelete.value); };
 
-// ── Status helpers ─────────────────────────────────────────────
 const statusColor = (s?: string) => ({ pending: 'orange', validated: 'success', accepted: 'success', signed: 'success', sent: 'blue', draft: 'grey', cancel: 'error' } as Record<string,string>)[s ?? ''] ?? 'default';
 const statusLabel = (s?: string) => ({ pending: 'En attente', validated: 'Payé', accepted: 'Accepté', signed: 'Signé', sent: 'Envoyé', draft: 'Brouillon', cancel: 'Annulé' } as Record<string,string>)[s ?? ''] ?? (s ?? '');
 
@@ -316,11 +349,24 @@ onMounted(async () => { await init(); });
 </script>
 
 <style scoped>
-.filter-bar {
-  background: rgba(var(--v-theme-surface-variant), 0.3);
-  border-bottom: 1px solid rgba(var(--v-border-color), 0.08);
+.preset-scroll {
+  display: flex;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  gap: 4px;
+  padding-bottom: 4px;
+  scrollbar-width: none;
+}
+.preset-scroll::-webkit-scrollbar { display: none; }
+
+.selection-bar-mobile {
+  border-top: 1px solid rgba(var(--v-border-color), 0.12);
+  background: rgba(var(--v-theme-primary), 0.05);
 }
 
 .fade-enter-active, .fade-leave-active { transition: opacity 0.2s; }
 .fade-enter-from, .fade-leave-to { opacity: 0; }
+
+.slide-up-enter-active, .slide-up-leave-active { transition: all 0.2s ease; }
+.slide-up-enter-from, .slide-up-leave-to { opacity: 0; transform: translateY(8px); }
 </style>
