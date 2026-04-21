@@ -35,18 +35,18 @@ export class QuoteMapper {
       endDate: view.endDate,
 
       technician: view.technician ? UserMapper.viewToDto(view.technician) : undefined,
-      technicianId: view.technicianId,
+      technicianId: view.technician?.id ?? view.technicianId,
       garage: garage,
-      garageId: view.garageId,
+      garageId: view.garage?.id ?? view.garageId,
 
       carBrand: view.carBrand ?? '',
       carImmatriculation: view.carImmatriculation ?? '',
       carDate: view.carDateEntryCirculation ?? '',
       vehicleId: view.vehicleId,
 
-      isForfait: view.isForfait,
-      isDisplayUnitPrice: view.isDisplayUnitPrice,
-      isComputeCommissionWithoutDentRemoval: view.isComputeCommissionWithoutDentRemoval,
+      isForfait: view.isForfait ?? false,
+      isDisplayUnitPrice: view.isDisplayUnitPrice ?? true,
+      isComputeCommissionWithoutDentRemoval: view.isComputeCommissionWithoutDentRemoval ?? true,
       forfaitAmount: view.forfaitAmount ?? undefined,
       country: view.country ? CountryMapper.viewToDto(view.country) : undefined,
       currency: view.currency,
@@ -58,14 +58,14 @@ export class QuoteMapper {
 
       createdAt: view.createdAt,
       
-      // garage info for first level subscription users
-      garageName: view.garageName,
-      garageAddress: view.garageAddress,
-      garageZipCode: view.garageZipCode,
-      garageCity: view.garageCity,
-      garagePhone: view.garagePhone,
-      garageEmail: view.garageEmail,
-      garagePercentageCommission: view.garagePercentageCommission,
+      // garage info for first level subscription users - prioriser les valeurs de l'objet garage
+      garageName: view.garage?.name ?? view.garageName,
+      garageAddress: view.garage?.address ?? view.garageAddress,
+      garageZipCode: view.garage?.zipCode ?? view.garageZipCode,
+      garageCity: view.garage?.city ?? view.garageCity,
+      garagePhone: view.garage?.phone ?? view.garagePhone,
+      garageEmail: view.garage?.email ?? view.garageEmail,
+      garagePercentageCommission: view.garage?.percentageCommission ?? view.garagePercentageCommission,
       totalHt: view.totalHt,
     };
   }
@@ -110,8 +110,8 @@ export class QuoteMapper {
       vehicleId: dto.vehicleId,
 
       isForfait: dto.isForfait,
-      isDisplayUnitPrice: false,
-      isComputeCommissionWithoutDentRemoval: false,
+      isDisplayUnitPrice: dto.isDisplayUnitPrice,
+      isComputeCommissionWithoutDentRemoval: dto.isComputeCommissionWithoutDentRemoval,
       forfaitAmount: dto.forfaitAmount ?? undefined,
       country: dto.country ? CountryMapper.dtoToView(dto.country) : undefined,
       currency: dto.currency,

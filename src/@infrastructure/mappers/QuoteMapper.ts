@@ -61,10 +61,10 @@ export class QuoteMapper {
     return {
       id: dto.id,
       quote_number: dto.quoteNumber,
-      is_forfait: dto.isForfait,
+      is_forfait: dto.isForfait ?? false,
       forfait_amount: dto.forfaitAmount ?? null,
-      is_display_unit_price: dto.isDisplayUnitPrice,
-      is_compute_commission_without_dent_removal: dto.isComputeCommissionWithoutDentRemoval,
+      is_display_unit_price: dto.isDisplayUnitPrice ?? true,
+      is_compute_commission_without_dent_removal: dto.isComputeCommissionWithoutDentRemoval ?? true,
       start_date: dto.startDate,
       end_date: dto.endDate,
       status_id: dto.status_id,

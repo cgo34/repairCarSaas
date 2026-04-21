@@ -2,7 +2,7 @@
 import { IAuthState } from '@/@application/states/interfaces/IAuthState';
 import { IGarageUseCase } from '@/@domain/useCases/IGarageUseCase';
 import { IVehicleUseCase } from '@/@domain/useCases/IVehicleUseCase';
-import { IGetDocumentStatuseUseCase } from '@/@domain/useCases/IGetDocumentStatusUseCase';
+import { IGetDocumentStatusUseCase } from '@/@domain/useCases/IGetDocumentStatusUseCase';
 import { IUserUseCase } from '@/@domain/useCases/IUserUseCase';
 import { IBodyMaterialUseCase } from '@/@domain/useCases/carRepair/IBodyMaterialUseCase';
 import { IBodyPartUseCase } from '@/@domain/useCases/carRepair/IBodyPartUseCase';
@@ -29,7 +29,7 @@ import { RepairTypeMapper } from '@/@presentation/mappers/settings/RepairTypeMap
 import { SettingPriceMapper } from '@/@presentation/mappers/settings/price/SettingPriceMapper';
 import { UserMapper } from '@/@presentation/mappers/UserMapper';
 import { CountryViewModel } from '@/@presentation/types/models/CountryViewModel';
-import { DocumentStatuseViewModel } from '@/@presentation/types/models/DocumentStatusViewModel';
+import { DocumentStatusViewModel } from '@/@presentation/types/models/DocumentStatusViewModel';
 import { GarageViewModel } from '@/@presentation/types/models/GarageViewModel';
 import { LineItemViewModel } from '@/@presentation/types/models/LineItemViewModel';
 import { QuoteViewModel } from '@/@presentation/types/models/QuoteViewModel';
@@ -46,7 +46,7 @@ export function useEditQuoteState() {
   // #region -> DEPENDENCIES
   const authState = container.get<IAuthState>(SYMBOLS.States.AuthState);
 
-  const getDocumentStatuseUseCase = container.get<IGetDocumentStatuseUseCase>(SYMBOLS.UseCases.GetDocumentStatuse);
+  const getDocumentStatuseUseCase = container.get<IGetDocumentStatusUseCase>(SYMBOLS.UseCases.GetDocumentStatus);
 
   const getQuoteUseCase = container.get<IGetQuoteUseCase>(SYMBOLS.UseCases.Quote.GetQuoteUseCase);
   const getQuoteDetailUseCase = container.get<IGetQuoteDetailUseCase>(SYMBOLS.UseCases.Quote.GetQuoteDetailsUseCase);
@@ -71,50 +71,54 @@ export function useEditQuoteState() {
   // #endregion
 
   // #region -> CONSTANTS
-  const LINE_ITEM_INCREMENT = 1;
+  // const LINE_ITEM_INCREMENT = 1;
   // #endregion
 
   // #region -> REFS
   const _priceParams = ref<SettingPriceViewModel>();
 
-  const _statuses = ref<DocumentStatuseViewModel[]>([])
+  const _statuses = ref<DocumentStatusViewModel[]>([]);
   const _quote = ref<QuoteViewModel | undefined>(undefined);
-  const _quoteInformations = ref<{number: string, date: string, expirationDate: string, status: DocumentStatuseViewModel | undefined}>({
-    number: '',
-    date: '',
-    expirationDate: '',
-    status: undefined,
-  });
 
   const _technicians = ref<UserViewModel[]>([]);
   const _garages = ref<GarageViewModel[]>([]);
-  const _selectedTechnician = ref<UserViewModel>();
-  const _selectedGarage = ref<GarageViewModel>();
   const _vehicles = ref<VehicleViewModel[]>([]);
-  const _selectedVehicle = ref<VehicleViewModel | undefined>(undefined);
 
-  const _carInformations = ref({
-    immatriculation: '',
-    brand: '',
-    dateEntryCirculation: '',
-  });
-
-  const _selectedCountry = ref<CountryViewModel>();
-  
   const _bodyParts = ref<BodyPartViewModel[]>([]);
   const _bodyMaterials = ref<BodyMaterialViewModel[]>([]);
   const _repairTypes = ref<DentRepairTypeViewModel[]>([]);
 
-  const _isForfait = ref<boolean>(false);
-  const _isDisplayUnitPrice = ref<boolean>(true);
-  const _isComputeCommissionWithoutDentRemoval = ref<boolean>(true);
-  const _forfaitAmount = ref<number | undefined>(undefined);
-
   const _quoteLines = ref<LineItemViewModel[]>([]);
-  const _quoteId = ref<string>('');
 
   const loading = ref(false);
-  const error = ref(undefined);
+  const error = ref<unknown>(undefined);
+  // #endregion
+
+  // #region -> COMPUTED (dérivés de _quote.value)
+  const quoteInformations = computed(() => ({
+    number: _quote.value?.quoteNumber ?? '',
+    date: _quote.value?.startDate ? new Date(_quote.value.startDate).toISOString().split('T')[0] : '',
+    expirationDate: _quote.value?.endDate ? new Date(_quote.value.endDate).toISOString().split('T')[0] : '',
+    status: _quote.value?.status,
+  }));
+
+  const selectedTechnician = computed(() => _quote.value?.technician);
+  const selectedGarage = computed(() => _quote.value?.garage);
+  const selectedVehicle = computed(() => 
+    _quote.value?.vehicleId ? _vehicles.value.find(v => v.id === _quote.value?.vehicleId) : undefined
+  );
+
+  const carInformations = computed(() => ({
+    immatriculation: _quote.value?.carImmatriculation ?? '',
+    brand: _quote.value?.carBrand ?? '',
+    dateEntryCirculation: _quote.value?.carDateEntryCirculation ?? '',
+  }));
+
+  const selectedCountry = computed(() => _quote.value?.country);
+  const isForfait = computed(() => _quote.value?.isForfait ?? false);
+  const isDisplayUnitPrice = computed(() => _quote.value?.isDisplayUnitPrice ?? true);
+  const isComputeCommissionWithoutDentRemoval = computed(() => _quote.value?.isComputeCommissionWithoutDentRemoval ?? true);
+  const forfaitAmount = computed(() => _quote.value?.forfaitAmount);
 // #endregion
 
   // #region -> INIT
@@ -124,107 +128,53 @@ export function useEditQuoteState() {
       if (!authState.user.value)
         throw new Error('User not found');
 
-      // resetQuote();
-      _quoteId.value = id;     
-      
-      const quoteDto = await getQuoteUseCase.execute(id);
-      const quoteDetailDto = await getQuoteDetailUseCase.execute(id);
-      const statusesDto = await getDocumentStatuseUseCase.execute();
+      // Paralléliser tous les appels
+      const [quoteDto, quoteDetailDto, statusesDto, garageResult, technicianResult, bodyPartResult, bodyMaterialResult, repairTypeResult, priceParamsResult] =
+        await Promise.all([
+          getQuoteUseCase.execute(id),
+          getQuoteDetailUseCase.execute(id),
+          getDocumentStatuseUseCase.execute(),
+          garageUseCase.getByUserId(authState.user.value.id).catch(() => []),
+          technicianUseCase.getUsers().catch(() => []),
+          bodyPartUseCase.executeGetAll().catch(() => []),
+          bodyMaterialUseCase.executeGetAll().catch(() => []),
+          repairTypeUseCase.executeGetAll().catch(() => []),
+          priceParamsUseCase.getByUserId(authState.user.value.id).catch(() => undefined),
+        ]);
 
-      _statuses.value = statusesDto.map(m => DocumentStatuseMapper.dtoToView(m))
-      
+      // Mapping des données principales
+      _statuses.value = statusesDto.map(DocumentStatuseMapper.dtoToView);
+      if (!quoteDto)
+        throw new Error('Quote not found');
+
       _quote.value = QuoteMapper.dtoToView(quoteDto);
-      _isForfait.value = quoteDto?.isForfait ?? false
-      _forfaitAmount.value = quoteDto?.forfaitAmount
       
-      _quoteLines.value = quoteDetailDto?.map((line, idx) => {
-        
-        return {
-          ...LineItemMapper.dtoToView(line),
-          lineId: idx + 1,
-        }
-      }) ?? [];
-      
-      
-      // TODO: (gce) -> MOVE TO MAPPER
-      _quoteInformations.value.number = _quote.value.quoteNumber;
-      const startDate = new Date(_quote.value.startDate);
-      _quoteInformations.value.date = startDate.toISOString().split('T')[0];
+      _quoteLines.value = quoteDetailDto?.map((line, idx) => ({
+        ...LineItemMapper.dtoToView(line),
+        lineId: idx + 1,
+      })) ?? [];
 
-      // Ajout d’un mois
-      // const expirationDate = new Date(startDate);
-      // expirationDate.setMonth(expirationDate.getMonth() + 1);
-      // _quoteInformations.value.expirationDate = expirationDate.toISOString().split('T')[0];
-      
-      _quoteInformations.value.status = _quote.value.status;
+      // Mapping des listes
+      _garages.value = garageResult.map(GarageMapper.dtoToView);
+      _technicians.value = technicianResult.map(UserMapper.dtoToView);
+      _bodyParts.value = bodyPartResult.map(BodyPartMapper.dtoToView);
+      _bodyMaterials.value = bodyMaterialResult.map(BodyMaterialMapper.dtoToView);
+      _repairTypes.value = repairTypeResult.map(RepairTypeMapper.dtoToView);
 
-      _selectedTechnician.value = _quote.value.technician;
-      _selectedGarage.value = _quote.value.garage;
+      if (priceParamsResult) {
+        _priceParams.value = SettingPriceMapper.dtoToView(priceParamsResult);
+        // Recalculer les lignes existantes dont le prix est 0
+        _quoteLines.value.forEach(line => {
+          if ((!line.price || line.price === 0) && line.bodyPart && line.bodyMaterial && line.repairType) {
+            computePrice(line);
+          }
+        });
+      }
+
+      // Charger les véhicules du garage si présent
       if (_quote.value.garage?.id) {
         const vehiclesResult = await vehicleUseCase.getByGarageId(_quote.value.garage.id).catch(() => []);
         _vehicles.value = vehiclesResult.map(VehicleMapper.dtoToView);
-        if (_quote.value.vehicleId) {
-          _selectedVehicle.value = _vehicles.value.find(v => v.id === _quote.value.vehicleId);
-        }
-      }
-
-      _carInformations.value.immatriculation = _quote.value.carImmatriculation ?? '';
-      _carInformations.value.brand = _quote.value.carBrand ?? '';
-      _carInformations.value.dateEntryCirculation = _quote.value.carDateEntryCirculation ?? '';
-
-      const [garageResult, technicianResult, bodyPartResult, bodyMaterialResult, repairTypeResult, priceParamsResult] =
-        await Promise.allSettled([
-          garageUseCase.getByUserId(authState.user.value?.id),
-          technicianUseCase.getUsers(),
-          bodyPartUseCase.executeGetAll(),
-          bodyMaterialUseCase.executeGetAll(),
-          repairTypeUseCase.executeGetAll(),
-          priceParamsUseCase.getByUserId(authState.user.value?.id),
-        ]);
-        
-
-      if (garageResult.status === 'fulfilled')
-        _garages.value = garageResult.value.map((g) => GarageMapper.dtoToView(g));
-
-      if (technicianResult.status === 'fulfilled')
-        _technicians.value = [
-          ...technicianResult.value.map((u) => UserMapper.dtoToView(u)),
-          // TODO: (gce) -> REMOVE MOCK
-          { id: '1', fullName: 'John Doe', email: 'technicien1@gmail.com', password: '123456789', createdAt: '2021-09-01T00:00:00' },
-          { id: '2', fullName: 'Albert Dupont', email: 'technicien2@gmail.com', password: '123456789', createdAt: '2021-09-01T00:00:00' },
-        ];
-
-      if (bodyPartResult.status === 'fulfilled')
-        _bodyParts.value = bodyPartResult.value.map((bp) => BodyPartMapper.dtoToView(bp));
-
-      if (bodyMaterialResult.status === 'fulfilled')
-        _bodyMaterials.value = bodyMaterialResult.value.map((bm) => BodyMaterialMapper.dtoToView(bm));
-
-      if (repairTypeResult.status === 'fulfilled')
-        _repairTypes.value = repairTypeResult.value.map((rt) => RepairTypeMapper.dtoToView(rt));
-
-      if (priceParamsResult.status === 'fulfilled') {
-        _priceParams.value = SettingPriceMapper.dtoToView(priceParamsResult.value);
-        console.log('[Quote] priceParams chargés:', JSON.stringify({
-          general: _priceParams.value?.general,
-          technicity: _priceParams.value?.technicity,
-          bodyPartsCount: _priceParams.value?.bodyParts?.length,
-          impactsCountCount: _priceParams.value?.impactsCount?.length,
-        }));
-        // Recalculer les lignes existantes dont le prix est 0
-        _quoteLines.value.forEach(line => {
-          console.log('[Quote] ligne:', line.lineId, 'price:', line.price, 'bodyPart:', line.bodyPart?.id, 'bodyMaterial:', line.bodyMaterial?.id, 'repairType:', line.repairType?.code);
-          if ((!line.price || line.price === 0) && line.bodyPart && line.bodyMaterial && line.repairType) {
-            try {
-              computePrice(line);
-              console.log('[Quote] prix recalculé ligne', line.lineId, ':', line.price);
-            } catch (err) {
-              console.warn('[Quote] computePrice a échoué pour la ligne', line.lineId, err);
-            }
-          }
-        });
-      } else {
-        console.warn('[Quote] priceParams rejeté:', priceParamsResult.reason);
       }
       
     } catch (e) {
@@ -236,48 +186,27 @@ export function useEditQuoteState() {
   // #endregion
 
   // #region -> METHODS
-  const resetQuote = () => {
-    _quote.value = undefined;
-    _quoteInformations.value = {
-      number: '',
-      date: '',
-      expirationDate: '',
-      status: 'draft',
-    };
-    _technicians.value = [];
-    _garages.value = [];
-    _selectedTechnician.value = undefined;
-    _selectedGarage.value = undefined;
-    _carInformations.value = {
-      immatriculation: 'xx-789-nn',
-      brand: 'Peugeot',
-      dateEntryCirculation: '2020',
-    };
-    _bodyParts.value = [];
-    _bodyMaterials.value = [];
-    _repairTypes.value = [];
-    _priceParams.value = undefined;
-    _quoteLines.value = [];
-  };
-
   const expirationDate = computed(() => {
-
-    if (!_quoteInformations.value.date)
-      return '';
-
-    const date = new Date(_quoteInformations.value.date);
+    if (!_quote.value?.startDate) return '';
+    const date = new Date(_quote.value.startDate);
     date.setMonth(date.getMonth() + 1);
     return date.toISOString().split('T')[0];
   });
   
 
   const selectTechnician = (technician: UserViewModel) => {
-    _selectedTechnician.value = technician;
+    if (_quote.value) {
+      _quote.value.technician = technician;
+      _quote.value.technicianId = technician.id;
+    }
   }
 
   const selectGarage = async (garage: GarageViewModel) => {
-    _selectedGarage.value = garage;
-    _selectedVehicle.value = undefined;
+    if (_quote.value) {
+      _quote.value.garage = garage;
+      _quote.value.garageId = garage?.id;
+      _quote.value.vehicleId = undefined;
+    }
     if (garage?.id) {
       const result = await vehicleUseCase.getByGarageId(garage.id).catch(() => []);
       _vehicles.value = result.map(VehicleMapper.dtoToView);
@@ -287,40 +216,49 @@ export function useEditQuoteState() {
   }
 
   const selectVehicle = (vehicle: VehicleViewModel | undefined) => {
-    _selectedVehicle.value = vehicle;
-    if (vehicle) {
-      _carInformations.value = {
-        immatriculation: vehicle.immatriculation,
-        brand: vehicle.marque,
-        dateEntryCirculation: vehicle.annee?.toString() ?? '',
-      };
+    if (_quote.value) {
+      _quote.value.vehicleId = vehicle?.id;
+      if (vehicle) {
+        _quote.value.carImmatriculation = vehicle.immatriculation;
+        _quote.value.carBrand = vehicle.marque;
+        _quote.value.carDateEntryCirculation = vehicle.annee?.toString() ?? '';
+      }
     }
   }
 
   const setGarage = (garage: GarageViewModel) => {
     const existingGarage = _garages.value.find(g => g.name === garage.name)
-
     if (!existingGarage) {
       _garages.value.push(garage)
     }
-
-    _selectedGarage.value = garage
+    if (_quote.value) {
+      _quote.value.garage = garage;
+      _quote.value.garageId = garage?.id;
+    }
   }
 
   const setCarImmatriculation = (immatriculation: string) => {
-    _carInformations.value.immatriculation = immatriculation;
+    if (_quote.value) {
+      _quote.value.carImmatriculation = immatriculation;
+    }
   }
 
   const setCarBrand = (brand: string) => {
-    _carInformations.value.brand = brand;
+    if (_quote.value) {
+      _quote.value.carBrand = brand;
+    }
   }
 
   const setCarDateEntryCirculation = (dateEntryCirculation: string) => {
-    _carInformations.value.dateEntryCirculation = dateEntryCirculation;
+    if (_quote.value) {
+      _quote.value.carDateEntryCirculation = dateEntryCirculation;
+    }
   }
 
   const selectCountry = (country: CountryViewModel) => {
-    _selectedCountry.value = country;
+    if (_quote.value) {
+      _quote.value.country = country;
+    }
   }
 
   // const addLine = () => {
@@ -343,7 +281,7 @@ export function useEditQuoteState() {
   // }
 
   const addLine = async (line: LineItemViewModel) => {
-    line.quoteId = _quoteId.value
+    line.quoteId = _quote.value?.id
 
     if (_priceParams.value)
       computePrice(line)
@@ -372,7 +310,7 @@ export function useEditQuoteState() {
       return; // Sécurité : éviter les erreurs si la ligne n'existe pas
 
     line.bodyPart = bodyPart;
-    computePrice(line.lineId);
+    computePrice(line);
   };
 
   const selectBodyMaterial = (lineId: number, bodyMaterial: BodyMaterialViewModel) => {
@@ -382,7 +320,7 @@ export function useEditQuoteState() {
       return; // Sécurité : éviter les erreurs si la ligne n'existe pas
 
     line.bodyMaterial = bodyMaterial;
-    computePrice(line.lineId);
+    computePrice(line);
   };
 
   const selectRepairType = (lineId: number, repairType: DentRepairTypeViewModel) => {
@@ -392,7 +330,7 @@ export function useEditQuoteState() {
       return; // Sécurité : éviter les erreurs si la ligne n'existe pas
 
     line.repairType = repairType;
-    computePrice(line.lineId);
+    computePrice(line);
   };
 
   const setDentRemovalPrice = (lineId: number, dentRemovalPrice: number) => {
@@ -405,25 +343,28 @@ export function useEditQuoteState() {
     // computePrice(line.lineId);
   }
 
-  const setIsForfait = (isForfait: boolean) => {
-    _isForfait.value = isForfait;
-
-    // if (isForfait) {
-    //   _isDisplayUnitPrice.value = false;
-    //   _isComputeCommissionWithoutDentRemoval.value = false;
-    // }
+  const setIsForfait = (value: boolean) => {
+    if (_quote.value) {
+      _quote.value.isForfait = value;
+    }
   }
 
   const setForfaitAmount = (amount: number) => {
-    _forfaitAmount.value = amount;
+    if (_quote.value) {
+      _quote.value.forfaitAmount = amount;
+    }
   }
 
-  const setIsDisplayUnitPrice = (isDisplayUnitPrice: boolean) => {
-    _isDisplayUnitPrice.value = isDisplayUnitPrice;
+  const setIsDisplayUnitPrice = (value: boolean) => {
+    if (_quote.value) {
+      _quote.value.isDisplayUnitPrice = value;
+    }
   }
 
-  const setIsComputeCommissionWithoutDentRemoval = (isComputeCommissionWithoutDentRemoval: boolean) => {
-    _isComputeCommissionWithoutDentRemoval.value = isComputeCommissionWithoutDentRemoval;
+  const setIsComputeCommissionWithoutDentRemoval = (value: boolean) => {
+    if (_quote.value) {
+      _quote.value.isComputeCommissionWithoutDentRemoval = value;
+    }
   }
 
   // const computePrice = (lineId: number) => {
@@ -449,7 +390,6 @@ export function useEditQuoteState() {
       const lineItemViewDto = LineItemMapper.viewToDto(line);
       const priceDto = SettingPriceMapper.viewToDto(_priceParams.value);
       line.price = calculateLineCostUseCase.execute(lineItemViewDto, priceDto);
-      console.log('[Quote] computePrice:', line.price, '| impactCount25:', line.impactCount25, '| impactCount35:', line.impactCount35, '| repairType:', line.repairType?.code);
     } catch (e) {
       console.error('[Quote] computePrice erreur:', e);
       line.price = 0;
@@ -458,15 +398,11 @@ export function useEditQuoteState() {
 
   
   const subtotal = computed(() => {
-    if (!_isForfait.value) {
-      return _quoteLines.value?.reduce((sum, item) => {
-        return sum + item.price; // 👈 Évite undefined en mettant `?? 0`
-      }, 0) ?? 0// 👈 Ajoute la valeur initiale ici
+    if (!isForfait.value) {
+      return _quoteLines.value?.reduce((sum, item) => sum + (item.price ?? 0), 0) ?? 0;
     }
-
-    return _forfaitAmount.value ?? 0;
-  }
-  );
+    return forfaitAmount.value ?? 0;
+  });
 
   const totalDegarnissage = computed(() => 
     _quoteLines.value.reduce((sum, item) => {
@@ -480,36 +416,28 @@ export function useEditQuoteState() {
   });
 
   const totalTaxRate = computed(() => {
-    if (!_selectedCountry.value)
-      return 0
-
-    if (!_isForfait.value) {
-      return subTotalWithDegarnissage.value *  (_selectedCountry.value?.taxRate / 100);
+    if (!selectedCountry.value) return 0;
+    if (!isForfait.value) {
+      return subTotalWithDegarnissage.value * (selectedCountry.value.taxRate / 100);
     }
-
-    if (!_forfaitAmount.value)
-      return 0;
-    
-    return _forfaitAmount.value *  (_selectedCountry.value?.taxRate / 100);
+    if (!forfaitAmount.value) return 0;
+    return forfaitAmount.value * (selectedCountry.value.taxRate / 100);
   });
 
   const totalCommission = computed(() => {
-    const rate = (_selectedGarage.value?.percentageCommission ?? 0) / 100;
+    const rate = (selectedGarage.value?.percentageCommission ?? 0) / 100;
     if (!rate) return 0;
-    if (_isForfait.value) return (_forfaitAmount.value ?? 0) * rate;
-    const base = _isComputeCommissionWithoutDentRemoval.value ? subtotal.value : subTotalWithDegarnissage.value;
+    if (isForfait.value) return (forfaitAmount.value ?? 0) * rate;
+    const base = isComputeCommissionWithoutDentRemoval.value ? subtotal.value : subTotalWithDegarnissage.value;
     return base * rate;
   });
 
   const total = computed(() => {
-    if (!_isForfait.value) {
+    if (!isForfait.value) {
       return subTotalWithDegarnissage.value + totalTaxRate.value;
     }
-
-    if (!_forfaitAmount.value)
-      return 0;
-
-    return _forfaitAmount.value + totalTaxRate.value;
+    if (!forfaitAmount.value) return 0;
+    return forfaitAmount.value + totalTaxRate.value;
   });
 
   const updateQuote = async () => {
@@ -519,54 +447,18 @@ export function useEditQuoteState() {
     if (!_quote.value)
       throw new Error('Quote not found');
 
-    if (!_selectedGarage.value || !_selectedTechnician.value)
+    if (!selectedGarage.value || !selectedTechnician.value)
       throw new Error('Garage or Technician not selected');
 
-    if (!_carInformations.value.immatriculation || !_carInformations.value.brand || !_carInformations.value.dateEntryCirculation)
+    if (!carInformations.value.immatriculation || !carInformations.value.brand || !carInformations.value.dateEntryCirculation)
       throw new Error('Car informations not set');
 
     loading.value = true;
     try {
-      _quote.value = {
-        ..._quote.value,
-        // status: 'pending',
-        userId: authState.user.value.id,
-        
-        garage: _selectedGarage.value,
-        technician: _selectedTechnician.value,
-
-        carBrand: _carInformations.value.brand,
-        carImmatriculation: _carInformations.value.immatriculation,
-        carDateEntryCirculation: _carInformations.value.dateEntryCirculation,
-        vehicleId: _selectedVehicle.value?.id,
-
-        isForfait: _isForfait.value,
-        forfaitAmount: _forfaitAmount.value,
-        isDisplayUnitPrice: _isDisplayUnitPrice.value,
-        isComputeCommissionWithoutDentRemoval: _isComputeCommissionWithoutDentRemoval.value,
-        totalHt: subTotalWithDegarnissage.value,
-      }
+      // Mettre à jour totalHt avant la sauvegarde
+      _quote.value.totalHt = subTotalWithDegarnissage.value;
       
-      const quoteDto = await updateQuoteUseCase.execute(QuoteMapper.viewToDto(_quote.value)).then(async (quote) => {
-        // _quote.value = QuoteMapper.dtoToView(quote);
-        // if (!quote.id)
-        //   throw new Error('Quote not saved');
-
-        // const test = _quoteLines.value.map((line) => {
-        //   const dtoLine = LineItemMapper.viewToDto(line);
-        //   return {
-        //     ...dtoLine,
-        //     id: undefined,
-        //   }
-        // })
-      });
-
-
-      //   const quoteLinesDto = await updateQuoteDetailsUseCase.executeQuote(quote.id, _quoteLines.value.map((line) => LineItemMapper.viewToDto(line)));
-
-      //   _quoteLines.value = quoteLinesDto.map(LineItemMapper.dtoToView);
-
-      // });
+      await updateQuoteUseCase.execute(QuoteMapper.viewToDto(_quote.value));
       
     } catch (e) {
       error.value = e;
@@ -579,23 +471,21 @@ export function useEditQuoteState() {
   // #region -> COMPUTED
   // Liste des bodyParts restants (non sélectionnés)
   const availableBodyParts = computed(() => {
-    const selectedIds = new Set(_quoteLines.value.map((line) => {
-      return line.bodyPart?.id;
-      
-    }));
+    const selectedIds = new Set(_quoteLines.value.map((line) => line.bodyPart?.id));
     return _bodyParts.value.filter((bp) => !selectedIds.has(bp.id));
   });
   // #endregion
 
   const updateQuoteStatus = async (status: 'accepted' | 'refused') => {
-    const statusObject = _statuses.value.find(s => s.code === status)
+    if (!_quote.value) return;
+    
+    const statusObject = _statuses.value.find(s => s.code === status);
+    if (!statusObject) return;
 
-    _quote.value.status = statusObject
-    _quote.value.status_id = statusObject?.id
+    _quote.value.status = statusObject;
+    _quote.value.status_id = statusObject.id;
 
-    _quoteInformations.value.status = statusObject
-
-    updateQuoteUseCase.execute(QuoteMapper.viewToDto(_quote.value))
+    await updateQuoteUseCase.execute(QuoteMapper.viewToDto(_quote.value));
   }
 
   const duplicateQuoteToInvoice = () => {
@@ -609,14 +499,13 @@ export function useEditQuoteState() {
     deleteQuoteUseCase.execute(quoteId)
   }
 
-  const isReadOnly = computed(()=> {
-    return _quoteInformations.value.status?.code === 'accepted'
-    || _quoteInformations.value.status?.code === 'refused'
-    || _quoteInformations.value.status?.code === 'invoiced'
-  })
+  const isReadOnly = computed(() => {
+    const code = _quote.value?.status?.code;
+    return code === 'accepted' || code === 'refused' || code === 'invoiced';
+  });
 
-  const isAccepted = computed(() => _quoteInformations.value.status?.code === 'accepted' )
-  const isRefused = computed(() => _quoteInformations.value.status?.code === 'refused' )
+  const isAccepted = computed(() => _quote.value?.status?.code === 'accepted');
+  const isRefused = computed(() => _quote.value?.status?.code === 'refused');
 
   return {
     loading,
@@ -625,21 +514,21 @@ export function useEditQuoteState() {
 
     statuses: computed(() => _statuses.value),
     quote: computed(() => _quote.value),
-    quoteInformations: computed(() => _quoteInformations.value),
+    quoteInformations,
     expirationDate,
 
     garages: computed(() => _garages.value),
     technicians: computed(() => _technicians.value),
-    selectedTechnician: computed(() => _selectedTechnician.value),
-    selectedGarage: computed(() => _selectedGarage.value),
+    selectedTechnician,
+    selectedGarage,
     vehicles: computed(() => _vehicles.value),
-    selectedVehicle: computed(() => _selectedVehicle.value),
+    selectedVehicle,
     selectTechnician,
     selectGarage,
     selectVehicle,
     setGarage,
 
-    carInformations: computed(() => _carInformations.value),
+    carInformations,
     setCarImmatriculation,
     setCarBrand,
     setCarDateEntryCirculation,
@@ -653,16 +542,16 @@ export function useEditQuoteState() {
     selectRepairType,
     setDentRemovalPrice,
     
-    isForfait: computed(() => _isForfait.value),
-    isDisplayUnitPrice: computed(() => _isDisplayUnitPrice.value),
-    isComputeCommissionWithoutDentRemoval: computed(() => _isComputeCommissionWithoutDentRemoval.value),
+    isForfait,
+    isDisplayUnitPrice,
+    isComputeCommissionWithoutDentRemoval,
     setIsForfait,
     setForfaitAmount,
     setIsDisplayUnitPrice,
     setIsComputeCommissionWithoutDentRemoval,
-    forfaitAmount: computed(() => _forfaitAmount.value),
+    forfaitAmount,
     selectCountry,
-    selectedCountry: computed(() => _selectedCountry.value),
+    selectedCountry,
 
     quoteLines: computed(() => _quoteLines.value),
     addLine,
