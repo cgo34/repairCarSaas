@@ -1,28 +1,28 @@
-import { DocumentStatuseDto } from '@/@application/dtos/DocumentStatuseDto';
-import { IDocumentStatuseRepository } from '@/@domain/repositories/IDocumentStatuseRepository';
+import { DocumentStatusDto } from '@/@application/dtos/DocumentStatusDto';
+import { IDocumentStatusRepository } from '@/@domain/repositories/IDocumentStatusRepository';
 import { SupabaseClient } from '@/@infrastructure/database/clients/SupabaseClient';
 import { IClientProvider } from '@/@infrastructure/interfaces/IClientProvider';
 import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
-import { DocumentStatuseMapper } from '@/@infrastructure/mappers/DocumentMapper';
+import { DocumentStatusMapper } from '@/@infrastructure/mappers/DocumentStatusMapper';
 import { inject, injectable } from 'inversify';
-import { DocumentStatuseApiModel } from '../api/DocumentStatuseApiModel';
+import { DocumentStatusApiModel } from '../api/DocumentStatusApiModel';
 
 @injectable()
-export class DocumentStatuseRepository implements IDocumentStatuseRepository {
+export class DocumentStatusRepository implements IDocumentStatusRepository {
   constructor(@inject(SYMBOLS.Providers.ClientProvider) private clientProvider: IClientProvider<SupabaseClient>) {}
 
   /**
    * Récupère tous les status.
    */
-  async get(): Promise<DocumentStatuseDto[]> {
+  async get(): Promise<DocumentStatusDto[]> {
     const { data, error } = await this.clientProvider.getClient()
       .from('document_statuses')
       .select('*')
-      .returns<DocumentStatuseApiModel[]>();
+      .returns<DocumentStatusApiModel[]>();
 
     if (error)
       throw new Error('Error fetching document statuses');
 
-    return data.map(DocumentStatuseMapper.apiToDto);
+    return data.map(DocumentStatusMapper.apiToDto);
   }
 }

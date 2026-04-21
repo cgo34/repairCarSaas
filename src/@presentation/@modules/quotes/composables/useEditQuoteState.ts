@@ -2,7 +2,7 @@
 import { IAuthState } from '@/@application/states/interfaces/IAuthState';
 import { IGarageUseCase } from '@/@domain/useCases/IGarageUseCase';
 import { IVehicleUseCase } from '@/@domain/useCases/IVehicleUseCase';
-import { IGetDocumentStatuseUseCase } from '@/@domain/useCases/IGetDocumentStatuseUseCase';
+import { IGetDocumentStatuseUseCase } from '@/@domain/useCases/IGetDocumentStatusUseCase';
 import { IUserUseCase } from '@/@domain/useCases/IUserUseCase';
 import { IBodyMaterialUseCase } from '@/@domain/useCases/carRepair/IBodyMaterialUseCase';
 import { IBodyPartUseCase } from '@/@domain/useCases/carRepair/IBodyPartUseCase';

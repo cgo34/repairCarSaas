@@ -2,14 +2,14 @@ import { QuoteApiModel } from '@/@infrastructure/database/api/QuoteApiModel';
 import { QuoteDto } from '@/@application/dtos/QuoteDto';
 import { GarageMapper } from './GarageMapper';
 import { UserMapper } from './UserMapper';
+import { DocumentStatusMapper } from './DocumentStatusMapper';
+import { QuoteDetailMapper } from './QuoteDetailMapper';
 
 export class QuoteMapper {
   /**
    * Convertit un `QuoteApiModel` (BDD) en `QuoteDto` (Application)
    */
   static apiToDto(api: QuoteApiModel): QuoteDto {
-    console.log(api.quote_details);
-    
     return {
       id: api.id,
       quoteNumber: api.quote_number,
@@ -20,7 +20,7 @@ export class QuoteMapper {
       startDate: api.start_date,
       endDate: api.end_date,
       status_id: api.status_id,
-      status: api.status,
+      status: api.status ? DocumentStatusMapper.apiToDto(api.status) : undefined, // Ajouté si nécessaire
       country: api.country,
       currency: api.currency,
       isSent: api.is_sent,
@@ -48,6 +48,8 @@ export class QuoteMapper {
       totalHt: api.is_forfait
         ? (api.forfait_amount ?? 0)
         : (api.quote_details ?? []).reduce((sum, d) => sum + (d.price ?? 0) + (d.dent_removal_price ?? 0), 0) || api.total_ht || 0,
+
+      lineItems: api.quote_details ? api.quote_details.map(QuoteDetailMapper.apiToDto) : undefined, // Ajouté si nécessaire
     };
   }
 

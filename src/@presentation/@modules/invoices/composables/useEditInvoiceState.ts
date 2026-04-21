@@ -14,7 +14,7 @@ import { IGetInvoiceDetailUseCase } from '@/@domain/useCases/invoices/IGetInvoic
 import { IGetInvoiceUseCase } from '@/@domain/useCases/invoices/IGetInvoiceUseCase';
 import { ISendInvoiceUseCase } from '@/@domain/useCases/invoices/ISendInvoiceUseCase';
 import { IUpdateInvoiceUseCase } from '@/@domain/useCases/invoices/IUpdateInvoiceUseCase';
-import { IGetDocumentStatuseUseCase } from '@/@domain/useCases/IGetDocumentStatuseUseCase';
+import { IGetDocumentStatuseUseCase } from '@/@domain/useCases/IGetDocumentStatusUseCase';
 import { ISettingPriceUseCase } from '@/@domain/useCases/settings/price/ISettingPriceUseCase';
 import { container } from '@/@infrastructure/ioc/inversify.config';
 import { SYMBOLS } from '@/@infrastructure/ioc/symbols';

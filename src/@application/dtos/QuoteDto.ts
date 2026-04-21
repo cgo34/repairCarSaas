@@ -1,13 +1,15 @@
-import { CountryDto } from "@/@application/dtos/CountryDto";
+import { CountryDto } from "./CountryDto";
 import { GarageDto } from "./GarageDto";
 import { LineItemDto } from "./LineItemDto";
 import { UserDto } from "./UserDto";
+import { QuoteStatusDto } from "./DocumentStatusDto";
 
 export interface QuoteDto {
   id?: string;
   quoteNumber: string;
+
   status_id: string;
-  status: any;
+  status?: QuoteStatusDto;
   
   userId: string; // 🔹 Ajout pour suivre le créateur du devis
   user?: UserDto; // 🔹 Ajout pour le nom du créateur du devis

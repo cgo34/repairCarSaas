@@ -1,4 +1,4 @@
-import { DocumentStatuseApiModel } from "./DocumentStatuseApiModel";
+import { DocumentStatuseApiModel } from "./DocumentStatusApiModel";
 import { GarageApiModel } from "./GarageApiModel";
 import { InvoiceDetailApiModel } from "./InvoiceDetailApiModel";
 import { QuoteApiModel } from "./QuoteApiModel";

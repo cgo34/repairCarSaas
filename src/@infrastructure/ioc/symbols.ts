@@ -20,8 +20,8 @@ const SYMBOLS = {
     GarageRepository: Symbol.for(SYMBOL_NAMES.GARAGE_REPOSITORY),
     VehicleRepository: Symbol.for(SYMBOL_NAMES.VEHICLE_REPOSITORY),
     
-    // Document Statuse Repositories
-    DocumentStatuseRepository: Symbol.for(SYMBOL_NAMES.DOCUMENT_STATUSE_REPOSITORY),
+    // Document Status Repositories
+    DocumentStatusRepository: Symbol.for(SYMBOL_NAMES.DOCUMENT_STATUS_REPOSITORY),
 
     InvoiceRepository: Symbol.for(SYMBOL_NAMES.INVOICE_REPOSITORY),
     InvoiceDetailRepository: Symbol.for(SYMBOL_NAMES.INVOICE_DETAIL_REPOSITORY),
@@ -85,7 +85,7 @@ const SYMBOLS = {
     },
     Garage: Symbol.for(SYMBOL_NAMES.GARAGE_USE_CASE),
     Vehicle: Symbol.for(SYMBOL_NAMES.VEHICLE_USE_CASE),
-    GetDocumentStatuse: Symbol.for(SYMBOL_NAMES.GET_DOCUMENT_STATUSE_USE_CASE),
+    GetDocumentStatus: Symbol.for(SYMBOL_NAMES.GET_DOCUMENT_STATUS_USE_CASE),
 
     CarRepair: {
       BodyPartUseCase: Symbol.for(SYMBOL_NAMES.BODY_PART_USE_CASE),

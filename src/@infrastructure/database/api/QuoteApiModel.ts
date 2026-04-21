@@ -1,4 +1,4 @@
-import { DocumentStatusApiModel } from "./DocumentStatuseApiModel";
+import { DocumentStatusApiModel } from "./DocumentStatusApiModel";
 import { GarageApiModel } from "./GarageApiModel";
 import { QuoteDetailApiModel } from "./QuoteDetailApiModel";
 import { UserApiModel } from "./UserApiModel";
@@ -40,5 +40,5 @@ export interface QuoteApiModel {
   garage_percentage_commission?: number;
 
   total_ht?: number;
-  quote_details?: { price: number; dent_removal_price: number }[];
+  quote_details?: QuoteDetailApiModel[];
 }

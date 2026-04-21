@@ -6,7 +6,7 @@ import { IInvoiceDetailRepository } from '@/@domain/repositories/IInvoiceDetailR
 import { IInvoiceRepository } from '@/@domain/repositories/IInvoiceRepository';
 import { IQuoteDetailRepository } from '@/@domain/repositories/IQuoteDetailRepository';
 import { IQuoteRepository } from '@/@domain/repositories/IQuoteRepository';
-import { IGetDocumentStatuseUseCase } from '@/@domain/useCases/IGetDocumentStatuseUseCase';
+import { IGetDocumentStatusUseCase } from '@/@domain/useCases/IGetDocumentStatusUseCase';
 import { InvoiceDto } from '@/@application/dtos/InvoiceDto';
 import { LineItemDto } from '@/@application/dtos/LineItemDto';
 import { QuoteDto } from '@/@application/dtos/QuoteDto';
@@ -17,7 +17,7 @@ import { inject, injectable } from 'inversify';
 export class DuplicateQuoteToInvoiceUseCase {
   constructor(
     @inject(SYMBOLS.States.AuthState) private authState: IAuthState,
-    @inject(SYMBOLS.UseCases.GetDocumentStatuse) private getDocumentStatuseUseCase: IGetDocumentStatuseUseCase,
+    @inject(SYMBOLS.UseCases.GetDocumentStatus) private getDocumentStatusUseCase: IGetDocumentStatusUseCase,
     @inject(SYMBOLS.Repositories.QuoteRepository) private quoteRepository: IQuoteRepository,
     @inject(SYMBOLS.Repositories.QuoteDetailRepository) private quoteDetailRepository: IQuoteDetailRepository,
     @inject(SYMBOLS.Repositories.InvoiceRepository) private invoiceRepository: IInvoiceRepository,
@@ -26,8 +26,8 @@ export class DuplicateQuoteToInvoiceUseCase {
 
   async execute(quote: QuoteDto, quoteLines: LineItemDto[]): Promise<InvoiceDto> {
     
-      const pendingStatus = (await this.getDocumentStatuseUseCase.execute()).find(s => s.code === 'processing')
-      const invoicedStatus = (await this.getDocumentStatuseUseCase.execute()).find(s => s.code === 'invoiced')    
+      const pendingStatus = (await this.getDocumentStatusUseCase.execute()).find(s => s.code === 'processing')
+      const invoicedStatus = (await this.getDocumentStatusUseCase.execute()).find(s => s.code === 'invoiced')    
     
     const invoiceNumber = await this.invoiceRepository.generateInvoiceNumber(this.authState.user.value.id);
     
