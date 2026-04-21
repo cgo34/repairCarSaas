@@ -25,4 +25,22 @@ export class DocumentStatusRepository implements IDocumentStatusRepository {
 
     return data.map(DocumentStatusMapper.apiToDto);
   }
+
+  /**
+   * Récupère un status par son code.
+   * @param code Le code du status à récupérer.
+   */
+  async getByCode(code: string): Promise<DocumentStatusDto> {
+    const { data, error } = await this.clientProvider.getClient()
+      .from('document_statuses')
+      .select('*')
+      .eq('code', code)
+      .single<DocumentStatusApiModel>();
+
+    if (error)
+      throw new Error(`Error fetching document status with code: ${code}`);
+
+    console.log('DocumentStatusRepository.getByCode - data from DB:', data);
+    return DocumentStatusMapper.apiToDto(data);
+  }
 }
