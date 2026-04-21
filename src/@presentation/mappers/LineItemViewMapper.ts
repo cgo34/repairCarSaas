@@ -3,15 +3,20 @@ import { BodyMaterialViewModel } from "@/@presentation/types/models/carRepair/Bo
 import { DentRepairTypeViewModel } from "@/@presentation/types/models/carRepair/DentRepairTypeViewModel";
 import { LineItemViewModel } from "@/@presentation/types/models/LineItemViewModel";
 import { LineItemViewDto } from "@/@application/dtos/LineItemViewDto";
+import { LineItemDto } from "@/@infrastructure/dtos/LineItemDto";
 
 export class LineItemViewMapper {
-  static viewToDto(viewModel: LineItemViewModel): LineItemViewDto {
+  static viewToDto(viewModel: LineItemViewModel): LineItemDto {
     return {
       id: viewModel.id,
       quoteId: viewModel.quoteId,
       bodyPartId: viewModel.bodyPartId ?? viewModel.bodyPart?.id ?? '',
+      bodyPart: viewModel.bodyPart,
       bodyMaterialId: viewModel.bodyMaterialId ?? viewModel.bodyMaterial?.id ?? '',
+      bodyMaterial: viewModel.bodyMaterial,
       repairTypeId: viewModel.repairTypeId ?? viewModel.repairType?.id ?? '',
+      repairType: viewModel.repairType,
+      // repairTypeCode: viewModel.repairType?.code ?? undefined,
       impactCount25: viewModel.impactCount25 ?? 0,
       impactCount35: viewModel.impactCount35 ?? 0,
       dentRemovalPrice: viewModel.dentRemovalPrice ?? 0,
@@ -19,13 +24,16 @@ export class LineItemViewMapper {
     };
   }
 
-  static dtoToView(dto: LineItemViewDto): LineItemViewModel {
+  static dtoToView(dto: LineItemDto): LineItemViewModel {
     return {
       id: dto.id,
       quoteId: dto.quoteId,
       bodyPartId: dto.bodyPartId,
+      bodyPart: dto.bodyPart ?? undefined,
       bodyMaterialId: dto.bodyMaterialId,
+      bodyMaterial: dto.bodyMaterial ?? undefined,
       repairTypeId: dto.repairTypeId,
+      repairType: dto.repairType ?? undefined,
       impactCount25: dto.impactCount25,
       impactCount35: dto.impactCount35,
       dentRemovalPrice: dto.dentRemovalPrice,
@@ -34,7 +42,7 @@ export class LineItemViewMapper {
   }
 
   static dtoToViewEnriched(
-    dto: LineItemViewDto,
+    dto: LineItemDto,
     bodyParts: BodyPartViewModel[],
     bodyMaterials: BodyMaterialViewModel[],
     repairTypes: DentRepairTypeViewModel[]

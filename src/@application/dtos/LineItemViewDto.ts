@@ -5,6 +5,7 @@ export interface LineItemViewDto {
   bodyPartId: string;
   bodyMaterialId: string;
   repairTypeId: string;
+  repairTypeCode?: string;
   impactCount25: number;
   impactCount35: number;
   dentRemovalPrice: number;

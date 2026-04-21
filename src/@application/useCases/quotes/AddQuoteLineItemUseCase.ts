@@ -13,6 +13,7 @@ export class AddQuoteLineItemUseCase {
   ) {}
 
   async executeQuote(lineItem: LineItemViewModel): Promise<LineItemViewModel> {
+    console.log('Adding line item to quote:', lineItem);
     const dto = LineItemViewMapper.viewToDto(lineItem);
     const updatedQuoteDto = await this.quoteDetailRepository.insert(dto);
     return LineItemViewMapper.dtoToView(updatedQuoteDto);

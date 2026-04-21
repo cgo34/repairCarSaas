@@ -18,7 +18,7 @@ export class CostCalculatorService implements ICostCalculatorService {
 
     const bodyPartCoefficient = this.getBodyPartCoefficient(lineItem.bodyPartId, priceParams.bodyParts);
     const materialCoefficient = priceParams.technicity.aluminiumCoefficient;
-    const repairTypeCoefficient = this.getRepairTypeCoefficient(lineItem.repairType.code, priceParams.technicity);
+    const repairTypeCoefficient = this.getRepairTypeCoefficient(lineItem.repairTypeCode ?? '', priceParams.technicity);
     const diameter25Coefficient = priceParams.technicity.diameter25Coefficient;
     const diameter35Coefficient = priceParams.technicity.diameter35Coefficient;
     
