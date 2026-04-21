@@ -33,6 +33,7 @@ export interface IUseCreateQuoteState {
   setCarDateEntryCirculation(value: string): void;
 
   isForfait: ComputedRef<boolean>;
+  forfaitAmount: ComputedRef<number>;
   isDisplayUnitPrice: ComputedRef<boolean>;
   isComputeCommissionWithoutDentRemoval: ComputedRef<boolean>;
   setIsForfait(value: boolean): void;

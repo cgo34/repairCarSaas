@@ -13,10 +13,6 @@ export class InsertQuoteUseCase {
   ) {}
 
   async execute(quote: QuoteDto): Promise<QuoteDto> {
-    const processingStatus = (await this.getDocumentStatusUseCase.execute()).find(s => s.code === 'processing')
-
-    quote.status_id = processingStatus.id
-    
     return await this.quoteRepository.create(quote);
   }
 }

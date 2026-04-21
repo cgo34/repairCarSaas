@@ -1,34 +1,56 @@
 <template>
   <MainLayout>
-    <v-container fluid class="pa-0 create-quote-container">
-
+    <v-container
+      fluid
+      class="pa-0 create-quote-container"
+    >
       <!-- ───── Header ───── -->
       <div class="page-header px-4 pt-4 pb-3">
         <div class="d-flex align-center gap-2">
-          <v-btn icon variant="text" size="small" @click="$router.back()">
+          <v-btn
+            icon
+            variant="text"
+            size="small"
+            @click="$router.back()"
+          >
             <v-icon>mdi-arrow-left</v-icon>
           </v-btn>
           <div>
-            <div class="text-h6 font-weight-bold">Nouveau devis</div>
-            <div v-if="quoteInformations.number" class="text-caption text-medium-emphasis">
+            <div class="text-h6 font-weight-bold">
+              Nouveau devis
+            </div>
+            <div
+              v-if="quoteInformations.number"
+              class="text-caption text-medium-emphasis"
+            >
               {{ quoteInformations.number }}
             </div>
           </div>
         </div>
       </div>
 
-      <v-form ref="form" class="px-3 pb-28">
-
+      <v-form
+        ref="form"
+        class="px-3 pb-28"
+      >
         <!-- ───── Section 1 : Dates ───── -->
         <div class="section-card mb-4">
           <div class="section-header mb-3">
             <div class="section-icon">
-              <v-icon size="18" color="primary">mdi-calendar-outline</v-icon>
+              <v-icon
+                size="18"
+                color="primary"
+              >
+                mdi-calendar-outline
+              </v-icon>
             </div>
             <span class="text-subtitle-2 font-weight-semibold">Dates du devis</span>
           </div>
           <v-row dense>
-            <v-col cols="12" sm="6">
+            <v-col
+              cols="12"
+              sm="6"
+            >
               <v-text-field
                 v-model="quoteInformations.date"
                 label="Date de création"
@@ -38,7 +60,10 @@
                 hide-details="auto"
               />
             </v-col>
-            <v-col cols="12" sm="6">
+            <v-col
+              cols="12"
+              sm="6"
+            >
               <v-text-field
                 :model-value="expirationDate"
                 label="Valide jusqu'au"
@@ -56,7 +81,12 @@
         <div class="section-card mb-4">
           <div class="section-header mb-3">
             <div class="section-icon">
-              <v-icon size="18" color="primary">mdi-account-wrench-outline</v-icon>
+              <v-icon
+                size="18"
+                color="primary"
+              >
+                mdi-account-wrench-outline
+              </v-icon>
             </div>
             <span class="text-subtitle-2 font-weight-semibold">Technicien</span>
           </div>
@@ -77,7 +107,10 @@
             <template #item="{ props: itemProps, item }">
               <v-list-item v-bind="itemProps">
                 <template #prepend>
-                  <v-avatar color="primary" size="36">
+                  <v-avatar
+                    color="primary"
+                    size="36"
+                  >
                     <span class="text-caption font-weight-bold text-white">
                       {{ initials(item.raw.fullName) }}
                     </span>
@@ -87,8 +120,14 @@
             </template>
             <template #selection="{ item }">
               <div class="d-flex align-center gap-2">
-                <v-avatar color="primary" size="24">
-                  <span style="font-size:10px" class="text-white">{{ initials(item.raw.fullName) }}</span>
+                <v-avatar
+                  color="primary"
+                  size="24"
+                >
+                  <span
+                    style="font-size:10px"
+                    class="text-white"
+                  >{{ initials(item.raw.fullName) }}</span>
                 </v-avatar>
                 <span>{{ item.raw.fullName }}</span>
               </div>
@@ -100,7 +139,12 @@
         <div class="section-card mb-4">
           <div class="section-header mb-3">
             <div class="section-icon">
-              <v-icon size="18" color="primary">mdi-garage-open-variant</v-icon>
+              <v-icon
+                size="18"
+                color="primary"
+              >
+                mdi-garage-open-variant
+              </v-icon>
             </div>
             <span class="text-subtitle-2 font-weight-semibold">Client / Garage</span>
           </div>
@@ -120,9 +164,14 @@
             @update:model-value="onSelectGarage"
           >
             <template #item="{ props: itemProps, item }">
-              <v-list-item v-bind="itemProps" :subtitle="item.raw.city ?? ''">
+              <v-list-item
+                v-bind="itemProps"
+                :subtitle="item.raw.city ?? ''"
+              >
                 <template #prepend>
-                  <v-icon color="primary">mdi-garage-variant</v-icon>
+                  <v-icon color="primary">
+                    mdi-garage-variant
+                  </v-icon>
                 </template>
               </v-list-item>
             </template>
@@ -140,17 +189,40 @@
           </v-btn>
 
           <v-expand-transition>
-            <div v-if="selectedGarage" class="mt-3">
-              <v-card variant="tonal" color="primary" rounded="lg" class="pa-3">
+            <div
+              v-if="selectedGarage"
+              class="mt-3"
+            >
+              <v-card
+                variant="tonal"
+                color="primary"
+                rounded="lg"
+                class="pa-3"
+              >
                 <div class="d-flex align-center gap-2 mb-1">
-                  <v-icon size="18" color="primary">mdi-map-marker-outline</v-icon>
+                  <v-icon
+                    size="18"
+                    color="primary"
+                  >
+                    mdi-map-marker-outline
+                  </v-icon>
                   <span class="text-body-2 font-weight-medium">{{ selectedGarage.name }}</span>
                 </div>
-                <div v-if="selectedGarage.address" class="text-caption text-medium-emphasis">
+                <div
+                  v-if="selectedGarage.address"
+                  class="text-caption text-medium-emphasis"
+                >
                   {{ selectedGarage.address }}<span v-if="selectedGarage.zipCode">, {{ selectedGarage.zipCode }}</span><span v-if="selectedGarage.city"> {{ selectedGarage.city }}</span>
                 </div>
-                <div v-if="selectedGarage.percentageCommission" class="mt-1">
-                  <v-chip size="x-small" color="orange" variant="tonal">
+                <div
+                  v-if="selectedGarage.percentageCommission"
+                  class="mt-1"
+                >
+                  <v-chip
+                    size="x-small"
+                    color="orange"
+                    variant="tonal"
+                  >
                     Commission {{ selectedGarage.percentageCommission }}%
                   </v-chip>
                 </div>
@@ -163,7 +235,12 @@
         <div class="section-card mb-4">
           <div class="section-header mb-3">
             <div class="section-icon">
-              <v-icon size="18" color="primary">mdi-car-outline</v-icon>
+              <v-icon
+                size="18"
+                color="primary"
+              >
+                mdi-car-outline
+              </v-icon>
             </div>
             <span class="text-subtitle-2 font-weight-semibold">Véhicule</span>
           </div>
@@ -187,12 +264,17 @@
           />
 
           <div class="text-caption text-medium-emphasis mb-3 d-flex align-center gap-1">
-            <v-icon size="14">mdi-information-outline</v-icon>
+            <v-icon size="14">
+              mdi-information-outline
+            </v-icon>
             Ou renseignez manuellement :
           </div>
 
           <v-row dense>
-            <v-col cols="12" sm="4">
+            <v-col
+              cols="12"
+              sm="4"
+            >
               <v-text-field
                 v-model="carInformations.immatriculation"
                 label="Immatriculation"
@@ -203,7 +285,10 @@
                 @update:model-value="onCarImmatriculationUpdated"
               />
             </v-col>
-            <v-col cols="12" sm="4">
+            <v-col
+              cols="12"
+              sm="4"
+            >
               <v-text-field
                 v-model="carInformations.brand"
                 label="Marque"
@@ -214,7 +299,10 @@
                 @update:model-value="onCarBrandUpdated"
               />
             </v-col>
-            <v-col cols="12" sm="4">
+            <v-col
+              cols="12"
+              sm="4"
+            >
               <v-text-field
                 v-model="carInformations.dateEntryCirculation"
                 label="Année"
@@ -232,22 +320,36 @@
         <div class="section-card mb-4">
           <div class="section-header mb-3">
             <div class="section-icon">
-              <v-icon size="18" color="primary">mdi-tune-variant</v-icon>
+              <v-icon
+                size="18"
+                color="primary"
+              >
+                mdi-tune-variant
+              </v-icon>
             </div>
             <span class="text-subtitle-2 font-weight-semibold">Options</span>
           </div>
 
           <div class="mb-3">
-            <div class="text-caption text-medium-emphasis mb-1 font-weight-medium">Pays &amp; TVA</div>
-            <CountrySelect :modelValue="selectedCountry" @select="onSelectCountry" />
+            <div class="text-caption text-medium-emphasis mb-1 font-weight-medium">
+              Pays &amp; TVA
+            </div>
+            <CountrySelect
+              :model-value="selectedCountry"
+              @select="onSelectCountry"
+            />
           </div>
 
           <v-divider class="my-3" />
 
           <div class="d-flex align-center justify-space-between py-2">
             <div>
-              <div class="text-body-2 font-weight-medium">Mode forfait</div>
-              <div class="text-caption text-medium-emphasis">Remplacer les lignes par un montant fixe</div>
+              <div class="text-body-2 font-weight-medium">
+                Mode forfait
+              </div>
+              <div class="text-caption text-medium-emphasis">
+                Remplacer les lignes par un montant fixe
+              </div>
             </div>
             <v-switch
               :model-value="isForfait"
@@ -259,7 +361,10 @@
           </div>
 
           <v-expand-transition>
-            <div v-if="isForfait" class="pb-2">
+            <div
+              v-if="isForfait"
+              class="pb-2"
+            >
               <v-text-field
                 :model-value="forfaitAmount"
                 label="Montant du forfait (€)"
@@ -277,8 +382,12 @@
             <v-divider class="my-1" />
             <div class="d-flex align-center justify-space-between py-2">
               <div>
-                <div class="text-body-2 font-weight-medium">Prix unitaires visibles</div>
-                <div class="text-caption text-medium-emphasis">Afficher le détail sur le devis</div>
+                <div class="text-body-2 font-weight-medium">
+                  Prix unitaires visibles
+                </div>
+                <div class="text-caption text-medium-emphasis">
+                  Afficher le détail sur le devis
+                </div>
               </div>
               <v-switch
                 :model-value="isDisplayUnitPrice"
@@ -292,8 +401,12 @@
             <v-divider class="my-1" />
             <div class="d-flex align-center justify-space-between py-2">
               <div>
-                <div class="text-body-2 font-weight-medium">Commission hors dégarnissage</div>
-                <div class="text-caption text-medium-emphasis">Exclure le dégarnissage de la base de commission</div>
+                <div class="text-body-2 font-weight-medium">
+                  Commission hors dégarnissage
+                </div>
+                <div class="text-caption text-medium-emphasis">
+                  Exclure le dégarnissage de la base de commission
+                </div>
               </div>
               <v-switch
                 :model-value="isComputeCommissionWithoutDentRemoval"
@@ -305,7 +418,6 @@
             </div>
           </template>
         </div>
-
       </v-form>
 
       <!-- ───── Bottom sticky action ───── -->
@@ -323,7 +435,6 @@
           Créer le devis
         </v-btn>
       </div>
-
     </v-container>
   </MainLayout>
 
@@ -331,7 +442,7 @@
     ref="garageDialogRef"
     title="Nouveau client"
     persistent
-    :maxWidth="500"
+    :max-width="500"
     @validated="onGarageValidated"
   />
 </template>
@@ -405,10 +516,10 @@ const onGarageValidated = (garage: GarageViewModel) => setGarage(garage);
 const onCarImmatriculationUpdated = (value: string) => setCarImmatriculation(value);
 const onCarBrandUpdated = (value: string) => setCarBrand(value);
 const onCarYearUpdated = (value: string) => setCarDateEntryCirculation(value);
-const onUpdateIsForfait = (value: boolean) => setIsForfait(value);
-const onUpdateForfaitAmount = (value: number) => setForfaitAmount(Number(value));
-const onUpdateIsDisplayUnitPrice = (value: boolean) => setIsDisplayUnitPrice(value);
-const onUpdateIsComputeCommissionWithoutDentRemoval = (value: boolean) => setIsComputeCommissionWithoutDentRemoval(value);
+const onUpdateIsForfait = (value: boolean | null) => setIsForfait(value ?? false);
+const onUpdateForfaitAmount = (value: string | number | null) => setForfaitAmount(Number(value) || 0);
+const onUpdateIsDisplayUnitPrice = (value: boolean | null) => setIsDisplayUnitPrice(value ?? true);
+const onUpdateIsComputeCommissionWithoutDentRemoval = (value: boolean | null) => setIsComputeCommissionWithoutDentRemoval(value ?? true);
 const onSelectCountry = (country: CountryViewModel | undefined) => {
   if (country) selectCountry(country);
 };

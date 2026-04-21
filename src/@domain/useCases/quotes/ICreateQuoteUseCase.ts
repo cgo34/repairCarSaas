@@ -1,5 +1,3 @@
-import { QuoteDto } from '@/@application/dtos/QuoteDto';
-
 export interface ICreateQuoteUseCase {
-  execute(quoteDto: QuoteDto, userId: string): Promise<QuoteDto>;
+  execute(userId: string): Promise<string>; // Retourne uniquement le quoteNumber
 }
