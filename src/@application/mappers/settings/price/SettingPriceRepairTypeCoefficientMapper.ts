@@ -1,6 +1,6 @@
 import { SettingPriceRepairTypeCoefficientViewDto } from '@/@application/dtos/settings/SettingPriceRepairTypeCoefficientViewDto';
 import { RepairTypeMapper } from '@/@application/mappers/settings/carRepair/RepairTypeMapper';
-import { SettingPriceRepairTypeCoefficientDto } from '@/@infrastructure/dtos/settings/price/SettingPriceRepairTypeCoefficientDto';
+import { SettingPriceRepairTypeCoefficientDto } from '@/@application/dtos/settings/price/SettingPriceRepairTypeCoefficientDto';
 
 export class SettingPriceRepairTypeCoefficientMapper {
   static dtoToViewDto(dto: SettingPriceRepairTypeCoefficientDto): SettingPriceRepairTypeCoefficientViewDto {

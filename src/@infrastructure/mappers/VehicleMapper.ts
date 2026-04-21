@@ -1,5 +1,5 @@
 import { VehicleApiModel } from '@/@infrastructure/database/api/VehicleApiModel';
-import { VehicleDto } from '@/@infrastructure/dtos/VehicleDto';
+import { VehicleDto } from '@/@application/dtos/VehicleDto';
 
 export class VehicleMapper {
   static apiToDto(api: VehicleApiModel): VehicleDto {

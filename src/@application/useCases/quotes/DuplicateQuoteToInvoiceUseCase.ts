@@ -7,9 +7,9 @@ import { IInvoiceRepository } from '@/@domain/repositories/IInvoiceRepository';
 import { IQuoteDetailRepository } from '@/@domain/repositories/IQuoteDetailRepository';
 import { IQuoteRepository } from '@/@domain/repositories/IQuoteRepository';
 import { IGetDocumentStatuseUseCase } from '@/@domain/useCases/IGetDocumentStatuseUseCase';
-import { InvoiceDto } from '@/@infrastructure/dtos/InvoiceDto';
-import { LineItemDto } from '@/@infrastructure/dtos/LineItemDto';
-import { QuoteDto } from '@/@infrastructure/dtos/QuoteDto';
+import { InvoiceDto } from '@/@application/dtos/InvoiceDto';
+import { LineItemDto } from '@/@application/dtos/LineItemDto';
+import { QuoteDto } from '@/@application/dtos/QuoteDto';
 import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
 import { inject, injectable } from 'inversify';
 

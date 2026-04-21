@@ -2,7 +2,7 @@ import { ISettingPriceImpactCountToUtRepository } from '@/@domain/repositories/s
 import { SettingPriceImpactCountToUtApiModel } from '@/@infrastructure/database/api/settings/price/SettingPriceImpactCountToUtApiModel';
 import { SupabaseClient } from '@/@infrastructure/database/clients/SupabaseClient';
 import { DEFAULT_SETTINGS_USER_ID } from '@/@infrastructure/database/helpers/getAdminUserIdWithSettings';
-import { SettingPriceImpactCountToUtDto } from '@/@infrastructure/dtos/settings/price/SettingPriceImpactCountToUtDto';
+import { SettingPriceImpactCountToUtDto } from '@/@application/dtos/settings/price/SettingPriceImpactCountToUtDto';
 import { IClientProvider } from '@/@infrastructure/interfaces/IClientProvider';
 import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
 import { SettingPriceImpactCountToUtMapper } from '@/@infrastructure/mappers/settings/price/SettingPriceImpactCountToUtMapper';

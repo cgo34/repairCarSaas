@@ -1,5 +1,5 @@
 import { SettingPriceRepairTypeCoefficientApiModel } from '@/@infrastructure/database/api/settings/price/SettingPriceRepairTypeCoefficientApiModel';
-import { SettingPriceRepairTypeCoefficientDto } from '@/@infrastructure/dtos/settings/price/SettingPriceRepairTypeCoefficientDto';
+import { SettingPriceRepairTypeCoefficientDto } from '@/@application/dtos/settings/price/SettingPriceRepairTypeCoefficientDto';
 
 export class SettingPriceRepairTypeCoefficientMapper {
   static apiToDto(apiModel: SettingPriceRepairTypeCoefficientApiModel): SettingPriceRepairTypeCoefficientDto {

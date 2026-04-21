@@ -1,5 +1,5 @@
 import { QuoteApiModel } from '@/@infrastructure/database/api/QuoteApiModel';
-import { QuoteDto } from '@/@infrastructure/dtos/QuoteDto';
+import { QuoteDto } from '@/@application/dtos/QuoteDto';
 import { GarageMapper } from './GarageMapper';
 import { UserMapper } from './UserMapper';
 

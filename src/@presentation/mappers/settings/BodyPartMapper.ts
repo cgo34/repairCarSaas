@@ -1,4 +1,4 @@
-import { BodyPartDto } from "@/@infrastructure/dtos/carRepair/BodyPartDto";
+import { BodyPartDto } from "@/@application/dtos/carRepair/BodyPartDto";
 import { BodyPartViewModel } from "@/@presentation/types/models/carRepair/BodyPartViewModel";
 
 export class BodyPartMapper {

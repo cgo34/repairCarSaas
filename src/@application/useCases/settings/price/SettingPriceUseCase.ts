@@ -1,7 +1,7 @@
 
 import { ISettingPriceRepository } from '@/@domain/repositories/settings/price/ISettingPriceRepository';
 import { ISettingPriceUseCase } from '@/@domain/useCases/settings/price/ISettingPriceUseCase';
-import { SettingPriceDto } from '@/@infrastructure/dtos/settings/price/SettingPriceDto';
+import { SettingPriceDto } from '@/@application/dtos/settings/price/SettingPriceDto';
 import { SettingPriceViewModel } from '@/@presentation/types/models/settings/price/SettingPriceViewModel';
 import { SettingPriceMapper } from '@/@presentation/mappers/settings/price/SettingPriceMapper';
 import { SYMBOLS } from '@/@infrastructure/ioc/symbols';

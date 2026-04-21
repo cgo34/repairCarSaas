@@ -2,7 +2,7 @@
 import { ISettingPriceRepairTypeCoefficientRepository } from '@/@domain/repositories/settings/price/ISettingPriceRepairTypeCoefficientRepository';
 import { SettingPriceRepairTypeCoefficientApiModel } from '@/@infrastructure/database/api/settings/price/SettingPriceRepairTypeCoefficientApiModel';
 import { SupabaseClient } from '@/@infrastructure/database/clients/SupabaseClient';
-import { SettingPriceRepairTypeCoefficientDto } from '@/@infrastructure/dtos/settings/price/SettingPriceRepairTypeCoefficientDto';
+import { SettingPriceRepairTypeCoefficientDto } from '@/@application/dtos/settings/price/SettingPriceRepairTypeCoefficientDto';
 import { IClientProvider } from '@/@infrastructure/interfaces/IClientProvider';
 import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
 import { SettingPriceRepairTypeCoefficientMapper } from '@/@infrastructure/mappers/settings/price/SettingPriceRepairTypeCoefficientMapper';

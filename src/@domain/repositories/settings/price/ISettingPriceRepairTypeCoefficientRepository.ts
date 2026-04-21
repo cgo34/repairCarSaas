@@ -1,4 +1,4 @@
-import { SettingPriceRepairTypeCoefficientDto } from '@/@infrastructure/dtos/settings/price/SettingPriceRepairTypeCoefficientDto';
+import { SettingPriceRepairTypeCoefficientDto } from '@/@application/dtos/settings/price/SettingPriceRepairTypeCoefficientDto';
 
 export interface ISettingPriceRepairTypeCoefficientRepository {
   getByUserId(userId: string): Promise<SettingPriceRepairTypeCoefficientDto[]>;

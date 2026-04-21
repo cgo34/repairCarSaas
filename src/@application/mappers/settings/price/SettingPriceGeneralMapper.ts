@@ -1,5 +1,5 @@
 import { SettingPriceGeneral } from '@/@domain/models/settings/price/SettingPriceGeneral';
-import { SettingPriceGeneralDto } from '@/@infrastructure/dtos/settings/price/SettingPriceGeneralDto';
+import { SettingPriceGeneralDto } from '@/@application/dtos/settings/price/SettingPriceGeneralDto';
 
 export class SettingPriceGeneralMapper {
   static dtoToDomain(dto: SettingPriceGeneralDto): SettingPriceGeneral {

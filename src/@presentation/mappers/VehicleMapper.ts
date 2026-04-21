@@ -1,4 +1,4 @@
-import { VehicleDto } from '@/@infrastructure/dtos/VehicleDto';
+import { VehicleDto } from '@/@application/dtos/VehicleDto';
 import { VehicleViewModel } from '../types/models/VehicleViewModel';
 
 export class VehicleMapper {

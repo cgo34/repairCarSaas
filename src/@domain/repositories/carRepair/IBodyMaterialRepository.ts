@@ -1,5 +1,5 @@
 // src/@domain/repositories/carRepair/IBodyMaterialRepository.ts
-import { BodyMaterialDto } from '@/@infrastructure/dtos/carRepair/BodyMaterialDto';
+import { BodyMaterialDto } from '@/@application/dtos/carRepair/BodyMaterialDto';
 
 export interface IBodyMaterialRepository {
   getAll(): Promise<BodyMaterialDto[]>;

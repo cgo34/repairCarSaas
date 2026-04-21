@@ -3,7 +3,7 @@ import { BodyMaterialViewModel } from "@/@presentation/types/models/carRepair/Bo
 import { DentRepairTypeViewModel } from "@/@presentation/types/models/carRepair/DentRepairTypeViewModel";
 import { LineItemViewModel } from "@/@presentation/types/models/LineItemViewModel";
 import { LineItemViewDto } from "@/@application/dtos/LineItemViewDto";
-import { LineItemDto } from "@/@infrastructure/dtos/LineItemDto";
+import { LineItemDto } from "@/@application/dtos/LineItemDto";
 
 export class LineItemViewMapper {
   static viewToDto(viewModel: LineItemViewModel): LineItemDto {

@@ -1,5 +1,5 @@
 import { SettingPriceImpactCountToUt } from '@/@domain/models/settings/price/SettingPriceImpactCountToUt';
-import { SettingPriceImpactCountToUtDto } from '@/@infrastructure/dtos/settings/price/SettingPriceImpactCountToUtDto';
+import { SettingPriceImpactCountToUtDto } from '@/@application/dtos/settings/price/SettingPriceImpactCountToUtDto';
 
 export class SettingPriceImpactCountToUtMapper {
   static dtoToDomain(dto: SettingPriceImpactCountToUtDto): SettingPriceImpactCountToUt {

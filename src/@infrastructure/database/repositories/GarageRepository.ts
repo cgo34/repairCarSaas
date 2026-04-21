@@ -1,7 +1,7 @@
 import { IGarageRepository } from '@/@domain/repositories/IGarageRepository';
 import { GarageApiModel } from '@/@infrastructure/database/api/GarageApiModel';
 import { SupabaseClient } from '@/@infrastructure/database/clients/SupabaseClient';
-import { GarageDto } from '@/@infrastructure/dtos/GarageDto';
+import { GarageDto } from '@/@application/dtos/GarageDto';
 import { IClientProvider } from '@/@infrastructure/interfaces/IClientProvider';
 import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
 import { GarageMapper } from '@/@infrastructure/mappers/GarageMapper';

@@ -1,5 +1,5 @@
 import { DentRepairTypeViewDto } from '@/@application/dtos/settings/carRepair/DentRepairViewDto';
-import { DentRepairTypeDto } from '@/@infrastructure/dtos/carRepair/DentRepairTypeDto';
+import { DentRepairTypeDto } from '@/@application/dtos/carRepair/DentRepairTypeDto';
 
 export class RepairTypeMapper {
   static viewDtoToDto(viewDto: DentRepairTypeViewDto): DentRepairTypeDto {

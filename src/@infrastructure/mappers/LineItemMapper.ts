@@ -1,5 +1,5 @@
 import { LineItemApiModel } from "../database/api/LineItemApiModel";
-import { LineItemDto } from "../dtos/LineItemDto";
+import { LineItemDto } from "../../@application/dtos/LineItemDto";
 
 export class LineItemMapper {
   static apiToDto(apiModel: LineItemApiModel): LineItemDto {

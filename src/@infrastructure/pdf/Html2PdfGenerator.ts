@@ -1,7 +1,7 @@
 import { IPdfGenerator } from '@/@domain/services/IPdfGenerator'
-import { InvoiceDto } from '@/@infrastructure/dtos/InvoiceDto'
-import { LineItemDto } from '@/@infrastructure/dtos/LineItemDto'
-import { QuoteDto } from '@/@infrastructure/dtos/QuoteDto'
+import { InvoiceDto } from '@/@application/dtos/InvoiceDto'
+import { LineItemDto } from '@/@application/dtos/LineItemDto'
+import { QuoteDto } from '@/@application/dtos/QuoteDto'
 import html2pdf from 'html2pdf.js'
 import { injectable } from "inversify"
 import { buildInvoiceHtmlTemplate } from './templates/invoiceTemplate'

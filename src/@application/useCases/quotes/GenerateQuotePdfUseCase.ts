@@ -1,7 +1,7 @@
 import { IPdfGenerator } from "@/@domain/services/IPdfGenerator";
 import { IGenerateQuotePdfUseCase } from "@/@domain/useCases/quotes/IGenerateQuotePdfUseCase";
-import { LineItemDto } from "@/@infrastructure/dtos/LineItemDto";
-import { QuoteDto } from "@/@infrastructure/dtos/QuoteDto";
+import { LineItemDto } from "@/@application/dtos/LineItemDto";
+import { QuoteDto } from "@/@application/dtos/QuoteDto";
 import { SYMBOLS } from "@/@infrastructure/ioc/symbols";
 import { inject, injectable } from "inversify";
 

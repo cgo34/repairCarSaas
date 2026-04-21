@@ -4,7 +4,7 @@ import { ISettingPriceUseCase } from '@/@domain/useCases/settings/price/ISetting
 import { IGetCurrentSubscriptionUseCase } from '@/@domain/useCases/subscription/IGetCurrentSubscriptionUseCase';
 import { ICreateUserUseCase } from '@/@domain/useCases/user/ICreateUserUseCase';
 import { AuthErrorCode } from '@/@domain/valueObjects/AuthErrorCode';
-import { UserDto } from '@/@infrastructure/dtos/UserDto';
+import { UserDto } from '@/@application/dtos/UserDto';
 import { UserViewModel } from '@/@presentation/types/models/UserViewModel';
 import { UserMapper as PresentationUserMapper } from '@/@presentation/mappers/UserMapper';
 import { IAuthState } from '@domain/states/IAuthState';

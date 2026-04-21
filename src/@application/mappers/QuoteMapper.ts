@@ -1,6 +1,6 @@
 import { Quote } from '@/@domain/entities/Quote';
-import { InvoiceDto } from '@/@infrastructure/dtos/InvoiceDto';
-import { QuoteDto } from '@/@infrastructure/dtos/QuoteDto';
+import { InvoiceDto } from '@/@application/dtos/InvoiceDto';
+import { QuoteDto } from '@/@application/dtos/QuoteDto';
 
 export class QuoteMapper {
 

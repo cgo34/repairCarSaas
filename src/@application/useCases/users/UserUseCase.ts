@@ -1,5 +1,5 @@
 import { IUserService } from '@/@domain/services/IUserService';
-import { UserDto } from '@/@infrastructure/dtos/UserDto';
+import { UserDto } from '@/@application/dtos/UserDto';
 import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
 import { inject, injectable } from 'inversify';
 import { IUserUseCase } from '../../../@domain/useCases/IUserUseCase';

@@ -1,7 +1,7 @@
 // 📌 Application: InsertQuoteUseCase.ts
 import { IQuoteRepository } from '@/@domain/repositories/IQuoteRepository';
 import { IGetDocumentStatuseUseCase } from '@/@domain/useCases/IGetDocumentStatuseUseCase';
-import { QuoteDto } from '@/@infrastructure/dtos/QuoteDto';
+import { QuoteDto } from '@/@application/dtos/QuoteDto';
 import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
 import { inject, injectable } from 'inversify';
 

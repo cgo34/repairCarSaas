@@ -1,4 +1,4 @@
-import { VehicleDto } from '@/@infrastructure/dtos/VehicleDto';
+import { VehicleDto } from '@/@application/dtos/VehicleDto';
 
 export interface IVehicleUseCase {
   getByGarageId(garageId: string): Promise<VehicleDto[]>;

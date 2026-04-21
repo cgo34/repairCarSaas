@@ -1,4 +1,4 @@
-import { LineItemDto } from "@/@infrastructure/dtos/LineItemDto";
+import { LineItemDto } from "@/@application/dtos/LineItemDto";
 
 export interface IInvoiceDetailRepository {
   getAllByInvoiceId(quoteId: string): Promise<LineItemDto[]>;

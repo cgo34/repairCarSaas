@@ -1,5 +1,5 @@
 import { Invoice } from '@/@domain/entities/Invoice';
-import { InvoiceDto } from '@/@infrastructure/dtos/InvoiceDto';
+import { InvoiceDto } from '@/@application/dtos/InvoiceDto';
 
 export class InvoiceMapper {
   /**

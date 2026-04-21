@@ -1,4 +1,4 @@
-import { SubscriptionApiModel } from '../database/api/SubscriptionApiModel';
+import { SubscriptionApiModel } from '../../@infrastructure/database/api/SubscriptionApiModel';
 
 export interface UserDto {
   id?: string;

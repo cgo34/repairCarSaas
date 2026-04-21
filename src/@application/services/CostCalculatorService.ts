@@ -1,6 +1,6 @@
 import { QuoteLineItem } from '@/@domain/models/Quote';
 import { ICostCalculatorService } from '@/@domain/services/ICostCalculatorService';
-import { SettingPriceTechnicityCoefficientDto } from '@/@infrastructure/dtos/settings/price/SettingPriceTechnicityCoefficientDto';
+import { SettingPriceTechnicityCoefficientDto } from '@/@application/dtos/settings/price/SettingPriceTechnicityCoefficientDto';
 import { injectable } from 'inversify';
 import { LineItemViewDto } from '../dtos/LineItemViewDto';
 import { SettingPriceBodyMaterialCoefficientViewDto } from '../dtos/settings/SettingPriceBodyMaterialCoefficientViewDto';

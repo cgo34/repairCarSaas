@@ -1,6 +1,6 @@
 import { getCompanyProfile } from '@/@presentation/composables/useCompanyProfile';
-import { InvoiceDto } from '@/@infrastructure/dtos/InvoiceDto';
-import { LineItemDto } from '@/@infrastructure/dtos/LineItemDto';
+import { InvoiceDto } from '@/@application/dtos/InvoiceDto';
+import { LineItemDto } from '@/@application/dtos/LineItemDto';
 
 export const buildInvoiceHtmlTemplate = (invoice: InvoiceDto, lines: LineItemDto[]): string => {
   const company = getCompanyProfile();

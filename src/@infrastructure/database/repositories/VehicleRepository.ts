@@ -1,7 +1,7 @@
 import { IVehicleRepository } from '@/@domain/repositories/IVehicleRepository';
 import { VehicleApiModel } from '@/@infrastructure/database/api/VehicleApiModel';
 import { SupabaseClient } from '@/@infrastructure/database/clients/SupabaseClient';
-import { VehicleDto } from '@/@infrastructure/dtos/VehicleDto';
+import { VehicleDto } from '@/@application/dtos/VehicleDto';
 import { IClientProvider } from '@/@infrastructure/interfaces/IClientProvider';
 import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
 import { VehicleMapper } from '@/@infrastructure/mappers/VehicleMapper';

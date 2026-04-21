@@ -4,7 +4,7 @@ import { ISettingPriceGeneralRepository } from '@/@domain/repositories/settings/
 import { ISettingPriceImpactCountToUtRepository } from '@/@domain/repositories/settings/price/ISettingPriceImpactCountToUtRepository';
 import { ISettingPriceTechnicityCoefficientRepository } from '@/@domain/repositories/settings/price/ISettingPriceTechnicityCoefficientRepository';
 import { ISettingPriceRepository } from '@/@domain/repositories/settings/price/ISettingPriceRepository';
-import { SettingPriceDto } from '@/@infrastructure/dtos/settings/price/SettingPriceDto';
+import { SettingPriceDto } from '@/@application/dtos/settings/price/SettingPriceDto';
 import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
 import { inject, injectable } from 'inversify';
 

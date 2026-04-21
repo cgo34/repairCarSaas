@@ -1,8 +1,8 @@
 // 📌 Application: ViewQuoteUseCase.ts
 import { IGetQuoteDetailUseCase } from '@/@domain/useCases/quotes/IGetQuoteDetailUseCase';
 import { IGetQuoteUseCase } from '@/@domain/useCases/quotes/IGetQuoteUseCase';
-import { LineItemDto } from '@/@infrastructure/dtos/LineItemDto';
-import { QuoteDto } from '@/@infrastructure/dtos/QuoteDto';
+import { LineItemDto } from '@/@application/dtos/LineItemDto';
+import { QuoteDto } from '@/@application/dtos/QuoteDto';
 import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
 import { inject, injectable } from 'inversify';
 

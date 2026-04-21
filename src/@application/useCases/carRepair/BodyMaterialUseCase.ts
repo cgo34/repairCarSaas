@@ -1,6 +1,6 @@
 import { IBodyMaterialService } from "@/@domain/services/carRepair/IBodyMaterialService";
 import { IBodyMaterialUseCase } from "@/@domain/useCases/carRepair/IBodyMaterialUseCase";
-import { BodyMaterialDto } from "@/@infrastructure/dtos/carRepair/BodyMaterialDto";
+import { BodyMaterialDto } from "@/@application/dtos/carRepair/BodyMaterialDto";
 import { BodyMaterialViewModel } from "@/@presentation/types/models/carRepair/BodyMaterialViewModel";
 import { BodyMaterialMapper } from "@/@presentation/mappers/settings/BodyMaterialMapper";
 import { SYMBOLS } from "@/@infrastructure/ioc/symbols";

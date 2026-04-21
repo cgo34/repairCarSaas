@@ -1,5 +1,5 @@
 import { SettingPriceBodyPartCoefficientViewModel } from "@/@presentation/types/models/settings/price/SettingPriceBodyPartCoefficientViewModel";
-import { SettingPriceBodyPartCoefficientDto } from "@/@infrastructure/dtos/settings/price/SettingPriceBodyPartCoefficientDto";
+import { SettingPriceBodyPartCoefficientDto } from "@/@application/dtos/settings/price/SettingPriceBodyPartCoefficientDto";
 
 export interface ISettingPriceBodyPartCoefficientUseCase {
   getAdmin(): Promise<SettingPriceBodyPartCoefficientViewModel[]>;

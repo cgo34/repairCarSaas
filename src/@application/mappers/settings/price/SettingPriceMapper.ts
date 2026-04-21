@@ -1,5 +1,5 @@
 import { SettingPrice } from '@/@domain/models/settings/price/SettingPrice';
-import { SettingPriceDto } from '@/@infrastructure/dtos/settings/price/SettingPriceDto';
+import { SettingPriceDto } from '@/@application/dtos/settings/price/SettingPriceDto';
 import { SettingPriceBodyPartCoefficientMapper } from './SettingPriceBodyPartCoefficientMapper';
 import { SettingPriceDiameterCoefficientMapper } from './SettingPriceDiameterCoefficientMapper';
 import { SettingPriceGeneralMapper } from './SettingPriceGeneralMapper';

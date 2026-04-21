@@ -1,8 +1,8 @@
 // 📌 Application: ViewInvoiceUseCase.ts
 import { IGetInvoiceDetailUseCase } from '@/@domain/useCases/invoices/IGetInvoiceDetailUseCase';
 import { IGetInvoiceUseCase } from '@/@domain/useCases/invoices/IGetInvoiceUseCase';
-import { LineItemDto } from '@/@infrastructure/dtos/LineItemDto';
-import { InvoiceDto } from '@/@infrastructure/dtos/InvoiceDto';
+import { LineItemDto } from '@/@application/dtos/LineItemDto';
+import { InvoiceDto } from '@/@application/dtos/InvoiceDto';
 import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
 import { inject, injectable } from 'inversify';
 

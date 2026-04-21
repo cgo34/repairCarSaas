@@ -1,7 +1,7 @@
 import { IQuoteRepository } from '@/@domain/repositories/IQuoteRepository';
 import { QuoteApiModel } from '@/@infrastructure/database/api/QuoteApiModel';
 import { SupabaseClient } from '@/@infrastructure/database/clients/SupabaseClient';
-import { QuoteDto } from '@/@infrastructure/dtos/QuoteDto';
+import { QuoteDto } from '@/@application/dtos/QuoteDto';
 import { IClientProvider } from '@/@infrastructure/interfaces/IClientProvider';
 import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
 import { QuoteMapper } from '@/@infrastructure/mappers/QuoteMapper';

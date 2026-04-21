@@ -1,6 +1,6 @@
 import { IDentRepairTypeRepository } from "@/@domain/repositories/carRepair/IDentRepairTypeRepository";
 import { IDentRepairTypeService } from "@/@domain/services/carRepair/IDentRepairTypeService";
-import { DentRepairTypeDto } from "@/@infrastructure/dtos/carRepair/DentRepairTypeDto";
+import { DentRepairTypeDto } from "@/@application/dtos/carRepair/DentRepairTypeDto";
 import { SYMBOLS } from "@/@infrastructure/ioc/symbols";
 import { inject, injectable } from "inversify";
 

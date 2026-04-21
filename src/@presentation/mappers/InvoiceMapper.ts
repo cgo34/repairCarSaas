@@ -1,4 +1,4 @@
-import { InvoiceDto } from "@/@infrastructure/dtos/InvoiceDto";
+import { InvoiceDto } from "@/@application/dtos/InvoiceDto";
 import { InvoiceStatusViewType } from "../types/models/InvoiceStatusViewType";
 import { InvoiceViewModel } from "../types/models/InvoiceViewModel";
 import { LineItemMapper } from "./LineItemMapper";

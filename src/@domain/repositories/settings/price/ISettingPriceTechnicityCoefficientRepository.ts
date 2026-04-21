@@ -1,4 +1,4 @@
-import { SettingPriceTechnicityCoefficientDto } from '@/@infrastructure/dtos/settings/price/SettingPriceTechnicityCoefficientDto';
+import { SettingPriceTechnicityCoefficientDto } from '@/@application/dtos/settings/price/SettingPriceTechnicityCoefficientDto';
 
 export interface ISettingPriceTechnicityCoefficientRepository {
   getAdmin(): Promise<SettingPriceTechnicityCoefficientDto>;

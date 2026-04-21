@@ -1,6 +1,6 @@
 import { IBodyMaterialRepository } from "@/@domain/repositories/carRepair/IBodyMaterialRepository";
 import { IBodyMaterialService } from "@/@domain/services/carRepair/IBodyMaterialService";
-import { BodyMaterialDto } from "@/@infrastructure/dtos/carRepair/BodyMaterialDto";
+import { BodyMaterialDto } from "@/@application/dtos/carRepair/BodyMaterialDto";
 import { SYMBOLS } from "@/@infrastructure/ioc/symbols";
 import { inject, injectable } from "inversify";
 

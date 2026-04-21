@@ -1,5 +1,5 @@
-import { GarageDto } from "@/@infrastructure/dtos/GarageDto";
-import { QuoteDto } from "@/@infrastructure/dtos/QuoteDto";
+import { GarageDto } from "@/@application/dtos/GarageDto";
+import { QuoteDto } from "@/@application/dtos/QuoteDto";
 import { GarageViewModel } from "../types/models/GarageViewModel";
 import { QuoteStatusViewType } from "../types/models/QuoteStatusViewType";
 import { QuoteViewModel } from "../types/models/QuoteViewModel";

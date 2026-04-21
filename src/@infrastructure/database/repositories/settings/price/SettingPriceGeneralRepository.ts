@@ -3,7 +3,7 @@ import { ISettingPriceGeneralRepository } from '@/@domain/repositories/settings/
 import { SettingPriceGeneralApiModel } from '@/@infrastructure/database/api/settings/price/SettingPriceGeneralApiModel';
 import { SupabaseClient } from '@/@infrastructure/database/clients/SupabaseClient';
 import { DEFAULT_SETTINGS_USER_ID } from '@/@infrastructure/database/helpers/getAdminUserIdWithSettings';
-import { SettingPriceGeneralDto } from '@/@infrastructure/dtos/settings/price/SettingPriceGeneralDto';
+import { SettingPriceGeneralDto } from '@/@application/dtos/settings/price/SettingPriceGeneralDto';
 import { IClientProvider } from '@/@infrastructure/interfaces/IClientProvider';
 import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
 import { SettingPriceGeneralMapper } from '@/@infrastructure/mappers/settings/price/SettingPriceGeneralMapper';

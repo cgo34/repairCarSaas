@@ -1,4 +1,4 @@
-import { SettingPriceRepairTypeCoefficientDto } from '@/@infrastructure/dtos/settings/price/SettingPriceRepairTypeCoefficientDto';
+import { SettingPriceRepairTypeCoefficientDto } from '@/@application/dtos/settings/price/SettingPriceRepairTypeCoefficientDto';
 import { SettingPriceBodyMaterialCoefficient } from './SettingPriceBodyMaterialCoefficient';
 import { SettingPriceBodyPartCoefficient } from './SettingPriceBodyPartCoefficient';
 import { SettingPriceDiameterCoefficient } from './SettingPriceDiameterCoefficient';
