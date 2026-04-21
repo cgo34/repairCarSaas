@@ -1,16 +1,17 @@
 <template>
   <MainLayout>
-    <v-container fluid class="pa-0 edit-quote-container">
-
+    <v-container
+      fluid
+      class="pa-0 edit-quote-container"
+    >
       <!-- ═══════════════════════════════════════════════════
            HEADER sticky
       ════════════════════════════════════════════════════ -->
       <div class="page-header px-3 py-2">
         <div class="d-flex align-center justify-space-between">
-
           <!-- Gauche : retour + titre -->
           <div class="d-flex align-center gap-2 min-w-0">
-            <BackButton fallbackPath="/quotes" />
+            <BackButton fallback-path="/quotes" />
             <div class="min-w-0">
               <div class="d-flex align-center gap-2 flex-wrap">
                 <span class="text-subtitle-1 font-weight-bold text-truncate">
@@ -45,11 +46,20 @@
             <!-- Menu overflow -->
             <v-menu location="bottom end">
               <template #activator="{ props: menuProps }">
-                <v-btn icon variant="text" size="small" v-bind="menuProps">
+                <v-btn
+                  icon
+                  variant="text"
+                  size="small"
+                  v-bind="menuProps"
+                >
                   <v-icon>mdi-dots-vertical</v-icon>
                 </v-btn>
               </template>
-              <v-list density="compact" rounded="lg" min-width="200">
+              <v-list
+                density="compact"
+                rounded="lg"
+                min-width="200"
+              >
                 <v-list-item
                   v-if="!isFreePlan"
                   prepend-icon="mdi-send-outline"
@@ -86,25 +96,34 @@
               </v-list>
             </v-menu>
           </div>
-
         </div>
       </div>
 
       <!-- ═══════════════════════════════════════════════════
            FORM
       ════════════════════════════════════════════════════ -->
-      <v-form ref="form" class="px-3 pt-3 pb-28">
-
+      <v-form
+        ref="form"
+        class="px-3 pt-3 pb-28"
+      >
         <!-- ── Section 1 : Dates ── -->
         <div class="section-card mb-4">
           <div class="section-header mb-3">
             <div class="section-icon">
-              <v-icon size="18" color="primary">mdi-calendar-outline</v-icon>
+              <v-icon
+                size="18"
+                color="primary"
+              >
+                mdi-calendar-outline
+              </v-icon>
             </div>
             <span class="text-subtitle-2 font-weight-semibold">Dates</span>
           </div>
           <v-row dense>
-            <v-col cols="12" sm="6">
+            <v-col
+              cols="12"
+              sm="6"
+            >
               <v-text-field
                 v-model="quoteInformations.date"
                 label="Date de création"
@@ -115,7 +134,10 @@
                 hide-details="auto"
               />
             </v-col>
-            <v-col cols="12" sm="6">
+            <v-col
+              cols="12"
+              sm="6"
+            >
               <v-text-field
                 :model-value="expirationDate"
                 label="Valide jusqu'au"
@@ -133,7 +155,12 @@
         <div class="section-card mb-4">
           <div class="section-header mb-3">
             <div class="section-icon">
-              <v-icon size="18" color="primary">mdi-account-wrench-outline</v-icon>
+              <v-icon
+                size="18"
+                color="primary"
+              >
+                mdi-account-wrench-outline
+              </v-icon>
             </div>
             <span class="text-subtitle-2 font-weight-semibold">Technicien</span>
           </div>
@@ -155,7 +182,10 @@
             <template #item="{ props: itemProps, item }">
               <v-list-item v-bind="itemProps">
                 <template #prepend>
-                  <v-avatar color="primary" size="36">
+                  <v-avatar
+                    color="primary"
+                    size="36"
+                  >
                     <span class="text-caption font-weight-bold text-white">
                       {{ initials(item.raw.fullName) }}
                     </span>
@@ -165,8 +195,14 @@
             </template>
             <template #selection="{ item }">
               <div class="d-flex align-center gap-2">
-                <v-avatar color="primary" size="24">
-                  <span style="font-size:10px" class="text-white">{{ initials(item.raw.fullName) }}</span>
+                <v-avatar
+                  color="primary"
+                  size="24"
+                >
+                  <span
+                    style="font-size:10px"
+                    class="text-white"
+                  >{{ initials(item.raw.fullName) }}</span>
                 </v-avatar>
                 <span>{{ item.raw.fullName }}</span>
               </div>
@@ -178,7 +214,12 @@
         <div class="section-card mb-4">
           <div class="section-header mb-3">
             <div class="section-icon">
-              <v-icon size="18" color="primary">mdi-garage-open-variant</v-icon>
+              <v-icon
+                size="18"
+                color="primary"
+              >
+                mdi-garage-open-variant
+              </v-icon>
             </div>
             <span class="text-subtitle-2 font-weight-semibold">Client / Garage</span>
           </div>
@@ -199,9 +240,14 @@
             @update:model-value="onSelectGarage"
           >
             <template #item="{ props: itemProps, item }">
-              <v-list-item v-bind="itemProps" :subtitle="item.raw.city ?? ''">
+              <v-list-item
+                v-bind="itemProps"
+                :subtitle="item.raw.city ?? ''"
+              >
                 <template #prepend>
-                  <v-icon color="primary">mdi-garage-variant</v-icon>
+                  <v-icon color="primary">
+                    mdi-garage-variant
+                  </v-icon>
                 </template>
               </v-list-item>
             </template>
@@ -220,17 +266,40 @@
           </v-btn>
 
           <v-expand-transition>
-            <div v-if="selectedGarage" class="mt-3">
-              <v-card variant="tonal" color="primary" rounded="lg" class="pa-3">
+            <div
+              v-if="selectedGarage"
+              class="mt-3"
+            >
+              <v-card
+                variant="tonal"
+                color="primary"
+                rounded="lg"
+                class="pa-3"
+              >
                 <div class="d-flex align-center gap-2 mb-1">
-                  <v-icon size="18" color="primary">mdi-map-marker-outline</v-icon>
+                  <v-icon
+                    size="18"
+                    color="primary"
+                  >
+                    mdi-map-marker-outline
+                  </v-icon>
                   <span class="text-body-2 font-weight-medium">{{ selectedGarage.name }}</span>
                 </div>
-                <div v-if="selectedGarage.address" class="text-caption text-medium-emphasis">
+                <div
+                  v-if="selectedGarage.address"
+                  class="text-caption text-medium-emphasis"
+                >
                   {{ selectedGarage.address }}<span v-if="selectedGarage.zipCode">, {{ selectedGarage.zipCode }}</span><span v-if="selectedGarage.city"> {{ selectedGarage.city }}</span>
                 </div>
-                <div v-if="selectedGarage.percentageCommission" class="mt-1">
-                  <v-chip size="x-small" color="orange" variant="tonal">
+                <div
+                  v-if="selectedGarage.percentageCommission"
+                  class="mt-1"
+                >
+                  <v-chip
+                    size="x-small"
+                    color="orange"
+                    variant="tonal"
+                  >
                     Commission {{ selectedGarage.percentageCommission }}%
                   </v-chip>
                 </div>
@@ -243,7 +312,12 @@
         <div class="section-card mb-4">
           <div class="section-header mb-3">
             <div class="section-icon">
-              <v-icon size="18" color="primary">mdi-car-outline</v-icon>
+              <v-icon
+                size="18"
+                color="primary"
+              >
+                mdi-car-outline
+              </v-icon>
             </div>
             <span class="text-subtitle-2 font-weight-semibold">Véhicule</span>
           </div>
@@ -267,12 +341,17 @@
           />
 
           <div class="text-caption text-medium-emphasis mb-3 d-flex align-center gap-1">
-            <v-icon size="14">mdi-information-outline</v-icon>
+            <v-icon size="14">
+              mdi-information-outline
+            </v-icon>
             Informations manuelles :
           </div>
 
           <v-row dense>
-            <v-col cols="12" sm="4">
+            <v-col
+              cols="12"
+              sm="4"
+            >
               <v-text-field
                 v-model="carInformations.immatriculation"
                 label="Immatriculation"
@@ -284,7 +363,10 @@
                 @update:model-value="onCarImmatriculationUpdated"
               />
             </v-col>
-            <v-col cols="12" sm="4">
+            <v-col
+              cols="12"
+              sm="4"
+            >
               <v-text-field
                 v-model="carInformations.brand"
                 label="Marque"
@@ -296,7 +378,10 @@
                 @update:model-value="onCarBrandUpdated"
               />
             </v-col>
-            <v-col cols="12" sm="4">
+            <v-col
+              cols="12"
+              sm="4"
+            >
               <v-text-field
                 v-model="carInformations.dateEntryCirculation"
                 label="Année"
@@ -315,22 +400,37 @@
         <div class="section-card mb-4">
           <div class="section-header mb-3">
             <div class="section-icon">
-              <v-icon size="18" color="primary">mdi-tune-variant</v-icon>
+              <v-icon
+                size="18"
+                color="primary"
+              >
+                mdi-tune-variant
+              </v-icon>
             </div>
             <span class="text-subtitle-2 font-weight-semibold">Options</span>
           </div>
 
           <div class="mb-3">
-            <div class="text-caption text-medium-emphasis mb-1 font-weight-medium">Pays &amp; TVA</div>
-            <CountrySelect :modelValue="selectedCountry" @select="onSelectCountry" :readonly="isReadOnly" />
+            <div class="text-caption text-medium-emphasis mb-1 font-weight-medium">
+              Pays &amp; TVA
+            </div>
+            <CountrySelect
+              :model-value="selectedCountry"
+              :readonly="isReadOnly"
+              @select="onSelectCountry"
+            />
           </div>
 
           <v-divider class="my-3" />
 
           <div class="d-flex align-center justify-space-between py-2">
             <div>
-              <div class="text-body-2 font-weight-medium">Mode forfait</div>
-              <div class="text-caption text-medium-emphasis">Remplacer les lignes par un montant fixe</div>
+              <div class="text-body-2 font-weight-medium">
+                Mode forfait
+              </div>
+              <div class="text-caption text-medium-emphasis">
+                Remplacer les lignes par un montant fixe
+              </div>
             </div>
             <v-switch
               :model-value="isForfait"
@@ -343,7 +443,10 @@
           </div>
 
           <v-expand-transition>
-            <div v-if="isForfait" class="pb-2">
+            <div
+              v-if="isForfait"
+              class="pb-2"
+            >
               <v-text-field
                 :model-value="forfaitAmount"
                 label="Montant du forfait (€)"
@@ -362,8 +465,12 @@
             <v-divider class="my-1" />
             <div class="d-flex align-center justify-space-between py-2">
               <div>
-                <div class="text-body-2 font-weight-medium">Prix unitaires visibles</div>
-                <div class="text-caption text-medium-emphasis">Afficher le détail sur le devis</div>
+                <div class="text-body-2 font-weight-medium">
+                  Prix unitaires visibles
+                </div>
+                <div class="text-caption text-medium-emphasis">
+                  Afficher le détail sur le devis
+                </div>
               </div>
               <v-switch
                 :model-value="isDisplayUnitPrice"
@@ -378,8 +485,12 @@
             <v-divider class="my-1" />
             <div class="d-flex align-center justify-space-between py-2">
               <div>
-                <div class="text-body-2 font-weight-medium">Commission hors dégarnissage</div>
-                <div class="text-caption text-medium-emphasis">Exclure le dégarnissage de la base de commission</div>
+                <div class="text-body-2 font-weight-medium">
+                  Commission hors dégarnissage
+                </div>
+                <div class="text-caption text-medium-emphasis">
+                  Exclure le dégarnissage de la base de commission
+                </div>
               </div>
               <v-switch
                 :model-value="isComputeCommissionWithoutDentRemoval"
@@ -394,20 +505,35 @@
         </div>
 
         <!-- ── Section 6 : Lignes du devis ── -->
-        <div v-if="!isForfait" class="section-card mb-4">
+        <div
+          v-if="!isForfait"
+          class="section-card mb-4"
+        >
           <div class="section-header mb-3">
             <div class="section-icon">
-              <v-icon size="18" color="primary">mdi-format-list-bulleted</v-icon>
+              <v-icon
+                size="18"
+                color="primary"
+              >
+                mdi-format-list-bulleted
+              </v-icon>
             </div>
             <span class="text-subtitle-2 font-weight-semibold">Éléments du devis</span>
             <v-spacer />
-            <v-chip size="x-small" variant="tonal" color="primary">
+            <v-chip
+              size="x-small"
+              variant="tonal"
+              color="primary"
+            >
               {{ quoteLines.length }}
             </v-chip>
           </div>
 
           <!-- Liste mobile des lignes -->
-          <div v-if="quoteLines.length > 0" class="line-items-list">
+          <div
+            v-if="quoteLines.length > 0"
+            class="line-items-list"
+          >
             <div
               v-for="line in quoteLines"
               :key="line.id"
@@ -420,10 +546,20 @@
                     <span class="text-body-2 font-weight-medium">
                       {{ line.bodyPart?.name ?? '—' }}
                     </span>
-                    <v-chip v-if="line.bodyMaterial" size="x-small" variant="tonal" color="blue-grey">
+                    <v-chip
+                      v-if="line.bodyMaterial"
+                      size="x-small"
+                      variant="tonal"
+                      color="blue-grey"
+                    >
                       {{ line.bodyMaterial.name }}
                     </v-chip>
-                    <v-chip v-if="line.repairType" size="x-small" variant="tonal" color="indigo">
+                    <v-chip
+                      v-if="line.repairType"
+                      size="x-small"
+                      variant="tonal"
+                      color="indigo"
+                    >
                       {{ line.repairType.name }}
                     </v-chip>
                   </div>
@@ -449,7 +585,9 @@
                     color="error"
                     @click="onRemoveItemBtnClick(line)"
                   >
-                    <v-icon size="16">mdi-delete-outline</v-icon>
+                    <v-icon size="16">
+                      mdi-delete-outline
+                    </v-icon>
                   </v-btn>
                 </div>
               </div>
@@ -457,9 +595,19 @@
           </div>
 
           <!-- État vide -->
-          <div v-else class="text-center py-6 text-medium-emphasis">
-            <v-icon size="40" class="mb-2 opacity-40">mdi-playlist-plus</v-icon>
-            <div class="text-body-2">Aucun élément pour l'instant</div>
+          <div
+            v-else
+            class="text-center py-6 text-medium-emphasis"
+          >
+            <v-icon
+              size="40"
+              class="mb-2 opacity-40"
+            >
+              mdi-playlist-plus
+            </v-icon>
+            <div class="text-body-2">
+              Aucun élément pour l'instant
+            </div>
           </div>
 
           <!-- Bouton ajouter -->
@@ -480,7 +628,12 @@
         <div class="section-card mb-4">
           <div class="section-header mb-3">
             <div class="section-icon">
-              <v-icon size="18" color="primary">mdi-calculator-variant-outline</v-icon>
+              <v-icon
+                size="18"
+                color="primary"
+              >
+                mdi-calculator-variant-outline
+              </v-icon>
             </div>
             <span class="text-subtitle-2 font-weight-semibold">Récapitulatif</span>
           </div>
@@ -512,7 +665,10 @@
                 {{ regionManager.formatNumber(totalTaxRate) }} {{ selectedCountry?.currencySymbol || '€' }}
               </span>
             </div>
-            <div v-if="selectedGarage?.percentageCommission" class="total-row text-orange">
+            <div
+              v-if="selectedGarage?.percentageCommission"
+              class="total-row text-orange"
+            >
               <span class="text-body-2">Commission ({{ selectedGarage.percentageCommission }}%)</span>
               <span class="text-body-2 font-weight-medium">
                 {{ regionManager.formatNumber(totalCommission) }} {{ selectedCountry?.currencySymbol || '€' }}
@@ -527,13 +683,15 @@
             </div>
           </div>
         </div>
-
       </v-form>
 
       <!-- ═══════════════════════════════════════════════════
            STICKY BOTTOM — Sauvegarder
       ════════════════════════════════════════════════════ -->
-      <div v-if="!isReadOnly && quoteInformations.status?.code !== 'accepted'" class="sticky-bottom-bar">
+      <div
+        v-if="!isReadOnly && quoteInformations.status?.code !== 'accepted'"
+        class="sticky-bottom-bar"
+      >
         <v-btn
           color="primary"
           size="large"
@@ -546,7 +704,6 @@
           Sauvegarder
         </v-btn>
       </div>
-
     </v-container>
   </MainLayout>
 
@@ -555,14 +712,14 @@
     ref="garageDialogRef"
     title="Modifier le client"
     persistent
-    :maxWidth="500"
+    :max-width="500"
     @validated="onGarageValidated"
   />
 
   <AddLineItemDialog
     ref="addLineItemDialogRef"
     title="Ajouter un élément"
-    :availableBodyParts="availableBodyParts"
+    :available-body-parts="availableBodyParts"
     @add="onAddLineItem"
   />
 
@@ -570,8 +727,8 @@
     ref="deleteQuoteConfirmDialogRef"
     title="Supprimer le devis"
     message="Cette action est irréversible. Confirmer la suppression ?"
-    confirmLabel="Supprimer"
-    cancelLabel="Annuler"
+    confirm-label="Supprimer"
+    cancel-label="Annuler"
     type="warning"
     @confirm="onConfirmDeleteQuote"
   />
@@ -702,10 +859,10 @@ const onGarageValidated = (g: GarageViewModel) => setGarage(g);
 const onCarImmatriculationUpdated = (v: string) => setCarImmatriculation(v);
 const onCarBrandUpdated = (v: string) => setCarBrand(v);
 const onCarYearUpdated = (v: string) => setCarDateEntryCirculation(v);
-const onUpdateIsForfait = (v: boolean) => setIsForfait(v);
+const onUpdateIsForfait = (v: boolean | null) => setIsForfait(v ?? false);
 const onUpdateForfaitAmount = (v: number) => setForfaitAmount(Number(v));
-const onUpdateIsDisplayUnitPrice = (v: boolean) => setIsDisplayUnitPrice(v);
-const onUpdateIsComputeCommissionWithoutDentRemoval = (v: boolean) => setIsComputeCommissionWithoutDentRemoval(v);
+const onUpdateIsDisplayUnitPrice = (v: boolean | null) => setIsDisplayUnitPrice(v ?? true);
+const onUpdateIsComputeCommissionWithoutDentRemoval = (v: boolean | null) => setIsComputeCommissionWithoutDentRemoval(v ?? true);
 const onSelectCountry = (c: CountryViewModel | undefined) => { if (c) selectCountry(c); };
 
 // ── Handlers lignes ───────────────────────────────────────────────────────────
