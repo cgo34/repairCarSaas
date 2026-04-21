@@ -21,6 +21,7 @@
     "dotenv": "^16.4.7",
     "html2pdf.js": "^0.10.3",
     "inversify": "^6.2.1",
+    "jszip": "^3.10.1",
     "reflect-metadata": "^0.2.2",
     "supabase": "^2.92.1",
     "vee-validate": "^4.15.0",
@@ -32,6 +33,7 @@
     "vuetify": "^3.3.0"
   },
   "devDependencies": {
+    "@types/jszip": "^3.4.0",
     "@types/reflect-metadata": "^0.0.5",
     "@typescript-eslint/eslint-plugin": "^6.13.0",
     "@typescript-eslint/parser": "^6.13.0",
