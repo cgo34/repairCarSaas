@@ -1,20 +1,19 @@
-import { DentRepairTypeViewDto } from '@/@application/dtos/settings/carRepair/DentRepairViewDto';
 import { DentRepairTypeDto } from '@/@application/dtos/carRepair/DentRepairTypeDto';
 
 export class RepairTypeMapper {
-  static viewDtoToDto(viewDto: DentRepairTypeViewDto): DentRepairTypeDto {
-    return {
-      id: viewDto.id,
-      name: viewDto.name,
-      code: viewDto.code,
-    }
-  }
-
-  static dtoToViewDto(dto: DentRepairTypeDto): DentRepairTypeViewDto {
+  static dtoToDomain(dto: DentRepairTypeDto): DentRepairTypeDto {
     return {
       id: dto.id,
       name: dto.name,
       code: dto.code,
+    }
+  }
+
+  static domainToDto(domain: DentRepairTypeDto): DentRepairTypeDto {
+    return {
+      id: domain.id,
+      name: domain.name,
+      code: domain.code,
     };
   }
 }
