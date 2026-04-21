@@ -1,10 +1,10 @@
-import { SettingPriceImpactCountToUtViewDto } from "@/@application/dtos/settings/SettingPriceImpactCountToUtViewDto";
+import { SettingPriceImpactCountToUtViewModel } from "@/@presentation/types/models/settings/price/SettingPriceImpactCountToUtViewModel";
 
 export interface ISettingPriceImpactCountToUtUseCase {
-  getAdmin(): Promise<SettingPriceImpactCountToUtViewDto[]>;
-  getByUserId(userId: string): Promise<SettingPriceImpactCountToUtViewDto[]>;
-  save(settings: SettingPriceImpactCountToUtViewDto[]): Promise<SettingPriceImpactCountToUtViewDto[]>;
-  create(dto: SettingPriceImpactCountToUtViewDto): Promise<SettingPriceImpactCountToUtViewDto>;
-  update(dto: SettingPriceImpactCountToUtViewDto): Promise<SettingPriceImpactCountToUtViewDto>;
+  getAdmin(): Promise<SettingPriceImpactCountToUtViewModel[]>;
+  getByUserId(userId: string): Promise<SettingPriceImpactCountToUtViewModel[]>;
+  save(settings: SettingPriceImpactCountToUtViewModel[]): Promise<SettingPriceImpactCountToUtViewModel[]>;
+  create(viewModel: SettingPriceImpactCountToUtViewModel): Promise<SettingPriceImpactCountToUtViewModel>;
+  update(viewModel: SettingPriceImpactCountToUtViewModel): Promise<SettingPriceImpactCountToUtViewModel>;
   delete(id: string): Promise<void>;
 }

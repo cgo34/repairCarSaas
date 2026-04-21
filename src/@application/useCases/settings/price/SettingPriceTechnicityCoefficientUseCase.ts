@@ -1,6 +1,7 @@
 import { ISettingPriceTechnicityCoefficientRepository } from '@/@domain/repositories/settings/price/ISettingPriceTechnicityCoefficientRepository';
 import { ISettingPriceTechnicityCoefficientUseCase } from '@/@domain/useCases/settings/price/ISettingPriceTechnicityCoefficientUseCase';
-import { SettingPriceTechnicityCoefficientDto } from '@/@infrastructure/dtos/settings/price/SettingPriceTechnicityCoefficientDto';
+import { SettingPriceTechnicityCoefficientViewModel } from '@/@presentation/types/models/settings/price/SettingPriceTechnicityCoefficientViewModel';
+import { SettingPriceTechnicityCoefficientMapper } from '@/@presentation/mappers/settings/price/SettingPriceTechnicityCoefficientMapper';
 import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
 import { inject, injectable } from 'inversify';
 
@@ -11,24 +12,33 @@ export class SettingPriceTechnicityCoefficientUseCase implements ISettingPriceTe
     private repository: ISettingPriceTechnicityCoefficientRepository
   ) {}
 
-  async getAdmin(): Promise<SettingPriceTechnicityCoefficientDto> {
-    return await this.repository.getAdmin();
+
+  async getAdmin(): Promise<SettingPriceTechnicityCoefficientViewModel> {
+    const dto = await this.repository.getAdmin();
+    return SettingPriceTechnicityCoefficientMapper.dtoToView(dto);
   }
 
-  async getByUserId(userId: string): Promise<SettingPriceTechnicityCoefficientDto> {
-    return await this.repository.getByUserId(userId);
+  async getByUserId(userId: string): Promise<SettingPriceTechnicityCoefficientViewModel> {
+    const dto = await this.repository.getByUserId(userId);
+    return SettingPriceTechnicityCoefficientMapper.dtoToView(dto);
   }
 
-  async save(dto: SettingPriceTechnicityCoefficientDto): Promise<SettingPriceTechnicityCoefficientDto> {
-    return await this.repository.save(dto);
+  async save(viewModel: SettingPriceTechnicityCoefficientViewModel): Promise<SettingPriceTechnicityCoefficientViewModel> {
+    const dto = SettingPriceTechnicityCoefficientMapper.viewToDto(viewModel);
+    const saved = await this.repository.save(dto);
+    return SettingPriceTechnicityCoefficientMapper.dtoToView(saved);
   }
 
-  async create(dto: SettingPriceTechnicityCoefficientDto): Promise<SettingPriceTechnicityCoefficientDto> {
-    return await this.repository.create(dto);
+  async create(viewModel: SettingPriceTechnicityCoefficientViewModel): Promise<SettingPriceTechnicityCoefficientViewModel> {
+    const dto = SettingPriceTechnicityCoefficientMapper.viewToDto(viewModel);
+    const created = await this.repository.create(dto);
+    return SettingPriceTechnicityCoefficientMapper.dtoToView(created);
   }
 
-  async update(dto: SettingPriceTechnicityCoefficientDto): Promise<SettingPriceTechnicityCoefficientDto> {
-    return await this.repository.update(dto);
+  async update(viewModel: SettingPriceTechnicityCoefficientViewModel): Promise<SettingPriceTechnicityCoefficientViewModel> {
+    const dto = SettingPriceTechnicityCoefficientMapper.viewToDto(viewModel);
+    const updated = await this.repository.update(dto);
+    return SettingPriceTechnicityCoefficientMapper.dtoToView(updated);
   }
 
   async delete(id: string): Promise<void> {

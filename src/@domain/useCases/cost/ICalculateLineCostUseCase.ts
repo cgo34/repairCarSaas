@@ -1,6 +1,6 @@
-import { LineItemViewDto } from "@/@application/dtos/LineItemViewDto";
-import { SettingPriceViewDto } from "@/@application/dtos/settings/SettingPriceViewDto";
+import { LineItemViewModel } from "@/@presentation/types/models/LineItemViewModel";
+import { SettingPriceViewModel } from "@/@presentation/types/models/settings/price/SettingPriceViewModel";
 
 export interface ICalculateLineCostUseCase {
-  execute(lineItem: LineItemViewDto, priceParams: SettingPriceViewDto): number;
+  execute(lineItem: LineItemViewModel, priceParams: SettingPriceViewModel): number;
 }

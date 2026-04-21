@@ -35,7 +35,11 @@ defineProps<{
           <h4 class="text-h4 font-weight-medium">
             {{ value }}
           </h4>
-          <span v-if="amount" class="text-subtitle-1 font-weight-medium" :class="`text-${color}`">
+          <span
+            v-if="amount"
+            class="text-subtitle-1 font-weight-medium"
+            :class="`text-${color}`"
+          >
             {{ amount }}
           </span>
           <span class="text-subtitle-2 text-disabled font-weight-medium d-block">

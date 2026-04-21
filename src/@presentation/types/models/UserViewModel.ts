@@ -4,4 +4,5 @@ export interface UserViewModel {
   password: string;
   fullName: string;
   createdAt: string;
+  role: string;
 }

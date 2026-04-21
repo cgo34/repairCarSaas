@@ -1,12 +1,12 @@
-import { SettingPriceViewDto } from "@/@application/dtos/settings/SettingPriceViewDto";
 import { SettingPriceViewModel } from "@/@presentation/types/models/settings/price/SettingPriceViewModel";
 import { SettingPriceBodyPartCoefficientMapper } from "./SettingPriceBodyPartCoefficientMapper";
 import { SettingPriceGeneralMapper } from "./SettingPriceGeneralMapper";
 import { SettingPriceImpactCountToUtMapper } from "./SettingPriceImpactCountToUtMapper";
 import { SettingPriceTechnicityCoefficientMapper } from "./SettingPriceTechnicityCoefficientMapper";
+import { SettingPriceDto } from "@/@infrastructure/dtos/settings/price/SettingPriceDto";
 
 export class SettingPriceMapper {
-  static viewToDto(viewModel: SettingPriceViewModel): SettingPriceViewDto {
+  static viewToDto(viewModel: SettingPriceViewModel): SettingPriceDto {
     return {
       general: SettingPriceGeneralMapper.viewToDto(viewModel.general) ?? undefined,
       technicity: SettingPriceTechnicityCoefficientMapper.viewToDto(viewModel.technicity),
@@ -15,7 +15,7 @@ export class SettingPriceMapper {
     };
   }
 
-  static dtoToView(dto: SettingPriceViewDto): SettingPriceViewModel {
+  static dtoToView(dto: SettingPriceDto): SettingPriceViewModel {
     return {
       general: dto.general ?? undefined,
       bodyParts: dto.bodyParts.map((bp) => SettingPriceBodyPartCoefficientMapper.dtoToView(bp)) ?? undefined,

@@ -1,7 +1,8 @@
 import { BodyPartService } from "@/@application/services/carRepair/BodyPartService";
 import { IBodyPartService } from "@/@domain/services/carRepair/IBodyPartService";
 import { IBodyPartUseCase } from "@/@domain/useCases/carRepair/IBodyPartUseCase";
-import { BodyPartDto } from "@/@infrastructure/dtos/carRepair/BodyPartDto";
+import { BodyPartViewModel } from "@/@presentation/types/models/carRepair/BodyPartViewModel";
+import { BodyPartMapper } from "@/@presentation/mappers/settings/BodyPartMapper";
 import { SYMBOLS } from "@/@infrastructure/ioc/symbols";
 import { inject, injectable } from "inversify";
 
@@ -15,16 +16,21 @@ export class BodyPartUseCase implements IBodyPartUseCase {
     }
   }
 
-  async executeGetAll(): Promise<BodyPartDto[]> {
-    return this.bodyPartService.getAll();
+  async executeGetAll(): Promise<BodyPartViewModel[]> {
+    const dtos = await this.bodyPartService.getAll();
+    return dtos.map(BodyPartMapper.dtoToView);
   }
 
-  async executeCreate(bodyPart: BodyPartDto): Promise<BodyPartDto> {
-    return this.bodyPartService.create(bodyPart);
+  async executeCreate(bodyPart: BodyPartViewModel): Promise<BodyPartViewModel> {
+    const dto = BodyPartMapper.viewToDto(bodyPart);
+    const created = await this.bodyPartService.create(dto);
+    return BodyPartMapper.dtoToView(created);
   }
 
-  async executeUpdate(bodyPart: BodyPartDto): Promise<BodyPartDto> {
-    return this.bodyPartService.update(bodyPart);
+  async executeUpdate(bodyPart: BodyPartViewModel): Promise<BodyPartViewModel> {
+    const dto = BodyPartMapper.viewToDto(bodyPart);
+    const updated = await this.bodyPartService.update(dto);
+    return BodyPartMapper.dtoToView(updated);
   }
 
   async executeDelete(id: string): Promise<void> {

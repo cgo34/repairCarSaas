@@ -1,10 +1,12 @@
 <template>
   <MainLayout>
     <v-container>
-
       <!-- Row 1 : Devis KPIs -->
       <v-row>
-        <v-col cols="12" sm="3">
+        <v-col
+          cols="12"
+          sm="3"
+        >
           <DashboardStatCard
             title="Total Devis"
             :value="loading ? '...' : totalQuotes"
@@ -13,7 +15,10 @@
             color="primary"
           />
         </v-col>
-        <v-col cols="12" sm="3">
+        <v-col
+          cols="12"
+          sm="3"
+        >
           <DashboardStatCard
             title="Devis en cours"
             :value="loading ? '...' : quotesProcessing"
@@ -22,7 +27,10 @@
             color="warning"
           />
         </v-col>
-        <v-col cols="12" sm="3">
+        <v-col
+          cols="12"
+          sm="3"
+        >
           <DashboardStatCard
             title="Devis finalisés"
             :value="loading ? '...' : quotesFinalized"
@@ -31,7 +39,10 @@
             color="success"
           />
         </v-col>
-        <v-col cols="12" sm="3">
+        <v-col
+          cols="12"
+          sm="3"
+        >
           <DashboardStatCard
             title="Devis acceptés"
             :value="loading ? '...' : quotesAccepted"
@@ -44,7 +55,10 @@
 
       <!-- Row 2 : Factures KPIs -->
       <v-row>
-        <v-col cols="12" sm="3">
+        <v-col
+          cols="12"
+          sm="3"
+        >
           <DashboardStatCard
             title="Total Factures"
             :value="loading ? '...' : totalInvoices"
@@ -53,7 +67,10 @@
             color="primary"
           />
         </v-col>
-        <v-col cols="12" sm="3">
+        <v-col
+          cols="12"
+          sm="3"
+        >
           <DashboardStatCard
             title="Factures en attente"
             :value="loading ? '...' : invoicesPending"
@@ -62,7 +79,10 @@
             color="warning"
           />
         </v-col>
-        <v-col cols="12" sm="3">
+        <v-col
+          cols="12"
+          sm="3"
+        >
           <DashboardStatCard
             title="Factures validées"
             :value="loading ? '...' : invoicesValidated"
@@ -71,7 +91,10 @@
             color="success"
           />
         </v-col>
-        <v-col cols="12" sm="3">
+        <v-col
+          cols="12"
+          sm="3"
+        >
           <DashboardStatCard
             title="Factures envoyées"
             :value="loading ? '...' : invoicesSent"
@@ -84,7 +107,10 @@
 
       <!-- Row 3 : Garages / Utilisateurs -->
       <v-row>
-        <v-col cols="12" sm="6">
+        <v-col
+          cols="12"
+          sm="6"
+        >
           <DashboardStatCard
             title="Total Garages"
             :value="loading ? '...' : totalGarages"
@@ -92,7 +118,10 @@
             color="warning"
           />
         </v-col>
-        <v-col cols="12" sm="6">
+        <v-col
+          cols="12"
+          sm="6"
+        >
           <DashboardStatCard
             title="Total Utilisateurs"
             :value="loading ? '...' : totalUsers"
@@ -104,9 +133,17 @@
 
       <!-- Row 4 : Derniers devis -->
       <v-row>
-        <v-col cols="12" md="6">
-          <v-card outlined class="rounded-lg">
-            <v-card-title class="text-h6">Derniers devis</v-card-title>
+        <v-col
+          cols="12"
+          md="6"
+        >
+          <v-card
+            outlined
+            class="rounded-lg"
+          >
+            <v-card-title class="text-h6">
+              Derniers devis
+            </v-card-title>
             <v-card-text class="pa-0">
               <v-table density="compact">
                 <thead>
@@ -115,27 +152,48 @@
                     <th>Garage</th>
                     <th>Immat.</th>
                     <th>Statut</th>
-                    <th></th>
+                    <th />
                   </tr>
                 </thead>
                 <tbody>
                   <tr v-if="loading">
-                    <td colspan="5" class="text-center py-4">Chargement…</td>
+                    <td
+                      colspan="5"
+                      class="text-center py-4"
+                    >
+                      Chargement…
+                    </td>
                   </tr>
                   <tr v-else-if="recentQuotes.length === 0">
-                    <td colspan="5" class="text-center py-4 text-disabled">Aucun devis</td>
+                    <td
+                      colspan="5"
+                      class="text-center py-4 text-disabled"
+                    >
+                      Aucun devis
+                    </td>
                   </tr>
-                  <tr v-for="q in recentQuotes" :key="q.id">
+                  <tr
+                    v-for="q in recentQuotes"
+                    :key="q.id"
+                  >
                     <td>{{ q.quoteNumber }}</td>
                     <td>{{ q.garage?.name ?? q.garageName ?? '—' }}</td>
                     <td>{{ q.carImmatriculation ?? '—' }}</td>
                     <td>
-                      <v-chip size="x-small" :color="quoteStatusColor(q.status?.code)">
+                      <v-chip
+                        size="x-small"
+                        :color="quoteStatusColor(q.status?.code)"
+                      >
                         {{ q.status?.label ?? q.status?.code ?? '—' }}
                       </v-chip>
                     </td>
                     <td>
-                      <v-btn size="x-small" variant="text" color="primary" :to="`/quotes/edit/${q.id}`">
+                      <v-btn
+                        size="x-small"
+                        variant="text"
+                        color="primary"
+                        :to="`/quotes/edit/${q.id}`"
+                      >
                         Voir
                       </v-btn>
                     </td>
@@ -147,9 +205,17 @@
         </v-col>
 
         <!-- Row 4 : Dernières factures -->
-        <v-col cols="12" md="6">
-          <v-card outlined class="rounded-lg">
-            <v-card-title class="text-h6">Dernières factures</v-card-title>
+        <v-col
+          cols="12"
+          md="6"
+        >
+          <v-card
+            outlined
+            class="rounded-lg"
+          >
+            <v-card-title class="text-h6">
+              Dernières factures
+            </v-card-title>
             <v-card-text class="pa-0">
               <v-table density="compact">
                 <thead>
@@ -158,27 +224,48 @@
                     <th>Garage</th>
                     <th>Immat.</th>
                     <th>Statut</th>
-                    <th></th>
+                    <th />
                   </tr>
                 </thead>
                 <tbody>
                   <tr v-if="loading">
-                    <td colspan="5" class="text-center py-4">Chargement…</td>
+                    <td
+                      colspan="5"
+                      class="text-center py-4"
+                    >
+                      Chargement…
+                    </td>
                   </tr>
                   <tr v-else-if="recentInvoices.length === 0">
-                    <td colspan="5" class="text-center py-4 text-disabled">Aucune facture</td>
+                    <td
+                      colspan="5"
+                      class="text-center py-4 text-disabled"
+                    >
+                      Aucune facture
+                    </td>
                   </tr>
-                  <tr v-for="inv in recentInvoices" :key="inv.id">
+                  <tr
+                    v-for="inv in recentInvoices"
+                    :key="inv.id"
+                  >
                     <td>{{ inv.invoiceNumber }}</td>
                     <td>{{ inv.garage?.name ?? inv.garageName ?? '—' }}</td>
                     <td>{{ inv.carImmatriculation ?? '—' }}</td>
                     <td>
-                      <v-chip size="x-small" :color="invoiceStatusColor(inv.status)">
+                      <v-chip
+                        size="x-small"
+                        :color="invoiceStatusColor(inv.status)"
+                      >
                         {{ inv.status }}
                       </v-chip>
                     </td>
                     <td>
-                      <v-btn size="x-small" variant="text" color="primary" :to="`/invoices/edit/${inv.id}`">
+                      <v-btn
+                        size="x-small"
+                        variant="text"
+                        color="primary"
+                        :to="`/invoices/edit/${inv.id}`"
+                      >
                         Voir
                       </v-btn>
                     </td>
@@ -189,7 +276,6 @@
           </v-card>
         </v-col>
       </v-row>
-
     </v-container>
   </MainLayout>
 </template>

@@ -1,5 +1,5 @@
 import { IAuthService } from '@domain/services/IAuthService';
-import { ILoginUseCase } from '@domain/useCases/interfaces/auth/ILoginUseCase';
+import { ILoginUseCase } from '@domain/useCases/auth/ILoginUseCase';
 import { UserDto } from '@/@infrastructure/dtos/UserDto';
 import { SYMBOLS } from '@infrastructure/ioc/symbols';
 import { inject, injectable } from 'inversify';

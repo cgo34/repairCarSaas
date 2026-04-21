@@ -3,7 +3,7 @@
     ref="genericDialogRef"
     title="Ajouter un élément"
     persistent
-    :maxWidth="600"
+    :max-width="600"
   >
     <template #default>
       <v-form ref="form">
@@ -80,8 +80,15 @@
     </template>
 
     <template #actions>
-      <v-btn @click="onCancelBtnClick()">Annuler</v-btn>
-      <v-btn color="primary" @click="onAddBtnClick()">Valider</v-btn>
+      <v-btn @click="onCancelBtnClick()">
+        Annuler
+      </v-btn>
+      <v-btn
+        color="primary"
+        @click="onAddBtnClick()"
+      >
+        Valider
+      </v-btn>
     </template>
   </GenericDialog>
 </template>

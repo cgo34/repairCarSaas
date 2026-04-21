@@ -1,6 +1,7 @@
 import { IUserRepository } from '@/@domain/repositories/IUserRepository';
 import { ICreateUserUseCase } from '@/@domain/useCases/user/ICreateUserUseCase';
-import { UserDto } from '@/@infrastructure/dtos/UserDto';
+import { UserViewModel } from '@/@presentation/types/models/UserViewModel';
+import { UserMapper } from '@/@presentation/mappers/UserMapper';
 import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
 import { inject, injectable } from 'inversify';
 
@@ -11,8 +12,9 @@ export class CreateUserUseCase implements ICreateUserUseCase {
     private userRepository: IUserRepository
   ) {}
 
-  async execute(user: UserDto): Promise<void> {
+  async execute(user: UserViewModel): Promise<void> {
     // Tu peux ajouter une validation métier ici si besoin
-    await this.userRepository.createUser(user);
+    const dto = UserMapper.viewToDto(user);
+    await this.userRepository.createUser(dto);
   }
 }

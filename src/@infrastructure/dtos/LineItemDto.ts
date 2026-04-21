@@ -8,11 +8,11 @@ export interface LineItemDto {
   quoteId?: string;
   quoteDetailId?: string;
   bodyPartId: string;
-  bodyPart: BodyPartDto
+  bodyPart?: BodyPartDto
   bodyMaterialId: string;
-  bodyMaterial: BodyMaterialDto
+  bodyMaterial?: BodyMaterialDto
   repairTypeId: string;
-  repairType: DentRepairTypeDto
+  repairType?: DentRepairTypeDto
   impactCount25: number;
   impactCount35: number;
   dentRemovalPrice: number;

@@ -20,7 +20,7 @@ import { container } from '@/@infrastructure/ioc/inversify.config';
 import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
 import { DocumentStatuseMapper } from '@/@presentation/mappers/DocumentStatuseMapper';
 import { GarageMapper } from '@/@presentation/mappers/GarageMapper';
-import { LineItemMapper } from '@/@presentation/mappers/LineItemMapper';
+import { LineItemViewMapper } from '@/@presentation/mappers/LineItemViewMapper';
 import { QuoteMapper } from '@/@presentation/mappers/QuoteMapper';
 import { VehicleMapper } from '@/@presentation/mappers/VehicleMapper';
 import { BodyMaterialMapper } from '@/@presentation/mappers/settings/BodyMaterialMapper';
@@ -70,7 +70,7 @@ export function useEditQuoteState() {
   // #endregion
 
   // #region -> CONSTANTS
-  let LINE_ITEM_INCREMENT = 1;
+  const LINE_ITEM_INCREMENT = 1;
   // #endregion
 
   // #region -> REFS
@@ -126,51 +126,8 @@ export function useEditQuoteState() {
       // resetQuote();
       _quoteId.value = id;     
       
-      const quoteDto = await getQuoteUseCase.execute(id);
-      const quoteDetailDto = await getQuoteDetailUseCase.execute(id);
-      const statusesDto = await getDocumentStatuseUseCase.execute();
 
-      _statuses.value = statusesDto.map(m => DocumentStatuseMapper.dtoToView(m))
-      
-      _quote.value = QuoteMapper.dtoToView(quoteDto);
-      _isForfait.value = quoteDto?.isForfait ?? false
-      _forfaitAmount.value = quoteDto?.forfaitAmount
-      
-      _quoteLines.value = quoteDetailDto?.map((line, idx) => {
-        
-        return {
-          ...LineItemMapper.dtoToView(line),
-          lineId: idx + 1,
-        }
-      }) ?? [];
-      
-      
-      // TODO: (gce) -> MOVE TO MAPPER
-      _quoteInformations.value.number = _quote.value.quoteNumber;
-      const startDate = new Date(_quote.value.startDate);
-      _quoteInformations.value.date = startDate.toISOString().split('T')[0];
-
-      // Ajout d’un mois
-      // const expirationDate = new Date(startDate);
-      // expirationDate.setMonth(expirationDate.getMonth() + 1);
-      // _quoteInformations.value.expirationDate = expirationDate.toISOString().split('T')[0];
-      
-      _quoteInformations.value.status = _quote.value.status;
-
-      _selectedTechnician.value = _quote.value.technician;
-      _selectedGarage.value = _quote.value.garage;
-      if (_quote.value.garage?.id) {
-        const vehiclesResult = await vehicleUseCase.getByGarageId(_quote.value.garage.id).catch(() => []);
-        _vehicles.value = vehiclesResult.map(VehicleMapper.dtoToView);
-        if (_quote.value.vehicleId) {
-          _selectedVehicle.value = _vehicles.value.find(v => v.id === _quote.value.vehicleId);
-        }
-      }
-
-      _carInformations.value.immatriculation = _quote.value.carImmatriculation ?? '';
-      _carInformations.value.brand = _quote.value.carBrand ?? '';
-      _carInformations.value.dateEntryCirculation = _quote.value.carDateEntryCirculation ?? '';
-
+      // 1. Charger les référentiels d'abord
       const [garageResult, technicianResult, bodyPartResult, bodyMaterialResult, repairTypeResult, priceParamsResult] =
         await Promise.allSettled([
           garageUseCase.getByUserId(authState.user.value?.id),
@@ -180,7 +137,6 @@ export function useEditQuoteState() {
           repairTypeUseCase.executeGetAll(),
           priceParamsUseCase.getByUserId(authState.user.value?.id),
         ]);
-        
 
       if (garageResult.status === 'fulfilled')
         _garages.value = garageResult.value.map((g) => GarageMapper.dtoToView(g));
@@ -204,7 +160,53 @@ export function useEditQuoteState() {
 
       if (priceParamsResult.status === 'fulfilled')
         _priceParams.value = SettingPriceMapper.dtoToView(priceParamsResult.value);
-      
+
+      // 2. Charger le devis et les lignes après les référentiels
+      const quote = await getQuoteUseCase.execute(id);
+      const quoteDetailDto = await getQuoteDetailUseCase.execute(id);
+      const statusesDto = await getDocumentStatuseUseCase.execute();
+
+      _statuses.value = statusesDto.map(m => DocumentStatuseMapper.dtoToView(m))
+      _quote.value = quote;
+      _isForfait.value = quote?.isForfait ?? false
+      _forfaitAmount.value = quote?.forfaitAmount
+      _quoteLines.value = quoteDetailDto?.map((line, idx) =>
+        ({
+          ...LineItemViewMapper.dtoToViewEnriched(
+            line,
+            _bodyParts.value,
+            _bodyMaterials.value,
+            _repairTypes.value
+          ),
+          lineId: idx + 1,
+        })
+      ) ?? [];
+
+      // TODO: (gce) -> MOVE TO MAPPER
+      _quoteInformations.value.number = _quote.value.quoteNumber;
+      const startDate = new Date(_quote.value.startDate);
+      _quoteInformations.value.date = startDate.toISOString().split('T')[0];
+
+      // Ajout d’un mois
+      // const expirationDate = new Date(startDate);
+      // expirationDate.setMonth(expirationDate.getMonth() + 1);
+      // _quoteInformations.value.expirationDate = expirationDate.toISOString().split('T')[0];
+      _quoteInformations.value.status = _quote.value.status;
+
+      _selectedTechnician.value = _quote.value.technician;
+      _selectedGarage.value = _quote.value.garage;
+      if (_quote.value.garage?.id) {
+        const vehiclesResult = await vehicleUseCase.getByGarageId(_quote.value.garage.id).catch(() => []);
+        _vehicles.value = vehiclesResult.map(VehicleMapper.dtoToView);
+        if (_quote.value.vehicleId) {
+          _selectedVehicle.value = _vehicles.value.find(v => v.id === _quote.value.vehicleId);
+        }
+      }
+
+      _carInformations.value.immatriculation = _quote.value.carImmatriculation ?? '';
+      _carInformations.value.brand = _quote.value.carBrand ?? '';
+      _carInformations.value.dateEntryCirculation = _quote.value.carDateEntryCirculation ?? '';
+
     } catch (e) {
       error.value = e;
     } finally {
@@ -328,11 +330,8 @@ export function useEditQuoteState() {
     else
       line.price = 0
 
-    const quoteLinesDto = await addQuoteDetailsUseCase.executeQuote(LineItemMapper.viewToDto(line));
-
-    const quoteAdded =  LineItemMapper.dtoToView(quoteLinesDto);
-
-    _quoteLines.value.push({...quoteAdded});    
+    const quoteAdded = await addQuoteDetailsUseCase.executeQuote(line);
+    _quoteLines.value.push({...quoteAdded});
   }
 
   const removeLine = (lineId: string) => {
@@ -418,8 +417,7 @@ export function useEditQuoteState() {
   // }
 
   const computePrice = (line: LineItemViewModel) => {
-    const lineItemViewDto = LineItemMapper.viewToDto(line);
-    line.price = calculateLineCostUseCase.execute(lineItemViewDto, SettingPriceMapper.viewToDto(_priceParams.value));
+    line.price = calculateLineCostUseCase.execute(line, _priceParams.value);
   }
 
   
@@ -568,7 +566,7 @@ export function useEditQuoteState() {
     if (!_quote.value)
       return
     
-    duplicateQuoteToInvoiceUseCase.execute(QuoteMapper.viewToDto(_quote.value), _quoteLines.value.map(LineItemMapper.viewToDto))
+    duplicateQuoteToInvoiceUseCase.execute(QuoteMapper.viewToDto(_quote.value), _quoteLines.value.map(LineItemViewMapper.viewToDto))
   }
 
   const deleteQuote = (quoteNumber: string) => {

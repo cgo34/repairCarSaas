@@ -1,13 +1,18 @@
 <template>
   <MainLayout>
-    <v-container fluid class="px-0 py-0">
-      
+    <v-container
+      fluid
+      class="px-0 py-0"
+    >
       <!-- Actions du devis -->
-      <v-toolbar title="" color="transparent">
-        <template v-slot:prepend>
-          <BackButton :fallbackPath="`/quotes/${quote?.id}/edit`" />
+      <v-toolbar
+        title=""
+        color="transparent"
+      >
+        <template #prepend>
+          <BackButton :fallback-path="`/quotes/${quote?.id}/edit`" />
         </template>
-        <template v-slot:append>
+        <template #append>
           <DownloadButton
             :url="pdfUrl"
             :filename="filename"
@@ -31,13 +36,23 @@
         outlined
       >
         <v-card-title>
-          <h3 class="text-h3">Prévisualisation du devis</h3>
+          <h3 class="text-h3">
+            Prévisualisation du devis
+          </h3>
         </v-card-title>
         <v-card-subtitle>
-          <h4 class="text-h5">ID #{{ quote?.quoteNumber }}</h4>
+          <h4 class="text-h5">
+            ID #{{ quote?.quoteNumber }}
+          </h4>
         </v-card-subtitle>
         <v-card-text>
-          <iframe v-if="pdfUrl" :src="pdfUrl" width="100%" height="800px" style="border: none;" />
+          <iframe
+            v-if="pdfUrl"
+            :src="pdfUrl"
+            width="100%"
+            height="800px"
+            style="border: none;"
+          />
         </v-card-text>
       </v-card>
     </v-container>

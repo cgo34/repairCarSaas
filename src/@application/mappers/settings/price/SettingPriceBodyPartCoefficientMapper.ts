@@ -1,23 +1,33 @@
-import { BodyPartMapper } from '@/@application/mappers/settings/carRepair/BodyPartMapper';
-import { SettingPriceBodyPartCoefficient } from '@/@domain/models/settings/price/SettingPriceBodyPartCoefficient';
 import { SettingPriceBodyPartCoefficientDto } from '@/@infrastructure/dtos/settings/price/SettingPriceBodyPartCoefficientDto';
+import { SettingPriceBodyPartCoefficientViewModel } from '@/@presentation/types/models/settings/price/SettingPriceBodyPartCoefficientViewModel';
+import { BodyPartViewModel } from '@/@presentation/types/models/carRepair/BodyPartViewModel';
 
 export class SettingPriceBodyPartCoefficientMapper {
-  static dtoToDomain(dto: SettingPriceBodyPartCoefficientDto): SettingPriceBodyPartCoefficient {
-    return new SettingPriceBodyPartCoefficient(
-      dto.userId,
-      dto.coefficient,
-      dto.bodyParts ? BodyPartMapper.dtoToDomain(dto.bodyParts) : undefined,
-      dto.bodyPartId,
-    );
+  static dtoToViewModel(dto: SettingPriceBodyPartCoefficientDto): SettingPriceBodyPartCoefficientViewModel {
+    return {
+      userId: dto.userId,
+      coefficient: dto.coefficient,
+      bodyPartId: dto.bodyPartId ?? '',
+      bodyParts: {
+        id: dto.bodyParts?.id,
+        name: dto.bodyParts?.name ?? '',
+        code: dto.bodyParts?.code ?? '',
+        color: dto.bodyParts?.color
+      }
+    };
   }
 
-  static domainToDto(domain: SettingPriceBodyPartCoefficient): SettingPriceBodyPartCoefficientDto {
+  static viewModelToDto(viewModel: SettingPriceBodyPartCoefficientViewModel): SettingPriceBodyPartCoefficientDto {
     return {
-      userId: domain.userId,
-      bodyPartId: domain.bodyPartId,
-      coefficient: domain.coefficient,
-      bodyParts: domain.bodyPart ? BodyPartMapper.domainToDto(domain.bodyPart) : undefined
+      userId: viewModel.userId,
+      coefficient: viewModel.coefficient,
+      bodyPartId: viewModel.bodyPartId,
+      bodyParts: {
+        id: viewModel.bodyParts.id ?? '',
+        name: viewModel.bodyParts.name,
+        code: viewModel.bodyParts.code,
+        color: viewModel.bodyParts.color
+      }
     };
   }
 }

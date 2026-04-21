@@ -34,7 +34,7 @@
           </template>
           
           <template #item.createdAt="{ value }">
-            {{  regionManager.formatDate(value) }}
+            {{ regionManager.formatDate(value) }}
           </template>
           
           <template #item.garage="{ value }">
@@ -42,15 +42,17 @@
           </template>
 
           <template #item.status="{ value }">
-            <v-chip :text="value.label" :color="value.code === 'processing' ? 'blue' : value.code === 'accepted' ? 'green' : 'red'"></v-chip>
+            <v-chip
+              :text="value.label"
+              :color="value.code === 'processing' ? 'blue' : value.code === 'accepted' ? 'green' : 'red'"
+            />
           </template>
 
           
           <template #item.isForfait="{ value }">
-              <v-icon :color="value ? 'green' : 'red'"
-              >
-                {{  value ? 'mdi-checkbox-marked-circle' : 'mdi-close-circle' }}
-              </v-icon>
+            <v-icon :color="value ? 'green' : 'red'">
+              {{ value ? 'mdi-checkbox-marked-circle' : 'mdi-close-circle' }}
+            </v-icon>
           </template>
 
           <!-- #REGION -> BODY : TOTAL -->
@@ -85,12 +87,11 @@
     ref="deleteInvoiceConfirmDialogRef"
     title="Delete invoice"
     message="You will delete this invoice, are you sure ?"
-    confirmLabel="Confirmer"
-    cancelLabel="Annuler"
+    confirm-label="Confirmer"
+    cancel-label="Annuler"
     type="warning"
     @confirm="onConfirmDeleteInvoice"
-  >
-  </ConfirmDialog>
+  />
 </template>
 
 <script setup lang="ts">

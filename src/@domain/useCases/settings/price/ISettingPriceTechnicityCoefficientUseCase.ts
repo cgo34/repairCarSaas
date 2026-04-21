@@ -1,11 +1,11 @@
-import { SettingPriceTechnicityCoefficientDto } from "@/@infrastructure/dtos/settings/price/SettingPriceTechnicityCoefficientDto";
+import { SettingPriceTechnicityCoefficientViewModel } from "@/@presentation/types/models/settings/price/SettingPriceTechnicityCoefficientViewModel";
 
 
 export interface ISettingPriceTechnicityCoefficientUseCase {
-  getAdmin(): Promise<SettingPriceTechnicityCoefficientDto>;
-  getByUserId(userId: string): Promise<SettingPriceTechnicityCoefficientDto>;
-  save(dto: SettingPriceTechnicityCoefficientDto): Promise<SettingPriceTechnicityCoefficientDto>;
-  create(dto: SettingPriceTechnicityCoefficientDto): Promise<SettingPriceTechnicityCoefficientDto>;
-  update(dto: SettingPriceTechnicityCoefficientDto): Promise<SettingPriceTechnicityCoefficientDto>;
+  getAdmin(): Promise<SettingPriceTechnicityCoefficientViewModel>;
+  getByUserId(userId: string): Promise<SettingPriceTechnicityCoefficientViewModel>;
+  save(viewModel: SettingPriceTechnicityCoefficientViewModel): Promise<SettingPriceTechnicityCoefficientViewModel>;
+  create(viewModel: SettingPriceTechnicityCoefficientViewModel): Promise<SettingPriceTechnicityCoefficientViewModel>;
+  update(viewModel: SettingPriceTechnicityCoefficientViewModel): Promise<SettingPriceTechnicityCoefficientViewModel>;
   delete(id: string): Promise<void>;
 }

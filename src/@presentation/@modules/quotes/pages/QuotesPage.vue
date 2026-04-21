@@ -37,19 +37,21 @@
           </template>
           
           <template #item.createdAt="{ value }">
-            {{  regionManager.formatDate(value) }}
+            {{ regionManager.formatDate(value) }}
           </template>
 
           <template #item.status="{ value }">
-            <v-chip :text="value.label" :color="value.code === 'processing' ? 'blue' : value.code === 'accepted' ? 'green' : 'red'"></v-chip>
+            <v-chip
+              :text="value.label"
+              :color="value.code === 'processing' ? 'blue' : value.code === 'accepted' ? 'green' : 'red'"
+            />
           </template>
 
           
           <template #item.isForfait="{ value }">
-              <v-icon :color="value ? 'green' : 'red'"
-              >
-                {{  value ? 'mdi-checkbox-marked-circle' : 'mdi-close-circle' }}
-              </v-icon>
+            <v-icon :color="value ? 'green' : 'red'">
+              {{ value ? 'mdi-checkbox-marked-circle' : 'mdi-close-circle' }}
+            </v-icon>
           </template>
 
           <!-- #REGION -> BODY : TOTAL -->
@@ -68,13 +70,13 @@
               mdi-pencil
             </v-icon>
 
-              <v-icon
-                size="small"
-                :disabled="item.status.code === 'accepted' || item.status.code === 'refused' || item.status.code === 'invoiced'"
-                @click="onDeleteBtnClick(item.id)"
-              >
-                mdi-delete
-              </v-icon>
+            <v-icon
+              size="small"
+              :disabled="item.status.code === 'accepted' || item.status.code === 'refused' || item.status.code === 'invoiced'"
+              @click="onDeleteBtnClick(item.id)"
+            >
+              mdi-delete
+            </v-icon>
           </template>
           <!-- #ENDREGION -->
         </v-data-table>
@@ -86,12 +88,11 @@
     ref="deleteQuoteConfirmDialogRef"
     title="Delete quote"
     message="You will delete this quote, are you sure ?"
-    confirmLabel="Confirmer"
-    cancelLabel="Annuler"
+    confirm-label="Confirmer"
+    cancel-label="Annuler"
     type="warning"
     @confirm="onConfirmDeleteQuote"
-  >
-  </ConfirmDialog>
+  />
 </template>
 
 <script setup lang="ts">

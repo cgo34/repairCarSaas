@@ -9,7 +9,7 @@
             icon="$info"
             variant="tonal"
             text="Le montant du taux horaire est appliqué aux calculs des éléments"
-          ></v-alert>
+          />
           <v-form>
             <v-container>
               <v-row>
@@ -21,7 +21,7 @@
                     v-model="settings.hourlyRate"
                     label="Hourly rate"
                     required
-                  ></v-text-field>
+                  />
                 </v-col>
 
                 <v-col
@@ -32,7 +32,7 @@
                     v-model="settings.unitTime"
                     label="Unit time"
                     required
-                  ></v-text-field>
+                  />
                 </v-col>
               </v-row>
             </v-container>

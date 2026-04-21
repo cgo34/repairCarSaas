@@ -10,11 +10,14 @@
         </v-card-title>
 
         <v-card-text>
-          <slot :isActive="isActive" />
+          <slot :is-active="isActive" />
         </v-card-text>
 
         <v-card-actions v-if="$slots.actions">
-          <slot name="actions" :isActive="isActive" />
+          <slot
+            name="actions"
+            :is-active="isActive"
+          />
         </v-card-actions>
       </v-card>
     </template>
