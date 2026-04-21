@@ -3,15 +3,22 @@
     ref="genericDialogRef"
     :title="props.title"
     persistent
-    :maxWidth="600"
+    :max-width="600"
   >
     <template #default>
-      {{  props.message }}
+      {{ props.message }}
     </template>
 
     <template #actions>
-      <v-btn @click="onCancelBtnClick()">Annuler</v-btn>
-      <v-btn color="primary" @click="onConfirmBtnClick()">Confirmer</v-btn>
+      <v-btn @click="onCancelBtnClick()">
+        Annuler
+      </v-btn>
+      <v-btn
+        color="primary"
+        @click="onConfirmBtnClick()"
+      >
+        Confirmer
+      </v-btn>
     </template>
   </GenericDialog>
 </template>

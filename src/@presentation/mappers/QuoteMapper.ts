@@ -7,7 +7,7 @@ import { LineItemMapper } from "./LineItemMapper";
 
 export class QuoteMapper {
   static viewToDto(view: QuoteViewModel): QuoteDto {
-    let garage: GarageDto = view.garage ? GarageMapper.viewToDto(view.garage) : {
+    const garage: GarageDto = view.garage ? GarageMapper.viewToDto(view.garage) : {
       id: view.garageId,
       name: view.garageName ?? '',
       address: view.garageAddress ?? '',
@@ -69,7 +69,7 @@ export class QuoteMapper {
 
   static dtoToView(dto: QuoteDto): QuoteViewModel {
 
-    let garage: GarageViewModel = dto.garage ? GarageMapper.dtoToView(dto.garage) : {
+    const garage: GarageViewModel = dto.garage ? GarageMapper.dtoToView(dto.garage) : {
       id: dto.garageId,
       name: dto.garageName ?? '',
       address: dto.garageAddress ?? '',

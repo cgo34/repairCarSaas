@@ -1,15 +1,18 @@
 <template>
   <MainLayout>
-    <v-container fluid class="px-0 py-0">
-      
+    <v-container
+      fluid
+      class="px-0 py-0"
+    >
       <!-- Actions du facture -->
-      <v-toolbar title="" color="transparent">
-        <template v-slot:prepend>
-          
-          <BackButton fallbackPath="/invoices" />
+      <v-toolbar
+        title=""
+        color="transparent"
+      >
+        <template #prepend>
+          <BackButton fallback-path="/invoices" />
         </template>
-        <template v-slot:append>
-
+        <template #append>
           <GenericButton
             class="me-2 text-none"
             color="success"
@@ -50,7 +53,6 @@
             Delete
           </GenericButton>
         </template>
-
       </v-toolbar>
       
       <v-form ref="form">
@@ -168,7 +170,6 @@
                       >
                         Edit customer
                       </v-btn>
-
                     </div>
                     
 
@@ -227,56 +228,59 @@
                   elevation="0"
                   class="pa-4"
                 >
-                <v-card-text>
-                  <v-row>
-                    <v-col cols="12" md="12">
-                      <v-select
-                        :model-value="selectedVehicle"
-                        label="Véhicule existant (optionnel)"
-                        :items="vehiclesList"
-                        :item-title="v => v.immatriculation + ' — ' + v.marque + (v.annee ? ' ' + v.annee : '')"
-                        item-value="id"
-                        return-object
-                        clearable
-                        :disabled="!selectedGarage"
-                        @update:model-value="onSelectVehicle"
-                      />
-                    </v-col>
-                    <v-col
-                      cols="12"
-                      md="4"
-                    >
-                      <v-text-field
-                        v-model="carInformations.immatriculation"
-                        label="Immatriculation"
-                        outlined
-                        @update:model-value="(value) => onCarImmatriculationUpdated(value)"
-                      />
-                    </v-col>
-                    <v-col
-                      cols="12"
-                      md="4"
-                    >
-                      <v-text-field
-                        v-model="carInformations.brand"
-                        label="Marque"
-                        outlined
-                        @update:model-value="(value) => onCarBrandUpdated(value)"
-                      />
-                    </v-col>
-                    <v-col
-                      cols="12"
-                      md="4"
-                    >
-                      <v-text-field
-                        v-model="carInformations.dateEntryCirculation"
-                        label="Année"
-                        outlined
-                        @update:model-value="(value) => onCarYearUpdated(value)"
-                      />
-                    </v-col>
-                  </v-row>
-                </v-card-text>
+                  <v-card-text>
+                    <v-row>
+                      <v-col
+                        cols="12"
+                        md="12"
+                      >
+                        <v-select
+                          :model-value="selectedVehicle"
+                          label="Véhicule existant (optionnel)"
+                          :items="vehiclesList"
+                          :item-title="v => v.immatriculation + ' — ' + v.marque + (v.annee ? ' ' + v.annee : '')"
+                          item-value="id"
+                          return-object
+                          clearable
+                          :disabled="!selectedGarage"
+                          @update:model-value="onSelectVehicle"
+                        />
+                      </v-col>
+                      <v-col
+                        cols="12"
+                        md="4"
+                      >
+                        <v-text-field
+                          v-model="carInformations.immatriculation"
+                          label="Immatriculation"
+                          outlined
+                          @update:model-value="(value) => onCarImmatriculationUpdated(value)"
+                        />
+                      </v-col>
+                      <v-col
+                        cols="12"
+                        md="4"
+                      >
+                        <v-text-field
+                          v-model="carInformations.brand"
+                          label="Marque"
+                          outlined
+                          @update:model-value="(value) => onCarBrandUpdated(value)"
+                        />
+                      </v-col>
+                      <v-col
+                        cols="12"
+                        md="4"
+                      >
+                        <v-text-field
+                          v-model="carInformations.dateEntryCirculation"
+                          label="Année"
+                          outlined
+                          @update:model-value="(value) => onCarYearUpdated(value)"
+                        />
+                      </v-col>
+                    </v-row>
+                  </v-card-text>
                 </v-card>
               </v-col>
             </v-row>
@@ -291,9 +295,33 @@
                 Options du facture
               </h4>
               <div class="d-flex justify-space-between">
-                <div><v-switch label="Appliquer un forfait ?" :modelValue="isForfait" @update:modelValue="onUpdateIsForfait" color="primary" inset></v-switch></div>
-                <div v-if="!isForfait"><v-switch label="Afficher les prix unitaires ?" :modelValue="isDisplayUnitPrice" @update:modelValue="onUpdateIsDisplayUnitPrice" color="primary" inset></v-switch></div>
-                <div v-if="!isForfait"><v-switch label="Calculer la commission sans le dégarnissage ?" :modelValue="isComputeCommissionWithoutDentRemoval" @update:modelValue="onUpdateIsComputeCommissionWithoutDentRemoval" color="primary" inset></v-switch></div>
+                <div>
+                  <v-switch
+                    label="Appliquer un forfait ?"
+                    :model-value="isForfait"
+                    color="primary"
+                    inset
+                    @update:model-value="onUpdateIsForfait"
+                  />
+                </div>
+                <div v-if="!isForfait">
+                  <v-switch
+                    label="Afficher les prix unitaires ?"
+                    :model-value="isDisplayUnitPrice"
+                    color="primary"
+                    inset
+                    @update:model-value="onUpdateIsDisplayUnitPrice"
+                  />
+                </div>
+                <div v-if="!isForfait">
+                  <v-switch
+                    label="Calculer la commission sans le dégarnissage ?"
+                    :model-value="isComputeCommissionWithoutDentRemoval"
+                    color="primary"
+                    inset
+                    @update:model-value="onUpdateIsComputeCommissionWithoutDentRemoval"
+                  />
+                </div>
               </div>
             </div>
             
@@ -302,36 +330,39 @@
                 Montant du forfait
               </h4>
               <v-text-field
-                :modelValue="forfaitAmount"
+                :model-value="forfaitAmount"
                 placeholder="Montant du forfait"
                 type="number"
                 dense
                 outlined
-                @update:modelValue="onUpdateForfaitAmount"
+                @update:model-value="onUpdateForfaitAmount"
               />
             </div>
-            <CountrySelect :modelValue="selectedCountry" @select="onSelectCountry"/>
+            <CountrySelect
+              :model-value="selectedCountry"
+              @select="onSelectCountry"
+            />
           </v-card-text>
 
           
           <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn
-                variant="tonal"
-                class="mt-3"
-                color="primary"
-                @click="onUpdateBtnClick"
-              >
-                Update
-              </v-btn>
+            <v-spacer />
+            <v-btn
+              variant="tonal"
+              class="mt-3"
+              color="primary"
+              @click="onUpdateBtnClick"
+            >
+              Update
+            </v-btn>
           </v-card-actions>
         </v-card>
           
-        <v-card v-if="!isForfait"
+        <v-card
+          v-if="!isForfait"
           class="rounded-lg mt-5"
           outlined
         >
-
           <v-card-text>
             <div class="d-flex align-center justify-space-between">
               <h4 class="text-h4">
@@ -403,13 +434,12 @@
           </v-card-text>
         </v-card>
 
-          <!-- Bloc des Totaux -->
+        <!-- Bloc des Totaux -->
            
         <v-card
           class="rounded-lg mt-5"
           outlined
         >
-
           <!-- <v-card-text>
             <div class="d-flex align-center justify-space-between">
               <h4 class="text-h4">
@@ -428,16 +458,25 @@
                 <h5 class="py-2 text-subtitle-1">
                   Total H.T :
                 </h5>
-                <h5 v-if="!isForfait" class="py-2 text-subtitle-1 text-no-wrap">
+                <h5
+                  v-if="!isForfait"
+                  class="py-2 text-subtitle-1 text-no-wrap"
+                >
                   Total dégarnissage :
                 </h5>
-                <h5 v-if="!isForfait" class="py-2 text-subtitle-1 text-no-wrap">
+                <h5
+                  v-if="!isForfait"
+                  class="py-2 text-subtitle-1 text-no-wrap"
+                >
                   Total H.T + Total Dégarnissage :
                 </h5>
                 <h5 class="py-2 text-subtitle-1 text-no-wrap">
                   TVA ({{ selectedCountry?.taxRate || 0 }}%) :
                 </h5>
-                <h5 v-if="selectedGarage?.percentageCommission" class="py-2 text-subtitle-1 text-no-wrap text-orange">
+                <h5
+                  v-if="selectedGarage?.percentageCommission"
+                  class="py-2 text-subtitle-1 text-no-wrap text-orange"
+                >
                   Commission ({{ selectedGarage.percentageCommission }}%) :
                 </h5>
                 <h5 class="py-2 text-subtitle-1 text-primary mt-7">
@@ -453,16 +492,25 @@
                 <h5 class="py-2 text-subtitle-1 text-disabled">
                   {{ regionManager.formatNumber(subtotal) ?? 0 }} {{ selectedCountry?.currencySymbol || '€' }}
                 </h5>
-                <h5 v-if="!isForfait" class="py-2 text-subtitle-1 text-disabled">
+                <h5
+                  v-if="!isForfait"
+                  class="py-2 text-subtitle-1 text-disabled"
+                >
                   {{ regionManager.formatNumber(totalDegarnissage) }} {{ selectedCountry?.currencySymbol || '€' }}
                 </h5>
-                <h5 v-if="!isForfait" class="py-2 text-subtitle-1 text-disabled">
+                <h5
+                  v-if="!isForfait"
+                  class="py-2 text-subtitle-1 text-disabled"
+                >
                   {{ regionManager.formatNumber(subTotalWithDegarnissage) }} {{ selectedCountry?.currencySymbol || '€' }}
                 </h5>
                 <h5 class="py-2 text-subtitle-1 text-disabled">
                   {{ regionManager.formatNumber(totalTaxRate) }} {{ selectedCountry?.currencySymbol || '€' }}
                 </h5>
-                <h5 v-if="selectedGarage?.percentageCommission" class="py-2 text-subtitle-1 text-orange">
+                <h5
+                  v-if="selectedGarage?.percentageCommission"
+                  class="py-2 text-subtitle-1 text-orange"
+                >
                   {{ regionManager.formatNumber(totalCommission) }} {{ selectedCountry?.currencySymbol || '€' }}
                 </h5>
                 <h5 class="py-2 text-subtitle-1 text-primary mt-7">
@@ -480,29 +528,26 @@
     ref="garageDialogRef"
     title="Edit customer"
     persistent
-    :maxWidth="500"
+    :max-width="500"
     @validated="onGarageValidated"
-  >
-  </GarageDialog>
+  />
 
   <AddLineItemDialog
     ref="addLineItemDialogRef"
     title="Ajouter un élément"
-    :availableBodyParts="availableBodyParts"
+    :available-body-parts="availableBodyParts"
     @add="onAddLineItem"
-  >
-  </AddLineItemDialog>  
+  />  
 
   <ConfirmDialog
     ref="deleteInvoiceConfirmDialogRef"
     title="Delete invoice"
     message="You will delete this invoice, are you sure ?"
-    confirmLabel="Confirmer"
-    cancelLabel="Annuler"
+    confirm-label="Confirmer"
+    cancel-label="Annuler"
     type="warning"
     @confirm="onConfirmDeleteInvoice"
-  >
-  </ConfirmDialog>
+  />
 </template>
 
 <script setup lang="ts">

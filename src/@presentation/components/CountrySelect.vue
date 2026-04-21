@@ -15,7 +15,7 @@
     icon="$info"
     variant="tonal"
     :text="countrySelectionInformation"
-  ></v-alert>
+  />
 </template>
 
 <script setup lang="ts">

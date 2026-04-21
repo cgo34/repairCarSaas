@@ -21,19 +21,22 @@
             <RouterView>
               <slot />
             </RouterView>
-              <v-btn
-                class="customizer-btn"
-                size="large"
-                icon
-                variant="flat"
-                color="secondary"
-                @click.stop=""
-              >
-                <SettingsIcon class="icon" />
-              </v-btn>
-            </div>
+            <v-btn
+              class="customizer-btn"
+              size="large"
+              icon
+              variant="flat"
+              color="secondary"
+              @click.stop=""
+            >
+              <SettingsIcon class="icon" />
+            </v-btn>
+          </div>
         </v-container>
-        <v-container fluid class="pt-0">
+        <v-container
+          fluid
+          class="pt-0"
+        >
           <div>
             <FooterPanel />
           </div>

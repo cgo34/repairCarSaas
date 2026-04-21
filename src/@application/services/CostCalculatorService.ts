@@ -40,7 +40,7 @@ export class CostCalculatorService implements ICostCalculatorService {
       * repairTypeCoefficient
       * diameter35Coefficient 
     
-    let finalCost = basePriceDiameter25 + basePriceDiameter35
+    const finalCost = basePriceDiameter25 + basePriceDiameter35
 
     return Math.round(finalCost * 100) / 100;
   }

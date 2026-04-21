@@ -1,6 +1,9 @@
 <template>
   <MainLayout>
-    <v-container fluid class="px-0 py-0">
+    <v-container
+      fluid
+      class="px-0 py-0"
+    >
       <v-form ref="form">
         <v-card
           class="rounded-lg"
@@ -115,7 +118,6 @@
                       >
                         Edit customer
                       </v-btn>
-
                     </div>
                     
 
@@ -174,56 +176,59 @@
                   outlined
                   class="pa-4"
                 >
-                <v-card-text>
-                  <v-row>
-                    <v-col cols="12" md="12">
-                      <v-select
-                        :model-value="selectedVehicle"
-                        label="Véhicule existant (optionnel)"
-                        :items="vehiclesList"
-                        :item-title="v => v.immatriculation + ' — ' + v.marque + (v.annee ? ' ' + v.annee : '')"
-                        item-value="id"
-                        return-object
-                        clearable
-                        :disabled="!selectedGarage"
-                        @update:model-value="onSelectVehicle"
-                      />
-                    </v-col>
-                    <v-col
-                      cols="12"
-                      md="4"
-                    >
-                      <v-text-field
-                        v-model="carInformations.immatriculation"
-                        label="Immatriculation"
-                        outlined
-                        @update:model-value="(value) => onCarImmatriculationUpdated(value)"
-                      />
-                    </v-col>
-                    <v-col
-                      cols="12"
-                      md="4"
-                    >
-                      <v-text-field
-                        v-model="carInformations.brand"
-                        label="Marque"
-                        outlined
-                        @update:model-value="(value) => onCarBrandUpdated(value)"
-                      />
-                    </v-col>
-                    <v-col
-                      cols="12"
-                      md="4"
-                    >
-                      <v-text-field
-                        v-model="carInformations.dateEntryCirculation"
-                        label="Année"
-                        outlined
-                        @update:model-value="(value) => onCarYearUpdated(value)"
-                      />
-                    </v-col>
-                  </v-row>
-                </v-card-text>
+                  <v-card-text>
+                    <v-row>
+                      <v-col
+                        cols="12"
+                        md="12"
+                      >
+                        <v-select
+                          :model-value="selectedVehicle"
+                          label="Véhicule existant (optionnel)"
+                          :items="vehiclesList"
+                          :item-title="v => v.immatriculation + ' — ' + v.marque + (v.annee ? ' ' + v.annee : '')"
+                          item-value="id"
+                          return-object
+                          clearable
+                          :disabled="!selectedGarage"
+                          @update:model-value="onSelectVehicle"
+                        />
+                      </v-col>
+                      <v-col
+                        cols="12"
+                        md="4"
+                      >
+                        <v-text-field
+                          v-model="carInformations.immatriculation"
+                          label="Immatriculation"
+                          outlined
+                          @update:model-value="(value) => onCarImmatriculationUpdated(value)"
+                        />
+                      </v-col>
+                      <v-col
+                        cols="12"
+                        md="4"
+                      >
+                        <v-text-field
+                          v-model="carInformations.brand"
+                          label="Marque"
+                          outlined
+                          @update:model-value="(value) => onCarBrandUpdated(value)"
+                        />
+                      </v-col>
+                      <v-col
+                        cols="12"
+                        md="4"
+                      >
+                        <v-text-field
+                          v-model="carInformations.dateEntryCirculation"
+                          label="Année"
+                          outlined
+                          @update:model-value="(value) => onCarYearUpdated(value)"
+                        />
+                      </v-col>
+                    </v-row>
+                  </v-card-text>
                 </v-card>
               </v-col>
             </v-row>
@@ -238,12 +243,39 @@
                 Options du facture
               </h5>
               <div class="d-flex justify-space-between">
-                <div><v-switch label="Appliquer un forfait ?" :modelValue="isForfait" @update:modelValue="onUpdateIsForfait" color="primary" inset></v-switch></div>
-                <div v-if="!isForfait"><v-switch label="Afficher les prix unitaires ?" :modelValue="isDisplayUnitPrice" @update:modelValue="onUpdateIsDisplayUnitPrice" color="primary" inset></v-switch></div>
-                <div v-if="!isForfait"><v-switch label="Calculer la commission sans le dégarnissage ?" :modelValue="isComputeCommissionWithoutDentRemoval" @update:modelValue="onUpdateIsComputeCommissionWithoutDentRemoval" color="primary" inset></v-switch></div>
+                <div>
+                  <v-switch
+                    label="Appliquer un forfait ?"
+                    :model-value="isForfait"
+                    color="primary"
+                    inset
+                    @update:model-value="onUpdateIsForfait"
+                  />
+                </div>
+                <div v-if="!isForfait">
+                  <v-switch
+                    label="Afficher les prix unitaires ?"
+                    :model-value="isDisplayUnitPrice"
+                    color="primary"
+                    inset
+                    @update:model-value="onUpdateIsDisplayUnitPrice"
+                  />
+                </div>
+                <div v-if="!isForfait">
+                  <v-switch
+                    label="Calculer la commission sans le dégarnissage ?"
+                    :model-value="isComputeCommissionWithoutDentRemoval"
+                    color="primary"
+                    inset
+                    @update:model-value="onUpdateIsComputeCommissionWithoutDentRemoval"
+                  />
+                </div>
               </div>
             </div>
-            <CountrySelect :modelValue="selectedCountry" @select="onSelectCountry"/>
+            <CountrySelect
+              :model-value="selectedCountry"
+              @select="onSelectCountry"
+            />
           </v-card-text>
         </v-card>
         <div class="d-flex justify-end">
@@ -263,10 +295,9 @@
     ref="garageDialogRef"
     title="Edit customer"
     persistent
-    :maxWidth="500"
+    :max-width="500"
     @validated="onGarageValidated"
-  >
-  </GarageDialog>
+  />
 </template>
 
 <script setup lang="ts">

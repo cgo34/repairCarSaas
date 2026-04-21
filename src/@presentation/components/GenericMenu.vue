@@ -1,6 +1,6 @@
 <template>
   <v-menu>
-    <template v-slot:activator="{ props }">
+    <template #activator="{ props }">
       <v-btn
         class="me-2 text-none"
         color="success"

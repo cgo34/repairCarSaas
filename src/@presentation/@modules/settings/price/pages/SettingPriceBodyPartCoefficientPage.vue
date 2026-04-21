@@ -9,7 +9,7 @@
             icon="$info"
             variant="tonal"
             text="L'indice de difficulté 1 est une bosse sur un pavillon. Vous pouvez décider qu'une bosse sur un autre élément de carrosserie est X fois plus difficile à réparer."
-          ></v-alert>
+          />
           <v-form>
             <v-container>
               <v-row>
@@ -25,7 +25,7 @@
                       v-model="elm.coefficient"
                       label="Difficulty coefficient"
                       required
-                    ></v-text-field>
+                    />
                   </div>
                 </v-col>
 
@@ -41,7 +41,7 @@
                       v-model="elm.coefficient"
                       label="Difficulty coefficient"
                       required
-                    ></v-text-field>
+                    />
                   </div>
                 </v-col>
               </v-row>

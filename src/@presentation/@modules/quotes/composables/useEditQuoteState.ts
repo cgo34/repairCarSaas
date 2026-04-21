@@ -70,7 +70,7 @@ export function useEditQuoteState() {
   // #endregion
 
   // #region -> CONSTANTS
-  let LINE_ITEM_INCREMENT = 1;
+  const LINE_ITEM_INCREMENT = 1;
   // #endregion
 
   // #region -> REFS
