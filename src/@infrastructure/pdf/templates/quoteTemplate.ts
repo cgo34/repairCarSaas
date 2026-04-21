@@ -1,6 +1,6 @@
 import { getCompanyProfile } from '@/@presentation/composables/useCompanyProfile';
-import { LineItemDto } from '@/@infrastructure/dtos/LineItemDto';
-import { QuoteDto } from '@/@infrastructure/dtos/QuoteDto';
+import { LineItemDto } from '@/@application/dtos/LineItemDto';
+import { QuoteDto } from '@/@application/dtos/QuoteDto';
 
 export const buildQuoteHtmlTemplate = (quote: QuoteDto, lines: LineItemDto[]): string => {
   const company = getCompanyProfile();

@@ -1,10 +1,10 @@
-import { GarageViewModel } from '@/@presentation/types/models/GarageViewModel';
+import { GarageDto } from '@/@application/dtos/GarageDto';
 
 export interface IGarageUseCase {
-  getGarages(): Promise<GarageViewModel[]>;
-  getByUserId(userId: string): Promise<GarageViewModel[]>;
-  getById(id: string): Promise<GarageViewModel | null>;
-  create(garage: GarageViewModel): Promise<GarageViewModel>;
-  update(garage: GarageViewModel): Promise<GarageViewModel>;
+  getGarages(): Promise<GarageDto[]>;
+  getByUserId(userId: string): Promise<GarageDto[]>;
+  getById(id: string): Promise<GarageDto | null>;
+  create(garage: GarageDto): Promise<GarageDto>;
+  update(garage: GarageDto): Promise<GarageDto>;
   delete(id: string): Promise<void>;
 }

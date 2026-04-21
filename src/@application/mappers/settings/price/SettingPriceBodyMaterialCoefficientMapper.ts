@@ -1,6 +1,6 @@
 import { BodyMaterialMapper } from '@/@application/mappers/settings/carRepair/BodyMaterialMapper';
 import { SettingPriceBodyMaterialCoefficient } from '@/@domain/models/settings/price/SettingPriceBodyMaterialCoefficient';
-import { SettingPriceBodyMaterialCoefficientDto } from '@/@infrastructure/dtos/settings/price/SettingPriceBodyMaterialCoefficientDto';
+import { SettingPriceBodyMaterialCoefficientDto } from '@/@application/dtos/settings/price/SettingPriceBodyMaterialCoefficientDto';
 
 export class SettingPriceBodyMaterialCoefficientMapper {
   static dtoToDomain(dto: SettingPriceBodyMaterialCoefficientDto): SettingPriceBodyMaterialCoefficient {

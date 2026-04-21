@@ -1,5 +1,5 @@
 import { IQuoteDetailRepository } from '@/@domain/repositories/IQuoteDetailRepository';
-import { LineItemDto } from '@/@infrastructure/dtos/LineItemDto';
+import { LineItemDto } from '@/@application/dtos/LineItemDto';
 import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
 import { inject, injectable } from 'inversify';
 

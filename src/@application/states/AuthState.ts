@@ -4,7 +4,7 @@ import { ISettingPriceUseCase } from '@/@domain/useCases/settings/price/ISetting
 import { IGetCurrentSubscriptionUseCase } from '@/@domain/useCases/subscription/IGetCurrentSubscriptionUseCase';
 import { ICreateUserUseCase } from '@/@domain/useCases/user/ICreateUserUseCase';
 import { AuthErrorCode } from '@/@domain/valueObjects/AuthErrorCode';
-import { UserDto } from '@/@infrastructure/dtos/UserDto';
+import { UserDto } from '@/@application/dtos/UserDto';
 import { UserViewModel } from '@/@presentation/types/models/UserViewModel';
 import { UserMapper as PresentationUserMapper } from '@/@presentation/mappers/UserMapper';
 import { IAuthState } from '@domain/states/IAuthState';
@@ -14,7 +14,7 @@ import { ILogoutUseCase } from '@domain/useCases/auth/ILogoutUseCase';
 import { SYMBOLS } from '@infrastructure/ioc/symbols';
 import { inject, injectable } from 'inversify';
 import { ref } from 'vue';
-import { SubscriptionDto } from '../dtos/SubscriptionDto';
+import { SubscriptionDto } from '@/@application/dtos/SubscriptionDto';
 
 @injectable()
 export class AuthState implements IAuthState {
@@ -165,7 +165,8 @@ export class AuthState implements IAuthState {
       this.pushState();
       
       // Une fois inscrit, créer son profil dans public.users
-      await this.createUserUseCase.execute(this.user.value);
+      const userDto = PresentationUserMapper.viewToDto(this.user.value);
+      await this.createUserUseCase.execute(userDto);
 
       // Copier les settings de prix par défaut (admin) pour le nouvel utilisateur
       try {

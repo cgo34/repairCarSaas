@@ -1,4 +1,4 @@
-import { SettingPriceBodyMaterialCoefficientDto } from '@/@infrastructure/dtos/settings/price/SettingPriceBodyMaterialCoefficientDto';
+import { SettingPriceBodyMaterialCoefficientDto } from '@/@application/dtos/settings/price/SettingPriceBodyMaterialCoefficientDto';
 
 export interface ISettingPriceBodyMaterialCoefficientRepository {
   getByUserId(userId: string): Promise<SettingPriceBodyMaterialCoefficientDto[]>;

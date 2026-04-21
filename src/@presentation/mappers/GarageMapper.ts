@@ -1,4 +1,4 @@
-import { GarageDto } from "@/@infrastructure/dtos/GarageDto";
+import { GarageDto } from "@/@application/dtos/GarageDto";
 import { GarageViewModel } from "../types/models/GarageViewModel";
 
 export class GarageMapper {

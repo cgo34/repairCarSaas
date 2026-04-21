@@ -1,8 +1,6 @@
 import { ISettingPriceGeneralRepository } from '@/@domain/repositories/settings/price/ISettingPriceGeneralRepository';
 import { ISettingPriceGeneralUseCase } from '@/@domain/useCases/settings/price/ISettingPriceGeneralUseCase';
-import { SettingPriceGeneralDto } from '@/@infrastructure/dtos/settings/price/SettingPriceGeneralDto';
-import { SettingPriceGeneralViewModel } from '@/@presentation/types/models/settings/price/SettingPriceGeneralViewModel';
-import { SettingPriceGeneralMapper } from '@/@presentation/mappers/settings/price/SettingPriceGeneralMapper';
+import { SettingPriceGeneralDto } from '@/@application/dtos/settings/price/SettingPriceGeneralDto';
 import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
 import { inject, injectable } from 'inversify';
 
@@ -14,35 +12,27 @@ export class SettingPriceGeneralUseCase implements ISettingPriceGeneralUseCase {
   ) {}
   
 
-  async getAdmin(): Promise<SettingPriceGeneralViewModel> {
-    const dto = await this.repository.getAdmin();
-    return SettingPriceGeneralMapper.dtoToView(dto);
+  async getAdmin(): Promise<SettingPriceGeneralDto> {
+    return this.repository.getAdmin();
   }
 
-  async getByUserId(userId: string): Promise<SettingPriceGeneralViewModel> {
-    const dto = await this.repository.getByUserId(userId);
-    return SettingPriceGeneralMapper.dtoToView(dto);
+  async getByUserId(userId: string): Promise<SettingPriceGeneralDto> {
+    return this.repository.getByUserId(userId);
   }
 
-  async save(viewModel: SettingPriceGeneralViewModel): Promise<SettingPriceGeneralViewModel> {
-    const dto = SettingPriceGeneralMapper.viewToDto(viewModel);
-    const saved = await this.repository.save(dto);
-    return SettingPriceGeneralMapper.dtoToView(saved);
+  async save(dto: SettingPriceGeneralDto): Promise<SettingPriceGeneralDto> {
+    return this.repository.save(dto);
   }
 
-  async create(viewModel: SettingPriceGeneralViewModel): Promise<SettingPriceGeneralViewModel> {
-    const dto = SettingPriceGeneralMapper.viewToDto(viewModel);
-    const created = await this.repository.create(dto);
-    return SettingPriceGeneralMapper.dtoToView(created);
+  async create(dto: SettingPriceGeneralDto): Promise<SettingPriceGeneralDto> {
+    return this.repository.create(dto);
   }
 
-  async update(viewModel: SettingPriceGeneralViewModel): Promise<SettingPriceGeneralViewModel> {
-    const dto = SettingPriceGeneralMapper.viewToDto(viewModel);
-    const updated = await this.repository.update(dto);
-    return SettingPriceGeneralMapper.dtoToView(updated);
+  async update(dto: SettingPriceGeneralDto): Promise<SettingPriceGeneralDto> {
+    return this.repository.update(dto);
   }
 
   async delete(id: string): Promise<void> {
-    return await this.repository.delete(id);
+    return this.repository.delete(id);
   }
 }

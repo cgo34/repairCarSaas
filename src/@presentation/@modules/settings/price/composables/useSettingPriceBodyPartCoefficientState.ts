@@ -3,6 +3,8 @@ import { IBodyPartUseCase } from '@/@domain/useCases/carRepair/IBodyPartUseCase'
 import { ISettingPriceBodyPartCoefficientUseCase } from '@/@domain/useCases/settings/price/ISettingPriceBodyPartCoefficientUseCase';
 import { container } from '@/@infrastructure/ioc/inversify.config';
 import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
+import { BodyPartMapper } from '@/@presentation/mappers/settings/BodyPartMapper';
+import { SettingPriceBodyPartCoefficientMapper } from '@/@presentation/mappers/settings/price/SettingPriceBodyPartCoefficientMapper';
 import { IUseSettingPriceBodyPartCoefficientState } from '@/@presentation/types/composables/settings/price/IUseSettingPriceBodyPartCoefficientState';
 import { BodyPartViewModel } from '@/@presentation/types/models/carRepair/BodyPartViewModel';
 import { SettingPriceBodyPartCoefficientViewModel } from '@/@presentation/types/models/settings/price/SettingPriceBodyPartCoefficientViewModel';
@@ -34,9 +36,10 @@ export function useSettingPriceBodyPartCoefficientState(): IUseSettingPriceBodyP
     loading.value = true;
     try {
       return bodyPartUseCase.executeGetAll().then((data) => {
-        _bodyParts.value = data;
+        const viewModels = data.map((bp) => BodyPartMapper.dtoToView(bp));
+        _bodyParts.value = viewModels;
         
-        return data;
+        return viewModels;
       });
     } catch (e) {
       throw e;
@@ -50,13 +53,14 @@ export function useSettingPriceBodyPartCoefficientState(): IUseSettingPriceBodyP
     try {
       if (!authState.user?.value?.id) throw new Error('User does not exist');
 
-      return useCase.getByUserId(authState.user?.value?.id).then((data) => {    
+      return useCase.getByUserId(authState.user?.value?.id).then((dtos) => {    
             
-        if (!data.length) {
-          useCase.getAdmin().then((adminData) => {         
-            _settings.value = adminData.map((data) => {
+        if (!dtos.length) {
+          useCase.getAdmin().then((adminDtos) => {         
+            _settings.value = adminDtos.map((dto) => {
+              const viewModel = SettingPriceBodyPartCoefficientMapper.dtoToView(dto);
               return {
-                ...data,
+                ...viewModel,
                 id: undefined,
                 userId: authState.user?.value?.id
               }
@@ -67,7 +71,7 @@ export function useSettingPriceBodyPartCoefficientState(): IUseSettingPriceBodyP
 
           return _settings.value
         }
-        _settings.value = data;
+        _settings.value = dtos.map(SettingPriceBodyPartCoefficientMapper.dtoToView);
         return _settings.value;
       });
 
@@ -81,8 +85,9 @@ export function useSettingPriceBodyPartCoefficientState(): IUseSettingPriceBodyP
   const saveSettingBodyPartCoefficient = async () => {
     loading.value = true;
     try {
-      return useCase.save(_settings.value).then(data => {
-        _settings.value = data
+      const dtos = _settings.value.map(SettingPriceBodyPartCoefficientMapper.viewToDto);
+      return useCase.save(dtos).then(savedDtos => {
+        _settings.value = savedDtos.map(SettingPriceBodyPartCoefficientMapper.dtoToView);
       })
     } catch (e) {
       error.value = e;

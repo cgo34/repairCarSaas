@@ -1,5 +1,5 @@
 import { SettingPrice } from '@/@domain/models/settings/price/SettingPrice';
-import { SettingPriceDto } from '@/@infrastructure/dtos/settings/price/SettingPriceDto';
+import { SettingPriceDto } from '@/@application/dtos/settings/price/SettingPriceDto';
 import { SettingPriceBodyPartCoefficientMapper } from './SettingPriceBodyPartCoefficientMapper';
 import { SettingPriceDiameterCoefficientMapper } from './SettingPriceDiameterCoefficientMapper';
 import { SettingPriceGeneralMapper } from './SettingPriceGeneralMapper';
@@ -14,7 +14,7 @@ export class SettingPriceMapper {
       bodyParts: dto.bodyParts.map(SettingPriceBodyPartCoefficientMapper.dtoToDomain),
       diameters: dto.diameters.map(SettingPriceDiameterCoefficientMapper.dtoToDomain),
       impactsCount: dto.impactsCount.map(SettingPriceImpactCountToUtMapper.dtoToDomain),
-      repairTypes: dto.repairTypes.map(SettingPriceRepairTypeCoefficientMapper.dtoToViewDto)
+      repairTypes: dto.repairTypes.map(SettingPriceRepairTypeCoefficientMapper.dtoToDomain)
     };
   }
 
@@ -25,7 +25,7 @@ export class SettingPriceMapper {
       bodyParts: domain.bodyParts.map(SettingPriceBodyPartCoefficientMapper.domainToDto),
       diameters: domain.diameters.map(SettingPriceDiameterCoefficientMapper.domainToDto),
       impactsCount: domain.impactsCount.map(SettingPriceImpactCountToUtMapper.domainToDto),
-      repairTypes: domain.repairTypes.map(SettingPriceRepairTypeCoefficientMapper.viewDtoToDto)
+      repairTypes: domain.repairTypes.map(SettingPriceRepairTypeCoefficientMapper.domainToDto)
     };
   }
 }

@@ -1,5 +1,5 @@
 import { BodyPart } from '@/@domain/models/settings/carRepair/BodyPart';
-import { BodyPartDto } from '@/@infrastructure/dtos/carRepair/BodyPartDto';
+import { BodyPartDto } from '@/@application/dtos/carRepair/BodyPartDto';
 
 export class BodyPartMapper {
   static dtoToDomain(dto: BodyPartDto): BodyPart {

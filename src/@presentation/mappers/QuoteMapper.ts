@@ -1,21 +1,11 @@
-import { GarageDto } from "@/@infrastructure/dtos/GarageDto";
-import { QuoteDto } from "@/@infrastructure/dtos/QuoteDto";
+import { GarageDto } from "@/@application/dtos/GarageDto";
+import { QuoteDto } from "@/@application/dtos/QuoteDto";
 import { GarageViewModel } from "../types/models/GarageViewModel";
-import { QuoteStatusViewType } from "../types/models/QuoteStatusViewType";
 import { QuoteViewModel } from "../types/models/QuoteViewModel";
 import { GarageMapper } from "./GarageMapper";
 import { LineItemMapper } from "./LineItemMapper";
-
-const _dbCodeToViewStatus = (status: any): QuoteStatusViewType => {
-  const code = typeof status === 'string' ? status : status?.code;
-  return ({
-    processing: 'pending',
-    finalized: 'validated',
-    accepted: 'accepted',
-    refused: 'cancel',
-    cancelled: 'cancel',
-  } as Record<string, QuoteStatusViewType>)[code ?? ''] ?? 'pending';
-};
+import { UserMapper } from "./UserMapper";
+import { CountryMapper } from "./CountryMapper";
 
 export class QuoteMapper {
   static viewToDto(view: QuoteViewModel): QuoteDto {
@@ -39,11 +29,12 @@ export class QuoteMapper {
       status: view.status,
 
       userId: view.userId,
+      user: view.user ? UserMapper.viewToDto(view.user) : undefined,
 
       startDate: view.startDate,
       endDate: view.endDate,
 
-      technician: view.technician,
+      technician: view.technician ? UserMapper.viewToDto(view.technician) : undefined,
       technicianId: view.technicianId,
       garage: garage,
       garageId: view.garageId,
@@ -57,7 +48,7 @@ export class QuoteMapper {
       isDisplayUnitPrice: view.isDisplayUnitPrice,
       isComputeCommissionWithoutDentRemoval: view.isComputeCommissionWithoutDentRemoval,
       forfaitAmount: view.forfaitAmount ?? undefined,
-      country: view.country ?? undefined,
+      country: view.country ? CountryMapper.viewToDto(view.country) : undefined,
       currency: view.currency,
 
       lineItems: view.lineItems?.map((line) => LineItemMapper.viewToDto(line)) ?? [],
@@ -98,14 +89,17 @@ export class QuoteMapper {
       id: dto.id ?? undefined,
       quoteNumber: dto.quoteNumber,
       status_id: dto.status_id,
-      status: _dbCodeToViewStatus(dto.status),
+      status: dto.status,
+      
+      country: dto.country ? CountryMapper.dtoToView(dto.country) : undefined,
 
       userId: dto.userId,
+      user: dto.user ? UserMapper.dtoToView(dto.user) : undefined,
 
       startDate: dto.startDate,
-      endDate: dto.startDate,
+      endDate: dto.endDate,
       
-      technician: dto.technician,
+      technician: dto.technician ? UserMapper.dtoToView(dto.technician) : undefined,
       technicianId: dto.technicianId,
       garage: garage,
       garageId: dto.garageId,
@@ -119,7 +113,7 @@ export class QuoteMapper {
       isDisplayUnitPrice: false,
       isComputeCommissionWithoutDentRemoval: false,
       forfaitAmount: dto.forfaitAmount ?? undefined,
-      country: (typeof dto.country === 'string') ? dto.country : dto.country?.code ?? '',
+      country: dto.country ? CountryMapper.dtoToView(dto.country) : undefined,
       currency: dto.currency,
 
       isSent: dto.isSent,

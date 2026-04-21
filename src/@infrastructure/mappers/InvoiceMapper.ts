@@ -1,5 +1,5 @@
 import { InvoiceApiModel } from '../database/api/InvoiceApiModel';
-import { InvoiceDto } from '../dtos/InvoiceDto';
+import { InvoiceDto } from '../../@application/dtos/InvoiceDto';
 import { GarageMapper } from './GarageMapper';
 import { UserMapper } from './UserMapper';
 

@@ -1,6 +1,6 @@
 import { IQuoteDetailRepository } from '@/@domain/repositories/IQuoteDetailRepository';
 import { LineItemApiModel } from '@/@infrastructure/database/api/LineItemApiModel';
-import { LineItemDto } from '@/@infrastructure/dtos/LineItemDto';
+import { LineItemDto } from '@/@application/dtos/LineItemDto';
 import { IClientProvider } from '@/@infrastructure/interfaces/IClientProvider';
 import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
 import { LineItemMapper } from '@/@infrastructure/mappers/LineItemMapper';

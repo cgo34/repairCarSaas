@@ -1,5 +1,5 @@
 import { IClientProvider } from '@/@infrastructure/interfaces/IClientProvider';
-import { UserDto } from '@/@infrastructure/dtos/UserDto';
+import { UserDto } from '@/@application/dtos/UserDto';
 import { UserMapper } from '@/@infrastructure/mappers/UserMapper';
 import { UserRole } from '@domain/enums/UserRole';
 import { IAuthRepository } from '@domain/repositories/IAuthRepository';

@@ -1,5 +1,5 @@
-import { UserViewModel } from '@/@presentation/types/models/UserViewModel';
+import { UserDto } from '@/@application/dtos/UserDto';
 
 export interface ICreateUserUseCase {
-  execute(user: UserViewModel): Promise<void>;
+  execute(user: UserDto): Promise<void>;
 }

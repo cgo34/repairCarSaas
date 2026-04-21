@@ -1,5 +1,5 @@
 // src/@infrastructure/database/repositories/BodyPartSupabaseRepository.ts
-import { BodyPartDto } from '@/@infrastructure/dtos/carRepair/BodyPartDto';
+import { BodyPartDto } from '@/@application/dtos/carRepair/BodyPartDto';
 import { IClientProvider } from '@/@infrastructure/interfaces/IClientProvider';
 import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
 import { BodyPartMapper } from '@/@infrastructure/mappers/carRepair/BodyPartMapper';

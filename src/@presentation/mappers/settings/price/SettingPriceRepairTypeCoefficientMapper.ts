@@ -1,4 +1,4 @@
-import { SettingPriceRepairTypeCoefficientDto } from '@/@infrastructure/dtos/settings/price/SettingPriceRepairTypeCoefficientDto';
+import { SettingPriceRepairTypeCoefficientDto } from '@/@application/dtos/settings/price/SettingPriceRepairTypeCoefficientDto';
 import { SettingPriceRepairTypeCoefficientViewModel } from '@/@presentation/types/models/settings/price/SettingPriceRepairTypeCoefficientViewModel';
 
 export class SettingPriceRepairTypeCoefficientMapper {

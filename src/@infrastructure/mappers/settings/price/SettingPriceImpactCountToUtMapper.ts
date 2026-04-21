@@ -1,5 +1,5 @@
 import { SettingPriceImpactCountToUtApiModel } from '@/@infrastructure/database/api/settings/price/SettingPriceImpactCountToUtApiModel';
-import { SettingPriceImpactCountToUtDto } from '@/@infrastructure/dtos/settings/price/SettingPriceImpactCountToUtDto';
+import { SettingPriceImpactCountToUtDto } from '@/@application/dtos/settings/price/SettingPriceImpactCountToUtDto';
 
 export class SettingPriceImpactCountToUtMapper {
   static apiToDto(apiModel: SettingPriceImpactCountToUtApiModel): SettingPriceImpactCountToUtDto {

@@ -1,4 +1,4 @@
-import { LineItemDto } from "@/@infrastructure/dtos/LineItemDto";
+import { LineItemDto } from "@/@application/dtos/LineItemDto";
 
 export class LineItemMapper {
   static quoteLineToInvoice(quoteLine: LineItemDto): LineItemDto {

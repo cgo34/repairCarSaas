@@ -1,7 +1,7 @@
-import { SettingPriceViewModel } from '@/@presentation/types/models/settings/price/SettingPriceViewModel';
+import { SettingPriceDto } from '@/@application/dtos/settings/price/SettingPriceDto';
 
 export interface ISettingPriceUseCase {
-  getByUserId(userId: string): Promise<SettingPriceViewModel>;
-  getDefaultSettings(): Promise<SettingPriceViewModel>;
+  getByUserId(userId: string): Promise<SettingPriceDto>;
+  getDefaultSettings(): Promise<SettingPriceDto>;
   createSettingsForUser(userId: string): Promise<void>;
 }

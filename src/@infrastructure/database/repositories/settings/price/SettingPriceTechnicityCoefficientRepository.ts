@@ -3,7 +3,7 @@ import { ISettingPriceTechnicityCoefficientRepository } from '@/@domain/reposito
 import { SettingPriceTechnicityCoefficientApiModel } from '@/@infrastructure/database/api/settings/price/SettingPriceTechnicityCoefficientApiModel';
 import { SupabaseClient } from '@/@infrastructure/database/clients/SupabaseClient';
 import { DEFAULT_SETTINGS_USER_ID } from '@/@infrastructure/database/helpers/getAdminUserIdWithSettings';
-import { SettingPriceTechnicityCoefficientDto } from '@/@infrastructure/dtos/settings/price/SettingPriceTechnicityCoefficientDto';
+import { SettingPriceTechnicityCoefficientDto } from '@/@application/dtos/settings/price/SettingPriceTechnicityCoefficientDto';
 import { IClientProvider } from '@/@infrastructure/interfaces/IClientProvider';
 import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
 import { SettingPriceTechnicityCoefficientMapper } from '@/@infrastructure/mappers/settings/price/SettingPriceTechnicityCoefficientMapper';

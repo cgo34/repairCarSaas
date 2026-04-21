@@ -1,7 +1,7 @@
 // 📌 Application: GetInvoiceUseCase.ts
 // TODO: (GCE) -> NOT USE FOR THE MOMENT
 import { IInvoiceRepository } from '@/@domain/repositories/IInvoiceRepository';
-import { InvoiceDto } from '@/@infrastructure/dtos/InvoiceDto';
+import { InvoiceDto } from '@/@application/dtos/InvoiceDto';
 import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
 import { inject, injectable } from 'inversify';
 

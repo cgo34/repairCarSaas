@@ -1,5 +1,5 @@
 import { SettingPriceBodyMaterialCoefficientApiModel } from '@/@infrastructure/database/api/settings/price/SettingPriceBodyMaterialCoefficientApiModel';
-import { SettingPriceBodyMaterialCoefficientDto } from '@/@infrastructure/dtos/settings/price/SettingPriceBodyMaterialCoefficientDto';
+import { SettingPriceBodyMaterialCoefficientDto } from '@/@application/dtos/settings/price/SettingPriceBodyMaterialCoefficientDto';
 
 export class SettingPriceBodyMaterialCoefficientMapper {
   static apiToDto(apiModel: SettingPriceBodyMaterialCoefficientApiModel): SettingPriceBodyMaterialCoefficientDto {

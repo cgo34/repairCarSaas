@@ -1,5 +1,5 @@
 import { AuthResponse } from "@supabase/supabase-js";
-import { UserDto } from '@/@infrastructure/dtos/UserDto';
+import { UserDto } from '@/@application/dtos/UserDto';
 
 export interface IAuthService {
     login(email: string, password: string): Promise<UserDto>;

@@ -1,5 +1,5 @@
 import { DocumentStatuseDto } from "@/@application/dtos/DocumentStatuseDto";
-import { DocumentStatuseViewModel } from "../types/models/DocumentStatuseViewModel";
+import { DocumentStatuseViewModel } from "../types/models/DocumentStatusViewModel";
 
 export class DocumentStatuseMapper {
   static viewToDto(viewModel: DocumentStatuseViewModel): DocumentStatuseDto {

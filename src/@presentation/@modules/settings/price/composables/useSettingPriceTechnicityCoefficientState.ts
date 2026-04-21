@@ -2,6 +2,7 @@ import { IAuthState } from '@/@application/states/interfaces/IAuthState';
 import { ISettingPriceTechnicityCoefficientUseCase } from '@/@domain/useCases/settings/price/ISettingPriceTechnicityCoefficientUseCase';
 import { container } from '@/@infrastructure/ioc/inversify.config';
 import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
+import { SettingPriceTechnicityCoefficientMapper } from '@/@presentation/mappers/settings/price/SettingPriceTechnicityCoefficientMapper';
 import { IUseSettingPriceTechnicityCoefficientState } from '@/@presentation/types/composables/settings/price/IUseSettingPriceTechnicityCoefficientState';
 import { SettingPriceTechnicityCoefficientViewModel } from '@/@presentation/types/models/settings/price/SettingPriceTechnicityCoefficientViewModel';
 import { computed, ref } from 'vue';
@@ -36,15 +37,16 @@ export function useSettingPriceTechnicityCoefficientState(): IUseSettingPriceTec
     try {
       if (!authState.user?.value?.id) throw new Error('User does not exist');
 
-      return useCase.getByUserId(authState.user?.value?.id).then((data) => {      
-        if (!data) {
-          useCase.getAdmin().then((adminData) => {         
+      return useCase.getByUserId(authState.user?.value?.id).then((dto) => {      
+        if (!dto) {
+          useCase.getAdmin().then((adminDto) => {
+            const adminView = SettingPriceTechnicityCoefficientMapper.dtoToView(adminDto);
             _settings.value.id = undefined
-            _settings.value.diameter25Coefficient = adminData.diameter25Coefficient
-            _settings.value.diameter35Coefficient = adminData.diameter35Coefficient
-            _settings.value.dapCoefficient = adminData.dapCoefficient
-            _settings.value.dspCoefficient = adminData.dspCoefficient
-            _settings.value.aluminiumCoefficient = adminData.aluminiumCoefficient
+            _settings.value.diameter25Coefficient = adminView.diameter25Coefficient
+            _settings.value.diameter35Coefficient = adminView.diameter35Coefficient
+            _settings.value.dapCoefficient = adminView.dapCoefficient
+            _settings.value.dspCoefficient = adminView.dspCoefficient
+            _settings.value.aluminiumCoefficient = adminView.aluminiumCoefficient
             _settings.value.userId = authState.user?.value?.id ?? ''
             return _settings.value;
           })
@@ -52,7 +54,7 @@ export function useSettingPriceTechnicityCoefficientState(): IUseSettingPriceTec
           return _settings.value
         }
 
-        _settings.value = data;
+        _settings.value = SettingPriceTechnicityCoefficientMapper.dtoToView(dto);
         return _settings.value;
       });
     } catch (e) {
@@ -65,8 +67,9 @@ export function useSettingPriceTechnicityCoefficientState(): IUseSettingPriceTec
   const saveSettingTechnicityCoefficient = async () => {
     loading.value = true;
     try {
-      return useCase.save(_settings.value).then(data => {
-        _settings.value = data
+      const dto = SettingPriceTechnicityCoefficientMapper.viewToDto(_settings.value);
+      return useCase.save(dto).then(savedDto => {
+        _settings.value = SettingPriceTechnicityCoefficientMapper.dtoToView(savedDto);
       })
     } catch (e) {
       error.value = e;

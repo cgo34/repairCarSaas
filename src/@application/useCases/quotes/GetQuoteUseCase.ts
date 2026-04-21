@@ -1,17 +1,16 @@
 // 📌 Application: GetQuoteUseCase.ts
 // TODO: (GCE) -> NOT USE FOR THE MOMENT
 import { IQuoteRepository } from '@/@domain/repositories/IQuoteRepository';
-import { QuoteViewModel } from '@/@presentation/types/models/QuoteViewModel';
-import { QuoteMapper } from '@/@presentation/mappers/QuoteMapper';
+import { IGetQuoteUseCase } from '@/@domain/useCases/quotes/IGetQuoteUseCase';
+import { QuoteDto } from '@/@application/dtos/QuoteDto';
 import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
 import { inject, injectable } from 'inversify';
 
 @injectable()
-export class GetQuoteUseCase {
+export class GetQuoteUseCase implements IGetQuoteUseCase {
   constructor(@inject(SYMBOLS.Repositories.QuoteRepository) private quoteRepository: IQuoteRepository) {}
 
-  async execute(id: string): Promise<QuoteViewModel | null> {
-    const dto = await this.quoteRepository.getById(id);
-    return dto ? QuoteMapper.dtoToView(dto) : null;
+  async execute(id: string): Promise<QuoteDto | null> {
+    return this.quoteRepository.getById(id);
   }
 }

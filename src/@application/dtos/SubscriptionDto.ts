@@ -1,6 +1,6 @@
-import { SubscriptionPlanDto } from "./SubscriptionPlanDto";
+import { SubscriptionPlanDto } from './SubscriptionPlanDto';
 
-export type SubscriptionDto = {
+export interface SubscriptionDto {
   id: string;
   userId: string;
   planId: string;

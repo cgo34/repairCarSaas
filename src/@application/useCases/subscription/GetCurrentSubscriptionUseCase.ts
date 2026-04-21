@@ -1,7 +1,6 @@
 // application/useCases/subscription/GetCurrentSubscriptionUseCase.ts
 
-import { SubscriptionViewModel } from '@/@presentation/types/models/SubscriptionViewModel'
-import { SubscriptionMapper } from '@/@presentation/mappers/SubscriptionMapper'
+import { SubscriptionDto } from '@/@application/dtos/SubscriptionDto'
 import { ISubscriptionRepository } from '@domain/repositories/ISubscriptionRepository'
 import { ISubscriptionUseCase } from '@domain/useCases/ISubscriptionUseCase'
 import { SYMBOLS } from '@infrastructure/ioc/symbols'
@@ -14,8 +13,7 @@ export class GetCurrentSubscriptionUseCase implements ISubscriptionUseCase {
     private readonly repository: ISubscriptionRepository
   ) {}
 
-  async execute(userId: string): Promise<SubscriptionViewModel> {
-    const dto = await this.repository.getSubscriptionByUserId(userId);
-    return SubscriptionMapper.dtoToView(dto);
+  async execute(userId: string): Promise<SubscriptionDto> {
+    return this.repository.getSubscriptionByUserId(userId);
   }
 }

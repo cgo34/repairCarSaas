@@ -1,7 +1,7 @@
 import { IInvoiceRepository } from '@/@domain/repositories/IInvoiceRepository';
 import { InvoiceApiModel } from '@/@infrastructure/database/api/InvoiceApiModel';
 import { SupabaseClient } from '@/@infrastructure/database/clients/SupabaseClient';
-import { InvoiceDto } from '@/@infrastructure/dtos/InvoiceDto';
+import { InvoiceDto } from '@/@application/dtos/InvoiceDto';
 import { InvoiceStatusDto } from '@/@infrastructure/dtos/InvoiceStatusDto';
 import { IClientProvider } from '@/@infrastructure/interfaces/IClientProvider';
 import { SYMBOLS } from '@/@infrastructure/ioc/symbols';

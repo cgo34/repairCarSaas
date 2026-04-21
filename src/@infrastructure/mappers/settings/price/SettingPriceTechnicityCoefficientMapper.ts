@@ -1,5 +1,5 @@
 import { SettingPriceTechnicityCoefficientApiModel } from '@/@infrastructure/database/api/settings/price/SettingPriceTechnicityCoefficientApiModel';
-import { SettingPriceTechnicityCoefficientDto } from '@/@infrastructure/dtos/settings/price/SettingPriceTechnicityCoefficientDto';
+import { SettingPriceTechnicityCoefficientDto } from '@/@application/dtos/settings/price/SettingPriceTechnicityCoefficientDto';
 
 export class SettingPriceTechnicityCoefficientMapper {
   static apiToDto(apiModel: SettingPriceTechnicityCoefficientApiModel): SettingPriceTechnicityCoefficientDto {

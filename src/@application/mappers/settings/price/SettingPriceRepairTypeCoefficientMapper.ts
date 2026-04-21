@@ -1,23 +1,22 @@
-import { SettingPriceRepairTypeCoefficientViewDto } from '@/@application/dtos/settings/SettingPriceRepairTypeCoefficientViewDto';
 import { RepairTypeMapper } from '@/@application/mappers/settings/carRepair/RepairTypeMapper';
-import { SettingPriceRepairTypeCoefficientDto } from '@/@infrastructure/dtos/settings/price/SettingPriceRepairTypeCoefficientDto';
+import { SettingPriceRepairTypeCoefficientDto } from '@/@application/dtos/settings/price/SettingPriceRepairTypeCoefficientDto';
 
 export class SettingPriceRepairTypeCoefficientMapper {
-  static dtoToViewDto(dto: SettingPriceRepairTypeCoefficientDto): SettingPriceRepairTypeCoefficientViewDto {
+  static dtoToDomain(dto: SettingPriceRepairTypeCoefficientDto): SettingPriceRepairTypeCoefficientDto {
     return {
       userId: dto.userId,
       repairTypeId: dto.repairTypeId,
       coefficient: dto.coefficient,
-      repairTypes: dto.repairTypes ? RepairTypeMapper.dtoToViewDto(dto.repairTypes) : undefined
+      repairTypes: dto.repairTypes ? RepairTypeMapper.dtoToDomain(dto.repairTypes) : undefined
     }
   }
 
-  static viewDtoToDto(domain: SettingPriceRepairTypeCoefficientViewDto): SettingPriceRepairTypeCoefficientDto {
+  static domainToDto(domain: SettingPriceRepairTypeCoefficientDto): SettingPriceRepairTypeCoefficientDto {
     return {
       userId: domain.userId,
       repairTypeId: domain.repairTypeId,
       coefficient: domain.coefficient,
-      repairTypes: domain.repairTypes ? RepairTypeMapper.viewDtoToDto(domain.repairTypes) : undefined
+      repairTypes: domain.repairTypes ? RepairTypeMapper.domainToDto(domain.repairTypes) : undefined
     };
   }
 }

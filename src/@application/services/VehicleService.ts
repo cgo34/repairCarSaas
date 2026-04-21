@@ -1,6 +1,6 @@
 import { IVehicleRepository } from '@/@domain/repositories/IVehicleRepository';
 import { IVehicleService } from '@/@domain/services/IVehicleService';
-import { VehicleDto } from '@/@infrastructure/dtos/VehicleDto';
+import { VehicleDto } from '@/@application/dtos/VehicleDto';
 import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
 import { inject, injectable } from 'inversify';
 

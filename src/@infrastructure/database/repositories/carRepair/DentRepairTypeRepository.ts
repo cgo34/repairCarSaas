@@ -1,5 +1,5 @@
 import { IDentRepairTypeRepository } from "@/@domain/repositories/carRepair/IDentRepairTypeRepository";
-import { DentRepairTypeDto } from "@/@infrastructure/dtos/carRepair/DentRepairTypeDto";
+import { DentRepairTypeDto } from "@/@application/dtos/carRepair/DentRepairTypeDto";
 import { IClientProvider } from "@/@infrastructure/interfaces/IClientProvider";
 import { SYMBOLS } from "@/@infrastructure/ioc/symbols";
 import { DentRepairTypeMapper } from "@/@infrastructure/mappers/carRepair/DentRepairTypeMapper";

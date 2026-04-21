@@ -1,7 +1,7 @@
 // 📌 Application: InsertQuoteUseCase.ts
 import { IQuoteRepository } from '@/@domain/repositories/IQuoteRepository';
-import { IGetDocumentStatuseUseCase } from '@/@domain/useCases/IGetDocumentStatuseUseCase';
-import { QuoteDto } from '@/@infrastructure/dtos/QuoteDto';
+import { IGetDocumentStatusUseCase } from '@/@domain/useCases/IGetDocumentStatusUseCase';
+import { QuoteDto } from '@/@application/dtos/QuoteDto';
 import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
 import { inject, injectable } from 'inversify';
 
@@ -9,11 +9,11 @@ import { inject, injectable } from 'inversify';
 export class InsertQuoteUseCase {
   constructor(
     @inject(SYMBOLS.Repositories.QuoteRepository) private quoteRepository: IQuoteRepository,
-    @inject(SYMBOLS.UseCases.GetDocumentStatuse) private getDocumentStatuseUseCase: IGetDocumentStatuseUseCase
+    @inject(SYMBOLS.UseCases.GetDocumentStatus) private getDocumentStatusUseCase: IGetDocumentStatusUseCase
   ) {}
 
   async execute(quote: QuoteDto): Promise<QuoteDto> {
-    const processingStatus = (await this.getDocumentStatuseUseCase.execute()).find(s => s.code === 'processing')
+    const processingStatus = (await this.getDocumentStatusUseCase.execute()).find(s => s.code === 'processing')
 
     quote.status_id = processingStatus.id
     

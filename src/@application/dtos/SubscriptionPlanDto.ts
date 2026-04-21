@@ -1,4 +1,4 @@
-export type SubscriptionPlanDto = {
+export interface SubscriptionPlanDto {
   id: string;
   name: string;
   description: string;

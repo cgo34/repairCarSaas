@@ -1,4 +1,4 @@
-import { LineItemDto } from '@/@infrastructure/dtos/LineItemDto';
+import { LineItemDto } from '@/@application/dtos/LineItemDto';
 import { LineItemViewModel } from '@/@presentation/types/models/LineItemViewModel';
 
 export class LineItemMapper {

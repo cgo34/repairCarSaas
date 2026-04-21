@@ -1,4 +1,4 @@
-import { UserDto } from '@/@infrastructure/dtos/UserDto';
+import { UserDto } from '@/@application/dtos/UserDto';
 import { IAuthRepository } from '@domain/repositories/IAuthRepository';
 import { IAuthService } from '@domain/services/IAuthService';
 import { SYMBOLS } from '@infrastructure/ioc/symbols';

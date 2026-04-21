@@ -1,4 +1,4 @@
-import { InvoiceDto } from '@/@infrastructure/dtos/InvoiceDto';
+import { InvoiceDto } from '@/@application/dtos/InvoiceDto';
 import { InvoiceStatusDto } from '@/@infrastructure/dtos/InvoiceStatusDto';
 
 export interface IInvoiceRepository {

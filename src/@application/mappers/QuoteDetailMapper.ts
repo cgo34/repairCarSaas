@@ -1,5 +1,5 @@
 import { QuoteLineItem } from '@/@domain/entities/QuoteLineItem';
-import { QuoteLineItemDto } from '@/@infrastructure/dtos/QuoteLineItemDto';
+import { QuoteLineItemDto } from '@/@application/dtos/QuoteLineItemDto';
 
 export class QuoteLineItemMapper {
   static dtoToDomain(dto: QuoteLineItemDto): QuoteLineItem {

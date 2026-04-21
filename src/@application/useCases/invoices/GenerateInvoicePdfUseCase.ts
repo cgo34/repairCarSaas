@@ -1,7 +1,7 @@
 import { IPdfGenerator } from "@/@domain/services/IPdfGenerator";
 import { IGenerateInvoicePdfUseCase } from "@/@domain/useCases/invoices/IGenerateInvoicePdfUseCase";
-import { LineItemDto } from "@/@infrastructure/dtos/LineItemDto";
-import { InvoiceDto } from "@/@infrastructure/dtos/InvoiceDto";
+import { LineItemDto } from "@/@application/dtos/LineItemDto";
+import { InvoiceDto } from "@/@application/dtos/InvoiceDto";
 import { SYMBOLS } from "@/@infrastructure/ioc/symbols";
 import { inject, injectable } from "inversify";
 

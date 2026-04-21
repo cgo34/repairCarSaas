@@ -1,13 +1,17 @@
 <template>
   <MainLayout>
-    <v-container fluid class="pa-3 pa-sm-4">
-
+    <v-container
+      fluid
+      class="pa-3 pa-sm-4"
+    >
       <!-- ── HEADER PAGE ─────────────────────────────────────── -->
       <div class="d-flex align-center justify-space-between mb-4">
         <div>
-          <h1 class="text-h6 font-weight-bold">Gestion des Devis</h1>
+          <h1 class="text-h6 font-weight-bold">
+            Gestion des Devis
+          </h1>
           <p class="text-caption text-medium-emphasis mt-n1">
-            {{ filteredQuotes.length }} devis<span v-if="dateFrom || dateTo"> · période sélectionnée</span>
+            {{ filteredQuotes.length }} devis<span v-if="hasActiveFilter"> · période sélectionnée</span>
           </p>
         </div>
         <v-btn
@@ -23,100 +27,82 @@
       </div>
 
       <!-- ── FILTER CARD ─────────────────────────────────────── -->
-      <v-card flat rounded="lg" border class="mb-3">
-        <div class="px-3 pt-3 pb-2">
-
-          <!-- Presets scroll horizontal sur mobile -->
-          <div class="preset-scroll mb-2">
-            <v-btn
-              v-for="preset in datePresets"
-              :key="preset.key"
-              size="small"
-              :variant="activePreset === preset.key ? 'flat' : 'tonal'"
-              :color="activePreset === preset.key ? 'primary' : 'default'"
-              rounded="lg"
-              class="mr-1 flex-shrink-0"
-              @click="applyPreset(preset.key)"
+      <PeriodFilterBar
+        v-model:date-from="dateFrom"
+        v-model:date-to="dateTo"
+        v-model:active-preset="activePreset"
+        :date-presets="datePresets"
+        :has-active-filter="hasActiveFilter"
+        @preset-change="applyPreset"
+        @clear="clearFilter"
+      >
+        <template #actions>
+          <transition name="fade">
+            <div
+              v-if="selectedQuotes.length > 0 && !mobile"
+              class="d-flex align-center gap-2"
             >
-              {{ preset.label }}
-            </v-btn>
-          </div>
+              <span class="text-body-2 text-medium-emphasis">{{ selectedQuotes.length }} sélectionné(s)</span>
+              <v-btn
+                color="primary"
+                variant="flat"
+                size="small"
+                prepend-icon="mdi-download-multiple"
+                :loading="downloading"
+                rounded="lg"
+                @click="onBulkDownload"
+              >
+                Télécharger ZIP
+              </v-btn>
+              <v-btn
+                variant="text"
+                size="small"
+                @click="selectedQuotes = []"
+              >
+                Tout désélectionner
+              </v-btn>
+            </div>
+          </transition>
+        </template>
 
-          <!-- Date pickers + actions sélection desktop -->
-          <div class="d-flex align-center flex-wrap gap-2">
-            <v-text-field
-              v-model="dateFrom"
-              label="Du"
-              type="date"
-              density="compact"
-              variant="outlined"
-              hide-details
-              :style="mobile ? 'flex:1;min-width:130px' : 'max-width:160px'"
-              @update:model-value="activePreset = 'custom'"
-            />
-            <v-text-field
-              v-model="dateTo"
-              label="Au"
-              type="date"
-              density="compact"
-              variant="outlined"
-              hide-details
-              :style="mobile ? 'flex:1;min-width:130px' : 'max-width:160px'"
-              @update:model-value="activePreset = 'custom'"
-            />
-            <v-btn
-              v-if="dateFrom || dateTo"
-              icon="mdi-close"
-              size="small"
-              variant="text"
-              @click="clearFilter"
-            />
-            <v-spacer v-if="!mobile" />
-            <transition name="fade">
-              <div v-if="selectedQuotes.length > 0 && !mobile" class="d-flex align-center gap-2">
-                <span class="text-body-2 text-medium-emphasis">{{ selectedQuotes.length }} sélectionné(s)</span>
-                <v-btn
-                  color="primary"
-                  variant="flat"
-                  size="small"
-                  prepend-icon="mdi-download-multiple"
-                  :loading="downloading"
-                  rounded="lg"
-                  @click="onBulkDownload"
-                >
-                  Télécharger ZIP
-                </v-btn>
-                <v-btn variant="text" size="small" @click="selectedQuotes = []">
-                  Tout désélectionner
-                </v-btn>
-              </div>
-            </transition>
-          </div>
-        </div>
-
-        <!-- Barre sélection mobile -->
-        <transition name="slide-up">
-          <div v-if="selectedQuotes.length > 0 && mobile" class="selection-bar-mobile px-3 py-2 d-flex align-center gap-2">
-            <span class="text-body-2 font-weight-medium">{{ selectedQuotes.length }} sélectionné(s)</span>
-            <v-spacer />
-            <v-btn variant="text" size="small" @click="selectedQuotes = []">Annuler</v-btn>
-            <v-btn
-              color="primary"
-              variant="flat"
-              size="small"
-              prepend-icon="mdi-download-multiple"
-              :loading="downloading"
-              rounded="lg"
-              @click="onBulkDownload"
+        <template #bottom-bar>
+          <!-- Barre sélection mobile -->
+          <transition name="slide-up">
+            <div
+              v-if="selectedQuotes.length > 0 && mobile"
+              class="selection-bar-mobile px-3 py-2 d-flex align-center gap-2"
             >
-              ZIP
-            </v-btn>
-          </div>
-        </transition>
-      </v-card>
+              <span class="text-body-2 font-weight-medium">{{ selectedQuotes.length }} sélectionné(s)</span>
+              <v-spacer />
+              <v-btn
+                variant="text"
+                size="small"
+                @click="selectedQuotes = []"
+              >
+                Annuler
+              </v-btn>
+              <v-btn
+                color="primary"
+                variant="flat"
+                size="small"
+                prepend-icon="mdi-download-multiple"
+                :loading="downloading"
+                rounded="lg"
+                @click="onBulkDownload"
+              >
+                ZIP
+              </v-btn>
+            </div>
+          </transition>
+        </template>
+      </PeriodFilterBar>
 
       <!-- ── TABLE ───────────────────────────────────────────── -->
-      <v-card flat rounded="lg" border>
+      <v-card
+        flat
+        rounded="lg"
+        border
+      >
         <v-data-table
           v-model="selectedQuotes"
           :headers="activeHeaders"
@@ -140,7 +126,11 @@
           </template>
 
           <template #item.status="{ value }">
-            <v-chip :text="statusLabel(value)" :color="statusColor(value)" size="small" />
+            <v-chip
+              :text="statusLabel(value.code)"
+              :color="statusColor(value.code)"
+              size="small"
+            />
           </template>
 
           <template #item.total="{ item }">
@@ -151,44 +141,33 @@
 
           <template #item.actions="{ item }">
             <div class="d-flex align-center">
-              <v-btn icon="mdi-pencil" size="x-small" variant="text" @click="onEditQuote(item)" />
+              <v-btn
+                icon="mdi-pencil"
+                size="x-small"
+                variant="text"
+                @click="onEditQuote(item.id)"
+              />
               <v-btn
                 icon="mdi-delete"
                 size="x-small"
                 variant="text"
                 color="error"
-                :disabled="item.status === 'accepted' || item.status === 'cancel'"
+                :disabled="item.status.code === 'accepted' || item.status.code === 'cancelled'"
                 @click="onDeleteBtnClick(item.id)"
               />
             </div>
           </template>
-
-          <template #bottom="{ pageCount, page, itemsPerPage, setItemsPerPage, prevPage, nextPage }">
-            <div class="d-flex align-center justify-end flex-wrap gap-2 px-3 py-2">
-              <span class="text-caption text-medium-emphasis">Lignes par page</span>
-              <v-select
-                :model-value="itemsPerPage"
-                :items="[10, 25, 50, { value: -1, title: 'Tout' }]"
-                density="compact"
-                variant="outlined"
-                hide-details
-                style="max-width:90px"
-                @update:model-value="setItemsPerPage"
-              />
-              <span class="text-caption text-medium-emphasis">Page {{ page }} / {{ pageCount }}</span>
-              <div class="d-flex">
-                <v-btn icon="mdi-chevron-left" size="x-small" variant="text" :disabled="page <= 1" @click="prevPage" />
-                <v-btn icon="mdi-chevron-right" size="x-small" variant="text" :disabled="page >= pageCount" @click="nextPage" />
-              </div>
-            </div>
-          </template>
         </v-data-table>
       </v-card>
-
     </v-container>
   </MainLayout>
 
-  <v-snackbar v-model="snackbar.show" :color="snackbar.color" timeout="4000" location="bottom right">
+  <v-snackbar
+    v-model="snackbar.show"
+    :color="snackbar.color"
+    timeout="4000"
+    location="bottom right"
+  >
     {{ snackbar.message }}
   </v-snackbar>
 
@@ -211,6 +190,8 @@ import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
 import MainLayout from '@/@presentation/@ui/layouts/MainLayout.vue';
 import { ConfirmDialogExposed } from '@/@presentation/components/ConfirmDialog';
 import ConfirmDialog from '@/@presentation/components/ConfirmDialog.vue';
+import PeriodFilterBar from '@/@presentation/components/PeriodFilterBar.vue';
+import { usePeriodFilter } from '@/@presentation/composables/usePeriodFilter';
 import { LineItemMapper } from '@/@presentation/mappers/LineItemMapper';
 import { QuoteMapper } from '@/@presentation/mappers/QuoteMapper';
 import { IUseQuotesState } from '@/@presentation/types/composables/IUseQuotesState';
@@ -220,60 +201,37 @@ import { computed, onMounted, reactive, ref } from 'vue';
 import { useDisplay } from 'vuetify';
 import { useRouter } from 'vue-router';
 
+// #region -> DEPENDENCIES
 const regionManager = container.get<IRegionManager>(SYMBOLS.Managers.regionManager);
 const useQuoteState = container.get<IUseQuotesState>(SYMBOLS.States.Quote.GetQuotesUseCase);
 const generatePdfUseCase = container.get<IGenerateQuotePdfUseCase>(SYMBOLS.UseCases.Quote.GenerateQuotePdfUseCase);
-const { init, quotes, deleteQuote } = useQuoteState;
+// #endregion
 
+// #region -> STATE
 const router = useRouter();
 const { mobile } = useDisplay();
+const { init, quotes, deleteQuote } = useQuoteState;
+const {
+  dateFrom,
+  dateTo,
+  activePreset,
+  datePresets,
+  filteredItems: filteredQuotes,
+  applyPreset,
+  clearFilter,
+  hasActiveFilter,
+} = usePeriodFilter({
+  items: quotes,
+  getDate: (quote) => quote.createdAt,
+});
+// #endregion
 
+// #region -> REFS
 const selectedQuotes = ref<QuoteViewModel[]>([]);
 const downloading = ref(false);
-
-const dateFrom = ref('');
-const dateTo = ref('');
-const activePreset = ref<string>('all');
-
-const datePresets = [
-  { key: 'all',   label: 'Tout' },
-  { key: 'today', label: "Aujourd'hui" },
-  { key: 'week',  label: 'Cette semaine' },
-  { key: 'month', label: 'Ce mois' },
-  { key: 'year',  label: 'Cette année' },
-];
-
-const applyPreset = (key: string) => {
-  activePreset.value = key;
-  const now = new Date();
-  const fmt = (d: Date) => d.toISOString().split('T')[0];
-  if (key === 'all')   { dateFrom.value = ''; dateTo.value = ''; return; }
-  if (key === 'today') { dateFrom.value = fmt(now); dateTo.value = fmt(now); return; }
-  if (key === 'week')  {
-    const mon = new Date(now); mon.setDate(now.getDate() - now.getDay() + 1);
-    dateFrom.value = fmt(mon); dateTo.value = fmt(now); return;
-  }
-  if (key === 'month') {
-    dateFrom.value = fmt(new Date(now.getFullYear(), now.getMonth(), 1));
-    dateTo.value = fmt(now); return;
-  }
-  if (key === 'year')  {
-    dateFrom.value = fmt(new Date(now.getFullYear(), 0, 1));
-    dateTo.value = fmt(now); return;
-  }
-};
-
-const clearFilter = () => { dateFrom.value = ''; dateTo.value = ''; activePreset.value = 'all'; };
-
-const filteredQuotes = computed(() => {
-  if (!dateFrom.value && !dateTo.value) return quotes.value;
-  return quotes.value.filter(q => {
-    const d = q.createdAt ? new Date(q.createdAt).toISOString().split('T')[0] : '';
-    if (dateFrom.value && d < dateFrom.value) return false;
-    if (dateTo.value   && d > dateTo.value)   return false;
-    return true;
-  });
-});
+const deleteQuoteConfirmDialogRef = ref<ConfirmDialogExposed>();
+const _quoteIdToDelete = ref<string | undefined>();
+// #endregion
 
 const desktopHeaders = [
   { title: 'Numéro', align: 'start' as const, key: 'quoteNumber' },
@@ -334,31 +292,41 @@ const onBulkDownload = async () => {
   }
 };
 
-const deleteQuoteConfirmDialogRef = ref<ConfirmDialogExposed>();
-const _quoteToDelete = ref<string | undefined>();
 
-const onAddQuote           = () => router.push('/quotes/add');
-const onEditQuote          = (item: QuoteViewModel) => router.push(`/quotes/${item.id}/edit/`);
-const onDeleteBtnClick     = (id?: string) => { if (!id) return; _quoteToDelete.value = id; deleteQuoteConfirmDialogRef.value?.open(); };
-const onConfirmDeleteQuote = () => { if (_quoteToDelete.value) deleteQuote(_quoteToDelete.value); };
+const onAddQuote = () => {
+  router.push('/quotes/add');
+}
 
-const statusColor = (s?: string) => ({ pending: 'orange', validated: 'success', accepted: 'success', signed: 'success', sent: 'blue', draft: 'grey', cancel: 'error' } as Record<string,string>)[s ?? ''] ?? 'default';
-const statusLabel = (s?: string) => ({ pending: 'En attente', validated: 'Payé', accepted: 'Accepté', signed: 'Signé', sent: 'Envoyé', draft: 'Brouillon', cancel: 'Annulé' } as Record<string,string>)[s ?? ''] ?? (s ?? '');
+const onEditQuote = (quoteId: string | undefined) => {
+  if (!quoteId) {
+    return;
+  }
+
+  router.push(`/quotes/${quoteId}/edit/`);
+}
+
+const onDeleteBtnClick = (quoteId: string | undefined) => {
+  if (!quoteId) {
+    return;
+  }
+
+  _quoteIdToDelete.value = quoteId;
+  deleteQuoteConfirmDialogRef.value?.open();
+};
+
+const onConfirmDeleteQuote = () => {
+  if (_quoteIdToDelete.value) {
+    deleteQuote(_quoteIdToDelete.value);
+  }
+};
+
+const statusColor = (s?: string) => ({ invoiced: 'red', processing: 'blue', pending: 'orange', validated: 'success', accepted: 'success', signed: 'success', sent: 'blue', draft: 'grey', cancel: 'error' } as Record<string,string>)[s ?? ''] ?? 'default';
+const statusLabel = (s?: string) => ({ invoiced: 'Facturé', processing: 'En cours', pending: 'En attente', validated: 'Payé', accepted: 'Accepté', signed: 'Signé', sent: 'Envoyé', draft: 'Brouillon', cancel: 'Annulé' } as Record<string,string>)[s ?? ''] ?? (s ?? '');
 
 onMounted(async () => { await init(); });
 </script>
 
 <style scoped>
-.preset-scroll {
-  display: flex;
-  flex-wrap: nowrap;
-  overflow-x: auto;
-  gap: 4px;
-  padding-bottom: 4px;
-  scrollbar-width: none;
-}
-.preset-scroll::-webkit-scrollbar { display: none; }
-
 .selection-bar-mobile {
   border-top: 1px solid rgba(var(--v-border-color), 0.12);
   background: rgba(var(--v-theme-primary), 0.05);

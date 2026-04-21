@@ -1,5 +1,5 @@
 export interface CountryViewModel {
-  id: number;
+  id: string;
   name: string;
   code: string;
   currency: string;
@@ -8,3 +8,5 @@ export interface CountryViewModel {
   phoneCode: string;
   taxRate: number;
 };
+
+export type CountryViewModelOrString = CountryViewModel | string;

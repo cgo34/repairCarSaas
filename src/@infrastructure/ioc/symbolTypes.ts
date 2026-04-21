@@ -21,7 +21,7 @@ export enum SYMBOL_NAMES {
     VEHICLE_REPOSITORY = 'VehicleRepository',
 
     // -- Document Statuses REPOSITORIES
-    DOCUMENT_STATUSE_REPOSITORY = 'DocumentStatuseRepository',
+    DOCUMENT_STATUS_REPOSITORY = 'DocumentStatusRepository',
 
     INVOICE_REPOSITORY = 'InvoiceRepository',
     INVOICE_DETAIL_REPOSITORY = 'InvoiceDetailRepository',
@@ -87,8 +87,8 @@ export enum SYMBOL_NAMES {
     // -- Cost Calculator UseCases
     CALCULATE_TOTAL_COST_USE_CASE = 'CalculateTotalCostUseCase',
     CALCULATE_LINE_COST_USE_CASE = 'CalculateLineCostUseCase',
-    // -- Document Statuse UseCases
-    GET_DOCUMENT_STATUSE_USE_CASE = 'GetDocumentStatuseUseCase',
+    // -- Document Status UseCases
+    GET_DOCUMENT_STATUS_USE_CASE = 'GetDocumentStatusUseCase',
     // -- Quote UseCases
     QUOTE_USE_CASE = 'QuoteUseCase',
     GET_QUOTE_USE_CASE = 'GetQuoteUseCase',

@@ -2,6 +2,7 @@ import { IAuthState } from '@/@application/states/interfaces/IAuthState';
 import { ISettingPriceImpactCountToUtUseCase } from '@/@domain/useCases/settings/price/ISettingPriceImpactCountToUtUseCase';
 import { container } from '@/@infrastructure/ioc/inversify.config';
 import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
+import { SettingPriceImpactCountToUtMapper } from '@/@presentation/mappers/settings/price/SettingPriceImpactCountToUtMapper';
 import { IUseSettingPriceImpactCountToUtState } from '@/@presentation/types/composables/settings/price/IUseSettingPriceImpactCountToUtState';
 import { SettingPriceImpactCountToUtViewModel } from '@/@presentation/types/models/settings/price/SettingPriceImpactCountToUtViewModel';
 import { computed, ref } from 'vue';
@@ -32,13 +33,14 @@ export function useSettingPriceImpactCountToUtState(): IUseSettingPriceImpactCou
       if (!authState.user?.value?.id)
         throw new Error('User does not exist');
 
-      return useCase.getByUserId(authState.user?.value?.id).then((data) => {
+      return useCase.getByUserId(authState.user?.value?.id).then((dtos) => {
             
-        if (!data.length) {
-          useCase.getAdmin().then((adminData) => {         
-            _settings.value = adminData.map((data) => {
+        if (!dtos.length) {
+          useCase.getAdmin().then((adminDtos) => {         
+            _settings.value = adminDtos.map((dto) => {
+              const viewModel = SettingPriceImpactCountToUtMapper.dtoToView(dto);
               return {
-                ...data,
+                ...viewModel,
                 id: undefined,
                 userId: authState.user?.value?.id
               }
@@ -50,7 +52,7 @@ export function useSettingPriceImpactCountToUtState(): IUseSettingPriceImpactCou
           return _settings.value
         }
 
-        _settings.value = data;
+        _settings.value = dtos.map(SettingPriceImpactCountToUtMapper.dtoToView);
         return _settings.value;
       });
     } catch (e) {
@@ -78,9 +80,11 @@ export function useSettingPriceImpactCountToUtState(): IUseSettingPriceImpactCou
     loading.value = true;
     try {
       setting.userId = authState.user?.value?.id || '';
-      return useCase.create(setting).then((data) => {
-        _settings.value.push(data);
-        return data;
+      const dto = SettingPriceImpactCountToUtMapper.viewToDto(setting);
+      return useCase.create(dto).then((createdDto) => {
+        const viewModel = SettingPriceImpactCountToUtMapper.dtoToView(createdDto);
+        _settings.value.push(viewModel);
+        return viewModel;
       });
     } finally {
       loading.value = false;
@@ -90,9 +94,11 @@ export function useSettingPriceImpactCountToUtState(): IUseSettingPriceImpactCou
   const updateSetting = async (setting: SettingPriceImpactCountToUtViewModel) => {
     loading.value = true;
     try {
-      return useCase.update(setting).then((data) => {
-        _settings.value = _settings.value.map((s) => (s.id === setting.id ? data : s));
-        return data;
+      const dto = SettingPriceImpactCountToUtMapper.viewToDto(setting);
+      return useCase.update(dto).then((updatedDto) => {
+        const viewModel = SettingPriceImpactCountToUtMapper.dtoToView(updatedDto);
+        _settings.value = _settings.value.map((s) => (s.id === setting.id ? viewModel : s));
+        return viewModel;
       });
     } finally {
       loading.value = false;
@@ -113,8 +119,9 @@ export function useSettingPriceImpactCountToUtState(): IUseSettingPriceImpactCou
   const saveSettingUnitTime = async () => {
     loading.value = true;
     try {
-      return useCase.save(_settings.value).then(data => {
-        _settings.value = data
+      const dtos = _settings.value.map(SettingPriceImpactCountToUtMapper.viewToDto);
+      return useCase.save(dtos).then(savedDtos => {
+        _settings.value = savedDtos.map(SettingPriceImpactCountToUtMapper.dtoToView);
       })
     } catch (e) {
       error.value = e;

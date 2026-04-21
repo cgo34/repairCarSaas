@@ -1,8 +1,6 @@
 import { IBodyMaterialService } from "@/@domain/services/carRepair/IBodyMaterialService";
 import { IBodyMaterialUseCase } from "@/@domain/useCases/carRepair/IBodyMaterialUseCase";
-import { BodyMaterialDto } from "@/@infrastructure/dtos/carRepair/BodyMaterialDto";
-import { BodyMaterialViewModel } from "@/@presentation/types/models/carRepair/BodyMaterialViewModel";
-import { BodyMaterialMapper } from "@/@presentation/mappers/settings/BodyMaterialMapper";
+import { BodyMaterialDto } from "@/@application/dtos/carRepair/BodyMaterialDto";
 import { SYMBOLS } from "@/@infrastructure/ioc/symbols";
 import { inject, injectable } from "inversify";
 
@@ -16,21 +14,16 @@ export class BodyMaterialUseCase implements IBodyMaterialUseCase {
     }
   }
 
-  async executeGetAll(): Promise<BodyMaterialViewModel[]> {
-    const dtos = await this.bodyMaterialService.getAll();
-    return dtos.map(BodyMaterialMapper.dtoToView);
+  async executeGetAll(): Promise<BodyMaterialDto[]> {
+    return this.bodyMaterialService.getAll();
   }
 
-  async executeCreate(bodyMaterial: BodyMaterialViewModel): Promise<BodyMaterialViewModel> {
-    const dto = BodyMaterialMapper.viewToDto(bodyMaterial);
-    const created = await this.bodyMaterialService.create(dto);
-    return BodyMaterialMapper.dtoToView(created);
+  async executeCreate(bodyMaterial: BodyMaterialDto): Promise<BodyMaterialDto> {
+    return this.bodyMaterialService.create(bodyMaterial);
   }
 
-  async executeUpdate(bodyMaterial: BodyMaterialViewModel): Promise<BodyMaterialViewModel> {
-    const dto = BodyMaterialMapper.viewToDto(bodyMaterial);
-    const updated = await this.bodyMaterialService.update(dto);
-    return BodyMaterialMapper.dtoToView(updated);
+  async executeUpdate(bodyMaterial: BodyMaterialDto): Promise<BodyMaterialDto> {
+    return this.bodyMaterialService.update(bodyMaterial);
   }
 
   async executeDelete(id: string): Promise<void> {

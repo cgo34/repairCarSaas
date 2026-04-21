@@ -1,4 +1,5 @@
 import { IBodyMaterialUseCase } from '@/@domain/useCases/carRepair/IBodyMaterialUseCase';
+import { BodyMaterialMapper } from '@/@presentation/mappers/settings/BodyMaterialMapper';
 import { IBodyMaterialState } from '@/@presentation/types/composables/IBodyMaterialState';
 import { BodyMaterialViewModel } from '@/@presentation/types/models/carRepair/BodyMaterialViewModel';
 import { JsonHelper } from '@/helpers/jsonHelper';
@@ -27,7 +28,8 @@ export function useBodyMaterialState(): IBodyMaterialState {
   const fetchBodyMaterials = async (): Promise<BodyMaterialViewModel[]> => {
     loading.value = true;
     try {
-      return bodyMaterialUseCase.executeGetAll().then((viewModels) => {
+      return bodyMaterialUseCase.executeGetAll().then((dtos) => {
+        const viewModels = dtos.map((dto) => BodyMaterialMapper.dtoToView(dto));
         _bodyMaterials.value = viewModels;
         return viewModels;
       });
@@ -48,7 +50,9 @@ export function useBodyMaterialState(): IBodyMaterialState {
 
   const addBodyMaterial = async (bodyMaterial: BodyMaterialViewModel): Promise<BodyMaterialViewModel> => {
     bodyMaterial.code = slugify(bodyMaterial.name);
-    return bodyMaterialUseCase.executeCreate(bodyMaterial).then((viewModel) => {
+    const dto = BodyMaterialMapper.viewToDto(bodyMaterial);
+    return bodyMaterialUseCase.executeCreate(dto).then((createdDto) => {
+      const viewModel = BodyMaterialMapper.dtoToView(createdDto);
       _bodyMaterials.value.push(viewModel);
       resetSelectedBodyMaterial();
       return viewModel;
@@ -56,7 +60,9 @@ export function useBodyMaterialState(): IBodyMaterialState {
   };
 
   const updateBodyMaterial = async (bodyMaterial: BodyMaterialViewModel): Promise<BodyMaterialViewModel> => {
-    return bodyMaterialUseCase.executeUpdate(bodyMaterial).then((viewModel) => {
+    const dto = BodyMaterialMapper.viewToDto(bodyMaterial);
+    return bodyMaterialUseCase.executeUpdate(dto).then((updatedDto) => {
+      const viewModel = BodyMaterialMapper.dtoToView(updatedDto);
       const index = _bodyMaterials.value.findIndex((bm) => bm.id === viewModel.id);
       if (index !== -1) {
         _bodyMaterials.value[index] = viewModel;

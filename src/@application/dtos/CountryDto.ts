@@ -1,5 +1,5 @@
-export interface CountryDto {
-  id: number;
+export type CountryDto = {
+  id: string;
   name: string;
   code: string;
   currency: string;
@@ -7,4 +7,6 @@ export interface CountryDto {
   flagUrl: string;
   phoneCode: string;
   taxRate: number;
-}
+};
+
+export type CountryDtoOrString = CountryDto | string;
