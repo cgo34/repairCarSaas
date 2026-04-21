@@ -1,4 +1,4 @@
-export interface CountryViewModel {
+export type CountryApiModel = {
   id: string;
   name: string;
   code: string;
@@ -9,4 +9,4 @@ export interface CountryViewModel {
   taxRate: number;
 };
 
-export type CountryViewModelOrString = CountryViewModel | string;
+export type CountryApiModelOrString = CountryApiModel | string;

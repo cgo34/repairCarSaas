@@ -8,3 +8,5 @@ export type CountryDto = {
   phoneCode: string;
   taxRate: number;
 };
+
+export type CountryDtoOrString = CountryDto | string;

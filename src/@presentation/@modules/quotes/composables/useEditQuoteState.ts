@@ -29,7 +29,7 @@ import { RepairTypeMapper } from '@/@presentation/mappers/settings/RepairTypeMap
 import { SettingPriceMapper } from '@/@presentation/mappers/settings/price/SettingPriceMapper';
 import { UserMapper } from '@/@presentation/mappers/UserMapper';
 import { CountryViewModel } from '@/@presentation/types/models/CountryViewModel';
-import { DocumentStatuseViewModel } from '@/@presentation/types/models/DocumentStatuseViewModel';
+import { DocumentStatuseViewModel } from '@/@presentation/types/models/DocumentStatusViewModel';
 import { GarageViewModel } from '@/@presentation/types/models/GarageViewModel';
 import { LineItemViewModel } from '@/@presentation/types/models/LineItemViewModel';
 import { QuoteViewModel } from '@/@presentation/types/models/QuoteViewModel';

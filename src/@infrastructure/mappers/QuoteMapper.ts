@@ -4,6 +4,7 @@ import { GarageMapper } from './GarageMapper';
 import { UserMapper } from './UserMapper';
 import { DocumentStatusMapper } from './DocumentStatusMapper';
 import { QuoteDetailMapper } from './QuoteDetailMapper';
+import { CountryMapper } from '@/@infrastructure/mappers/CountryMapper';
 
 export class QuoteMapper {
   /**
@@ -21,7 +22,7 @@ export class QuoteMapper {
       endDate: api.end_date,
       status_id: api.status_id,
       status: api.status ? DocumentStatusMapper.apiToDto(api.status) : undefined, // Ajouté si nécessaire
-      country: api.country,
+      country: api.country ? CountryMapper.apiToDto(api.country) : undefined, // Ajouté si nécessaire
       currency: api.currency,
       isSent: api.is_sent,
       sentAt: api.sent_at,
@@ -68,7 +69,7 @@ export class QuoteMapper {
       end_date: dto.endDate,
       status_id: dto.status_id,
       // status: dto.status,
-      country: (typeof dto.country === 'string') ? dto.country : dto.country?.code ?? '',
+      country: dto.country ? CountryMapper.dtoToApi(dto.country) : undefined,
       currency: dto.currency,
       is_sent: dto.isSent,
       sent_at: dto.sentAt,

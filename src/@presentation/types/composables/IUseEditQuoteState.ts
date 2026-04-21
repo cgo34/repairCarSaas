@@ -3,7 +3,7 @@ import { BodyMaterialViewModel } from '../models/carRepair/BodyMaterialViewModel
 import { BodyPartViewModel } from '../models/carRepair/BodyPartViewModel';
 import { DentRepairTypeViewModel } from '../models/carRepair/DentRepairTypeViewModel';
 import { CountryViewModel } from '../models/CountryViewModel';
-import { DocumentStatuseViewModel } from '../models/DocumentStatuseViewModel';
+import { DocumentStatuseViewModel } from '../models/DocumentStatusViewModel';
 import { GarageViewModel } from '../models/GarageViewModel';
 import { LineItemViewModel } from '../models/LineItemViewModel';
 import { UserViewModel } from '../models/UserViewModel';

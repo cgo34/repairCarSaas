@@ -1,37 +1,14 @@
 import { CountryViewModel } from "./CountryViewModel";
-import { DocumentStatuseViewModel } from "./DocumentStatuseViewModel";
+import { DocumentStatusViewModel } from "./DocumentStatusViewModel";
 import { GarageViewModel } from "./GarageViewModel";
 import { LineItemViewModel } from "./LineItemViewModel";
 import { UserViewModel } from "./UserViewModel";
-
-/*
-
-
-      id: quote.id,
-      quoteNumber: quote.quoteNumber,
-      isForfait: quote.isForfait,
-      forfaitAmount: quote.forfaitAmount,
-      startDate: quote.startDate.toISOString(),
-      endDate: quote.endDate.toISOString(),
-      status: quote.status,
-      country: quote.country,
-      currency: quote.currency,
-      isSent: quote.isSent,
-      sentAt: quote.sentAt ? quote.sentAt.toISOString() : null,
-      carBrand: quote.carBrand,
-      carId: quote.carId,
-      carDate: quote.carDate,
-      technicianId: quote.technicianId,
-      garageId: quote.garageId,
-      userId: quote.userId // 🔹 Inclus l'ID du créateur du devis
-
-      */
 
 export type QuoteViewModel = {
   id?: string;
   quoteNumber: string;
   status_id: string;
-  status: DocumentStatuseViewModel;
+  status: DocumentStatusViewModel;
 
   userId: string;
   user?: UserViewModel;

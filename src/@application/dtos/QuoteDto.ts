@@ -2,14 +2,14 @@ import { CountryDto } from "./CountryDto";
 import { GarageDto } from "./GarageDto";
 import { LineItemDto } from "./LineItemDto";
 import { UserDto } from "./UserDto";
-import { QuoteStatusDto } from "./DocumentStatusDto";
+import { DocumentStatusDto } from "./DocumentStatusDto";
 
 export interface QuoteDto {
   id?: string;
   quoteNumber: string;
 
   status_id: string;
-  status?: QuoteStatusDto;
+  status?: DocumentStatusDto;
   
   userId: string; // 🔹 Ajout pour suivre le créateur du devis
   user?: UserDto; // 🔹 Ajout pour le nom du créateur du devis
@@ -31,7 +31,7 @@ export interface QuoteDto {
   isDisplayUnitPrice: boolean;
   isComputeCommissionWithoutDentRemoval: boolean;
   forfaitAmount?: number;
-  country?: CountryDto | string;
+  country?: CountryDto;
   currency: string;
 
   lineItems?: LineItemDto[];
