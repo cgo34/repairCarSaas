@@ -1,7 +1,6 @@
 import { IDentRepairTypeService } from "@/@domain/services/carRepair/IDentRepairTypeService";
 import { IDentRepairTypeUseCase } from "@/@domain/useCases/carRepair/IDentRepairTypeUseCase";
-import { DentRepairTypeViewModel } from "@/@presentation/types/models/carRepair/DentRepairTypeViewModel";
-import { RepairTypeMapper } from "@/@presentation/mappers/settings/RepairTypeMapper";
+import { DentRepairTypeDto } from "@/@application/dtos/carRepair/DentRepairTypeDto";
 import { SYMBOLS } from "@/@infrastructure/ioc/symbols";
 import { inject, injectable } from "inversify";
 
@@ -15,21 +14,16 @@ export class DentRepairTypeUseCase implements IDentRepairTypeUseCase {
     }
   }
 
-  async executeGetAll(): Promise<DentRepairTypeViewModel[]> {
-    const dtos = await this.dentRepairTypeService.getAll();
-    return dtos.map(RepairTypeMapper.dtoToView);
+  async executeGetAll(): Promise<DentRepairTypeDto[]> {
+    return this.dentRepairTypeService.getAll();
   }
 
-  async executeCreate(dentRepairType: DentRepairTypeViewModel): Promise<DentRepairTypeViewModel> {
-    const dto = RepairTypeMapper.viewToDto(dentRepairType);
-    const created = await this.dentRepairTypeService.create(dto);
-    return RepairTypeMapper.dtoToView(created);
+  async executeCreate(dentRepairType: DentRepairTypeDto): Promise<DentRepairTypeDto> {
+    return this.dentRepairTypeService.create(dentRepairType);
   }
 
-  async executeUpdate(dentRepairType: DentRepairTypeViewModel): Promise<DentRepairTypeViewModel> {
-    const dto = RepairTypeMapper.viewToDto(dentRepairType);
-    const updated = await this.dentRepairTypeService.update(dto);
-    return RepairTypeMapper.dtoToView(updated);
+  async executeUpdate(dentRepairType: DentRepairTypeDto): Promise<DentRepairTypeDto> {
+    return this.dentRepairTypeService.update(dentRepairType);
   }
 
   async executeDelete(id: string): Promise<void> {

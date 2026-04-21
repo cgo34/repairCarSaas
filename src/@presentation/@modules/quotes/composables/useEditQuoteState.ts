@@ -27,6 +27,7 @@ import { BodyMaterialMapper } from '@/@presentation/mappers/settings/BodyMateria
 import { BodyPartMapper } from '@/@presentation/mappers/settings/BodyPartMapper';
 import { RepairTypeMapper } from '@/@presentation/mappers/settings/RepairTypeMapper';
 import { SettingPriceMapper } from '@/@presentation/mappers/settings/price/SettingPriceMapper';
+import { UserMapper } from '@/@presentation/mappers/UserMapper';
 import { CountryViewModel } from '@/@presentation/types/models/CountryViewModel';
 import { DocumentStatuseViewModel } from '@/@presentation/types/models/DocumentStatuseViewModel';
 import { GarageViewModel } from '@/@presentation/types/models/GarageViewModel';
@@ -70,7 +71,7 @@ export function useEditQuoteState() {
   // #endregion
 
   // #region -> CONSTANTS
-  let LINE_ITEM_INCREMENT = 1;
+  const LINE_ITEM_INCREMENT = 1;
   // #endregion
 
   // #region -> REFS
@@ -187,7 +188,7 @@ export function useEditQuoteState() {
 
       if (technicianResult.status === 'fulfilled')
         _technicians.value = [
-          ...technicianResult.value,
+          ...technicianResult.value.map((u) => UserMapper.dtoToView(u)),
           // TODO: (gce) -> REMOVE MOCK
           { id: '1', fullName: 'John Doe', email: 'technicien1@gmail.com', password: '123456789', createdAt: '2021-09-01T00:00:00' },
           { id: '2', fullName: 'Albert Dupont', email: 'technicien2@gmail.com', password: '123456789', createdAt: '2021-09-01T00:00:00' },

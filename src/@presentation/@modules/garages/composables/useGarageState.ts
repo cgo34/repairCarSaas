@@ -39,8 +39,9 @@ export function useGarageState(): IUseGarageState {
       if (!authState.user?.value?.id) throw new Error('User does not exist');
 
       return garageUseCase.getByUserId(authState.user?.value?.id).then((data) => {
-        _garages.value = data;
-        return data;
+        const viewModels = data.map((g) => GarageMapper.dtoToView(g));
+        _garages.value = viewModels;
+        return viewModels;
       });
     } catch (e) {
       throw e;

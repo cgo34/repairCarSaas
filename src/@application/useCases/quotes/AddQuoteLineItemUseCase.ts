@@ -1,21 +1,19 @@
 import { IQuoteDetailRepository } from '@/@domain/repositories/IQuoteDetailRepository';
 import { IQuoteRepository } from '@/@domain/repositories/IQuoteRepository';
-import { LineItemViewModel } from '@/@presentation/types/models/LineItemViewModel';
-import { LineItemViewMapper } from '@/@presentation/mappers/LineItemViewMapper';
+import { IAddQuoteLineItemUseCase } from '@/@domain/useCases/quotes/IAddQuoteLineItemUseCase';
+import { LineItemDto } from '@/@application/dtos/LineItemDto';
 import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
 import { inject, injectable } from 'inversify';
 
 @injectable()
-export class AddQuoteLineItemUseCase {
+export class AddQuoteLineItemUseCase implements IAddQuoteLineItemUseCase {
   constructor(
     @inject(SYMBOLS.Repositories.QuoteRepository) private quoteRepository: IQuoteRepository,
     @inject(SYMBOLS.Repositories.QuoteDetailRepository) private quoteDetailRepository: IQuoteDetailRepository
   ) {}
 
-  async executeQuote(lineItem: LineItemViewModel): Promise<LineItemViewModel> {
+  async executeQuote(lineItem: LineItemDto): Promise<LineItemDto> {
     console.log('Adding line item to quote:', lineItem);
-    const dto = LineItemViewMapper.viewToDto(lineItem);
-    const updatedQuoteDto = await this.quoteDetailRepository.insert(dto);
-    return LineItemViewMapper.dtoToView(updatedQuoteDto);
+    return this.quoteDetailRepository.insert(lineItem);
   }
 }

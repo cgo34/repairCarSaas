@@ -3,7 +3,6 @@ import { UserDto } from '@/@application/dtos/UserDto';
 import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
 import { inject, injectable } from 'inversify';
 import { IUserUseCase } from '../../../@domain/useCases/IUserUseCase';
-import { UserMapper } from '@/@presentation/mappers/UserMapper';
 
 @injectable()
 export class UserUseCase implements IUserUseCase {
@@ -12,12 +11,11 @@ export class UserUseCase implements IUserUseCase {
     private readonly userService: IUserService
   ) {}
 
-  async getUsers() {
-    const dtos = await this.userService.getUsers();
-    return dtos.map(UserMapper.dtoToView);
+  async getUsers(): Promise<UserDto[]> {
+    return this.userService.getUsers();
   }
 
   async updateUser(id: string, user: Partial<UserDto>): Promise<void> {
-    return await this.userService.updateUser(id, user);
+    return this.userService.updateUser(id, user);
   }
 }

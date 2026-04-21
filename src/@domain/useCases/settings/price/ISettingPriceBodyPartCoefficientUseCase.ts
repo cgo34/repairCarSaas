@@ -1,11 +1,10 @@
-import { SettingPriceBodyPartCoefficientViewModel } from "@/@presentation/types/models/settings/price/SettingPriceBodyPartCoefficientViewModel";
 import { SettingPriceBodyPartCoefficientDto } from "@/@application/dtos/settings/price/SettingPriceBodyPartCoefficientDto";
 
 export interface ISettingPriceBodyPartCoefficientUseCase {
-  getAdmin(): Promise<SettingPriceBodyPartCoefficientViewModel[]>;
-  getByUserId(userId: string): Promise<SettingPriceBodyPartCoefficientViewModel[]>;
-  save(viewModels: SettingPriceBodyPartCoefficientViewModel[]): Promise<SettingPriceBodyPartCoefficientViewModel[]>;
-  create(viewModel: SettingPriceBodyPartCoefficientViewModel): Promise<SettingPriceBodyPartCoefficientViewModel>;
-  update(viewModel: SettingPriceBodyPartCoefficientViewModel): Promise<SettingPriceBodyPartCoefficientViewModel>;
+  getAdmin(): Promise<SettingPriceBodyPartCoefficientDto[]>;
+  getByUserId(userId: string): Promise<SettingPriceBodyPartCoefficientDto[]>;
+  save(dtos: SettingPriceBodyPartCoefficientDto[]): Promise<SettingPriceBodyPartCoefficientDto[]>;
+  create(dto: SettingPriceBodyPartCoefficientDto): Promise<SettingPriceBodyPartCoefficientDto>;
+  update(dto: SettingPriceBodyPartCoefficientDto): Promise<SettingPriceBodyPartCoefficientDto>;
   delete(id: string): Promise<void>;
 }

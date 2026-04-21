@@ -26,13 +26,11 @@ export function useBodyPartState() {
   const fetchBodyParts = async (): Promise<BodyPartViewModel[]> => {
     loading.value = true;
     try {
-      return bodyPartUseCase.executeGetAll().then((data) => {
-        const viewModels = data.map(BodyPartMapper.dtoToView);
-        _bodyParts.value = viewModels;
-        return viewModels;
-      });
+      const dtos = await bodyPartUseCase.executeGetAll();
+      const viewModels = dtos.map(BodyPartMapper.dtoToView);
+      _bodyParts.value = viewModels;
+      return viewModels;
     } catch (e) {
-      // error.value = e;
       throw e;
     } finally {
       loading.value = false;
@@ -63,14 +61,12 @@ export function useBodyPartState() {
     loading.value = true;
     try {
       const dto = BodyPartMapper.viewToDto(bodyPart);
-      return bodyPartUseCase.executeCreate(dto).then((data) => {
-        const viewModel = BodyPartMapper.dtoToView(data);
-        _bodyParts.value.push(viewModel);
-        resetSelectedBodyPart();
-        return viewModel;
-      });
+      const createdDto = await bodyPartUseCase.executeCreate(dto);
+      const viewModel = BodyPartMapper.dtoToView(createdDto);
+      _bodyParts.value.push(viewModel);
+      resetSelectedBodyPart();
+      return viewModel;
     } catch (e) {
-      // error.value = e;
       throw e;
     } finally {
       loading.value = false;
@@ -88,13 +84,11 @@ export function useBodyPartState() {
     loading.value = true;
     try {
       const dto = BodyPartMapper.viewToDto(bodyPart);
-      return bodyPartUseCase.executeUpdate(dto).then((data) => {
-        const viewModel = BodyPartMapper.dtoToView(data);
-        _bodyParts.value = _bodyParts.value.map((bp) => bp.id === bodyPart.id ? viewModel : bp);
-        return viewModel;
-      });
+      const updatedDto = await bodyPartUseCase.executeUpdate(dto);
+      const viewModel = BodyPartMapper.dtoToView(updatedDto);
+      _bodyParts.value = _bodyParts.value.map((bp) => bp.id === bodyPart.id ? viewModel : bp);
+      return viewModel;
     } catch (e) {
-      // error.value = e;
       throw e;
     } finally {
       loading.value = false;
@@ -111,11 +105,9 @@ export function useBodyPartState() {
 
     loading.value = true;
     try {
-      return bodyPartUseCase.executeDelete(bodyPartUid).then(() => {
-        _bodyParts.value = _bodyParts.value.filter((bp) => bp.id !== bodyPartUid);
-      });
+      await bodyPartUseCase.executeDelete(bodyPartUid);
+      _bodyParts.value = _bodyParts.value.filter((bp) => bp.id !== bodyPartUid);
     } catch (e) {
-      // error.value = e;
       throw e;
     } finally {
       loading.value = false;

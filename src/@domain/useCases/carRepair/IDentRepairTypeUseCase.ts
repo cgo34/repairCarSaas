@@ -1,8 +1,8 @@
-import { DentRepairTypeViewModel } from "@/@presentation/types/models/carRepair/DentRepairTypeViewModel";
+import { DentRepairTypeDto } from "@/@application/dtos/carRepair/DentRepairTypeDto";
 
 export interface IDentRepairTypeUseCase {
-  executeGetAll(): Promise<DentRepairTypeViewModel[]>;
-  executeCreate(dentRepairType: DentRepairTypeViewModel): Promise<DentRepairTypeViewModel>;
-  executeUpdate(dentRepairType: DentRepairTypeViewModel): Promise<DentRepairTypeViewModel>;
+  executeGetAll(): Promise<DentRepairTypeDto[]>;
+  executeCreate(dentRepairType: DentRepairTypeDto): Promise<DentRepairTypeDto>;
+  executeUpdate(dentRepairType: DentRepairTypeDto): Promise<DentRepairTypeDto>;
   executeDelete(id: string): Promise<void>;
 }

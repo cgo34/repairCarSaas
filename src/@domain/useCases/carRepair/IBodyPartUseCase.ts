@@ -1,8 +1,8 @@
-import { BodyPartViewModel } from "@/@presentation/types/models/carRepair/BodyPartViewModel";
+import { BodyPartDto } from "@/@application/dtos/carRepair/BodyPartDto";
 
 export interface IBodyPartUseCase {
-  executeGetAll(): Promise<BodyPartViewModel[]>;
-  executeCreate(bodyPart: BodyPartViewModel): Promise<BodyPartViewModel>;
-  executeUpdate(bodyPart: BodyPartViewModel): Promise<BodyPartViewModel>;
+  executeGetAll(): Promise<BodyPartDto[]>;
+  executeCreate(bodyPart: BodyPartDto): Promise<BodyPartDto>;
+  executeUpdate(bodyPart: BodyPartDto): Promise<BodyPartDto>;
   executeDelete(id: string): Promise<void>;
 }

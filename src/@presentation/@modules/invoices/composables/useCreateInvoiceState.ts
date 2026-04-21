@@ -8,6 +8,7 @@ import { IInsertInvoiceUseCase } from '@/@domain/useCases/invoices/IInsertInvoic
 import { container } from '@/@infrastructure/ioc/inversify.config';
 import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
 import { GarageMapper } from '@/@presentation/mappers/GarageMapper';
+import { UserMapper } from '@/@presentation/mappers/UserMapper';
 import { InvoiceMapper } from '@/@presentation/mappers/InvoiceMapper';
 import { VehicleMapper } from '@/@presentation/mappers/VehicleMapper';
 import { CountryViewModel } from '@/@presentation/types/models/CountryViewModel';
@@ -111,7 +112,7 @@ export function useCreateInvoiceState() {
 
       if (technicianResult.status === 'fulfilled')
         _technicians.value = [
-          ...technicianResult.value,
+          ...technicianResult.value.map((u) => UserMapper.dtoToView(u)),
           // TODO: (gce) -> REMOVE MOCK
           { id: '1', fullName: 'John Doe', email: 'technicien1@gmail.com', password: '123456789', createdAt: '2021-09-01T00:00:00' },
           { id: '2', fullName: 'Albert Dupont', email: 'technicien2@gmail.com', password: '123456789', createdAt: '2021-09-01T00:00:00' },
