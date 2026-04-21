@@ -1,4 +1,10 @@
+import { getCompanyProfile } from '@/@presentation/composables/useCompanyProfile';
+import { LineItemDto } from '@/@infrastructure/dtos/LineItemDto';
+import { QuoteDto } from '@/@infrastructure/dtos/QuoteDto';
+
 export const buildQuoteHtmlTemplate = (quote: QuoteDto, lines: LineItemDto[]): string => {
+  const company = getCompanyProfile();
+
   const totalHT = lines.reduce((sum, l) => sum + l.price, 0);
   const totalStripping = lines.reduce((sum, l) => sum + (l.dentRemovalPrice ?? 0), 0);
   const taxRate = quote.country === 'CH' ? 0.08 : 0;
@@ -6,289 +12,281 @@ export const buildQuoteHtmlTemplate = (quote: QuoteDto, lines: LineItemDto[]): s
   const totalTTC = totalHT + totalStripping + tva;
   const currencySymbol = quote.currency === 'EUR' ? '€' : quote.currency;
 
+  const dueDate = (() => {
+    const d = new Date(quote.startDate);
+    d.setDate(d.getDate() + (company.paymentDelay ?? 30));
+    return d.toLocaleDateString('fr-FR');
+  })();
+
+  const companyDisplay = company.companyName || 'Votre entreprise';
+
+  const linesHtml = quote.isForfait
+    ? `<tr><td colspan="4" style="padding:10px 12px;font-style:italic;">Réparation forfaitaire</td></tr>`
+    : lines.map(line => `
+        <tr>
+          <td>${line.bodyPart?.name || '-'}</td>
+          <td style="text-align:center;">${(line.impactCount25 ?? 0) + (line.impactCount35 ?? 0)}</td>
+          <td>${line.repairType?.name || '-'}</td>
+          <td class="amount">${line.price.toFixed(2)} ${currencySymbol}</td>
+        </tr>
+      `).join('');
+
   const totalsHtml = quote.isForfait
-  ? `
-    <div class="totals-block">
-      <table class="totals-table">
-        <tfoot>
-          <tr>
-            <td class="label">Total TTC :</td>
-            <td class="amount">${quote.forfaitAmount.toFixed(2)} ${currencySymbol}</td>
-          </tr>
-        </tfoot>
-      </table>
-    </div>
-  `
-  : `
-    <div class="totals-block">
-      <table class="totals-table">
-        <tbody>
-          <tr>
-            <td class="label">Total H.T :</td>
-            <td class="amount">${totalHT.toFixed(2)} ${currencySymbol}</td>
-          </tr>
-          <tr>
-            <td class="label">Total dégarnissage :</td>
-            <td class="amount">${totalStripping.toFixed(2)} ${currencySymbol}</td>
-          </tr>
-          <tr>
-            <td class="label">Total H.T + Total Dégarnissage :</td>
-            <td class="amount">${(totalHT + totalStripping).toFixed(2)} ${currencySymbol}</td>
-          </tr>
-          <tr>
-            <td class="label">TVA (${taxRate * 100}%) :</td>
-            <td class="amount">${tva.toFixed(2)} ${currencySymbol}</td>
-          </tr>
-        </tbody>
-        <tfoot>
-          <tr>
-            <td class="label">Total TTC :</td>
-            <td class="amount">${totalTTC.toFixed(2)} ${currencySymbol}</td>
-          </tr>
-        </tfoot>
-      </table>
-    </div>
-  `;
+    ? `<tr class="total-final"><td class="label">Total TTC</td><td class="amount">${quote.forfaitAmount.toFixed(2)} ${currencySymbol}</td></tr>`
+    : `
+      <tr><td class="label">Total H.T.</td><td class="amount">${totalHT.toFixed(2)} ${currencySymbol}</td></tr>
+      <tr><td class="label">Dégarnissage</td><td class="amount">${totalStripping.toFixed(2)} ${currencySymbol}</td></tr>
+      <tr><td class="label">Base H.T.</td><td class="amount">${(totalHT + totalStripping).toFixed(2)} ${currencySymbol}</td></tr>
+      <tr><td class="label">TVA (${taxRate * 100}%)</td><td class="amount">${tva.toFixed(2)} ${currencySymbol}</td></tr>
+      <tr class="total-final"><td class="label">Total TTC</td><td class="amount">${totalTTC.toFixed(2)} ${currencySymbol}</td></tr>
+    `;
 
+  const siretLine = company.siret ? `<span>SIRET : ${company.siret}</span>` : '';
+  const tvaLine   = company.tvaNumber ? `<span>TVA : ${company.tvaNumber}</span>` : '';
+  const penaltyLine = `<span>Pénalités de retard : ${company.latePaymentPenalty || '3 fois le taux légal'}. Indemnité forfaitaire de recouvrement : ${company.recoveryFee || '40 €'}.</span>`;
 
-  let htmlTemplate = `
-  <!DOCTYPE html>
-  <html lang="fr">
-    <head>
-      <meta charset="UTF-8" />
-      <title>Devis ${quote.quoteNumber}</title>
-      <style>
-        html, body {
-          margin: 0;
-          padding: 0;
-          height: 100%;
-          font-family: Arial, sans-serif;
-        }
+  return `<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Devis ${quote.quoteNumber}</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; background: #fff; }
 
-        .pdf-page {
-          width: 794px;
-          height: 1122px;
-          display: flex;
-          flex-direction: column;
-          background: white;
-          margin: 0 auto;
-        }
+    .page {
+      width: 794px;
+      min-height: 1122px;
+      display: flex;
+      flex-direction: column;
+      background: #fff;
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      font-size: 13px;
+      color: #1a1a2e;
+    }
 
-        .header {
-          background-color: #333;
-          color: white;
-          padding: 20px 40px;
-          display: flex;
-          justify-content: space-between;
-        }
+    /* ── Header ── */
+    .header {
+      background: #1a1a2e;
+      color: #fff;
+      padding: 28px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+    .header-company { max-width: 55%; }
+    .header-company .name { font-size: 22px; font-weight: 700; letter-spacing: 0.5px; margin: 0 0 4px; }
+    .header-company .tagline { font-size: 11px; opacity: 0.7; margin: 0; }
+    .header-company .coords { font-size: 11px; opacity: 0.85; margin-top: 10px; line-height: 1.6; }
+    .header-doc { text-align: right; }
+    .header-doc .doc-type {
+      font-size: 26px; font-weight: 800; letter-spacing: 1px;
+      color: #5b8dd9; margin: 0 0 8px;
+    }
+    .header-doc .meta { font-size: 12px; opacity: 0.85; line-height: 1.8; }
+    .header-doc .meta strong { color: #fff; }
 
-        .header h1 { margin: 0; font-size: 22px; }
-        .header p { margin: 4px 0; }
+    /* ── Infos ── */
+    .info-section {
+      display: flex;
+      gap: 16px;
+      padding: 20px 40px;
+      border-bottom: 2px solid #f0f0f5;
+    }
+    .info-box {
+      flex: 1;
+      background: #f7f7fb;
+      border-radius: 8px;
+      padding: 14px 16px;
+    }
+    .info-box .box-title {
+      font-size: 10px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.8px; color: #5b8dd9; margin-bottom: 8px;
+    }
+    .info-box p { margin: 2px 0; font-size: 12px; color: #333; line-height: 1.5; }
+    .info-box p strong { color: #1a1a2e; }
 
-        .content {
-          flex-grow: 1;
-          padding: 40px;
-        }
+    /* ── Tableau lignes ── */
+    .content { flex: 1; padding: 24px 40px; }
+    .section-title {
+      font-size: 11px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.8px; color: #5b8dd9;
+      margin-bottom: 10px; padding-bottom: 6px;
+      border-bottom: 2px solid #5b8dd9;
+    }
 
-        .section-title {
-          font-weight: bold;
-          margin: 30px 0 10px;
-          font-size: 16px;
-        }
+    .lines-table { width: 100%; border-collapse: collapse; }
+    .lines-table thead tr { background: #1a1a2e; }
+    .lines-table thead th {
+      color: #fff; font-size: 11px; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.5px;
+      padding: 10px 12px; text-align: left;
+    }
+    .lines-table thead th.right { text-align: right; }
+    .lines-table tbody tr { border-bottom: 1px solid #f0f0f5; }
+    .lines-table tbody tr:nth-child(even) { background: #f9f9fc; }
+    .lines-table tbody td { padding: 9px 12px; font-size: 12px; vertical-align: middle; }
+    .lines-table .amount { text-align: right; font-weight: 500; }
 
-        .info-table {
-          width: 100%;
-          border-collapse: collapse;
-        }
+    /* ── Totaux ── */
+    .totals-wrapper { display: flex; justify-content: flex-end; margin-top: 20px; }
+    .totals-table { width: 300px; border-collapse: collapse; }
+    .totals-table td { padding: 6px 12px; font-size: 12px; }
+    .totals-table td.label { color: #555; }
+    .totals-table td.amount { text-align: right; font-weight: 500; color: #1a1a2e; }
+    .totals-table tr.total-final { border-top: 2px solid #1a1a2e; }
+    .totals-table tr.total-final td { font-size: 14px; font-weight: 700; padding-top: 10px; }
+    .totals-table tr.total-final td.amount { color: #5b8dd9; }
 
-        .info-table th { text-align: left; font-size: 14px; }
-        .info-table th.th-client { padding-left: 10px; }
-        .info-table td { padding: 0; vertical-align: top; }
+    /* ── Note TVA ── */
+    .tva-note {
+      margin-top: 16px; font-size: 10px; color: #888;
+      font-style: italic; border-top: 1px dashed #ddd; padding-top: 10px;
+    }
 
-        .block {
-          background: #f2f2f2;
-          padding: 10px;
-        }
+    /* ── Validité ── */
+    .validity-note {
+      margin-top: 12px; padding: 10px 14px;
+      background: #fffbeb; border-left: 3px solid #f59e0b;
+      font-size: 11px; color: #92400e; border-radius: 0 6px 6px 0;
+    }
 
-        .block-left { margin-right: 10px; }
-        .block-right { margin-left: 10px; }
+    /* ── Pied de page ── */
+    .footer {
+      background: #f7f7fb;
+      border-top: 2px solid #1a1a2e;
+      padding: 16px 40px;
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+    }
+    .footer-block { flex: 1; }
+    .footer-block .footer-title {
+      font-size: 10px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.6px; color: #5b8dd9; margin-bottom: 6px;
+    }
+    .footer-block p { margin: 2px 0; font-size: 10px; color: #444; line-height: 1.5; }
+    .footer-signature {
+      margin-top: 6px; font-size: 10px; color: #888;
+      border-top: 1px solid #ccc; padding-top: 6px;
+    }
+    .legal-mentions {
+      padding: 10px 40px;
+      font-size: 9.5px; color: #aaa; line-height: 1.6;
+      display: flex; flex-direction: column; gap: 2px;
+    }
+  </style>
+</head>
+<body>
+<div class="page">
 
-        .quote-table {
-          width: 100%;
-          border-collapse: collapse;
-          margin-top: 10px;
-        }
-
-        .quote-table thead {
-          background: #333;
-          color: white;
-        }
-
-        .quote-table th, .quote-table td {
-          padding: 6px;
-          font-size: 13px;
-        }
-
-        .quote-table td:nth-child(2),
-        .quote-table td:nth-child(4),
-        .quote-table td.amount {
-          text-align: right;
-          padding-right: 40px;
-        }
-
-        .quote-table tbody tr:nth-child(even) {
-          background: #f9f9f9;
-        }
-
-        .totals-block {
-          margin-top: 30px;
-          background: #f2f2f2;
-          padding: 20px 0;
-        }
-
-        .totals-table {
-          width: 100%;
-          font-size: 13px;
-          border-collapse: collapse;
-        }
-
-        .totals-table td {
-          padding: 6px 0;
-        }
-
-        .totals-table td.label {
-          text-align: right;
-          font-weight: bold;
-          padding-right: 10px;
-        }
-
-        .totals-table td.amount {
-          text-align: right;
-          padding-right: 40px;
-        }
-
-        .totals-table tfoot td.amount {
-          font-weight: bold;
-          font-size: 14px;
-          color: #007BFF;
-        }
-
-        .footer {
-          border-top: 1px solid #000;
-          font-size: 10px;
-          display: flex;
-          justify-content: space-between;
-          padding: 10px 40px;
-          line-height: 1.2;
-        }
-
-        .tva-note {
-          margin-top: 10px;
-          font-style: italic;
-          font-size: 11px;
-        }
-      </style>
-    </head>
-    <body>
-      <div class="pdf-page">
-        <div class="header">
-          <div>
-            <h1>IMPACT</h1>
-            <p>Débosselage sans peinture</p>
-          </div>
-          <div style="text-align: right;">
-            <p><strong>DEVIS</strong></p>
-            <p>N° : ${quote.quoteNumber}</p>
-            <p>Date : ${new Date(quote.startDate).toLocaleDateString()}</p>
-          </div>
-        </div>
-
-        <div class="content">
-          <table class="info-table">
-            <thead>
-              <tr>
-                <th>VÉHICULE</th>
-                <th class="th-client">CLIENT</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td width="50%">
-                  <div class="block block-left">
-                    <p>Marque : ${quote.carBrand || '-'}</p>
-                    <p>Année : ${quote.carDate || '-'}</p>
-                    <p>Numéro de série : ${quote.carId || '-'}</p>
-                  </div>
-                </td>
-                <td width="50%">
-                  <div class="block block-right">
-                    <p>${quote.garage.name}</p>
-                    <p>${quote.garage.address ?? ''}</p>
-                    <p>${quote.garage.zipCode ?? ''} - ${quote.garage.city ?? ''}</p>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-
-          <div class="section-title">DÉTAIL DES INTERVENTIONS</div>
-          <table class="quote-table">
-            <thead>
-              <tr>
-                <th>ÉLÉMENT</th>
-                <th>IMPACT</th>
-                <th>DESCRIPTION</th>
-                <th>PRIX H.T.</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${
-                quote.isForfait
-                  ? `
-                    <tr>
-                      <td colspan="4">Réparation forfaitaire</td>
-                    </tr>
-                  `
-              : lines.map(line => `
-                <tr>
-                  <td>${line.bodyPart.name || '-'}</td>
-                  <td>${(line.impactCount25 ?? 0) + (line.impactCount35 ?? 0)}</td>
-                  <td>${line.repairType.name || '-'}</td>
-                  <td class="amount">${line.price.toFixed(2)} ${currencySymbol}</td>
-                </tr>
-              `).join('')}
-            </tbody>
-          </table>`
-
-          htmlTemplate += totalsHtml;
-
-          htmlTemplate += `<p class="tva-note">
-            TVA ${taxRate > 0 ? taxRate * 100 + '%' : 'non applicable'} - ${
-              taxRate === 0
-                ? 'Autoliquidation de la TVA par le client (Article 196 de la directive 2006/112/CE)'
-                : 'Assujetti à la TVA en Suisse'
-            }
-          </p>
-        </div>
-
-        <div class="footer">
-          <div class="footer-left">
-            <p>${quote.technician.fullName}</p>
-            <p>${quote.technician.address}</p>
-            <p>${quote.technician.zipCode} ${quote.technician.city}</p>
-            <p>Numéro fiscal : ${quote.technician.taxNumber}</p>
-          </div>
-          <div class="footer-right">
-            <p><strong>Terme et conditions :</strong></p>
-            <p>Bon pour accord</p>
-            <p>Cachet et Signature du client : ……………………………</p>
-            <p style="text-align:right; font-weight:bold;">MERCI</p>
-          </div>
-        </div>
+  <!-- Header -->
+  <div class="header">
+    <div class="header-company">
+      <p class="name">${companyDisplay}</p>
+      <p class="tagline">Débosselage sans peinture</p>
+      <div class="coords">
+        <div>${company.address || ''}</div>
+        <div>${company.zipCode || ''} ${company.city || ''}</div>
+        ${company.phone ? `<div>${company.phone}</div>` : ''}
+        ${company.email ? `<div>${company.email}</div>` : ''}
       </div>
-    </body>
-  </html>
-  `;
+    </div>
+    <div class="header-doc">
+      <p class="doc-type">DEVIS</p>
+      <div class="meta">
+        <div><strong>N°</strong> ${quote.quoteNumber}</div>
+        <div><strong>Date</strong> ${new Date(quote.startDate).toLocaleDateString('fr-FR')}</div>
+        <div><strong>Valable jusqu'au</strong> ${dueDate}</div>
+      </div>
+    </div>
+  </div>
 
-  return htmlTemplate
+  <!-- Blocs véhicule + client -->
+  <div class="info-section">
+    <div class="info-box">
+      <div class="box-title">🚗 Véhicule</div>
+      <p><strong>Marque / Modèle</strong> ${quote.carBrand || '-'}</p>
+      <p><strong>Immatriculation</strong> ${quote.carImmatriculation || '-'}</p>
+      <p><strong>Année</strong> ${quote.carDate || '-'}</p>
+    </div>
+    <div class="info-box">
+      <div class="box-title">🏢 Client</div>
+      <p><strong>${quote.garage?.name || ''}</strong></p>
+      <p>${quote.garage?.address || ''}</p>
+      <p>${quote.garage?.zipCode || ''} ${quote.garage?.city || ''}</p>
+    </div>
+    <div class="info-box">
+      <div class="box-title">👤 Technicien</div>
+      <p><strong>${quote.technician?.fullName || ''}</strong></p>
+      <p>${quote.technician?.address || ''}</p>
+      <p>${quote.technician?.zipCode || ''} ${quote.technician?.city || ''}</p>
+    </div>
+  </div>
+
+  <!-- Lignes -->
+  <div class="content">
+    <div class="section-title">Détail des interventions</div>
+    <table class="lines-table">
+      <thead>
+        <tr>
+          <th>Élément</th>
+          <th style="text-align:center;">Impacts</th>
+          <th>Type de réparation</th>
+          <th class="right">Prix H.T.</th>
+        </tr>
+      </thead>
+      <tbody>${linesHtml}</tbody>
+    </table>
+
+    <div class="totals-wrapper">
+      <table class="totals-table">
+        <tbody>${totalsHtml}</tbody>
+      </table>
+    </div>
+
+    <p class="tva-note">
+      TVA ${taxRate > 0 ? taxRate * 100 + '%' : 'non applicable'} —
+      ${taxRate === 0
+        ? 'Autoliquidation de la TVA par le client (Art. 196 directive 2006/112/CE).'
+        : 'Assujetti à la TVA en Suisse.'}
+    </p>
+
+    <div class="validity-note">
+      ⏳ Ce devis est valable ${company.paymentDelay ?? 30} jours à compter de sa date d'émission.
+      Passé ce délai, les prix sont susceptibles d'être révisés.
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <div class="footer-block">
+      <div class="footer-title">Émetteur</div>
+      <p>${quote.technician?.fullName || ''}</p>
+      ${quote.technician?.taxNumber ? `<p>N° fiscal : ${quote.technician.taxNumber}</p>` : ''}
+    </div>
+    <div class="footer-block">
+      <div class="footer-title">Conditions</div>
+      <p>Délai de réponse : ${company.paymentDelay ?? 30} jours</p>
+      <p>Pénalités : ${company.latePaymentPenalty || '3× taux légal'}</p>
+    </div>
+    <div class="footer-block" style="text-align:right;">
+      <div class="footer-title">Acceptation</div>
+      <div class="footer-signature">
+        <p>Bon pour accord — Date :</p>
+        <p style="margin-top:30px;color:#ccc;">Cachet &amp; Signature</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mentions légales -->
+  <div class="legal-mentions">
+    ${siretLine}${siretLine && tvaLine ? ' — ' : ''}${tvaLine}
+    ${company.legalForm && company.capital ? `<span>${company.legalForm} au capital de ${company.capital} — RCS ${company.city} ${company.siren}</span>` : ''}
+    ${penaltyLine}
+  </div>
+
+</div>
+</body>
+</html>`;
 };

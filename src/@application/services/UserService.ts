@@ -14,4 +14,8 @@ export class UserService implements IUserService {
   async getUsers(): Promise<UserDto[]> {
     return await this.userRepository.getUsers();
   }
+
+  async updateUser(id: string, user: Partial<UserDto>): Promise<void> {
+    return await this.userRepository.updateUser(id, user);
+  }
 }

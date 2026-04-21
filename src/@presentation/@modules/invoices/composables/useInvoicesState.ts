@@ -19,12 +19,13 @@ export function useInvoicesState() {
 
   // #region -> METHODS
   const init = async () => {
-    
-    if (authState.isAuthenticated && authState.user.value) {
-      const invoicesDto = await getInvoicesUseCase.execute(authState.user.value?.id);
-      _invoices.value = invoicesDto.map(invoice => InvoiceMapper.dtoToView(invoice));
-      console.log(_invoices.value);
-      
+    try {
+      if (authState.isAuthenticated && authState.user.value) {
+        const invoicesDto = await getInvoicesUseCase.execute(authState.user.value?.id);
+        _invoices.value = invoicesDto.map(invoice => InvoiceMapper.dtoToView(invoice));
+      }
+    } catch (e) {
+      console.error('[Invoices] Erreur lors du chargement des factures:', e);
     }
   }
 

@@ -1,5 +1,6 @@
 // src/router/index.ts
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
+import { accountRoutes } from './modules/account/accountRoutes';
 import { authRoutes } from './modules/auth/authRoutes';
 // import { logoutRoute } from './modules/auth/logoutRoute';
 import { authGuard } from './modules/auth/navigationGuards';
@@ -18,6 +19,7 @@ const routes: RouteRecordRaw[] = [
   ...garageRoutes,
   ...quoteRoutes,
   ...invoiceRoutes,
+  ...accountRoutes,
   // logoutRoute,
 ];
 

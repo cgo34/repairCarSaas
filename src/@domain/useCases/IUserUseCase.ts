@@ -1,5 +1,6 @@
-import { UserViewModel } from "@/@presentation/types/models/UserViewModel";
+import { UserDto } from "@/@infrastructure/dtos/UserDto";
 
 export interface IUserUseCase {
-  getUsers(): Promise<UserViewModel[]>;
+  getUsers(): Promise<UserDto[]>;
+  updateUser(id: string, user: Partial<UserDto>): Promise<void>;
 }

@@ -135,15 +135,15 @@ export class InvoiceRepository implements IInvoiceRepository {
       .eq('id', invoiceApi.id)
       .select(`
         *,
-        user:users!invoices_user_id_fkey(*),
         technician:users!invoices_technician_id_fkey(*),
         garage:garages(*)
-      `);
+      `)
+      .returns<any[]>();
 
     if (error)
       throw new Error('Error updating invoice');
 
-    return InvoiceMapper.apiToDto(data);
+    return InvoiceMapper.apiToDto(data?.[0] ?? {});
   }
 
   /**

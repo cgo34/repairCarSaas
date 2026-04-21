@@ -14,11 +14,12 @@ import { IGetInvoiceDetailUseCase } from '@/@domain/useCases/invoices/IGetInvoic
 import { IGetInvoiceUseCase } from '@/@domain/useCases/invoices/IGetInvoiceUseCase';
 import { ISendInvoiceUseCase } from '@/@domain/useCases/invoices/ISendInvoiceUseCase';
 import { IUpdateInvoiceUseCase } from '@/@domain/useCases/invoices/IUpdateInvoiceUseCase';
+import { IGetDocumentStatuseUseCase } from '@/@domain/useCases/IGetDocumentStatuseUseCase';
 import { ISettingPriceUseCase } from '@/@domain/useCases/settings/price/ISettingPriceUseCase';
 import { container } from '@/@infrastructure/ioc/inversify.config';
 import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
 import { GarageMapper } from '@/@presentation/mappers/GarageMapper';
-import { LineItemViewMapper } from '@/@presentation/mappers/LineItemViewMapper';
+import { LineItemMapper } from '@/@presentation/mappers/LineItemMapper';
 import { InvoiceMapper } from '@/@presentation/mappers/InvoiceMapper';
 import { VehicleMapper } from '@/@presentation/mappers/VehicleMapper';
 import { BodyMaterialMapper } from '@/@presentation/mappers/settings/BodyMaterialMapper';
@@ -30,6 +31,7 @@ import { GarageViewModel } from '@/@presentation/types/models/GarageViewModel';
 import { VehicleViewModel } from '@/@presentation/types/models/VehicleViewModel';
 import { LineItemViewModel } from '@/@presentation/types/models/LineItemViewModel';
 import { InvoiceViewModel } from '@/@presentation/types/models/InvoiceViewModel';
+import { InvoiceStatusViewType } from '@/@presentation/types/models/InvoiceStatusViewType';
 import { UserViewModel } from '@/@presentation/types/models/UserViewModel';
 import { BodyMaterialViewModel } from '@/@presentation/types/models/carRepair/BodyMaterialViewModel';
 import { BodyPartViewModel } from '@/@presentation/types/models/carRepair/BodyPartViewModel';
@@ -58,13 +60,14 @@ export function useEditInvoiceState() {
   const priceParamsUseCase = container.get<ISettingPriceUseCase>(SYMBOLS.UseCases.Setting.Price.AllUseCase);
 
   const updateInvoiceUseCase = container.get<IUpdateInvoiceUseCase>(SYMBOLS.UseCases.Invoice.UpdateInvoiceUseCase);
+  const getDocumentStatuseUseCase = container.get<IGetDocumentStatuseUseCase>(SYMBOLS.UseCases.GetDocumentStatuse);
   const calculateLineCostUseCase = container.get<ICalculateLineCostUseCase>(SYMBOLS.UseCases.CostCalculator.CalculateLineCostUseCase);
   const addInvoiceDetailsUseCase = container.get<IAddInvoiceLineItemUseCase>(SYMBOLS.UseCases.Invoice.AddLineItemUseCase);
   const deleteLineItemUseCase = container.get<IDeleteLineItemUseCase>(SYMBOLS.UseCases.Invoice.DeleteLineItemUseCase);
   // #endregion
 
   // #region -> CONSTANTS
-  const LINE_ITEM_INCREMENT = 1;
+  let LINE_ITEM_INCREMENT = 1;
   // #endregion
 
   // #region -> REFS
@@ -105,9 +108,10 @@ export function useEditInvoiceState() {
 
   const _invoiceLines = ref<LineItemViewModel[]>([]);
   const _invoiceId = ref<string>('');
+  const _invoiceStatusId = ref<string>('');
 
   const loading = ref(false);
-  const error = ref<string | undefined>(undefined);
+  const error = ref(undefined);
 // #endregion
 
   // #region -> INIT
@@ -118,9 +122,50 @@ export function useEditInvoiceState() {
         throw new Error('User not found');
 
       // resetInvoice();
-      _invoiceId.value = id;
+      _invoiceId.value = id;     
+      
+      const invoiceDto = await getInvoiceUseCase.execute(id);
+      const invoiceDetailDto = await getInvoiceDetailUseCase.execute(id);
+      
+      _invoice.value = InvoiceMapper.dtoToView(invoiceDto);
+      _invoiceStatusId.value = invoiceDto?.statusId ?? '';
+      _isForfait.value = invoiceDto?.isForfait ?? false
+      _forfaitAmount.value = invoiceDto?.forfaitAmount
+      
+      _invoiceLines.value = invoiceDetailDto?.map((line, idx) => {
+        
+        return {
+          ...LineItemMapper.dtoToView(line),
+          lineId: idx + 1,
+        }
+      }) ?? [];
+      
+      
+      // TODO: (gce) -> MOVE TO MAPPER
+      _invoiceInformations.value.number = _invoice.value.invoiceNumber;
+      const startDate = new Date(_invoice.value.startDate);
+      _invoiceInformations.value.date = startDate.toISOString().split('T')[0];
 
-      // 1. Charger les référentiels d'abord
+      // Ajout d’un mois
+      // const expirationDate = new Date(startDate);
+      // expirationDate.setMonth(expirationDate.getMonth() + 1);
+      // _invoiceInformations.value.expirationDate = expirationDate.toISOString().split('T')[0];
+      _invoiceInformations.value.status = _invoice.value.status;
+
+      _selectedTechnician.value = _invoice.value.technician;
+      _selectedGarage.value = _invoice.value.garage;
+      if (_invoice.value.garage?.id) {
+        const vehiclesResult = await vehicleUseCase.getByGarageId(_invoice.value.garage.id).catch(() => []);
+        _vehicles.value = vehiclesResult.map(VehicleMapper.dtoToView);
+        if (_invoice.value.vehicleId) {
+          _selectedVehicle.value = _vehicles.value.find(v => v.id === _invoice.value.vehicleId);
+        }
+      }
+
+      _carInformations.value.immatriculation = _invoice.value.carImmatriculation ?? '';
+      _carInformations.value.brand = _invoice.value.carBrand ?? '';
+      _carInformations.value.dateEntryCirculation = _invoice.value.carDateEntryCirculation ?? '';
+
       const [garageResult, technicianResult, bodyPartResult, bodyMaterialResult, repairTypeResult, priceParamsResult] =
         await Promise.allSettled([
           garageUseCase.getByUserId(authState.user.value?.id),
@@ -132,18 +177,14 @@ export function useEditInvoiceState() {
         ]);
 
       if (garageResult.status === 'fulfilled')
-          _garages.value = garageResult.value.map((g) => {
-            // On force le type pour satisfaire GarageDto
-            const safeDto = { ...g, percentageCommission: g.percentageCommission ?? 0 };
-            return GarageMapper.dtoToView(safeDto);
-          });
+        _garages.value = garageResult.value.map((g) => GarageMapper.dtoToView(g));
 
       if (technicianResult.status === 'fulfilled')
         _technicians.value = [
           ...technicianResult.value,
           // TODO: (gce) -> REMOVE MOCK
-          { id: '1', fullName: 'John Doe', email: 'technicien1@gmail.com', password: '123456789', createdAt: '2021-09-01T00:00:00', role: 'technician' },
-          { id: '2', fullName: 'Albert Dupont', email: 'technicien2@gmail.com', password: '123456789', createdAt: '2021-09-01T00:00:00', role: 'technician' },
+          { id: '1', fullName: 'John Doe', email: 'technicien1@gmail.com', password: '123456789', createdAt: '2021-09-01T00:00:00' },
+          { id: '2', fullName: 'Albert Dupont', email: 'technicien2@gmail.com', password: '123456789', createdAt: '2021-09-01T00:00:00' },
         ];
 
       if (bodyPartResult.status === 'fulfilled')
@@ -155,64 +196,32 @@ export function useEditInvoiceState() {
       if (repairTypeResult.status === 'fulfilled')
         _repairTypes.value = repairTypeResult.value.map((rt) => RepairTypeMapper.dtoToView(rt));
 
-      if (priceParamsResult.status === 'fulfilled')
+      if (priceParamsResult.status === 'fulfilled') {
         _priceParams.value = SettingPriceMapper.dtoToView(priceParamsResult.value);
-
-      // 2. Charger l'invoice et les lignes après les référentiels
-      const invoiceDto = await getInvoiceUseCase.execute(id);
-      const invoiceDetailDto = await getInvoiceDetailUseCase.execute(id);
-
-      if (invoiceDto) {
-        _invoice.value = InvoiceMapper.dtoToView(invoiceDto);
+        console.log('[Invoice] priceParams chargés:', JSON.stringify({
+          general: _priceParams.value?.general,
+          technicity: _priceParams.value?.technicity,
+          bodyPartsCount: _priceParams.value?.bodyParts?.length,
+          impactsCountCount: _priceParams.value?.impactsCount?.length,
+        }));
+        // Recalculer les lignes existantes dont le prix est 0
+        _invoiceLines.value.forEach(line => {
+          console.log('[Invoice] ligne:', line.lineId, 'price:', line.price, 'bodyPart:', line.bodyPart?.id, 'bodyMaterial:', line.bodyMaterial?.id, 'repairType:', line.repairType?.code);
+          if ((!line.price || line.price === 0) && line.bodyPart && line.bodyMaterial && line.repairType) {
+            try {
+              computePrice(line);
+              console.log('[Invoice] prix recalculé ligne', line.lineId, ':', line.price);
+            } catch (err) {
+              console.warn('[Invoice] computePrice a échoué pour la ligne', line.lineId, err);
+            }
+          }
+        });
       } else {
-        _invoice.value = undefined;
+        console.warn('[Invoice] priceParams rejeté:', priceParamsResult.reason);
       }
-      _isForfait.value = invoiceDto?.isForfait ?? false;
-      _forfaitAmount.value = invoiceDto?.forfaitAmount;
-
-      _invoiceLines.value = invoiceDetailDto?.map((line, idx) => ({
-        ...LineItemViewMapper.dtoToViewEnriched(
-          line,
-          _bodyParts.value,
-          _bodyMaterials.value,
-          _repairTypes.value
-        ),
-        lineId: idx + 1,
-      })) ?? [];
-
-      // TODO: (gce) -> MOVE TO MAPPER
-      if (_invoice.value) {
-        _invoiceInformations.value.number = _invoice.value.invoiceNumber;
-        const startDate = new Date(_invoice.value.startDate);
-      _invoiceInformations.value.date = startDate.toISOString().split('T')[0];
-
-      // Ajout d’un mois
-      // const expirationDate = new Date(startDate);
-      // expirationDate.setMonth(expirationDate.getMonth() + 1);
-      // _invoiceInformations.value.expirationDate = expirationDate.toISOString().split('T')[0];
-        _invoiceInformations.value.status = _invoice.value.status;
-      }
-
-      _selectedTechnician.value = _invoice.value?.technician;
-      _selectedGarage.value = _invoice.value?.garage;
-      if (_invoice.value?.garage?.id) {
-        const vehiclesResult = await vehicleUseCase.getByGarageId(_invoice.value.garage.id).catch(() => []);
-        _vehicles.value = vehiclesResult.map(VehicleMapper.dtoToView);
-        if (_invoice.value.vehicleId) {
-          _selectedVehicle.value = _vehicles.value.find(v => v.id === _invoice.value?.vehicleId);
-        }
-      }
-
-      _carInformations.value.immatriculation = _invoice.value?.carImmatriculation ?? '';
-      _carInformations.value.brand = _invoice.value?.carBrand ?? '';
-      _carInformations.value.dateEntryCirculation = _invoice.value?.carDateEntryCirculation ?? '';
-
+      
     } catch (e) {
-      if (e instanceof Error) {
-        error.value = e.message;
-      } else {
-        error.value = String(e);
-      }
+      error.value = e;
     } finally {
       loading.value = false;
     }
@@ -327,37 +336,19 @@ export function useEditInvoiceState() {
   // }
 
   const addLine = async (line: LineItemViewModel) => {
-    line.invoiceId = _invoiceId.value;
+    line.invoiceId = _invoiceId.value
 
     if (_priceParams.value)
-      computePrice(line);
+      computePrice(line)
     else
-      line.price = 0;
+      line.price = 0
 
-    // On suppose que LineItemViewMapper.viewToDtoEnriched retourne un LineItemDto complet
-    const lineDto = LineItemViewMapper.viewToDtoEnriched(
-      line,
-      _bodyParts.value,
-      _bodyMaterials.value,
-      _repairTypes.value
-    );
-    // On force les champs obligatoires pour LineItemDto
-    const invoiceLinesDto = await addInvoiceDetailsUseCase.executeInvoice({
-      ...lineDto,
-      bodyPart: lineDto.bodyPart ?? null,
-      bodyMaterial: lineDto.bodyMaterial ?? null,
-      repairType: lineDto.repairType ?? null,
-    });
+    const invoiceLinesDto = await addInvoiceDetailsUseCase.executeInvoice(LineItemMapper.viewToDto(line));
 
-    const invoiceAdded =  LineItemViewMapper.dtoToViewEnriched(
-      invoiceLinesDto,
-      _bodyParts.value,
-      _bodyMaterials.value,
-      _repairTypes.value
-    );
+    const invoiceAdded =  LineItemMapper.dtoToView(invoiceLinesDto);
 
-    _invoiceLines.value.push({ ...invoiceAdded });
-  };
+    _invoiceLines.value.push({...invoiceAdded});    
+  }
 
   const removeLine = (lineId: string) => {
     deleteLineItemUseCase.execute(lineId)
@@ -369,23 +360,32 @@ export function useEditInvoiceState() {
 
   const selectBodyPart = (lineId: number, bodyPart: BodyPartViewModel) => {
     const line = _invoiceLines.value.find(l => l.lineId === lineId);
-    if (!line) return;
+
+    if (!line)
+      return; // Sécurité : éviter les erreurs si la ligne n'existe pas
+
     line.bodyPart = bodyPart;
-    computePrice(line);
+    computePrice(line.lineId);
   };
 
   const selectBodyMaterial = (lineId: number, bodyMaterial: BodyMaterialViewModel) => {
     const line = _invoiceLines.value.find(l => l.lineId === lineId);
-    if (!line) return;
+
+    if (!line)
+      return; // Sécurité : éviter les erreurs si la ligne n'existe pas
+
     line.bodyMaterial = bodyMaterial;
-    computePrice(line);
+    computePrice(line.lineId);
   };
 
   const selectRepairType = (lineId: number, repairType: DentRepairTypeViewModel) => {
     const line = _invoiceLines.value.find(l => l.lineId === lineId);
-    if (!line) return;
+
+    if (!line)
+      return; // Sécurité : éviter les erreurs si la ligne n'existe pas
+
     line.repairType = repairType;
-    computePrice(line);
+    computePrice(line.lineId);
   };
 
   const setDentRemovalPrice = (lineId: number, dentRemovalPrice: number) => {
@@ -433,23 +433,20 @@ export function useEditInvoiceState() {
   // }
 
   const computePrice = (line: LineItemViewModel) => {
-    if (!_priceParams.value) return;
-    const lineItemDto = LineItemViewMapper.viewToDtoEnriched(
-      line,
-      _bodyParts.value,
-      _bodyMaterials.value,
-      _repairTypes.value
-    );
-    // On force les champs obligatoires pour LineItemDto
-    line.price = calculateLineCostUseCase.execute(
-      {
-        ...lineItemDto,
-        bodyPart: lineItemDto.bodyPart ?? null,
-        bodyMaterial: lineItemDto.bodyMaterial ?? null,
-        repairType: lineItemDto.repairType ?? null,
-      },
-      SettingPriceMapper.viewToDto(_priceParams.value)
-    );
+    if (!_priceParams.value) {
+      console.warn('[Invoice] computePrice: _priceParams non chargé, prix = 0');
+      line.price = 0;
+      return;
+    }
+    try {
+      const lineItemViewDto = LineItemMapper.viewToDto(line);
+      const priceDto = SettingPriceMapper.viewToDto(_priceParams.value);
+      line.price = calculateLineCostUseCase.execute(lineItemViewDto, priceDto);
+      console.log('[Invoice] computePrice:', line.price, '| impactCount25:', line.impactCount25, '| impactCount35:', line.impactCount35, '| repairType:', line.repairType?.code);
+    } catch (e) {
+      console.error('[Invoice] computePrice erreur:', e);
+      line.price = 0;
+    }
   }
 
   
@@ -523,26 +520,44 @@ export function useEditInvoiceState() {
 
     loading.value = true;
     try {
-      if (_invoice.value) {
-        _invoice.value = {
-          ..._invoice.value,
-          status: 'pending',
-          userId: authState.user.value.id,
-          garage: _selectedGarage.value!,
-          technician: _selectedTechnician.value!,
-          carBrand: _carInformations.value.brand,
-          carImmatriculation: _carInformations.value.immatriculation,
-          carDateEntryCirculation: _carInformations.value.dateEntryCirculation,
-          vehicleId: _selectedVehicle.value?.id,
-          isForfait: _isForfait.value,
-          forfaitAmount: _forfaitAmount.value,
-            // Retirer isDisplayUnitPrice si non présent dans le modèle
-            // isDisplayUnitPrice: _isDisplayUnitPrice.value,
-          isComputeCommissionWithoutDentRemoval: _isComputeCommissionWithoutDentRemoval.value,
-          totalHt: subTotalWithDegarnissage.value,
-        };
-        await updateInvoiceUseCase.execute(InvoiceMapper.viewToDto(_invoice.value));
+      _invoice.value = {
+        ..._invoice.value,
+        status: (_invoiceInformations.value.status as InvoiceStatusViewType) ?? 'pending',
+        userId: authState.user.value.id,
+        
+        garage: _selectedGarage.value,
+        technician: _selectedTechnician.value,
+
+        carBrand: _carInformations.value.brand,
+        carImmatriculation: _carInformations.value.immatriculation,
+        carDateEntryCirculation: _carInformations.value.dateEntryCirculation,
+        vehicleId: _selectedVehicle.value?.id,
+
+        isForfait: _isForfait.value,
+        forfaitAmount: _forfaitAmount.value,
+        isDisplayUnitPrice: _isDisplayUnitPrice.value,
+        isComputeCommissionWithoutDentRemoval: _isComputeCommissionWithoutDentRemoval.value,
+        totalHt: subTotalWithDegarnissage.value,
       }
+
+      const _baseDto = InvoiceMapper.viewToDto(_invoice.value);
+      const invoiceDto = await updateInvoiceUseCase.execute({
+        ..._baseDto,
+        // N'inclure statusId que si c'est un vrai UUID (évite d'envoyer '' → 400)
+        ...(_invoiceStatusId.value ? { statusId: _invoiceStatusId.value } : {}),
+      }).then(async (invoice) => {
+        // _invoice.value = InvoiceMapper.dtoToView(invoice);
+        // if (!invoice.id)
+        //   throw new Error('Invoice not saved');
+
+        // const test = _invoiceLines.value.map((line) => {
+        //   const dtoLine = LineItemMapper.viewToDto(line);
+        //   return {
+        //     ...dtoLine,
+        //     id: undefined,
+        //   }
+        // })
+      });
 
 
       //   const invoiceLinesDto = await updateInvoiceDetailsUseCase.executeInvoice(invoice.id, _invoiceLines.value.map((line) => LineItemMapper.viewToDto(line)));
@@ -553,16 +568,48 @@ export function useEditInvoiceState() {
       // });
       
     } catch (e) {
-      if (e instanceof Error) {
-        error.value = e.message;
-      } else {
-        error.value = String(e);
-      }
+      error.value = e;
     } finally {
       loading.value = false;
     }
-  };
+  }
   // #endregion
+
+  // Mapping statut vue → code DB
+  const _viewStatusToDbCode = (status: InvoiceStatusViewType): string => ({
+    pending: 'processing',
+    validated: 'finalized',
+    accepted: 'accepted',
+    signed: 'finalized',
+    sent: 'finalized',
+    draft: 'processing',
+    cancel: 'cancelled',
+  } as Record<string, string>)[status] ?? 'processing';
+
+  const updateInvoiceStatus = async (status: InvoiceStatusViewType) => {
+    if (!_invoice.value)
+      throw new Error('Invoice not found');
+
+    try {
+      // Récupérer le UUID correspondant au code DB
+      const statuses = await getDocumentStatuseUseCase.execute();
+      const dbCode = _viewStatusToDbCode(status);
+      const found = statuses.find(s => s.code === dbCode);
+      if (!found) throw new Error(`Statut DB introuvable pour: ${dbCode}`);
+
+      _invoiceStatusId.value = found.id;
+      _invoiceInformations.value.status = status;
+      _invoice.value = { ..._invoice.value, status };
+
+      await updateInvoiceUseCase.execute({
+        ...InvoiceMapper.viewToDto(_invoice.value),
+        ...(found.id ? { statusId: found.id } : {}),
+      });
+    } catch (e) {
+      console.error('[Invoice] updateInvoiceStatus erreur:', e);
+      throw e;
+    }
+  };
 
   // #region -> COMPUTED
   // Liste des bodyParts restants (non sélectionnés)
@@ -642,7 +689,9 @@ export function useEditInvoiceState() {
     totalCommission,
     total,
 
+    invoiceStatus: computed(() => _invoiceInformations.value.status as InvoiceStatusViewType),
     updateInvoice,
+    updateInvoiceStatus,
     deleteInvoice,
     sendInvoice
   };

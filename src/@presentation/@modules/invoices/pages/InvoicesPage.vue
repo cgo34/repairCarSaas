@@ -34,7 +34,7 @@
           </template>
           
           <template #item.createdAt="{ value }">
-            {{ regionManager.formatDate(value) }}
+            {{  regionManager.formatDate(value) }}
           </template>
           
           <template #item.garage="{ value }">
@@ -42,18 +42,10 @@
           </template>
 
           <template #item.status="{ value }">
-            <v-chip
-              :text="value.label"
-              :color="value.code === 'processing' ? 'blue' : value.code === 'accepted' ? 'green' : 'red'"
-            />
+            <v-chip :text="statusLabel(value)" :color="statusColor(value)"></v-chip>
           </template>
 
           
-          <template #item.isForfait="{ value }">
-            <v-icon :color="value ? 'green' : 'red'">
-              {{ value ? 'mdi-checkbox-marked-circle' : 'mdi-close-circle' }}
-            </v-icon>
-          </template>
 
           <!-- #REGION -> BODY : TOTAL -->
           <template #item.total="{ item }">
@@ -87,11 +79,12 @@
     ref="deleteInvoiceConfirmDialogRef"
     title="Delete invoice"
     message="You will delete this invoice, are you sure ?"
-    confirm-label="Confirmer"
-    cancel-label="Annuler"
+    confirmLabel="Confirmer"
+    cancelLabel="Annuler"
     type="warning"
     @confirm="onConfirmDeleteInvoice"
-  />
+  >
+  </ConfirmDialog>
 </template>
 
 <script setup lang="ts">
@@ -116,9 +109,9 @@ const headers = [
   { title: 'Numéro de facture', align: 'start', key: 'invoiceNumber' },
   { title: 'Date', align: 'start', key: 'createdAt' },
   { title: 'Statut', align: 'start', key: 'status' },
+  { title: 'Modèle', key: 'carBrand' },
   { title: 'Garage', key: 'garage.name' },
   { title: 'Technicien', key: 'technician.fullName' },
-  { title: 'Forfait', key: 'isForfait' },
   { title: 'Total', key: 'total' },
   { title: 'Actions', sortable: false, key: 'actions' }
 ] as const;
@@ -148,6 +141,26 @@ const onConfirmDeleteInvoice = () => {
 
   deleteInvoice(_invoiceToDelete.value)
 }
+
+const statusColor = (status?: string) => ({
+  pending: 'orange',
+  validated: 'success',
+  accepted: 'success',
+  signed: 'success',
+  sent: 'blue',
+  draft: 'grey',
+  cancel: 'error',
+} as Record<string, string>)[status ?? ''] ?? 'default';
+
+const statusLabel = (status?: string) => ({
+  pending: 'En attente',
+  validated: 'Payé',
+  accepted: 'Accepté',
+  signed: 'Signé',
+  sent: 'Envoyé',
+  draft: 'Brouillon',
+  cancel: 'Annulé',
+} as Record<string, string>)[status ?? ''] ?? (status ?? '');
 
 onMounted(async () => {
   await init();

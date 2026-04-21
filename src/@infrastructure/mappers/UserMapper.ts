@@ -6,28 +6,24 @@ import { RoleMapper } from './RoleMapper';
 export class UserMapper {
   static apiToDto(api: UserApiModel): UserDto {
     if (!api) throw new Error('Invalid Api Model');
-    
+
     return {
       id: api.id,
       email: api.email,
       fullName: api.full_name,
-      // firstName: dto.user_metadata?.firstName,
-      // lastName: dto.user_metadata?.lastName,
       role: api.role,
-      subscription: api.subscription
+      subscription: api.subscription,
+      percentageCommission: api.percentage_commission,
     };
   }
 
-  static dtoToApi(dto: UserDto): UserApiModel {
+  static dtoToApi(dto: Partial<UserDto>): Partial<UserApiModel> {
     return {
-      id: dto.id,
-      email: dto.email,
-      full_name: dto.fullName,
-      // user_metadata: {
-      //   firstName: user.firstName,
-      //   lastName: user.lastName
-      // },
-      role: dto.role,
+      ...(dto.id !== undefined && { id: dto.id }),
+      ...(dto.email !== undefined && { email: dto.email }),
+      ...(dto.fullName !== undefined && { full_name: dto.fullName }),
+      ...(dto.role !== undefined && { role: dto.role }),
+      ...(dto.percentageCommission !== undefined && { percentage_commission: dto.percentageCommission }),
     };
   }
 

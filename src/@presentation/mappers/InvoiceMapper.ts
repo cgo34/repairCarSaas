@@ -1,6 +1,19 @@
 import { InvoiceDto } from "@/@infrastructure/dtos/InvoiceDto";
+import { InvoiceStatusViewType } from "../types/models/InvoiceStatusViewType";
 import { InvoiceViewModel } from "../types/models/InvoiceViewModel";
 import { LineItemMapper } from "./LineItemMapper";
+
+const _dbCodeToViewStatus = (status: any): InvoiceStatusViewType => {
+  // status peut être un objet { code, label } ou une string directe
+  const code = typeof status === 'string' ? status : status?.code;
+  return ({
+    processing: 'pending',
+    finalized: 'validated',
+    accepted: 'accepted',
+    refused: 'cancel',
+    cancelled: 'cancel',
+  } as Record<string, InvoiceStatusViewType>)[code ?? ''] ?? 'pending';
+};
 
 export class InvoiceMapper {
   static viewToDto(view: InvoiceViewModel): InvoiceDto {
@@ -56,7 +69,7 @@ export class InvoiceMapper {
       id: dto.id ?? undefined,
       invoiceNumber: dto.invoiceNumber,
       quoteNumber: dto.quoteNumber,
-      status: dto.status,
+      status: _dbCodeToViewStatus(dto.status),
 
       userId: dto.userId,
 

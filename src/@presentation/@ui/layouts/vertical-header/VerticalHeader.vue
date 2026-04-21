@@ -2,7 +2,7 @@
 import { useCustomizerState } from '@/@presentation/composables/useCustomizerState';
 import { ref } from 'vue';
 // Icon Imports
-import { BellIcon, Menu2Icon, SearchIcon, SettingsIcon } from 'vue-tabler-icons';
+import { BellIcon, Menu2Icon, MoonIcon, SearchIcon, SettingsIcon, SunIcon } from 'vue-tabler-icons';
 
 // dropdown imports
 import { VSwitch } from 'vuetify/lib/components/index.mjs';
@@ -15,8 +15,7 @@ const {
     toggleSidebarDrawer,
     setMiniSidebar,
     toggleTheme,
-    currentTheme,
-    themeLabel
+    isDarkTheme,
   } = useCustomizerState();
 
 const showSearch = ref(false);
@@ -101,22 +100,17 @@ function searchbox() {
     <!-- Theme Switch -->
     <v-btn
       icon
-      class="text-secondary mx-3"
+      class="text-secondary mx-2"
       color="lightsecondary"
       rounded="sm"
       size="small"
       variant="flat"
+      :title="isDarkTheme ? 'Passer en mode clair' : 'Passer en mode sombre'"
       @click="toggleTheme"
-    />
-    
-    <v-switch
-      class="text-secondary mx-3"
-      :model-value="currentTheme === 'PurpleDarkTheme'"
-      :label="themeLabel"
-      color="primary"
-      inset
-      @update:model-value="toggleTheme"
-    />
+    >
+      <MoonIcon v-if="!isDarkTheme" size="20" stroke-width="1.5" />
+      <SunIcon v-else size="20" stroke-width="1.5" />
+    </v-btn>
 
     <!-- ---------------------------------------------- -->
     <!-- Notification -->

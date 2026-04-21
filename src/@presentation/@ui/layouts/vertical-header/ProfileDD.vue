@@ -1,155 +1,93 @@
 <script setup lang="ts">
-import { ref } from 'vue';
-import { LogoutIcon, SettingsIcon, UserIcon } from 'vue-tabler-icons';
 import { IAuthState } from '@/@application/states/interfaces/IAuthState';
 import { container } from '@/@infrastructure/ioc/inversify.config';
 import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
+import { BuildingIcon, LogoutIcon, SettingsIcon } from 'vue-tabler-icons';
+import { useRouter } from 'vue-router';
 
 const authState = container.get<IAuthState>(SYMBOLS.States.AuthState);
 const { user } = authState;
-console.log('User from authState:', user);
+const router = useRouter();
 
-const swt1 = ref(true);
-const swt2 = ref(false);
+const roleFr = (role?: string) => ({
+  admin: 'Administrateur',
+  technician: 'Technicien',
+  garage: 'Garage',
+  independant_technician: 'Technicien indépendant',
+  user: 'Utilisateur',
+} as Record<string, string>)[role ?? ''] ?? role ?? '';
+
+const initials = (name?: string) => {
+  if (!name) return '?';
+  return name.split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase();
+};
 </script>
 
 <template>
-  <!-- ---------------------------------------------- -->
-  <!-- profile DD -->
-  <!-- ---------------------------------------------- -->
-  <div class="pa-4">
-    <h4 class="mb-n1">
-      Good Morning, <span class="font-weight-regular">{{ user?.fullName }}</span>
-    </h4>
-    <span class="text-subtitle-2 text-medium-emphasis">{{ user?.role }}</span>
+  <div class="profile-dd pa-4">
 
-    <v-text-field
-      persistent-placeholder
-      placeholder="Search"
-      class="my-3"
-      color="primary"
-      variant="outlined"
-      hide-details
-    >
-      <template #prepend-inner>
-        <SearchIcon
-          stroke-width="1.5"
-          size="20"
-          class="text-lightText SearchIcon"
-        />
-      </template>
-    </v-text-field>
+    <!-- Avatar + infos utilisateur -->
+    <div class="d-flex align-center gap-3 mb-4">
+      <v-avatar color="primary" size="44">
+        <span class="text-body-1 font-weight-bold text-white">{{ initials(user?.fullName) }}</span>
+      </v-avatar>
+      <div class="min-w-0">
+        <div class="text-subtitle-1 font-weight-semibold text-truncate">{{ user?.fullName }}</div>
+        <v-chip size="x-small" color="primary" variant="tonal" class="mt-1">
+          {{ roleFr(user?.role) }}
+        </v-chip>
+      </div>
+    </div>
 
-    <v-divider />
-    <perfect-scrollbar style="height: calc(100vh - 300px); max-height: 515px">
-      <div
-        class="bg-lightwarning rounded-md pa-5 my-3 circle sm-circle lg-circle"
+    <v-divider class="mb-3" />
+
+    <!-- Actions -->
+    <v-list density="compact" class="pa-0">
+      <v-list-item
+        rounded="lg"
+        color="primary"
+        :to="'/account-settings'"
       >
-        <h4>Upgrade your plan</h4>
-        <h6 class="text-subtitle-2 text-medium-emphasis mr-11 pr-11 mb-3 mt-2">
-          70% discount for 1 years subscriptions.
-        </h6>
-        <v-btn
-          color="warning"
-          variant="flat"
-          target="_"
-          href="https://codedthemes.com/item/berry-vue-admin-dashboard/"
-        >
-          Go Premium
-        </v-btn>
-      </div>
+        <template #prepend>
+          <SettingsIcon size="18" class="mr-3 text-medium-emphasis" />
+        </template>
+        <v-list-item-title class="text-body-2">Paramètres entreprise</v-list-item-title>
+      </v-list-item>
 
-      <v-divider />
+      <v-list-item
+        rounded="lg"
+        color="primary"
+        :to="'/garages'"
+      >
+        <template #prepend>
+          <BuildingIcon size="18" class="mr-3 text-medium-emphasis" />
+        </template>
+        <v-list-item-title class="text-body-2">Mes garages</v-list-item-title>
+      </v-list-item>
 
-      <div class="bg-lightprimary rounded-md px-5 py-3 my-3">
-        <div class="d-flex align-center justify-space-between">
-          <h5 class="text-h5">
-            Start DND Mode
-          </h5>
-          <div>
-            <v-switch
-              v-model="swt1"
-              color="primary"
-              hide-details
-            />
-          </div>
-        </div>
-        <div class="d-flex align-center justify-space-between">
-          <h5 class="text-h5">
-            Allow Notifications
-          </h5>
-          <div>
-            <v-switch
-              v-model="swt2"
-              color="primary"
-              hide-details
-            />
-          </div>
-        </div>
-      </div>
+      <v-divider class="my-2" />
 
-      <v-divider />
+      <v-list-item
+        rounded="lg"
+        color="error"
+        class="text-error"
+        :to="'/logout'"
+      >
+        <template #prepend>
+          <LogoutIcon size="18" class="mr-3" />
+        </template>
+        <v-list-item-title class="text-body-2 font-weight-medium">Déconnexion</v-list-item-title>
+      </v-list-item>
+    </v-list>
 
-      <v-list class="mt-3">
-        <v-list-item
-          color="secondary"
-          rounded="md"
-        >
-          <template #prepend>
-            <SettingsIcon
-              size="20"
-              class="mr-2"
-            />
-          </template>
-
-          <v-list-item-title class="text-subtitle-2">
-            Account Settings
-          </v-list-item-title>
-        </v-list-item>
-
-        <v-list-item
-          color="secondary"
-          rounded="md"
-        >
-          <template #prepend>
-            <UserIcon
-              size="20"
-              class="mr-2"
-            />
-          </template>
-
-          <v-list-item-title class="text-subtitle-2">
-            Social Profile
-          </v-list-item-title>
-
-          <template #append>
-            <v-chip
-              color="warning"
-              class="text-white"
-              text="02"
-              variant="flat"
-              size="small"
-            />
-          </template>
-        </v-list-item>
-
-        <v-list-item
-          color="secondary"
-          rounded="md"
-          to="/logout"
-        >
-          <template #prepend>
-            <LogoutIcon
-              size="20"
-              class="mr-2"
-            />
-          </template>
-
-          <v-list-item-title class="text-subtitle-2">
-            Logout
-          </v-list-item-title>
-        </v-list-item>
-      </v-list>
-    </perfect-scrollbar>
   </div>
 </template>
+
+<style scoped>
+.profile-dd {
+  min-width: 240px;
+}
+.min-w-0 {
+  min-width: 0;
+}
+</style>

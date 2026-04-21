@@ -2,6 +2,7 @@
 import { ISettingPriceGeneralRepository } from '@/@domain/repositories/settings/price/ISettingPriceGeneralRepository';
 import { SettingPriceGeneralApiModel } from '@/@infrastructure/database/api/settings/price/SettingPriceGeneralApiModel';
 import { SupabaseClient } from '@/@infrastructure/database/clients/SupabaseClient';
+import { DEFAULT_SETTINGS_USER_ID } from '@/@infrastructure/database/helpers/getAdminUserIdWithSettings';
 import { SettingPriceGeneralDto } from '@/@infrastructure/dtos/settings/price/SettingPriceGeneralDto';
 import { IClientProvider } from '@/@infrastructure/interfaces/IClientProvider';
 import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
@@ -12,25 +13,18 @@ import { inject, injectable } from 'inversify';
 export class SettingPriceGeneralRepository implements ISettingPriceGeneralRepository {
   constructor(@inject(SYMBOLS.Providers.ClientProvider) private clientProvider: IClientProvider<SupabaseClient>) {}
   
-    async getAdmin(): Promise<SettingPriceGeneralDto> {
-      const { data, error } = await this.clientProvider.getClient()
-        .from('setting_price_general')
-        .select(`
-          *,
-          users (
-            id,
-            role
-          )
-        `)
-        .eq('users.role', 'admin')
-        .limit(1)
-        .single<SettingPriceGeneralApiModel>();
-  
-      if (error)
-        throw new Error('Error fetching impact count to UT settings');
-      
-      return SettingPriceGeneralMapper.apiToDto(data);
-    }
+  async getAdmin(): Promise<SettingPriceGeneralDto> {
+    const { data, error } = await this.clientProvider.getClient()
+      .from('setting_price_general')
+      .select('*')
+      .eq('user_id', DEFAULT_SETTINGS_USER_ID)
+      .maybeSingle<SettingPriceGeneralApiModel>();
+
+    if (error) throw new Error('Error fetching default general settings');
+    if (!data) throw new Error('No default general settings found');
+
+    return SettingPriceGeneralMapper.apiToDto(data);
+  }
 
   async getByUserId(userId: string): Promise<SettingPriceGeneralDto | null> {
     const { data, error } = await this.clientProvider.getClient()

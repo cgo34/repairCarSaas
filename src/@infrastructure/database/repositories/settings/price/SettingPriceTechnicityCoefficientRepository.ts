@@ -2,6 +2,7 @@
 import { ISettingPriceTechnicityCoefficientRepository } from '@/@domain/repositories/settings/price/ISettingPriceTechnicityCoefficientRepository';
 import { SettingPriceTechnicityCoefficientApiModel } from '@/@infrastructure/database/api/settings/price/SettingPriceTechnicityCoefficientApiModel';
 import { SupabaseClient } from '@/@infrastructure/database/clients/SupabaseClient';
+import { DEFAULT_SETTINGS_USER_ID } from '@/@infrastructure/database/helpers/getAdminUserIdWithSettings';
 import { SettingPriceTechnicityCoefficientDto } from '@/@infrastructure/dtos/settings/price/SettingPriceTechnicityCoefficientDto';
 import { IClientProvider } from '@/@infrastructure/interfaces/IClientProvider';
 import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
@@ -15,20 +16,13 @@ export class SettingPriceTechnicityCoefficientRepository implements ISettingPric
   async getAdmin(): Promise<SettingPriceTechnicityCoefficientDto> {
     const { data, error } = await this.clientProvider.getClient()
       .from('setting_price_technicity_coefficient')
-      .select(`
-        *,
-        users (
-          id,
-          role
-        )
-      `)
-      .eq('users.role', 'admin')
-      .limit(1)
-      .single<SettingPriceTechnicityCoefficientApiModel>();
+      .select('*')
+      .eq('user_id', DEFAULT_SETTINGS_USER_ID)
+      .maybeSingle<SettingPriceTechnicityCoefficientApiModel>();
 
-    if (error)
-      throw new Error('Error fetching technicity coefficient settings');
-    
+    if (error) throw new Error('Error fetching default technicity coefficient settings');
+    if (!data) throw new Error('No default technicity coefficient settings found');
+
     return SettingPriceTechnicityCoefficientMapper.apiToDto(data);
   }
 
