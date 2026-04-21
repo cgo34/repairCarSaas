@@ -34,8 +34,8 @@ export function useQuotesState() {
 
   return {
     init,
+    deleteQuote,
 
-    quotes: computed(() => _quotes.value),
-    deleteQuote
+    quotes: computed(() => _quotes.value)
   }
 }

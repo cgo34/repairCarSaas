@@ -27,19 +27,20 @@ import { UserViewModel } from "./UserViewModel";
 
       */
 
-export interface QuoteViewModel {
+export type QuoteViewModel = {
   id?: string;
   quoteNumber: string;
   status_id: string;
   status: DocumentStatuseViewModel;
 
   userId: string;
+  user?: UserViewModel;
 
   startDate: string;
   endDate: string;
 
-  technician?: UserViewModel;
   technicianId?: string;
+  technician?: UserViewModel;
   garage?: GarageViewModel;
   garageId?: string;
 

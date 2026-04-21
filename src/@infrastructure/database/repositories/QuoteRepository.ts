@@ -14,7 +14,7 @@ export class QuoteRepository implements IQuoteRepository {
   /**
    * Génère un numéro de devis unique.
    */
-  async generateQuoteNumber(userId): Promise<string> {
+  async generateQuoteNumber(userId: string): Promise<string> {
     const { count, error } = await this.clientProvider.getClient()
     .from('quotes')
     .select('*', { count: 'exact', head: true }) // ⚡ Optimisé pour éviter un gros dataset
@@ -23,6 +23,7 @@ export class QuoteRepository implements IQuoteRepository {
     if (error)
       throw new Error('Error generating quote number');
 
+    // Format : DYYMMXXXX (D = Devis, YY = année, MM = mois, XXXX = compteur)
     const year = new Date().getFullYear().toString().slice(-2);
     const month = new Date().getMonth().toString().slice(-2);
     const quoteNumber = `D${year}${month}${(count! + 1).toString().padStart(4, '0')}`;
@@ -139,7 +140,8 @@ export class QuoteRepository implements IQuoteRepository {
         user:users!quotes_user_id_fkey(*),
         technician:users!quotes_technician_id_fkey(*),
         garage:garages(*)
-      `);
+      `)
+      .single<QuoteApiModel>();
 
     if (error)
       throw new Error('Error updating quote');
@@ -151,10 +153,15 @@ export class QuoteRepository implements IQuoteRepository {
    * Supprime un devis.
    */
   async delete(id: string): Promise<void> {
-    const { errorDetails } = await this.clientProvider.getClient()
+    const { error: errorDetails } = await this.clientProvider.getClient()
       .from('quote_details')
       .delete()
       .eq('quote_id', id);
+
+    if (errorDetails) {
+      console.error('Error deleting quote details:', errorDetails);
+      throw new Error('Error deleting quote details');
+    }
 
     const { error } = await this.clientProvider.getClient()
       .from('quotes')

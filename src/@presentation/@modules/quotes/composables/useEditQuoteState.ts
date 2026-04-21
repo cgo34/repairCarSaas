@@ -605,8 +605,8 @@ export function useEditQuoteState() {
     duplicateQuoteToInvoiceUseCase.execute(QuoteMapper.viewToDto(_quote.value), _quoteLines.value.map(LineItemMapper.viewToDto))
   }
 
-  const deleteQuote = (quoteNumber: string) => {
-    deleteQuoteUseCase.execute(_quoteId.value)
+  const deleteQuote = (quoteId: string) => {
+    deleteQuoteUseCase.execute(quoteId)
   }
 
   const isReadOnly = computed(()=> {
