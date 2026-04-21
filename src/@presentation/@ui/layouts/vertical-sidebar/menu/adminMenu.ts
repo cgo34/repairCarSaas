@@ -21,227 +21,243 @@ const authState = container.get<IAuthState>(SYMBOLS.States.AuthState);
 const { user, subscription } = authState
 
 const adminMenu = [
+  // ─── Dashboard ───────────────────────────────────────────
   { header: 'Dashboard' },
   {
-    title: 'Dashboard',
+    title: 'Tableau de bord',
     icon: DashboardIcon,
     to: '/dashboard',
   },
   { divider: true },
-  { header: 'Settings' },
+
+  // ─── Facturation ─────────────────────────────────────────
+  { header: 'Facturation' },
   {
-    title: 'Car',
+    title: 'Devis',
+    to: '/quotes',
+    icon: FileInvoiceIcon,
+    children: [
+      {
+        title: 'Ajouter',
+        icon: FileInvoiceIcon,
+        to: '/quotes/add'
+      },
+      {
+        title: 'Liste',
+        icon: ListIcon,
+        to: '/quotes'
+      },
+    ]
+  },
+  {
+    title: 'Factures',
+    to: '/invoices',
+    icon: FileInvoiceIcon,
+    children: [
+      {
+        title: 'Nouveau',
+        icon: FileInvoiceIcon,
+        to: '/invoices/new'
+      },
+      {
+        title: 'Liste',
+        icon: ListIcon,
+        to: '/invoices'
+      },
+    ]
+  },
+  { divider: true },
+
+  // ─── Garages ─────────────────────────────────────────────
+  { header: 'Garages' },
+  {
+    title: 'Garages',
+    icon: BuildingWarehouseIcon,
+    to: '/garages',
+  },
+  { divider: true },
+
+  // ─── Utilisateurs ────────────────────────────────────────
+  { header: 'Utilisateurs' },
+  {
+    title: 'Utilisateurs',
+    icon: UserIcon,
+    to: '/Users',
+  },
+  { divider: true },
+
+  // ─── Paramètres ──────────────────────────────────────────
+  { header: 'Paramètres' },
+  {
+    title: 'Voiture',
     icon: CarIcon,
     to: '/auth',
     children: [
       {
-        title: 'Car Body Parts',
+        title: 'Pièces carrosserie',
         icon: CircleIcon,
         to: '/settings/car-body-parts'
       },
       {
-        title: 'Car Body Materials',
+        title: 'Matériaux carrosserie',
         icon: CircleIcon,
         to: '/settings/car-body-materials'
       },
     ]
   },
   {
-    title: 'Dent',
+    title: 'Débosselage',
     icon: ToolIcon,
     to: '/auth',
     children: [
       {
-        title: 'Dent Repair Types',
+        title: 'Types de réparation',
         icon: ToolIcon,
         to: '/settings/dent-repair-types'
       },
     ]
   },
   {
-    title: 'Price',
+    title: 'Tarifs',
     icon: FileEuroIcon,
     to: '/auth',
     children: [
       {
-        title: 'General Price Parameter',
+        title: 'Paramètres généraux',
         icon: CircleIcon,
         to: '/settings/price/general'
       },
       {
-        title: 'Impact Unit Time Price Parameter',
+        title: 'Prix unitaire impact',
         icon: CircleIcon,
         to: '/settings/price/impact-unit-time'
       },
       {
-        title: 'Technicity Coefficient Price Parameter',
+        title: 'Coeff. technicité',
         icon: CircleIcon,
         to: '/settings/price/coefficient/technicity'
       },
       {
-        title: 'Variation Coefficient Price Parameter',
+        title: 'Coeff. variation',
         icon: CircleIcon,
         to: '/settings/price/coefficient/variation'
       },
     ]
   },
   { divider: true },
-  { header: 'User' },
+
+  // ─── Compte ──────────────────────────────────────────────
+  { header: 'Compte' },
   {
-    title: 'Users',
-    icon: UserIcon,
-    to: '/Users',
-    // chip: subscription.value.subscriptionPlan.name === 'free' ? 'PRO' : '',
-    // disabled: subscription.value.subscriptionPlan.name === 'free' 
-  },
-  { divider: true },
-  { header: 'Garage' },
-  {
-    title: 'Garages',
-    icon: BuildingWarehouseIcon,
-    to: '/garages',
-    // chip: subscription.value.subscriptionPlan.name === 'free' ? 'PRO' : '',
-    // disabled: subscription.value.subscriptionPlan.name === 'free' 
-  },
-  { divider: true },
-  { header: 'Billing' },
-  {
-    title: 'Quotes',
-    to: '/quotes',
-    icon: FileInvoiceIcon,
-    children: [
-      {
-        title: 'Add',
-        icon: FileInvoiceIcon,
-        to: '/quotes/add'
-      },
-      {
-        title: 'List',
-        icon: ListIcon,
-        to: '/quotes'
-      },
-    ]
-  },
-  {
-    title: 'Invoices',
-    to: '/invoices',
-    icon: FileInvoiceIcon,
-    children: [
-      {
-        title: 'New',
-        icon: FileInvoiceIcon,
-        to: '/invoices/new'
-      },
-      {
-        title: 'List',
-        icon: ListIcon,
-        to: '/invoices'
-      },
-    ]
-  },
-  { divider: true },
-  { header: 'Account' },
-  {
-    title: 'Logout',
+    title: 'Déconnexion',
     icon: LogoutIcon,
     to: '/logout',
   },
 ];
 
 const userMenu = [
+  // ─── Dashboard ───────────────────────────────────────────
   { header: 'Dashboard' },
   {
-    title: 'Dashboard',
+    title: 'Tableau de bord',
     icon: DashboardIcon,
     to: '/dashboard',
   },
   { divider: true },
-  { header: 'Settings' },
+
+  // ─── Facturation ─────────────────────────────────────────
+  { header: 'Facturation' },
   {
-    title: 'Price',
-    icon: FileEuroIcon,
-    to: '/auth',
-    children: [
-      {
-        title: 'General Price Parameter',
-        icon: CircleIcon,
-        to: '/settings/price/general'
-      },
-      {
-        title: 'Impact Unit Time Price Parameter',
-        icon: CircleIcon,
-        to: '/settings/price/impact-unit-time'
-      },
-      {
-        title: 'Technicity Coefficient Price Parameter',
-        icon: CircleIcon,
-        to: '/settings/price/coefficient/technicity'
-      },
-      {
-        title: 'Variation Coefficient Price Parameter',
-        icon: CircleIcon,
-        to: '/settings/price/coefficient/variation'
-      },
-    ]
-  },
-  { divider: true },
-  { header: 'User' },
-  {
-    title: 'Users',
-    icon: UserIcon,
-    to: '/Users',
-    chip: subscription.value?.subscriptionPlan.name === 'free' ? 'PRO' : '',
-    // disabled: subscription.value.subscriptionPlan.name === 'free' 
-  },
-  { divider: true },
-  { header: 'Garage' },
-  {
-    title: 'Garages',
-    icon: BuildingWarehouseIcon,
-    to: '/garages',
-    chip: subscription.value?.subscriptionPlan.name === 'free' ? 'PRO' : '',
-    // disabled: subscription.value.subscriptionPlan.name === 'free' 
-  },
-  { divider: true },
-  { header: 'Billing' },
-  {
-    title: 'Quotes',
+    title: 'Devis',
     to: '/quotes',
     icon: FileInvoiceIcon,
     children: [
       {
-        title: 'Add',
+        title: 'Ajouter',
         icon: FileInvoiceIcon,
         to: '/quotes/add'
       },
       {
-        title: 'List',
+        title: 'Liste',
         icon: ListIcon,
         to: '/quotes'
       },
     ]
   },
   {
-    title: 'Invoices',
+    title: 'Factures',
     to: '/invoices',
     icon: FileInvoiceIcon,
     children: [
       {
-        title: 'New',
+        title: 'Nouveau',
         icon: FileInvoiceIcon,
         to: '/invoices/new'
       },
       {
-        title: 'List',
+        title: 'Liste',
         icon: ListIcon,
         to: '/invoices'
       },
     ]
   },
   { divider: true },
-  { header: 'Account' },
+
+  // ─── Garages ─────────────────────────────────────────────
+  { header: 'Garages' },
   {
-    title: 'Logout',
+    title: 'Garages',
+    icon: BuildingWarehouseIcon,
+    to: '/garages',
+    chip: subscription.value?.subscriptionPlan.name === 'free' ? 'PRO' : '',
+  },
+  { divider: true },
+
+  // ─── Utilisateurs ────────────────────────────────────────
+  { header: 'Utilisateurs' },
+  {
+    title: 'Utilisateurs',
+    icon: UserIcon,
+    to: '/Users',
+    chip: subscription.value?.subscriptionPlan.name === 'free' ? 'PRO' : '',
+  },
+  { divider: true },
+
+  // ─── Paramètres ──────────────────────────────────────────
+  { header: 'Paramètres' },
+  {
+    title: 'Tarifs',
+    icon: FileEuroIcon,
+    to: '/auth',
+    children: [
+      {
+        title: 'Paramètres généraux',
+        icon: CircleIcon,
+        to: '/settings/price/general'
+      },
+      {
+        title: 'Prix unitaire impact',
+        icon: CircleIcon,
+        to: '/settings/price/impact-unit-time'
+      },
+      {
+        title: 'Coeff. technicité',
+        icon: CircleIcon,
+        to: '/settings/price/coefficient/technicity'
+      },
+      {
+        title: 'Coeff. variation',
+        icon: CircleIcon,
+        to: '/settings/price/coefficient/variation'
+      },
+    ]
+  },
+  { divider: true },
+
+  // ─── Compte ──────────────────────────────────────────────
+  { header: 'Compte' },
+  {
+    title: 'Déconnexion',
     icon: LogoutIcon,
     to: '/logout',
   },
