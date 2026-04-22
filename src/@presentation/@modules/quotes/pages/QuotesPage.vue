@@ -5,26 +5,7 @@
       class="pa-3 pa-sm-4"
     >
       <!-- ── HEADER PAGE ─────────────────────────────────────── -->
-      <div class="d-flex align-center justify-space-between mb-4">
-        <div>
-          <h1 class="text-h6 font-weight-bold">
-            Gestion des Devis
-          </h1>
-          <p class="text-caption text-medium-emphasis mt-n1">
-            {{ filteredQuotes.length }} devis<span v-if="hasActiveFilter"> · période sélectionnée</span>
-          </p>
-        </div>
-        <v-btn
-          color="primary"
-          prepend-icon="mdi-plus"
-          rounded="lg"
-          :size="mobile ? 'small' : 'default'"
-          @click="onAddQuote"
-        >
-          <span class="d-none d-sm-inline">Ajouter un Devis</span>
-          <span class="d-sm-none">Nouveau</span>
-        </v-btn>
-      </div>
+
 
       <!-- ── FILTER CARD ─────────────────────────────────────── -->
       <PeriodFilterBar
@@ -36,35 +17,6 @@
         @preset-change="applyPreset"
         @clear="clearFilter"
       >
-        <template #actions>
-          <transition name="fade">
-            <div
-              v-if="selectedQuotes.length > 0 && !mobile"
-              class="d-flex align-center gap-2"
-            >
-              <span class="text-body-2 text-medium-emphasis">{{ selectedQuotes.length }} sélectionné(s)</span>
-              <v-btn
-                color="primary"
-                variant="flat"
-                size="small"
-                prepend-icon="mdi-download-multiple"
-                :loading="downloading"
-                rounded="lg"
-                @click="onBulkDownload"
-              >
-                Télécharger ZIP
-              </v-btn>
-              <v-btn
-                variant="text"
-                size="small"
-                @click="selectedQuotes = []"
-              >
-                Tout désélectionner
-              </v-btn>
-            </div>
-          </transition>
-        </template>
-
         <template #bottom-bar>
           <!-- Barre sélection mobile -->
           <transition name="slide-up">
@@ -113,6 +65,64 @@
           return-object
           no-data-text="Aucun devis trouvé"
         >
+          <template #top>
+            <v-toolbar flat>
+              <v-toolbar-title>
+                <v-icon
+                  color="medium-emphasis"
+                  icon="mdi-book-multiple"
+                  size="x-small"
+                  start
+                />
+
+                Gestion des devis
+
+                <span class="text-caption text-medium-emphasis ml-4">
+                  {{ filteredQuotes.length }} devis<span v-if="hasActiveFilter"> · période sélectionnée</span>
+                </span>
+                
+                <span
+                  v-if="selectedQuotes.length > 0"
+                  class="text-body-2 text-medium-emphasis ml-2"
+                >({{ selectedQuotes.length }} sélectionné(s))</span>
+              </v-toolbar-title>
+
+              <div>
+                <transition name="fade">
+                  <div
+                    v-if="!mobile"
+                    class="d-flex align-center gap-2"
+                  >
+                    <v-btn
+                      color="primary"
+                      variant="flat"
+                      prepend-icon="mdi-download-multiple"
+                      rounded="lg"
+                      :loading="downloading"
+                      :disabled="selectedQuotes.length === 0"
+                      @click="onBulkDownload"
+                    >
+                      Télécharger ZIP
+                    </v-btn>
+                  </div>
+                </transition>
+              </div>
+
+              
+              <v-btn
+                class="ml-2"
+                color="primary"
+                prepend-icon="mdi-plus"
+                rounded="lg"
+                variant="flat"
+                :size="mobile ? 'small' : 'default'"
+                @click="onAddQuote"
+              >
+                <span class="d-none d-sm-inline">Ajouter un Devis</span>
+                <span class="d-sm-none">Nouveau</span>
+              </v-btn>
+            </v-toolbar>
+          </template>
           <template #item.quoteNumber="{ value }">
             <span class="font-weight-semibold text-primary">#{{ value }}</span>
           </template>

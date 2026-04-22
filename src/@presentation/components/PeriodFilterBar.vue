@@ -1,8 +1,10 @@
 <template>
   <v-card
     flat
+    color="transparent"
     rounded="lg"
-    border
+    :elevation="0"
+    :border="false"
     class="mb-3"
   >
     <div class="px-3 pt-3 pb-2">
@@ -35,6 +37,7 @@
           @update:model-value="onDateFromChange"
         />
         <v-text-field
+          class="ml-2"
           :model-value="dateTo"
           label="Au"
           type="date"
