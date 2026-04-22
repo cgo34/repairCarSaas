@@ -1,4 +1,5 @@
-import { CountryApiModel } from "./CountryApiModel";
+// import { CountryApiModel } from "./CountryApiModel";
+import { CountryApiModelOrString } from "./CountryApiModel";
 import { DocumentStatusApiModel } from "./DocumentStatusApiModel";
 import { GarageApiModel } from "./GarageApiModel";
 import { QuoteDetailApiModel } from "./QuoteDetailApiModel";
@@ -15,7 +16,7 @@ export interface QuoteApiModel {
   end_date: string;
   status_id: string;
   status?: DocumentStatusApiModel;
-  country?: CountryApiModel;
+  country?: CountryApiModelOrString | string;
   currency: string;
   is_sent: boolean;
   sent_at: string | null; // NULL si non envoyé

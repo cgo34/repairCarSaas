@@ -772,7 +772,7 @@ const useEditQuoteState = container.get<IUseEditQuoteState>(SYMBOLS.States.Quote
 
 const {
   init,
-  statuses,
+  quote,
   quoteInformations,
   expirationDate,
   technicians,
@@ -814,7 +814,7 @@ const {
   duplicateQuoteToInvoice,
   isReadOnly,
   isAccepted,
-  isRefused,
+  // isRefused,
   updateQuoteStatus,
 } = useEditQuoteState;
 
@@ -874,14 +874,14 @@ const onRemoveItemBtnClick = (item: LineItemViewModel) => removeLine(item.id);
 const onAddLineItem = (item: LineItemViewModel) => addLine(item);
 
 // ── Handlers actions ──────────────────────────────────────────────────────────
-const onAcceptedBtnClick = () => updateQuoteStatus('accepted');
-const onRefusedBtnClick = () => updateQuoteStatus('refused');
+const onAcceptedBtnClick = () => updateQuoteStatus({ code: 'accepted'});
+const onRefusedBtnClick = () => updateQuoteStatus({ code: 'refused'});
 const onSendBtnClick = () => console.log('send quote');
 const onDuplicateQuoteToInvoiceBtnClick = () => duplicateQuoteToInvoice();
 const onViewPdfBtnClick = () => router.push(`/quotes/${route.params.id}/view`);
 const onDeleteBtnClick = () => deleteQuoteConfirmDialogRef.value?.open();
 const onConfirmDeleteQuote = () => {
-  deleteQuote(quoteInformations.value.number);
+  deleteQuote(quote.value?.id);
   router.push('/quotes/');
 };
 const onUpdateBtnClick = () => updateQuote();

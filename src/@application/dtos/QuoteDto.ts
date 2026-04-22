@@ -31,7 +31,7 @@ export interface QuoteDto {
   isDisplayUnitPrice: boolean;
   isComputeCommissionWithoutDentRemoval: boolean;
   forfaitAmount?: number;
-  country?: CountryDto;
+  country?: CountryDto | string;
   currency: string;
 
   lineItems?: LineItemDto[];

@@ -78,7 +78,7 @@ export function useEditQuoteState() {
   const _priceParams = ref<SettingPriceViewModel>();
 
   const _statuses = ref<DocumentStatusViewModel[]>([]);
-  const _quote = ref<QuoteViewModel | undefined>(undefined);
+  const _quote = ref<QuoteViewModel>();
 
   const _technicians = ref<UserViewModel[]>([]);
   const _garages = ref<GarageViewModel[]>([]);
@@ -184,6 +184,22 @@ export function useEditQuoteState() {
       loading.value = false;
     }
   };
+  // #endregion  
+
+  // #region -> COMPUTED
+  const isReadOnly = computed(() => {
+    const code = _quote.value?.status?.code;
+    return code === 'accepted' || code === 'refused' || code === 'invoiced';
+  });
+
+  const isAccepted = computed(() => _quote.value?.status?.code === 'accepted');
+  const isRefused = computed(() => _quote.value?.status?.code === 'refused');
+
+  // Liste des bodyParts restants (non sélectionnés)
+  const availableBodyParts = computed(() => {
+    const selectedIds = new Set(_quoteLines.value.map((line) => line.bodyPart?.id));
+    return _bodyParts.value.filter((bp) => !selectedIds.has(bp.id));
+  });
   // #endregion
 
   // #region -> METHODS
@@ -274,87 +290,15 @@ export function useEditQuoteState() {
     }
   }
 
-  // const addLine = () => {
-  //   if (!_priceParams.value)
-  //     throw new Error('Price params not found');
-    
-  //   const lineItem: LineItemViewModel = { 
-  //     lineId: LINE_ITEM_INCREMENT++, 
-  //     bodyPart: undefined, 
-  //     impactCount25: undefined,
-  //     impactCount35: undefined,
-  //     bodyMaterial: undefined, 
-  //     repairType: _repairTypes.value.find(rt => rt.code === 'dsp'),
-  //     dentRemovalPrice: 0,
-  //     lineItemType: 'quote',
-  //     price: 0,
-  //   }
+  // const setDentRemovalPrice = (lineId: number, dentRemovalPrice: number) => {
+  //   const line = _quoteLines.value.find(l => l.lineId === lineId);
 
-  //   _quoteLines.value.push({...lineItem});    
+  //   if (!line)
+  //     return; // Sécurité : éviter les erreurs si la ligne n'existe pas
+
+  //   line.dentRemovalPrice = dentRemovalPrice;
+  //   // computePrice(line.lineId);
   // }
-
-  const addLine = async (line: LineItemViewModel) => {
-    line.quoteId = _quote.value?.id
-
-    if (_priceParams.value)
-      computePrice(line)
-    else
-      line.price = 0
-
-    const quoteLinesDto = await addQuoteDetailsUseCase.executeQuote(LineItemMapper.viewToDto(line));
-
-    const quoteAdded =  LineItemMapper.dtoToView(quoteLinesDto);
-
-    _quoteLines.value.push({...quoteAdded});    
-  }
-
-  const removeLine = (lineId: string) => {
-    deleteLineItemUseCase.execute(lineId)
-    const index = _quoteLines.value.findIndex((line) => line.id === lineId);
-    if (index >= 0) {
-      _quoteLines.value.splice(index, 1);
-    }
-  }
-
-  const selectBodyPart = (lineId: number, bodyPart: BodyPartViewModel) => {
-    const line = _quoteLines.value.find(l => l.lineId === lineId);
-
-    if (!line)
-      return; // Sécurité : éviter les erreurs si la ligne n'existe pas
-
-    line.bodyPart = bodyPart;
-    computePrice(line);
-  };
-
-  const selectBodyMaterial = (lineId: number, bodyMaterial: BodyMaterialViewModel) => {
-    const line = _quoteLines.value.find(l => l.lineId === lineId);
-
-    if (!line)
-      return; // Sécurité : éviter les erreurs si la ligne n'existe pas
-
-    line.bodyMaterial = bodyMaterial;
-    computePrice(line);
-  };
-
-  const selectRepairType = (lineId: number, repairType: DentRepairTypeViewModel) => {
-    const line = _quoteLines.value.find(l => l.lineId === lineId);
-
-    if (!line)
-      return; // Sécurité : éviter les erreurs si la ligne n'existe pas
-
-    line.repairType = repairType;
-    computePrice(line);
-  };
-
-  const setDentRemovalPrice = (lineId: number, dentRemovalPrice: number) => {
-    const line = _quoteLines.value.find(l => l.lineId === lineId);
-
-    if (!line)
-      return; // Sécurité : éviter les erreurs si la ligne n'existe pas
-
-    line.dentRemovalPrice = dentRemovalPrice;
-    // computePrice(line.lineId);
-  }
 
   const setIsForfait = (value: boolean) => {
     if (_quote.value) {
@@ -380,36 +324,6 @@ export function useEditQuoteState() {
     }
   }
 
-  // const computePrice = (lineId: number) => {
-  //   const line = _quoteLines.value.find(l => l.lineId === lineId);
-
-  //   if (!line || !_priceParams.value)
-  //     throw new Error('Price params not found');
-
-  //   if (!line.bodyPart || !line.bodyMaterial || !line.repairType || !line.impactCount25 || !line.impactCount35)
-  //     return;
-
-  //   const lineItemViewDto = LineItemMapper.viewToDto(line);
-  //   line.price = calculateLineCostUseCase.execute(lineItemViewDto, SettingPriceMapper.viewToDto(_priceParams.value));
-  // }
-
-  const computePrice = (line: LineItemViewModel) => {
-    if (!_priceParams.value) {
-      console.warn('[Quote] computePrice: _priceParams non chargé, prix = 0');
-      line.price = 0;
-      return;
-    }
-    try {
-      const lineItemViewDto = LineItemMapper.viewToDto(line);
-      const priceDto = SettingPriceMapper.viewToDto(_priceParams.value);
-      line.price = calculateLineCostUseCase.execute(lineItemViewDto, priceDto);
-    } catch (e) {
-      console.error('[Quote] computePrice erreur:', e);
-      line.price = 0;
-    }
-  }
-
-  
   const subtotal = computed(() => {
     if (!isForfait.value) {
       return _quoteLines.value?.reduce((sum, item) => sum + (item.price ?? 0), 0) ?? 0;
@@ -453,6 +367,45 @@ export function useEditQuoteState() {
     return forfaitAmount.value + totalTaxRate.value;
   });
 
+  const computePrice = (line: LineItemViewModel) => {
+    if (!_priceParams.value) {
+      console.warn('[Quote] computePrice: _priceParams non chargé, prix = 0');
+      line.price = 0;
+      return;
+    }
+    try {
+      const lineItemViewDto = LineItemMapper.viewToDto(line);
+      const priceDto = SettingPriceMapper.viewToDto(_priceParams.value);
+      line.price = calculateLineCostUseCase.execute(lineItemViewDto, priceDto);
+    } catch (e) {
+      console.error('[Quote] computePrice erreur:', e);
+      line.price = 0;
+    }
+  }
+
+  const addLine = async (line: LineItemViewModel) => {
+    line.quoteId = _quote.value?.id
+
+    if (_priceParams.value)
+      computePrice(line)
+    else
+      line.price = 0
+
+    const quoteLinesDto = await addQuoteDetailsUseCase.executeQuote(LineItemMapper.viewToDto(line));
+
+    const quoteAdded =  LineItemMapper.dtoToView(quoteLinesDto);
+
+    _quoteLines.value.push({...quoteAdded});    
+  }
+
+  const removeLine = (lineId: string) => {
+    deleteLineItemUseCase.execute(lineId)
+    const index = _quoteLines.value.findIndex((line) => line.id === lineId);
+    if (index >= 0) {
+      _quoteLines.value.splice(index, 1);
+    }
+  }
+
   const updateQuote = async () => {
     if (!authState.user.value)
       throw new Error('User not found');
@@ -481,18 +434,10 @@ export function useEditQuoteState() {
   }
   // #endregion
 
-  // #region -> COMPUTED
-  // Liste des bodyParts restants (non sélectionnés)
-  const availableBodyParts = computed(() => {
-    const selectedIds = new Set(_quoteLines.value.map((line) => line.bodyPart?.id));
-    return _bodyParts.value.filter((bp) => !selectedIds.has(bp.id));
-  });
-  // #endregion
-
-  const updateQuoteStatus = async (status: 'accepted' | 'refused') => {
+  const updateQuoteStatus = async (status: Pick<DocumentStatusViewModel, 'code'>) => {
     if (!_quote.value) return;
     
-    const statusObject = _statuses.value.find(s => s.code === status);
+    const statusObject = _statuses.value.find(s => s.code === status.code);
     if (!statusObject) return;
 
     _quote.value.status = statusObject;
@@ -509,23 +454,17 @@ export function useEditQuoteState() {
   }
 
   const deleteQuote = (quoteId: string) => {
+    if (!quoteId) {
+      return;
+    }
+
     deleteQuoteUseCase.execute(quoteId)
   }
-
-  const isReadOnly = computed(() => {
-    const code = _quote.value?.status?.code;
-    return code === 'accepted' || code === 'refused' || code === 'invoiced';
-  });
-
-  const isAccepted = computed(() => _quote.value?.status?.code === 'accepted');
-  const isRefused = computed(() => _quote.value?.status?.code === 'refused');
-
   return {
     loading,
     error,
     init,
 
-    statuses: computed(() => _statuses.value),
     quote: computed(() => _quote.value),
     quoteInformations,
     expirationDate,
@@ -550,10 +489,6 @@ export function useEditQuoteState() {
     bodyMaterials: computed(() => _bodyMaterials.value),
     repairTypes: computed(() => _repairTypes.value),
     availableBodyParts,
-    selectBodyPart,
-    selectBodyMaterial,
-    selectRepairType,
-    setDentRemovalPrice,
     
     isForfait,
     isDisplayUnitPrice,
