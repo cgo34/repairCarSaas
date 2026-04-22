@@ -148,7 +148,6 @@ export function useEditQuoteState() {
         throw new Error('Quote not found');
 
       _quote.value = QuoteMapper.dtoToView(quoteDto);
-      
       _quoteLines.value = quoteDetailDto?.map((line, idx) => ({
         ...LineItemMapper.dtoToView(line),
         lineId: idx + 1,
@@ -160,6 +159,8 @@ export function useEditQuoteState() {
       _bodyParts.value = bodyPartResult.map(BodyPartMapper.dtoToView);
       _bodyMaterials.value = bodyMaterialResult.map(BodyMaterialMapper.dtoToView);
       _repairTypes.value = repairTypeResult.map(RepairTypeMapper.dtoToView);
+      
+      addGarage(_quote.value.garage)
 
       if (priceParamsResult) {
         _priceParams.value = SettingPriceMapper.dtoToView(priceParamsResult);
@@ -234,8 +235,20 @@ export function useEditQuoteState() {
     if (_quote.value) {
       _quote.value.garage = garage;
       _quote.value.garageId = garage?.id;
+      _quote.value.garageName = garage.name;
+      _quote.value.garageAddress = garage.address;
+      _quote.value.garageZipCode = garage.zipCode;
+      _quote.value.garageCity = garage.city;
+      _quote.value.garagePhone = garage.phone;
+      _quote.value.garageEmail = garage.email;
+      _quote.value.garagePercentageCommission = garage.percentageCommission;
     }
   }
+
+  const addGarage = (garage: GarageViewModel) => {
+    setGarage(garage);
+  }
+
 
   const setCarImmatriculation = (immatriculation: string) => {
     if (_quote.value) {

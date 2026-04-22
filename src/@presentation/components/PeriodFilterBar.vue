@@ -37,6 +37,7 @@
           @update:model-value="onDateFromChange"
         />
         <v-text-field
+          class="ml-2"
           :model-value="dateTo"
           label="Au"
           type="date"
