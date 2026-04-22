@@ -1,8 +1,9 @@
 <template>
   <MainLayout>
+    <BackButton fallback-path="/quotes" />
     <v-container
       fluid
-      class="pa-0 edit-quote-container"
+      class="pa-0 mt-4 edit-quote-container"
     >
       <!-- ═══════════════════════════════════════════════════
            HEADER sticky
@@ -10,17 +11,16 @@
       <div class="page-header px-3 py-2">
         <div class="d-flex align-center justify-space-between">
           <!-- Gauche : retour + titre -->
-          <div class="d-flex align-center gap-2 min-w-0">
-            <BackButton fallback-path="/quotes" />
+          <div class="d-flex flex-column align-center gap-2 min-w-0">
             <div class="min-w-0">
-              <div class="d-flex align-center gap-2 flex-wrap">
-                <span class="text-subtitle-1 font-weight-bold text-truncate">
+              <div class="d-flex flex-column  align-center gap-2 flex-wrap">
+                <span class="text-subtitle-1 font-weight-bold text-truncate my-2">
                   {{ quoteInformations.number || 'Devis' }}
                 </span>
                 <v-chip
                   v-if="quoteInformations.status"
                   :color="statusColor(quoteInformations.status?.code)"
-                  size="x-small"
+                  size="small"
                   variant="tonal"
                   label
                 >
@@ -830,8 +830,10 @@ const initials = (name: string) => {
 
 const statusColor = (code?: string) => {
   switch (code) {
+    case 'processing': return 'blue';
     case 'accepted':   return 'success';
     case 'refused':    return 'error';
+    case 'cancelled':  return 'error';
     case 'invoiced':   return 'blue';
     case 'pending':    return 'warning';
     default:           return 'default';
@@ -842,6 +844,7 @@ const statusLabel = (code?: string) => {
   switch (code) {
     case 'accepted':   return 'Accepté';
     case 'refused':    return 'Refusé';
+    case 'cancelled':  return 'Annulé';
     case 'invoiced':   return 'Facturé';
     case 'pending':    return 'En attente';
     case 'draft':      return 'Brouillon';
