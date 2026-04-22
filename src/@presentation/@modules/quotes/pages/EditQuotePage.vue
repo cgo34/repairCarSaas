@@ -417,6 +417,7 @@
             <CountrySelect
               :model-value="selectedCountry"
               :readonly="isReadOnly"
+              @update:model-value="onSelectCountry"
               @select="onSelectCountry"
             />
           </div>
@@ -865,7 +866,11 @@ const onUpdateIsForfait = (v: boolean | null) => setIsForfait(v ?? false);
 const onUpdateForfaitAmount = (v: number) => setForfaitAmount(Number(v));
 const onUpdateIsDisplayUnitPrice = (v: boolean | null) => setIsDisplayUnitPrice(v ?? true);
 const onUpdateIsComputeCommissionWithoutDentRemoval = (v: boolean | null) => setIsComputeCommissionWithoutDentRemoval(v ?? true);
-const onSelectCountry = (c: CountryViewModel | undefined) => { if (c) selectCountry(c); };
+const onSelectCountry = (c: CountryViewModel | undefined) => {
+  if (c) {
+    selectCountry(c);
+  }
+ };
 
 // ── Handlers lignes ───────────────────────────────────────────────────────────
 const onAddItemBtnClick = () => addLineItemDialogRef.value?.open();

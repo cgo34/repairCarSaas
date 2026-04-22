@@ -21,12 +21,15 @@
 <script setup lang="ts">
 import GenericSelect from '@/@presentation/components/GenericSelect.vue';
 import { CountryViewModel } from '@/@presentation/types/models/CountryViewModel';
-import { defineEmits, defineProps, ref } from 'vue';
+import { computed, onUpdated, ref } from 'vue';
 
-const props = defineProps<{
-  modelValue?: CountryViewModel;
+const props = withDefaults(defineProps<{
+  modelValue?: CountryViewModel | string;
   readonly?: boolean;
-}>();
+}>(), {
+  modelValue: 'FR',
+  readonly: false,
+});
 
 const countries = ref<CountryViewModel[]>([
   {
@@ -50,8 +53,12 @@ const countries = ref<CountryViewModel[]>([
     taxRate: 8,
   },
 ]);
-const model = ref<CountryViewModel | undefined>(props.modelValue ?? countries.value[0]);
+const model = ref<CountryViewModel | undefined>(countries.value.find(c => c.code === props.modelValue));
 const countrySelectionInformation = ref<string>(`Si le pays sélectionné est France : La devise est EUR et il n'y a pas de TVA. Mention sur le devis : TVA non applicable - Autoliquidation de la TVA par le client (Article 196 de la directive 2006/112/CE) et Suisse : La devise est CHF et la TVA est de 8%.`);
+
+const defaultCountrySelected = computed(() => {
+  return countries.value.find(c => c.code === props.modelValue);
+});
 
 const emit = defineEmits<{
   (e: 'update:modelValue', value: CountryViewModel | undefined): void;
@@ -79,7 +86,7 @@ const onSelectCountry = (selected: CountryViewModel | undefined) => {
   emit('select', selected);
 };
 
-// watch(() => props.modelValue, (newValue) => {
-//   model.value = newValue;
-// });
+onUpdated(() => {
+      emit('update:modelValue', defaultCountrySelected.value);
+});
 </script>

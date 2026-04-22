@@ -343,6 +343,10 @@ export function useEditQuoteState() {
   });
 
   const totalTaxRate = computed(() => {
+    if (!_quote.value) {
+      return 0;
+    }
+    
     if (!selectedCountry.value) return 0;
     if (!isForfait.value) {
       return subTotalWithDegarnissage.value * (selectedCountry.value.taxRate / 100);
