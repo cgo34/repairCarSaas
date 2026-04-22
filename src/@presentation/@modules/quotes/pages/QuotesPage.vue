@@ -118,7 +118,7 @@
           </template>
 
           <template #item.createdAt="{ value }">
-            <span class="text-no-wrap">{{ regionManager.formatDate(value) }}</span>
+            <span class="text-no-wrap">{{ value ? value.split('T')[0].split('-').reverse().join('/') : '' }}</span>
           </template>
 
           <template #item.garage="{ value }">
@@ -152,7 +152,7 @@
                 size="x-small"
                 variant="text"
                 color="error"
-                :disabled="item.status.code === 'accepted' || item.status.code === 'cancelled'"
+                :disabled="item.status.code === 'accepted' || item.status.code === 'invoiced' || item.status.code === 'cancelled'"
                 @click="onDeleteBtnClick(item.id)"
               />
             </div>
