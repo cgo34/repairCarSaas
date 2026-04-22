@@ -60,7 +60,7 @@ export interface IUseEditQuoteState {
 
   quoteLines: Ref<LineItemViewModel[]>;
   addLine(line: LineItemViewModel): void;
-  removeLine(lineId: number): void;
+  removeLine(lineId: string | undefined): void;
 
   subtotal: ComputedRef<number>;
   subTotalWithDegarnissage: ComputedRef<number>;
@@ -70,7 +70,7 @@ export interface IUseEditQuoteState {
   total: ComputedRef<number>;
 
   updateQuote(): Promise<void>;
-  deleteQuote(quoteId: string): Promise<void>;
+  deleteQuote(): Promise<void>;
   duplicateQuoteToInvoice(): Promise<void>;
   updateQuoteStatus(status: Pick<DocumentStatusViewModel, 'code'>): Promise<void>;
 }

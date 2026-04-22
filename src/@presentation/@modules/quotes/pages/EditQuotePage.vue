@@ -772,7 +772,6 @@ const useEditQuoteState = container.get<IUseEditQuoteState>(SYMBOLS.States.Quote
 
 const {
   init,
-  quote,
   quoteInformations,
   expirationDate,
   technicians,
@@ -881,7 +880,7 @@ const onDuplicateQuoteToInvoiceBtnClick = () => duplicateQuoteToInvoice();
 const onViewPdfBtnClick = () => router.push(`/quotes/${route.params.id}/view`);
 const onDeleteBtnClick = () => deleteQuoteConfirmDialogRef.value?.open();
 const onConfirmDeleteQuote = () => {
-  deleteQuote(quote.value?.id);
+  deleteQuote();
   router.push('/quotes/');
 };
 const onUpdateBtnClick = () => updateQuote();

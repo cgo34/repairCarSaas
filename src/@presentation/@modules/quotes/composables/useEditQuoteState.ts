@@ -398,7 +398,11 @@ export function useEditQuoteState() {
     _quoteLines.value.push({...quoteAdded});    
   }
 
-  const removeLine = (lineId: string) => {
+  const removeLine = (lineId: string | undefined) => {
+    if (!lineId) {
+      return;
+    };
+
     deleteLineItemUseCase.execute(lineId)
     const index = _quoteLines.value.findIndex((line) => line.id === lineId);
     if (index >= 0) {
@@ -453,12 +457,12 @@ export function useEditQuoteState() {
     duplicateQuoteToInvoiceUseCase.execute(QuoteMapper.viewToDto(_quote.value), _quoteLines.value.map(LineItemMapper.viewToDto))
   }
 
-  const deleteQuote = (quoteId: string) => {
-    if (!quoteId) {
+  const deleteQuote = () => {
+    if (!_quote.value?.id) {
       return;
     }
 
-    deleteQuoteUseCase.execute(quoteId)
+    deleteQuoteUseCase.execute(_quote.value?.id)
   }
   return {
     loading,
