@@ -15,4 +15,14 @@ export const accountRoutes: RouteRecordRaw[] = [
       ],
     },
   },
+  {
+    path: '/profile',
+    component: () => import('@/@presentation/@modules/account/pages/UserSettingsPage.vue'),
+    meta: {
+      requiresAuth: true,
+      breadcrumb: [
+        { title: 'Mon profil', href: '/profile' },
+      ],
+    },
+  },
 ];

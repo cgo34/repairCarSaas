@@ -7,6 +7,8 @@ export class UserMapper {
       id: viewModel.id,
       email: viewModel.email,
       fullName: viewModel.fullName,
+      firstName: viewModel.firstName,
+      lastName: viewModel.lastName,
       role: viewModel.role as UserDto['role'],
       percentageCommission: viewModel.percentageCommission,
     };
@@ -17,6 +19,8 @@ export class UserMapper {
       id: dto.id ?? '',
       email: dto.email,
       fullName: dto.fullName,
+      firstName: dto.firstName,
+      lastName: dto.lastName,
       role: dto.role,
       percentageCommission: dto.percentageCommission,
     };

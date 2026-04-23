@@ -147,6 +147,7 @@ import { AuthSupabaseRepository } from '@/@infrastructure/database/repositories/
 import { BodyPartRepository } from '@/@infrastructure/database/repositories/carRepair/BodyPartRepository';
 import { IClientProvider } from '@/@infrastructure/interfaces/IClientProvider';
 import { useCompanySettingsState } from '@/@presentation/@modules/account/composables/useCompanySettingsState';
+import { useProfileState } from '@/@presentation/@modules/account/composables/useProfileState';
 import { useGarageState } from '@/@presentation/@modules/garages/composables/useGarageState';
 import { useCreateInvoiceState } from '@/@presentation/@modules/invoices/composables/useCreateInvoiceState';
 import { useEditInvoiceState } from '@/@presentation/@modules/invoices/composables/useEditInvoiceState';
@@ -172,6 +173,7 @@ import { IUseCreateQuoteState } from '@/@presentation/types/composables/IUseCrea
 import { IUseEditInvoiceState } from '@/@presentation/types/composables/IUseEditInvoiceState';
 import { IUseEditQuoteState } from '@/@presentation/types/composables/IUseEditQuoteState';
 import { IUseCompanySettingsState } from '@/@presentation/types/composables/IUseCompanySettingsState';
+import { IUseProfileState } from '@/@presentation/types/composables/IUseProfileState';
 import { IUseGarageState } from '@/@presentation/types/composables/IUseGarageState';
 import { IUseInvoicesState } from '@/@presentation/types/composables/IUseInvoicesStates';
 import { IUseQuotesState } from '@/@presentation/types/composables/IUseQuotesState';
@@ -352,6 +354,10 @@ container.bind<ISubscriptionState>(SYMBOLS.States.SubscriptionState).to(Subscrip
 /** 6.0. -- Company Settings State */
 container.bind<IUseCompanySettingsState>(SYMBOLS.States.CompanySettingsState).toDynamicValue(() => {
   return useCompanySettingsState();
+});
+/** 6.0. -- Profile State */
+container.bind<IUseProfileState>(SYMBOLS.States.ProfileState).toDynamicValue(() => {
+  return useProfileState();
 });
 /** 6.1. -- Garage CarRepair States */
 container.bind<IUseGarageState>(SYMBOLS.States.GarageState).toDynamicValue(() => {
