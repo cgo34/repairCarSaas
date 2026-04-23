@@ -165,6 +165,10 @@ export enum SYMBOL_NAMES {
     CREATE_INVOICE_STATE = 'CreateInvoiceState',
     EDIT_INVOICE_STATE = 'EditInvoiceState',
     GET_INVOICES_STATE = 'GetInvoicesState',
+    // -- Company Settings
+    COMPANY_SETTINGS_REPOSITORY = 'CompanySettingsRepository',
+    COMPANY_SETTINGS_USE_CASE = 'CompanySettingsUseCase',
+    COMPANY_SETTINGS_STATE = 'CompanySettingsState',
     // #endregion
   }
   

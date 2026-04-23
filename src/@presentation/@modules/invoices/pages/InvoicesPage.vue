@@ -198,6 +198,9 @@
 
 <script setup lang="ts">
 import { IRegionManager } from '@/@core/managers/interfaces/IRegionManager';
+import { IAuthState } from '@/@application/states/interfaces/IAuthState';
+import { CompanySettingsDto } from '@/@application/dtos/CompanySettingsDto';
+import { ICompanySettingsUseCase } from '@/@domain/useCases/ICompanySettingsUseCase';
 import { IGenerateInvoicePdfUseCase } from '@/@domain/useCases/invoices/IGenerateInvoicePdfUseCase';
 import { container } from '@/@infrastructure/ioc/inversify.config';
 import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
@@ -214,8 +217,10 @@ import { useDisplay } from 'vuetify';
 import { useRouter } from 'vue-router';
 
 const regionManager = container.get<IRegionManager>(SYMBOLS.Managers.regionManager);
+const authState = container.get<IAuthState>(SYMBOLS.States.AuthState);
 const useInvoiceState = container.get<IUseInvoicesState>(SYMBOLS.States.Invoice.GetInvoicesUseCase);
 const generatePdfUseCase = container.get<IGenerateInvoicePdfUseCase>(SYMBOLS.UseCases.Invoice.GenerateInvoicePdfUseCase);
+const companySettingsUseCase = container.get<ICompanySettingsUseCase>(SYMBOLS.UseCases.CompanySettings);
 const { init, invoices, deleteInvoice } = useInvoiceState;
 
 const router = useRouter();
@@ -223,6 +228,7 @@ const { mobile } = useDisplay();
 
 const selectedInvoices = ref<InvoiceViewModel[]>([]);
 const downloading = ref(false);
+const _company = ref<CompanySettingsDto | null>(null);
 
 const dateFrom = ref('');
 const dateTo = ref('');
@@ -304,7 +310,7 @@ const onBulkDownload = async () => {
       try {
         const dto   = InvoiceMapper.viewToDto(invoice);
         const lines = (invoice.lineItems ?? []).map(LineItemMapper.viewToDto);
-        const url   = await generatePdfUseCase.execute(dto, lines);
+        const url   = await generatePdfUseCase.execute(dto, lines, _company.value);
         const blob  = await fetch(url).then(r => r.blob());
         zip.file(`facture-${invoice.invoiceNumber}.pdf`, blob);
         URL.revokeObjectURL(url);
@@ -338,7 +344,13 @@ const onConfirmDeleteInvoice = () => { if (_invoiceToDelete.value) deleteInvoice
 const statusColor = (s?: string) => ({ pending: 'orange', validated: 'success', accepted: 'success', signed: 'success', sent: 'blue', draft: 'grey', cancel: 'error' } as Record<string,string>)[s ?? ''] ?? 'default';
 const statusLabel = (s?: string) => ({ pending: 'En attente', validated: 'Payé', accepted: 'Accepté', signed: 'Signé', sent: 'Envoyé', draft: 'Brouillon', cancel: 'Annulé' } as Record<string,string>)[s ?? ''] ?? (s ?? '');
 
-onMounted(async () => { await init(); });
+onMounted(async () => {
+  const userId = authState.user?.value?.id;
+  await Promise.all([
+    init(),
+    userId ? companySettingsUseCase.getByUserId(userId).then(c => { _company.value = c; }) : Promise.resolve(),
+  ]);
+});
 </script>
 
 <style scoped>

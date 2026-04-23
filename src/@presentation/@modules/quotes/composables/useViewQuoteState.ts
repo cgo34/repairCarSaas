@@ -1,7 +1,10 @@
 // region -> IMPORTS
+import { IAuthState } from '@/@application/states/interfaces/IAuthState';
 import { IDownloadService } from '@/@domain/services/IDownloadService';
+import { ICompanySettingsUseCase } from '@/@domain/useCases/ICompanySettingsUseCase';
 import { IGenerateQuotePdfUseCase } from '@/@domain/useCases/quotes/IGenerateQuotePdfUseCase';
 import { IViewQuoteUseCase } from '@/@domain/useCases/quotes/IViewQuoteUseCase';
+import { ISendQuoteUseCase } from '@/@domain/useCases/quotes/ISendQuoteUseCase';
 import { container } from '@/@infrastructure/ioc/inversify.config';
 import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
 import { QuoteMapper } from '@/@presentation/mappers/QuoteMapper';
@@ -10,11 +13,12 @@ import { computed, ref } from 'vue';
 
 export function useViewQuoteState() {
   // #region -> DEPENDENCIES
+  const authState = container.get<IAuthState>(SYMBOLS.States.AuthState);
   const viewQuoteUseCase = container.get<IViewQuoteUseCase>(SYMBOLS.UseCases.Quote.ViewQuoteUseCase);
   const generatePdfUseCase = container.get<IGenerateQuotePdfUseCase>(SYMBOLS.UseCases.Quote.GenerateQuotePdfUseCase);
+  const companySettingsUseCase = container.get<ICompanySettingsUseCase>(SYMBOLS.UseCases.CompanySettings);
   const downloadService = container.get<IDownloadService>(SYMBOLS.Services.DownloadService);
   const sendQuoteUseCase = container.get<ISendQuoteUseCase>(SYMBOLS.UseCases.Quote.SendQuoteUseCase);
-
   // #endregion
 
   // #region -> REFS
@@ -26,18 +30,21 @@ export function useViewQuoteState() {
 
   // #region -> INIT
   const init = async (quoteId: string) => {
-    
     loading.value = true;
     try {
-      const { quote, lines } = await viewQuoteUseCase.execute(quoteId);
+      const userId = authState.user?.value?.id;
+
+      const [{ quote, lines }, company] = await Promise.all([
+        viewQuoteUseCase.execute(quoteId),
+        userId ? companySettingsUseCase.getByUserId(userId) : Promise.resolve(null),
+      ]);
 
       if (!quote || !lines) {
         throw new Error('Quote or quote details not found');
       }
-      
+
       _quote.value = QuoteMapper.dtoToView(quote);
-      
-      _pdfUrl.value = await generatePdfUseCase.execute(QuoteMapper.viewToDto(_quote.value), lines);
+      _pdfUrl.value = await generatePdfUseCase.execute(QuoteMapper.viewToDto(_quote.value), lines, company);
     } catch (e) {
       error.value = e as Error;
     } finally {
@@ -50,6 +57,7 @@ export function useViewQuoteState() {
   const filename = computed(() => {
     return `quote-${_quote.value?.quoteNumber || 'document'}.pdf`;
   });
+  // #endregion
 
   // #region -> METHODS
   const downloadPdf = () => {
@@ -74,6 +82,7 @@ export function useViewQuoteState() {
       loading.value = false;
     }
   };
+  // #endregion
 
   return {
     loading,

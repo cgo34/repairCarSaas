@@ -60,6 +60,7 @@ import { SettingPriceTechnicityCoefficientUseCase } from '@/@application/useCase
 import { SettingPriceUseCase } from '@/@application/useCases/settings/price/SettingPriceUseCase';
 import { GetCurrentSubscriptionUseCase } from '@/@application/useCases/subscription/GetCurrentSubscriptionUseCase';
 import { SubscribeToFreePlanUseCase } from '@/@application/useCases/subscription/SubscribeToFreePlanUseCase';
+import { CompanySettingsUseCase } from '@/@application/useCases/CompanySettingsUseCase';
 import { CreateUserUseCase } from '@/@application/useCases/users/CreateUserUseCase';
 import { UserUseCase } from '@/@application/useCases/users/UserUseCase';
 import { IRegionManager } from '@/@core/managers/interfaces/IRegionManager';
@@ -67,6 +68,7 @@ import { RegionManager } from '@/@core/managers/RegionManager';
 import { IBodyMaterialRepository } from '@/@domain/repositories/carRepair/IBodyMaterialRepository';
 import { IBodyPartRepository } from '@/@domain/repositories/carRepair/IBodyPartRepository';
 import { IDentRepairTypeRepository } from '@/@domain/repositories/carRepair/IDentRepairTypeRepository';
+import { ICompanySettingsRepository } from '@/@domain/repositories/ICompanySettingsRepository';
 import { IDocumentStatusRepository } from '@/@domain/repositories/IDocumentStatusRepository';
 import { IGarageRepository } from '@/@domain/repositories/IGarageRepository';
 import { IVehicleRepository } from '@/@domain/repositories/IVehicleRepository';
@@ -94,6 +96,7 @@ import { ISettingPriceBodyPartCoefficientService } from '@/@domain/services/sett
 import { ISettingPriceGeneralService } from '@/@domain/services/settings/price/ISettingPriceGeneralService';
 import { ISettingPriceImpactCountToUtService } from '@/@domain/services/settings/price/ISettingPriceImpactCountToUtService';
 import { ISettingPriceTechnicityCoefficientService } from '@/@domain/services/settings/price/ISettingPriceTechnicityCoefficientService';
+import { ICompanySettingsUseCase } from '@/@domain/useCases/ICompanySettingsUseCase';
 import { IAuthUseCase } from '@/@domain/useCases/auth/IAuthUseCase';
 import { ILogoutUseCase } from '@/@domain/useCases/auth/ILogoutUseCase';
 import { IRegisterUseCase } from '@/@domain/useCases/auth/IRegisterUseCase';
@@ -139,9 +142,11 @@ import { ISettingPriceUseCase } from '@/@domain/useCases/settings/price/ISetting
 import { IGetCurrentSubscriptionUseCase } from '@/@domain/useCases/subscription/IGetCurrentSubscriptionUseCase';
 import { ISubscribeToFreePlanUseCase } from '@/@domain/useCases/subscription/ISubscribeToFreePlanUseCase';
 import { ICreateUserUseCase } from '@/@domain/useCases/user/ICreateUserUseCase';
+import { CompanySettingsRepository } from '@/@infrastructure/database/repositories/CompanySettingsRepository';
 import { AuthSupabaseRepository } from '@/@infrastructure/database/repositories/auth/AuthSupabaseRepository';
 import { BodyPartRepository } from '@/@infrastructure/database/repositories/carRepair/BodyPartRepository';
 import { IClientProvider } from '@/@infrastructure/interfaces/IClientProvider';
+import { useCompanySettingsState } from '@/@presentation/@modules/account/composables/useCompanySettingsState';
 import { useGarageState } from '@/@presentation/@modules/garages/composables/useGarageState';
 import { useCreateInvoiceState } from '@/@presentation/@modules/invoices/composables/useCreateInvoiceState';
 import { useEditInvoiceState } from '@/@presentation/@modules/invoices/composables/useEditInvoiceState';
@@ -166,6 +171,7 @@ import { IUseCreateInvoiceState } from '@/@presentation/types/composables/IUseCr
 import { IUseCreateQuoteState } from '@/@presentation/types/composables/IUseCreateQuoteState';
 import { IUseEditInvoiceState } from '@/@presentation/types/composables/IUseEditInvoiceState';
 import { IUseEditQuoteState } from '@/@presentation/types/composables/IUseEditQuoteState';
+import { IUseCompanySettingsState } from '@/@presentation/types/composables/IUseCompanySettingsState';
 import { IUseGarageState } from '@/@presentation/types/composables/IUseGarageState';
 import { IUseInvoicesState } from '@/@presentation/types/composables/IUseInvoicesStates';
 import { IUseQuotesState } from '@/@presentation/types/composables/IUseQuotesState';
@@ -247,6 +253,8 @@ container.bind<IQuoteDetailRepository>(SYMBOLS.Repositories.QuoteDetailRepositor
 container.bind<IInvoiceRepository>(SYMBOLS.Repositories.InvoiceRepository).to(InvoiceRepository).inSingletonScope();
 /** 3.8. -- Invoice Detail Repositories */
 container.bind<IInvoiceDetailRepository>(SYMBOLS.Repositories.InvoiceDetailRepository).to(InvoiceDetailRepository).inSingletonScope();
+/** 3.9. -- Company Settings Repository */
+container.bind<ICompanySettingsRepository>(SYMBOLS.Repositories.CompanySettingsRepository).to(CompanySettingsRepository).inSingletonScope();
 
 /** 4 - SERVICES */
 container.bind<IAuthService>(SYMBOLS.Services.AuthService).to(AuthService).inSingletonScope();
@@ -298,6 +306,8 @@ container.bind<ISettingPriceTechnicityCoefficientUseCase>(SYMBOLS.UseCases.Setti
 container.bind<ISettingPriceImpactCountToUtUseCase>(SYMBOLS.UseCases.Setting.Price.ImpactCountToUtUseCase).to(SettingPriceImpactCountToUtUseCase).inSingletonScope();
 /** 5.4. -- User CarRepair UseCases */
 container.bind<IUserUseCase>(SYMBOLS.UseCases.UserUseCase).to(UserUseCase).inSingletonScope();
+/** 5.7. -- Company Settings UseCase */
+container.bind<ICompanySettingsUseCase>(SYMBOLS.UseCases.CompanySettings).to(CompanySettingsUseCase).inSingletonScope();
 container.bind<ICreateUserUseCase>(SYMBOLS.UseCases.User.CreateUserUseCase).to(CreateUserUseCase).inSingletonScope();
 /** 5.5. -- Cost Calculator UseCases */
 container.bind<ICalculateLineCostUseCase>(SYMBOLS.UseCases.CostCalculator.CalculateLineCostUseCase).to(CalculateLineCostUseCase).inSingletonScope();
@@ -339,6 +349,10 @@ container.bind<ISendInvoiceUseCase>(SYMBOLS.UseCases.Invoice.SendInvoiceUseCase)
 /** 6 - STATES */
 container.bind<IAuthState>(SYMBOLS.States.AuthState).to(AuthState).inSingletonScope();
 container.bind<ISubscriptionState>(SYMBOLS.States.SubscriptionState).to(SubscriptionState).inSingletonScope();
+/** 6.0. -- Company Settings State */
+container.bind<IUseCompanySettingsState>(SYMBOLS.States.CompanySettingsState).toDynamicValue(() => {
+  return useCompanySettingsState();
+});
 /** 6.1. -- Garage CarRepair States */
 container.bind<IUseGarageState>(SYMBOLS.States.GarageState).toDynamicValue(() => {
   return useGarageState();

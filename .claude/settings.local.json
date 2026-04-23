@@ -64,7 +64,8 @@
       "Bash(gh pr *)",
       "Bash(cat src/@presentation/mappers/LineItemMapper.ts)",
       "Bash(cat src/@presentation/mappers/LineItemViewMapper.ts)",
-      "Bash(git merge *)"
+      "Bash(git merge *)",
+      "Bash(npx tsc *)"
     ]
   }
 }

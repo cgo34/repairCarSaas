@@ -1,5 +1,7 @@
 // region -> IMPORTS
+import { IAuthState } from '@/@application/states/interfaces/IAuthState';
 import { IDownloadService } from '@/@domain/services/IDownloadService';
+import { ICompanySettingsUseCase } from '@/@domain/useCases/ICompanySettingsUseCase';
 import { IGenerateInvoicePdfUseCase } from '@/@domain/useCases/invoices/IGenerateInvoicePdfUseCase';
 import { ISendInvoiceUseCase } from '@/@domain/useCases/invoices/ISendInvoiceUseCase';
 import { IViewInvoiceUseCase } from '@/@domain/useCases/invoices/IViewInvoiceUseCase';
@@ -11,11 +13,12 @@ import { computed, ref } from 'vue';
 
 export function useViewInvoiceState() {
   // #region -> DEPENDENCIES
+  const authState = container.get<IAuthState>(SYMBOLS.States.AuthState);
   const viewInvoiceUseCase = container.get<IViewInvoiceUseCase>(SYMBOLS.UseCases.Invoice.ViewInvoiceUseCase);
   const generatePdfUseCase = container.get<IGenerateInvoicePdfUseCase>(SYMBOLS.UseCases.Invoice.GenerateInvoicePdfUseCase);
+  const companySettingsUseCase = container.get<ICompanySettingsUseCase>(SYMBOLS.UseCases.CompanySettings);
   const downloadService = container.get<IDownloadService>(SYMBOLS.Services.DownloadService);
   const sendInvoiceUseCase = container.get<ISendInvoiceUseCase>(SYMBOLS.UseCases.Invoice.SendInvoiceUseCase);
-
   // #endregion
 
   // #region -> REFS
@@ -29,14 +32,19 @@ export function useViewInvoiceState() {
   const init = async (invoiceId: string) => {
     loading.value = true;
     try {
-      const { invoice, lines } = await viewInvoiceUseCase.execute(invoiceId);
+      const userId = authState.user?.value?.id;
+
+      const [{ invoice, lines }, company] = await Promise.all([
+        viewInvoiceUseCase.execute(invoiceId),
+        userId ? companySettingsUseCase.getByUserId(userId) : Promise.resolve(null),
+      ]);
 
       if (!invoice || !lines) {
         throw new Error('Invoice or invoice details not found');
       }
-      
+
       _invoice.value = InvoiceMapper.dtoToView(invoice);
-      _pdfUrl.value = await generatePdfUseCase.execute(invoice, lines);
+      _pdfUrl.value = await generatePdfUseCase.execute(invoice, lines, company);
     } catch (e) {
       error.value = e as Error;
     } finally {
@@ -49,6 +57,7 @@ export function useViewInvoiceState() {
   const filename = computed(() => {
     return `invoice-${_invoice.value?.invoiceNumber || 'document'}.pdf`;
   });
+  // #endregion
 
   // #region -> METHODS
   const downloadPdf = () => {
@@ -73,6 +82,7 @@ export function useViewInvoiceState() {
       loading.value = false;
     }
   };
+  // #endregion
 
   return {
     loading,
