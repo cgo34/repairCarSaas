@@ -1,9 +1,9 @@
-import { getCompanyProfile } from '@/@presentation/composables/useCompanyProfile';
+import { CompanySettingsDto } from '@/@application/dtos/CompanySettingsDto';
 import { InvoiceDto } from '@/@application/dtos/InvoiceDto';
 import { LineItemDto } from '@/@application/dtos/LineItemDto';
 
-export const buildInvoiceHtmlTemplate = (invoice: InvoiceDto, lines: LineItemDto[]): string => {
-  const company = getCompanyProfile();
+export const buildInvoiceHtmlTemplate = (invoice: InvoiceDto, lines: LineItemDto[], company: CompanySettingsDto | null): string => {
+  const c = company ?? {} as Partial<CompanySettingsDto>;
 
   const totalHT = lines.reduce((sum, l) => sum + l.price, 0);
   const totalStripping = lines.reduce((sum, l) => sum + (l.dentRemovalPrice ?? 0), 0);
@@ -19,11 +19,11 @@ export const buildInvoiceHtmlTemplate = (invoice: InvoiceDto, lines: LineItemDto
 
   const dueDate = (() => {
     const d = new Date(invoice.startDate);
-    d.setDate(d.getDate() + (company.paymentDelay ?? 30));
+    d.setDate(d.getDate() + (c.paymentDelay ?? 30));
     return d.toLocaleDateString('fr-FR');
   })();
 
-  const companyDisplay = company.companyName || 'Votre entreprise';
+  const companyDisplay = c.companyName || 'Votre entreprise';
 
   const linesHtml = invoice.isForfait
     ? `<tr><td colspan="4" style="padding:10px 12px;font-style:italic;">Réparation forfaitaire</td></tr>`
@@ -46,10 +46,10 @@ export const buildInvoiceHtmlTemplate = (invoice: InvoiceDto, lines: LineItemDto
       <tr class="total-final"><td class="label">Total TTC</td><td class="amount">${totalTTC.toFixed(2)} ${currencySymbol}</td></tr>
     `;
 
-  const ibanLine  = company.iban ? `<span>IBAN : ${company.iban}${company.bic ? ' — BIC : ' + company.bic : ''}</span>` : '';
-  const siretLine = company.siret ? `<span>SIRET : ${company.siret}</span>` : '';
-  const tvaLine   = company.tvaNumber ? `<span>TVA : ${company.tvaNumber}</span>` : '';
-  const penaltyLine = `<span>Pénalités de retard : ${company.latePaymentPenalty || '3 fois le taux légal'}. Indemnité forfaitaire de recouvrement : ${company.recoveryFee || '40 €'}.</span>`;
+  const ibanLine  = c.iban ? `<span>IBAN : ${c.iban}${c.bic ? ' — BIC : ' + c.bic : ''}</span>` : '';
+  const siretLine = c.siret ? `<span>SIRET : ${c.siret}</span>` : '';
+  const tvaLine   = c.tvaNumber ? `<span>TVA : ${c.tvaNumber}</span>` : '';
+  const penaltyLine = `<span>Pénalités de retard : ${c.latePaymentPenalty || '3 fois le taux légal'}. Indemnité forfaitaire de recouvrement : ${c.recoveryFee || '40 €'}.</span>`;
 
   return `<!DOCTYPE html>
 <html lang="fr">
@@ -185,10 +185,10 @@ export const buildInvoiceHtmlTemplate = (invoice: InvoiceDto, lines: LineItemDto
       <p class="name">${companyDisplay}</p>
       <p class="tagline">Débosselage sans peinture</p>
       <div class="coords">
-        <div>${company.address || ''}</div>
-        <div>${company.zipCode || ''} ${company.city || ''}</div>
-        ${company.phone ? `<div>${company.phone}</div>` : ''}
-        ${company.email ? `<div>${company.email}</div>` : ''}
+        <div>${c.address || ''}</div>
+        <div>${c.zipCode || ''} ${c.city || ''}</div>
+        ${c.phone ? `<div>${c.phone}</div>` : ''}
+        ${c.email ? `<div>${c.email}</div>` : ''}
       </div>
     </div>
     <div class="header-doc">
@@ -258,13 +258,13 @@ export const buildInvoiceHtmlTemplate = (invoice: InvoiceDto, lines: LineItemDto
       <div class="footer-title">Émetteur</div>
       <p>${invoice.technician?.fullName || ''}</p>
       ${invoice.technician?.taxNumber ? `<p>N° fiscal : ${invoice.technician.taxNumber}</p>` : ''}
-      ${ibanLine ? `<p>${company.iban}</p>${company.bic ? `<p>BIC : ${company.bic}</p>` : ''}` : ''}
+      ${ibanLine ? `<p>${c.iban}</p>${c.bic ? `<p>BIC : ${c.bic}</p>` : ''}` : ''}
     </div>
     <div class="footer-block">
       <div class="footer-title">Conditions</div>
-      <p>Paiement sous ${company.paymentDelay ?? 30} jours</p>
-      <p>Pénalités : ${company.latePaymentPenalty || '3× taux légal'}</p>
-      <p>Indemnité recouvrement : ${company.recoveryFee || '40 €'}</p>
+      <p>Paiement sous ${c.paymentDelay ?? 30} jours</p>
+      <p>Pénalités : ${c.latePaymentPenalty || '3× taux légal'}</p>
+      <p>Indemnité recouvrement : ${c.recoveryFee || '40 €'}</p>
     </div>
     <div class="footer-block" style="text-align:right;">
       <div class="footer-title">Signature client</div>
@@ -278,7 +278,7 @@ export const buildInvoiceHtmlTemplate = (invoice: InvoiceDto, lines: LineItemDto
   <!-- Mentions légales -->
   <div class="legal-mentions">
     ${siretLine}${siretLine && tvaLine ? ' — ' : ''}${tvaLine}
-    ${company.legalForm && company.capital ? `<span>${company.legalForm} au capital de ${company.capital} — RCS ${company.city} ${company.siren}</span>` : ''}
+    ${c.legalForm && c.capital ? `<span>${c.legalForm} au capital de ${c.capital} — RCS ${c.city} ${c.siren}</span>` : ''}
     ${penaltyLine}
   </div>
 

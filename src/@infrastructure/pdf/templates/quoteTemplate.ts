@@ -1,9 +1,9 @@
-import { getCompanyProfile } from '@/@presentation/composables/useCompanyProfile';
+import { CompanySettingsDto } from '@/@application/dtos/CompanySettingsDto';
 import { LineItemDto } from '@/@application/dtos/LineItemDto';
 import { QuoteDto } from '@/@application/dtos/QuoteDto';
 
-export const buildQuoteHtmlTemplate = (quote: QuoteDto, lines: LineItemDto[]): string => {
-  const company = getCompanyProfile();
+export const buildQuoteHtmlTemplate = (quote: QuoteDto, lines: LineItemDto[], company: CompanySettingsDto | null): string => {
+  const c = company ?? {} as Partial<CompanySettingsDto>;
 
   const totalHT = lines.reduce((sum, l) => sum + l.price, 0);
   const totalStripping = lines.reduce((sum, l) => sum + (l.dentRemovalPrice ?? 0), 0);
@@ -14,11 +14,11 @@ export const buildQuoteHtmlTemplate = (quote: QuoteDto, lines: LineItemDto[]): s
 
   const dueDate = (() => {
     const d = new Date(quote.startDate);
-    d.setDate(d.getDate() + (company.paymentDelay ?? 30));
+    d.setDate(d.getDate() + (c.paymentDelay ?? 30));
     return d.toLocaleDateString('fr-FR');
   })();
 
-  const companyDisplay = company.companyName || 'Votre entreprise';
+  const companyDisplay = c.companyName || 'Votre entreprise';
 
   const linesHtml = quote.isForfait
     ? `<tr><td colspan="4" style="padding:10px 12px;font-style:italic;">Réparation forfaitaire</td></tr>`
@@ -41,9 +41,9 @@ export const buildQuoteHtmlTemplate = (quote: QuoteDto, lines: LineItemDto[]): s
       <tr class="total-final"><td class="label">Total TTC</td><td class="amount">${totalTTC.toFixed(2)} ${currencySymbol}</td></tr>
     `;
 
-  const siretLine = company.siret ? `<span>SIRET : ${company.siret}</span>` : '';
-  const tvaLine   = company.tvaNumber ? `<span>TVA : ${company.tvaNumber}</span>` : '';
-  const penaltyLine = `<span>Pénalités de retard : ${company.latePaymentPenalty || '3 fois le taux légal'}. Indemnité forfaitaire de recouvrement : ${company.recoveryFee || '40 €'}.</span>`;
+  const siretLine = c.siret ? `<span>SIRET : ${c.siret}</span>` : '';
+  const tvaLine   = c.tvaNumber ? `<span>TVA : ${c.tvaNumber}</span>` : '';
+  const penaltyLine = `<span>Pénalités de retard : ${c.latePaymentPenalty || '3 fois le taux légal'}. Indemnité forfaitaire de recouvrement : ${c.recoveryFee || '40 €'}.</span>`;
 
   return `<!DOCTYPE html>
 <html lang="fr">
@@ -186,10 +186,10 @@ export const buildQuoteHtmlTemplate = (quote: QuoteDto, lines: LineItemDto[]): s
       <p class="name">${companyDisplay}</p>
       <p class="tagline">Débosselage sans peinture</p>
       <div class="coords">
-        <div>${company.address || ''}</div>
-        <div>${company.zipCode || ''} ${company.city || ''}</div>
-        ${company.phone ? `<div>${company.phone}</div>` : ''}
-        ${company.email ? `<div>${company.email}</div>` : ''}
+        <div>${c.address || ''}</div>
+        <div>${c.zipCode || ''} ${c.city || ''}</div>
+        ${c.phone ? `<div>${c.phone}</div>` : ''}
+        ${c.email ? `<div>${c.email}</div>` : ''}
       </div>
     </div>
     <div class="header-doc">
@@ -253,7 +253,7 @@ export const buildQuoteHtmlTemplate = (quote: QuoteDto, lines: LineItemDto[]): s
     </p>
 
     <div class="validity-note">
-      ⏳ Ce devis est valable ${company.paymentDelay ?? 30} jours à compter de sa date d'émission.
+      ⏳ Ce devis est valable ${c.paymentDelay ?? 30} jours à compter de sa date d'émission.
       Passé ce délai, les prix sont susceptibles d'être révisés.
     </div>
   </div>
@@ -267,8 +267,8 @@ export const buildQuoteHtmlTemplate = (quote: QuoteDto, lines: LineItemDto[]): s
     </div>
     <div class="footer-block">
       <div class="footer-title">Conditions</div>
-      <p>Délai de réponse : ${company.paymentDelay ?? 30} jours</p>
-      <p>Pénalités : ${company.latePaymentPenalty || '3× taux légal'}</p>
+      <p>Délai de réponse : ${c.paymentDelay ?? 30} jours</p>
+      <p>Pénalités : ${c.latePaymentPenalty || '3× taux légal'}</p>
     </div>
     <div class="footer-block" style="text-align:right;">
       <div class="footer-title">Acceptation</div>
@@ -282,7 +282,7 @@ export const buildQuoteHtmlTemplate = (quote: QuoteDto, lines: LineItemDto[]): s
   <!-- Mentions légales -->
   <div class="legal-mentions">
     ${siretLine}${siretLine && tvaLine ? ' — ' : ''}${tvaLine}
-    ${company.legalForm && company.capital ? `<span>${company.legalForm} au capital de ${company.capital} — RCS ${company.city} ${company.siren}</span>` : ''}
+    ${c.legalForm && c.capital ? `<span>${c.legalForm} au capital de ${c.capital} — RCS ${c.city} ${c.siren}</span>` : ''}
     ${penaltyLine}
   </div>
 

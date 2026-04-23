@@ -194,6 +194,9 @@
 
 <script setup lang="ts">
 import { IRegionManager } from '@/@core/managers/interfaces/IRegionManager';
+import { IAuthState } from '@/@application/states/interfaces/IAuthState';
+import { CompanySettingsDto } from '@/@application/dtos/CompanySettingsDto';
+import { ICompanySettingsUseCase } from '@/@domain/useCases/ICompanySettingsUseCase';
 import { IGenerateQuotePdfUseCase } from '@/@domain/useCases/quotes/IGenerateQuotePdfUseCase';
 import { container } from '@/@infrastructure/ioc/inversify.config';
 import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
@@ -213,8 +216,10 @@ import { useRouter } from 'vue-router';
 
 // #region -> DEPENDENCIES
 const regionManager = container.get<IRegionManager>(SYMBOLS.Managers.regionManager);
+const authState = container.get<IAuthState>(SYMBOLS.States.AuthState);
 const useQuoteState = container.get<IUseQuotesState>(SYMBOLS.States.Quote.GetQuotesUseCase);
 const generatePdfUseCase = container.get<IGenerateQuotePdfUseCase>(SYMBOLS.UseCases.Quote.GenerateQuotePdfUseCase);
+const companySettingsUseCase = container.get<ICompanySettingsUseCase>(SYMBOLS.UseCases.CompanySettings);
 // #endregion
 
 // #region -> STATE
@@ -241,6 +246,7 @@ const selectedQuotes = ref<QuoteViewModel[]>([]);
 const downloading = ref(false);
 const deleteQuoteConfirmDialogRef = ref<ConfirmDialogExposed>();
 const _quoteIdToDelete = ref<string | undefined>();
+const _company = ref<CompanySettingsDto | null>(null);
 // #endregion
 
 const desktopHeaders = [
@@ -279,7 +285,7 @@ const onBulkDownload = async () => {
       try {
         const dto   = QuoteMapper.viewToDto(quote);
         const lines = (quote.lineItems ?? []).map(LineItemMapper.viewToDto);
-        const url   = await generatePdfUseCase.execute(dto, lines);
+        const url   = await generatePdfUseCase.execute(dto, lines, _company.value);
         const blob  = await fetch(url).then(r => r.blob());
         zip.file(`devis-${quote.quoteNumber}.pdf`, blob);
         URL.revokeObjectURL(url);
@@ -333,7 +339,13 @@ const onConfirmDeleteQuote = () => {
 const statusColor = (s?: string) => ({ invoiced: 'red', processing: 'blue', pending: 'orange', validated: 'success', accepted: 'success', signed: 'success', sent: 'blue', draft: 'grey', cancel: 'error' } as Record<string,string>)[s ?? ''] ?? 'default';
 const statusLabel = (s?: string) => ({ invoiced: 'Facturé', processing: 'En cours', pending: 'En attente', validated: 'Payé', accepted: 'Accepté', signed: 'Signé', sent: 'Envoyé', draft: 'Brouillon', cancel: 'Annulé' } as Record<string,string>)[s ?? ''] ?? (s ?? '');
 
-onMounted(async () => { await init(); });
+onMounted(async () => {
+  const userId = authState.user?.value?.id;
+  await Promise.all([
+    init(),
+    userId ? companySettingsUseCase.getByUserId(userId).then(c => { _company.value = c; }) : Promise.resolve(),
+  ]);
+});
 </script>
 
 <style scoped>

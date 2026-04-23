@@ -3,11 +3,15 @@ import { RouteRecordRaw } from 'vue-router';
 export const accountRoutes: RouteRecordRaw[] = [
   {
     path: '/account-settings',
-    component: () => import('@/@presentation/@modules/account/pages/AccountSettingsPage.vue'),
+    redirect: '/company-settings',
+  },
+  {
+    path: '/company-settings',
+    component: () => import('@/@presentation/@modules/account/pages/CompanySettingsPage.vue'),
     meta: {
       requiresAuth: true,
       breadcrumb: [
-        { title: 'Paramètres entreprise', href: '/account-settings' },
+        { title: 'Paramètres entreprise', href: '/company-settings' },
       ],
     },
   },
