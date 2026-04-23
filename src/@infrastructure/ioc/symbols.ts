@@ -182,6 +182,8 @@ const SYMBOLS = {
     },
     // -- Company Settings State
     CompanySettingsState: Symbol.for(SYMBOL_NAMES.COMPANY_SETTINGS_STATE),
+    // -- Profile State
+    ProfileState: Symbol.for(SYMBOL_NAMES.PROFILE_STATE),
     // -- Invoices States
     Invoice: {
       InvoiceState: Symbol.for(SYMBOL_NAMES.INVOICE_STATE),

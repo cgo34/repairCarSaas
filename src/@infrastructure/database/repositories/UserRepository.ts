@@ -28,36 +28,40 @@ export class UserRepository implements IUserRepository {
   async getUserById(id: string): Promise<UserDto | null> {
     const { data, error } = await this.clientProvider.getClient()
       .from('users')
-      .select(`
-        *
-      `)
+      .select('*')
       .eq('id', id)
-      .returns<UserApiModel>();
-  
+      .maybeSingle<UserApiModel>();
+
     if (error) throw new Error('Error fetching user by ID');
 
     return data ? UserMapper.apiToDto(data) : null;
   }
   
-  async createUser(user: UserDto): Promise<void> {
+  async createUser(user: UserDto): Promise<UserDto> {
     const apiModel = UserMapper.dtoToApi(user);
-    
-    const { error } = await this.clientProvider.getClient()
+
+    const { data, error } = await this.clientProvider.getClient()
       .from('users')
-      .insert(apiModel);
-  
+      .insert(apiModel)
+      .select('*')
+      .maybeSingle<UserApiModel>();
+
     if (error) throw new Error('Error inserting user');
+    if (!data) throw new Error('No data returned after insert');
+
+    return UserMapper.apiToDto(data);
   }
   
   async updateUser(id: string, user: Partial<UserDto>): Promise<void> {
-    const apiModel = UserMapper.dtoToApi(user);
+    // On exclut l'id du payload : ne jamais tenter de modifier la PK
+    const { id: _excluded, ...updateFields } = user as UserDto;
+    const apiModel = UserMapper.dtoToApi(updateFields);
 
     const { error } = await this.clientProvider.getClient()
       .from('users')
-      .update(apiModel)
-      .eq('id', id);
+      .upsert({ id, ...apiModel }, { onConflict: 'id' });
 
-    if (error) throw new Error('Error updating user');
+    if (error) throw new Error(`Error updating user: ${error.message}`);
   }
 
   async deleteUser(id: string): Promise<void> {

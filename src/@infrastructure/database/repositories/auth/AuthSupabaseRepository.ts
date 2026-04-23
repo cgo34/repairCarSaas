@@ -8,11 +8,13 @@ import { SYMBOLS } from '@infrastructure/ioc/symbols';
 import { AuthError, AuthResponse } from '@supabase/supabase-js';
 import { inject, injectable } from 'inversify';
 import { SupabaseClient } from '../../clients/SupabaseClient';
+import { UserApiModel } from '../../api/UserApiModel';
+
+const USER_PROFILE_SELECT = 'id, email, full_name, first_name, last_name, role, percentage_commission';
 
 @injectable()
 export class AuthSupabaseRepository implements IAuthRepository {
-  constructor(@inject(SYMBOLS.Providers.ClientProvider) private clientProvider: IClientProvider<SupabaseClient>) {
-  }
+  constructor(@inject(SYMBOLS.Providers.ClientProvider) private clientProvider: IClientProvider<SupabaseClient>) {}
 
   async login(email: string, password: string): Promise<UserDto> {
     try {
@@ -22,27 +24,26 @@ export class AuthSupabaseRepository implements IAuthRepository {
         throw new Error('No user data in response');
       }
 
-      // Récupérer le profil utilisateur depuis la table public.users pour obtenir le rôle custom
       const { data: userProfile, error: profileError } = await this.clientProvider
         .getClient()
         .from('users')
-        .select('id, email, full_name, role')
+        .select(USER_PROFILE_SELECT)
         .eq('id', data.user.id)
-        .single();
+        .maybeSingle<UserApiModel>();
 
       if (profileError) {
         console.warn('[AuthRepository] Could not fetch user profile:', profileError);
       }
 
-      // Construire un UserDto via UserMapper
-      const userDto: UserDto = UserMapper.apiToDto({
+      return UserMapper.apiToDto({
         id: data.user.id,
         email: data.user.email ?? '',
         full_name: userProfile?.full_name ?? (data.user.user_metadata as any)?.fullName ?? '',
+        first_name: userProfile?.first_name,
+        last_name: userProfile?.last_name,
         role: (userProfile?.role as UserRole) ?? 'technician',
-        subscription: undefined // ou à compléter selon ta logique
+        percentage_commission: userProfile?.percentage_commission,
       });
-      return userDto;
     } catch (error) {
       console.error('[AuthRepository] login error:', error);
       throw error;
@@ -50,24 +51,29 @@ export class AuthSupabaseRepository implements IAuthRepository {
   }
 
   async register(email: string, password: string, fullName: string): Promise<{ user: UserDto | null, error: any }> {
-    const { data, error } = await this.clientProvider.getClient().auth.signUp(email, password, fullName ) as SupabaseAuthResponse;
+    const { data, error } = await this.clientProvider.getClient().auth.signUp(email, password, fullName) as SupabaseAuthResponse;
+
     if (!data?.user) {
       return { user: null, error };
     }
-    // Récupérer le profil utilisateur depuis la table public.users pour obtenir le rôle custom
+
     const { data: userProfile } = await this.clientProvider
       .getClient()
       .from('users')
-      .select('id, email, full_name, role')
+      .select(USER_PROFILE_SELECT)
       .eq('id', data.user.id)
-      .single();
+      .maybeSingle<UserApiModel>();
+
     const userDto: UserDto = UserMapper.apiToDto({
       id: data.user.id,
       email: data.user.email ?? '',
       full_name: userProfile?.full_name ?? (data.user.user_metadata as any)?.fullName ?? '',
+      first_name: userProfile?.first_name,
+      last_name: userProfile?.last_name,
       role: (userProfile?.role as UserRole) ?? 'technician',
-      subscription: undefined // à adapter selon ta logique
+      percentage_commission: userProfile?.percentage_commission,
     });
+
     return { user: userDto, error };
   }
 
@@ -80,21 +86,28 @@ export class AuthSupabaseRepository implements IAuthRepository {
     if (!authData?.user) {
       return null;
     }
-    // Récupérer le profil utilisateur depuis la table public.users pour obtenir le rôle custom
+
     const { data: userProfile } = await this.clientProvider
       .getClient()
       .from('users')
-      .select('id, email, full_name, role')
+      .select(USER_PROFILE_SELECT)
       .eq('id', authData.user.id)
-      .single();
-    const userDto: UserDto = UserMapper.apiToDto({
+      .maybeSingle<UserApiModel>();
+
+    return UserMapper.apiToDto({
       id: authData.user.id,
       email: authData.user.email ?? '',
       full_name: userProfile?.full_name ?? (authData.user.user_metadata as any)?.fullName ?? '',
+      first_name: userProfile?.first_name,
+      last_name: userProfile?.last_name,
       role: (userProfile?.role as UserRole) ?? 'technician',
-      subscription: undefined // à adapter selon ta logique
+      percentage_commission: userProfile?.percentage_commission,
     });
-    return userDto;
+  }
+
+  async updateEmail(newEmail: string): Promise<void> {
+    const { error } = await this.clientProvider.getClient().auth.update({ email: newEmail });
+    if (error) throw new Error(`Error updating email in auth.users: ${error.message}`);
   }
 
   async getUserSession(): Promise<any> {

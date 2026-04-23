@@ -7,5 +7,6 @@ export interface IAuthRepository {
   register(email: string, password: string, fullName: string): Promise<{ user: UserDto | null, error: any }>;
   logout(): Promise<{ error: AuthError | null }>;
   getCurrentUser(): Promise<any>;
+  updateEmail(newEmail: string): Promise<void>;
   onAuthStateChange(callback: (event: string, session: any) => void): void;
 }

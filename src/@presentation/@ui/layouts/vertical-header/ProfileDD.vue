@@ -2,7 +2,7 @@
 import { IAuthState } from '@/@application/states/interfaces/IAuthState';
 import { container } from '@/@infrastructure/ioc/inversify.config';
 import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
-import { BuildingIcon, LogoutIcon, SettingsIcon } from 'vue-tabler-icons';
+import { BuildingIcon, LogoutIcon, SettingsIcon, UserIcon } from 'vue-tabler-icons';
 import { useRouter } from 'vue-router';
 
 const authState = container.get<IAuthState>(SYMBOLS.States.AuthState);
@@ -43,6 +43,17 @@ const initials = (name?: string) => {
 
     <!-- Actions -->
     <v-list density="compact" class="pa-0">
+      <v-list-item
+        rounded="lg"
+        color="primary"
+        :to="'/profile'"
+      >
+        <template #prepend>
+          <UserIcon size="18" class="mr-3 text-medium-emphasis" />
+        </template>
+        <v-list-item-title class="text-body-2">Mon profil</v-list-item-title>
+      </v-list-item>
+
       <v-list-item
         rounded="lg"
         color="primary"

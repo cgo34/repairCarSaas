@@ -2,6 +2,7 @@ import { UserDto } from "@/@application/dtos/UserDto";
 
 export interface IUserRepository {
   getUsers(): Promise<UserDto[]>;
+  getUserById(id: string): Promise<UserDto | null>;
   createUser(user: UserDto): Promise<UserDto>;
   updateUser(id: string, user: Partial<UserDto>): Promise<void>;
 }

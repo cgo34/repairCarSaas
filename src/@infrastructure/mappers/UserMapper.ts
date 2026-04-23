@@ -11,6 +11,8 @@ export class UserMapper {
       id: api.id,
       email: api.email,
       fullName: api.full_name,
+      firstName: api.first_name,
+      lastName: api.last_name,
       role: api.role,
       subscription: api.subscription,
       percentageCommission: api.percentage_commission,
@@ -22,8 +24,10 @@ export class UserMapper {
       ...(dto.id !== undefined && { id: dto.id }),
       ...(dto.email !== undefined && { email: dto.email }),
       ...(dto.fullName !== undefined && { full_name: dto.fullName }),
+      ...(dto.firstName !== undefined && { first_name: dto.firstName }),
+      ...(dto.lastName !== undefined && { last_name: dto.lastName }),
       ...(dto.role !== undefined && { role: dto.role }),
-      ...(dto.percentageCommission !== undefined && { percentage_commission: dto.percentageCommission }),
+      // ...(dto.percentageCommission !== undefined && { percentage_commission: dto.percentageCommission }),
     };
   }
 
