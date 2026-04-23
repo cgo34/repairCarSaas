@@ -3,7 +3,7 @@ import { BodyMaterialViewModel } from '../models/carRepair/BodyMaterialViewModel
 import { BodyPartViewModel } from '../models/carRepair/BodyPartViewModel';
 import { DentRepairTypeViewModel } from '../models/carRepair/DentRepairTypeViewModel';
 import { CountryViewModel } from '../models/CountryViewModel';
-import { DocumentStatuseViewModel } from '../models/DocumentStatusViewModel';
+import { DocumentStatusViewModel } from '../models/DocumentStatusViewModel';
 import { GarageViewModel } from '../models/GarageViewModel';
 import { LineItemViewModel } from '../models/LineItemViewModel';
 import { UserViewModel } from '../models/UserViewModel';
@@ -12,10 +12,13 @@ import { VehicleViewModel } from '../models/VehicleViewModel';
 export interface IUseEditQuoteState {
   loading: Ref<boolean>;
   error: Ref<unknown>;
+  isReadOnly: ComputedRef<boolean>;
+  isAccepted: ComputedRef<boolean>;
+  isRefused: ComputedRef<boolean>;
 
   init(id: string): Promise<void>;
-  statuses: ComputedRef<DocumentStatuseViewModel[]>;
-  quoteInformations: ComputedRef<{ number: string; date: string, expirationDate: string; status: DocumentStatuseViewModel; }>;
+  statuses: ComputedRef<DocumentStatusViewModel[]>;
+  quoteInformations: ComputedRef<{ number: string; date: string, expirationDate: string; status: DocumentStatusViewModel; }>;
   expirationDate: ComputedRef<string>;
 
   technicians: Ref<UserViewModel[]>;
@@ -39,9 +42,9 @@ export interface IUseEditQuoteState {
   bodyMaterials: Ref<BodyMaterialViewModel[]>;
   repairTypes: Ref<DentRepairTypeViewModel[]>;
 
-  selectBodyPart(lineId: number, bodyPart: BodyPartViewModel): void;
-  selectBodyMaterial(lineId: number, bodyMaterial: BodyMaterialViewModel): void;
-  selectRepairType(lineId: number, repairType: DentRepairTypeViewModel): void;
+  // selectBodyPart(lineId: number, bodyPart: BodyPartViewModel): void;
+  // selectBodyMaterial(lineId: number, bodyMaterial: BodyMaterialViewModel): void;
+  // selectRepairType(lineId: number, repairType: DentRepairTypeViewModel): void;
 
   
   isForfait: ComputedRef<boolean>;
@@ -56,11 +59,18 @@ export interface IUseEditQuoteState {
   selectedCountry: ComputedRef<CountryViewModel>;
 
   quoteLines: Ref<LineItemViewModel[]>;
-  addLine(): void;
-  removeLine(lineId: number): void;
+  addLine(line: LineItemViewModel): void;
+  removeLine(lineId: string | undefined): void;
 
-  totalDegarnissage,
+  subtotal: ComputedRef<number>;
+  subTotalWithDegarnissage: ComputedRef<number>;
+  totalTaxRate: ComputedRef<number>;
+  totalDegarnissage: ComputedRef<number>;
   totalCommission: ComputedRef<number>;
   total: ComputedRef<number>;
-  save(): Promise<void>;
+
+  updateQuote(): Promise<void>;
+  deleteQuote(): Promise<void>;
+  duplicateQuoteToInvoice(): Promise<void>;
+  updateQuoteStatus(status: Pick<DocumentStatusViewModel, 'code'>): Promise<void>;
 }

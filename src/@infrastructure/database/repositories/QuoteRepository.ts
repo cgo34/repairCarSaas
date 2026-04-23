@@ -89,21 +89,7 @@ export class QuoteRepository implements IQuoteRepository {
       throw new Error('Error fetching quote');    
 
     return data ? QuoteMapper.apiToDto(data) : null;
-  }
-
-  // TODO: (gce) -> TO BE MOVE TO DetailRepository
-  // async getDetails(quoteId: string): Promise<LineItemDto[]> {
-  //   const { data, error } = await this.clientProvider.getClient()
-  //     .from('quote_details')
-  //     .select('*')
-  //     .eq('quote_id', quoteId)
-  //     .returns<QuoteDetailApiModel[]>();
-  
-  //   if (error) throw new Error(`Error fetching quote details: ${error.message}`);
-  
-  //   return data.map(LineItemMapper.apiToDto);
-  // }
-  
+  }  
 
   /**
    * Crée un devis.

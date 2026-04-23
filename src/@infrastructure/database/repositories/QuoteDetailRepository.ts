@@ -58,7 +58,7 @@ export class QuoteDetailRepository implements IQuoteDetailRepository {
     return LineItemMapper.apiToDto(data[0]);
   }
 
-  async update(items: LineItemDto[]): Promise<LineItemDto> {
+  async update(items: LineItemDto[]): Promise<LineItemDto[]> {
     const { data, error } = await this.clientProvider.getClient()
       .from('quote_details')
       .update(items.map(LineItemMapper.dtoToApi))

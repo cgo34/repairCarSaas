@@ -1,24 +1,22 @@
-import { QuoteLineItem } from '@/@domain/models/Quote';
 import { ICostCalculatorService } from '@/@domain/services/ICostCalculatorService';
 import { SettingPriceTechnicityCoefficientDto } from '@/@application/dtos/settings/price/SettingPriceTechnicityCoefficientDto';
 import { injectable } from 'inversify';
-import { LineItemViewDto } from '../dtos/LineItemViewDto';
-import { SettingPriceBodyMaterialCoefficientViewDto } from '../dtos/settings/SettingPriceBodyMaterialCoefficientViewDto';
-import { SettingPriceBodyPartCoefficientViewDto } from '../dtos/settings/SettingPriceBodyPartCoefficientViewType';
-import { SettingPriceImpactCountToUtViewDto } from '../dtos/settings/SettingPriceImpactCountToUtViewDto';
-import { SettingPriceDiameterCoefficientViewDto } from '../dtos/settings/SettingPriceTechnicityCoefficientDto';
-import { SettingPriceViewDto } from '../dtos/settings/SettingPriceViewDto';
+import { LineItemDto } from '../dtos/LineItemDto';
+import { SettingPriceBodyMaterialCoefficientDto } from '../dtos/settings/price/SettingPriceBodyMaterialCoefficientDto';
+import { SettingPriceBodyPartCoefficientDto } from '../dtos/settings/price/SettingPriceBodyPartCoefficientDto';
+import { SettingPriceImpactCountToUtDto } from '../dtos/settings/price/SettingPriceImpactCountToUtDto';
+import { SettingPriceDto } from '../dtos/settings/price/SettingPriceDto';
 
 @injectable()
 export class CostCalculatorService implements ICostCalculatorService {
-  calculateLinePrice(lineItem: LineItemViewDto, priceParams: SettingPriceViewDto): number {
+  calculateLinePrice(lineItem: LineItemDto, priceParams: SettingPriceDto): number {
     if (!lineItem.bodyPartId || !lineItem.bodyMaterialId || !lineItem.repairTypeId) {
       throw new Error("Missing required attributes to calculate cost.");
     }
 
     const bodyPartCoefficient = this.getBodyPartCoefficient(lineItem.bodyPartId, priceParams.bodyParts);
     const materialCoefficient = priceParams.technicity.aluminiumCoefficient;
-    const repairTypeCoefficient = this.getRepairTypeCoefficient(lineItem.repairTypeCode ?? '', priceParams.technicity);
+    const repairTypeCoefficient = this.getRepairTypeCoefficient(lineItem.repairType?.code ?? '', priceParams.technicity);
     const diameter25Coefficient = priceParams.technicity.diameter25Coefficient;
     const diameter35Coefficient = priceParams.technicity.diameter35Coefficient;
     
@@ -45,23 +43,23 @@ export class CostCalculatorService implements ICostCalculatorService {
     return Math.round(finalCost * 100) / 100;
   }
 
-  private getUnitTimeImpact(lineItem: QuoteLineItem, impactsCountPrice: SettingPriceImpactCountToUtViewDto[]): { diameter25: number, diameter35: number } {
+  private getUnitTimeImpact(lineItem: LineItemDto, impactsCountPrice: SettingPriceImpactCountToUtDto[]): { diameter25: number, diameter35: number } {
     
     const unitTimeImpact25 = impactsCountPrice.find(ic => ic.impactCountMin <= lineItem.impactCount25 && ic.impactCountMax >= lineItem.impactCount25);
     const unitTimeImpact35 = impactsCountPrice.find(ic => ic.impactCountMin <= lineItem.impactCount35 && ic.impactCountMax >= lineItem.impactCount35);
     
     return {
-      diameter25: unitTimeImpact25?.unitTime,
-      diameter35: unitTimeImpact35?.unitTime
+      diameter25: unitTimeImpact25?.unitTime ?? 1,
+      diameter35: unitTimeImpact35?.unitTime ?? 1
     }
   }
 
-  private getBodyPartCoefficient(bodyPartId: string, bodyPartsPrice: SettingPriceBodyPartCoefficientViewDto[]): number {
+  private getBodyPartCoefficient(bodyPartId: string, bodyPartsPrice: SettingPriceBodyPartCoefficientDto[]): number {
     const setting = bodyPartsPrice.find(sp => sp.bodyPartId === bodyPartId);
     return setting?.coefficient ?? 1;
   }
 
-  private getMaterialCoefficient(materialId: string, bodyMaterialsPrice: SettingPriceBodyMaterialCoefficientViewDto[]): number {
+  private getMaterialCoefficient(materialId: string, bodyMaterialsPrice: SettingPriceBodyMaterialCoefficientDto[]): number {
     const setting = bodyMaterialsPrice.find(sp => sp.bodyMaterialId === materialId);
     return setting?.coefficient ?? 1;
   }
@@ -77,11 +75,6 @@ export class CostCalculatorService implements ICostCalculatorService {
     }
 
     return 1;
-  }
-
-  private getDiameterCoefficient(diameter: number, diametersPrice: SettingPriceDiameterCoefficientViewDto[]): number {
-    const setting = diametersPrice.find(sp => sp.diameter === diameter);
-    return setting?.coefficient ?? 1;
   }
 
 }
