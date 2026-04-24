@@ -49,8 +49,10 @@ export class QuoteMapper {
       totalHt: api.is_forfait
         ? (api.forfait_amount ?? 0)
         : (api.quote_details ?? []).reduce((sum, d) => sum + (d.price ?? 0) + (d.dent_removal_price ?? 0), 0) || api.total_ht || 0,
+      commissionRate: api.commission_rate ?? null,
+      commissionPaid: api.commission_paid ?? false,
 
-      lineItems: api.quote_details ? api.quote_details.map(QuoteDetailMapper.apiToDto) : undefined, // Ajouté si nécessaire
+      lineItems: api.quote_details ? api.quote_details.map(QuoteDetailMapper.apiToDto) : undefined,
     };
   }
 
@@ -91,6 +93,8 @@ export class QuoteMapper {
       garage_email: dto.garageEmail,
       garage_percentage_commission: dto.garagePercentageCommission,
       total_ht: dto.totalHt,
+      commission_rate: dto.commissionRate ?? null,
+      commission_paid: dto.commissionPaid ?? false,
     };
   }
 }

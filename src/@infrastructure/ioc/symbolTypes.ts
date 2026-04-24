@@ -185,6 +185,11 @@ export enum SYMBOL_NAMES {
     COMPANY_SETTINGS_STATE = 'CompanySettingsState',
     // -- Profile State
     PROFILE_STATE = 'ProfileState',
+    // -- Technician
+    TECHNICIAN_GARAGE_ACCESS_REPOSITORY = 'TechnicianGarageAccessRepository',
+    TECHNICIAN_STATS_USE_CASE = 'TechnicianStatsUseCase',
+    TECHNICIANS_STATE = 'TechniciansState',
+    TECHNICIAN_DETAIL_STATE = 'TechnicianDetailState',
     // #endregion
   }
   

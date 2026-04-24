@@ -157,6 +157,8 @@ import { BodyPartRepository } from '@/@infrastructure/database/repositories/carR
 import { IClientProvider } from '@/@infrastructure/interfaces/IClientProvider';
 import { useCompanySettingsState } from '@/@presentation/@modules/account/composables/useCompanySettingsState';
 import { useProfileState } from '@/@presentation/@modules/account/composables/useProfileState';
+import { useTechniciansState } from '@/@presentation/@modules/technicians/composables/useTechniciansState';
+import { useTechnicianDetailState } from '@/@presentation/@modules/technicians/composables/useTechnicianDetailState';
 import { useGarageState } from '@/@presentation/@modules/garages/composables/useGarageState';
 import { useCreateInvoiceState } from '@/@presentation/@modules/invoices/composables/useCreateInvoiceState';
 import { useEditInvoiceState } from '@/@presentation/@modules/invoices/composables/useEditInvoiceState';
@@ -183,6 +185,12 @@ import { IUseEditInvoiceState } from '@/@presentation/types/composables/IUseEdit
 import { IUseEditQuoteState } from '@/@presentation/types/composables/IUseEditQuoteState';
 import { IUseCompanySettingsState } from '@/@presentation/types/composables/IUseCompanySettingsState';
 import { IUseProfileState } from '@/@presentation/types/composables/IUseProfileState';
+import { IUseTechniciansState } from '@/@presentation/types/composables/IUseTechniciansState';
+import { IUseTechnicianDetailState } from '@/@presentation/types/composables/IUseTechnicianDetailState';
+import { ITechnicianGarageAccessRepository } from '@/@domain/repositories/ITechnicianGarageAccessRepository';
+import { TechnicianGarageAccessRepository } from '@/@infrastructure/database/repositories/TechnicianGarageAccessRepository';
+import { IGetTechnicianStatsUseCase } from '@/@domain/useCases/technicians/IGetTechnicianStatsUseCase';
+import { GetTechnicianStatsUseCase } from '@/@application/useCases/technicians/GetTechnicianStatsUseCase';
 import { IUseGarageState } from '@/@presentation/types/composables/IUseGarageState';
 import { IUseInvoicesState } from '@/@presentation/types/composables/IUseInvoicesStates';
 import { IUseQuotesState } from '@/@presentation/types/composables/IUseQuotesState';
@@ -285,6 +293,8 @@ container.bind<IInvoiceRepository>(SYMBOLS.Repositories.InvoiceRepository).to(In
 container.bind<IInvoiceDetailRepository>(SYMBOLS.Repositories.InvoiceDetailRepository).to(InvoiceDetailRepository).inSingletonScope();
 /** 3.9. -- Company Settings Repository */
 container.bind<ICompanySettingsRepository>(SYMBOLS.Repositories.CompanySettingsRepository).to(CompanySettingsRepository).inSingletonScope();
+/** 3.10. -- Technician Garage Access Repository */
+container.bind<ITechnicianGarageAccessRepository>(SYMBOLS.Repositories.TechnicianGarageAccessRepository).to(TechnicianGarageAccessRepository).inSingletonScope();
 
 /** 3.10. -- Organization Repository */
 container.bind<IOrganizationProfileRepository>(SYMBOLS.Repositories.OrganizationProfileRepository).to(OrganizationProfileRepository).inSingletonScope
@@ -348,6 +358,8 @@ container.bind<IUserUseCase>(SYMBOLS.UseCases.UserUseCase).to(UserUseCase).inSin
 container.bind<ICreateOrganizationTechnicianUseCase>(SYMBOLS.UseCases.CreateOrganizationTechnicianUseCase).to(CreateOrganizationTechnicianUseCase).inSingletonScope();
 /** 5.7. -- Company Settings UseCase */
 container.bind<ICompanySettingsUseCase>(SYMBOLS.UseCases.CompanySettings).to(CompanySettingsUseCase).inSingletonScope();
+/** 5.8. -- Technician Stats UseCase */
+container.bind<IGetTechnicianStatsUseCase>(SYMBOLS.UseCases.TechnicianStats).to(GetTechnicianStatsUseCase).inSingletonScope();
 container.bind<ICreateUserUseCase>(SYMBOLS.UseCases.User.CreateUserUseCase).to(CreateUserUseCase).inSingletonScope();
 container.bind<IRegisterUserWithOrganizationUseCase>(SYMBOLS.UseCases.User.CreateUserWithOrganizationUseCase).to(RegisterUserWithOrganizationUseCase).inSingletonScope();
 /** 5.4. -- Organization Member UseCases */
@@ -400,6 +412,13 @@ container.bind<IUseCompanySettingsState>(SYMBOLS.States.CompanySettingsState).to
 /** 6.0. -- Profile State */
 container.bind<IUseProfileState>(SYMBOLS.States.ProfileState).toDynamicValue(() => {
   return useProfileState();
+});
+/** 6.0. -- Technician States */
+container.bind<IUseTechniciansState>(SYMBOLS.States.TechniciansState).toDynamicValue(() => {
+  return useTechniciansState();
+});
+container.bind<IUseTechnicianDetailState>(SYMBOLS.States.TechnicianDetailState).toDynamicValue(() => {
+  return useTechnicianDetailState();
 });
 /** 6.1. -- Garage CarRepair States */
 container.bind<IUseGarageState>(SYMBOLS.States.GarageState).toDynamicValue(() => {

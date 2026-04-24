@@ -5,4 +5,5 @@ export type UserViewModel = {
   lastName?: string;
   role?: 'technician' | 'manager' | 'admin';
   percentageCommission?: number;
+  isBlocked?: boolean;
 }

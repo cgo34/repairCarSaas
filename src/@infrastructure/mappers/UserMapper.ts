@@ -15,6 +15,7 @@ export class UserMapper {
       lastName: api.last_name,
       subscription: api.subscription,
       percentageCommission: api.percentage_commission,
+      isBlocked: api.is_blocked,
     };
   }
 

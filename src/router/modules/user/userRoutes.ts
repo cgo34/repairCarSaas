@@ -25,4 +25,27 @@ export const usersRoutes: RouteRecordRaw[] = [
       ]
     },
   },
+  {
+    path: '/technicians',
+    name: 'Technicians',
+    component: () => import('@/@presentation/@modules/technicians/pages/TechniciansPage.vue'),
+    meta: {
+      requiresAuth: true,
+      breadcrumb: [
+        { title: 'Techniciens', href: '/technicians' },
+      ]
+    },
+  },
+  {
+    path: '/technicians/:id',
+    name: 'TechnicianDetail',
+    component: () => import('@/@presentation/@modules/technicians/pages/TechnicianDetailPage.vue'),
+    meta: {
+      requiresAuth: true,
+      breadcrumb: [
+        { title: 'Techniciens', href: '/technicians' },
+        { title: 'Détail', href: '' },
+      ]
+    },
+  },
 ];

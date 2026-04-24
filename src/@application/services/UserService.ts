@@ -19,7 +19,15 @@ export class UserService implements IUserService {
     return await this.userRepository.getUserById(id);
   }
 
+  async createUser(user: UserDto): Promise<UserDto> {
+    return await this.userRepository.createUser(user);
+  }
+
   async updateUser(id: string, user: Partial<UserDto>): Promise<void> {
     return await this.userRepository.updateUser(id, user);
+  }
+
+  async deleteUser(id: string): Promise<void> {
+    return await this.userRepository.deleteUser(id);
   }
 }

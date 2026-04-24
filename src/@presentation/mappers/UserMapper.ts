@@ -10,6 +10,7 @@ export class UserMapper {
       firstName: viewModel.firstName,
       lastName: viewModel.lastName,
       percentageCommission: viewModel.percentageCommission,
+      isBlocked: viewModel.isBlocked,
     };
   }
 
@@ -22,6 +23,7 @@ export class UserMapper {
       firstName: dto.firstName,
       lastName: dto.lastName,
       percentageCommission: dto.percentageCommission,
+      isBlocked: dto.isBlocked,
     };
   }
 }

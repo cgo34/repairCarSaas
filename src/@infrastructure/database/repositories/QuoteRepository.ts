@@ -166,4 +166,28 @@ export class QuoteRepository implements IQuoteRepository {
 
     if (error) throw new Error('Error updating quote status');
   }
+
+  async getByTechnicianId(technicianId: string): Promise<QuoteDto[]> {
+    const { data, error } = await this.clientProvider.getClient()
+      .from('quotes')
+      .select(`
+        *,
+        status:document_statuses(*),
+        quote_details(price, dent_removal_price)
+      `)
+      .eq('technician_id', technicianId)
+      .returns<QuoteApiModel[]>();
+
+    if (error) throw new Error('Error fetching quotes by technician');
+    return data.map(QuoteMapper.apiToDto);
+  }
+
+  async updateCommission(quoteId: string, commissionRate: number | null, commissionPaid: boolean): Promise<void> {
+    const { error } = await this.clientProvider.getClient()
+      .from('quotes')
+      .update({ commission_rate: commissionRate, commission_paid: commissionPaid })
+      .eq('id', quoteId);
+
+    if (error) throw new Error('Error updating commission');
+  }
 }
