@@ -11,6 +11,7 @@ export class UserMapper {
       lastName: viewModel.lastName,
       role: viewModel.role as UserDto['role'],
       percentageCommission: viewModel.percentageCommission,
+      isBlocked: viewModel.isBlocked,
     };
   }
 
@@ -23,6 +24,7 @@ export class UserMapper {
       lastName: dto.lastName,
       role: dto.role,
       percentageCommission: dto.percentageCommission,
+      isBlocked: dto.isBlocked,
     };
   }
 }

@@ -16,6 +16,7 @@ export class UserMapper {
       role: api.role,
       subscription: api.subscription,
       percentageCommission: api.percentage_commission,
+      isBlocked: api.is_blocked,
     };
   }
 
@@ -27,7 +28,8 @@ export class UserMapper {
       ...(dto.firstName !== undefined && { first_name: dto.firstName }),
       ...(dto.lastName !== undefined && { last_name: dto.lastName }),
       ...(dto.role !== undefined && { role: dto.role }),
-      // ...(dto.percentageCommission !== undefined && { percentage_commission: dto.percentageCommission }),
+      ...(dto.percentageCommission !== undefined && { percentage_commission: dto.percentageCommission }),
+      ...(dto.isBlocked !== undefined && { is_blocked: dto.isBlocked }),
     };
   }
 

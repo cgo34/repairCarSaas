@@ -23,21 +23,7 @@ const {
     miniSidebar
   } = useCustomizerState();
 
-// Assume we have a function to get the current user's role
-const userRole = 'admin'; // This should be dynamically determined
-
-const sidebarMenu = computed(() => {
-  switch (userRole) {
-    case 'admin':
-      return menu;
-    // case 'garage':
-    //   return garageMenu;
-    // case 'user':
-    //   return userMenu;
-    default:
-      return [];
-  }
-});
+const sidebarMenu = computed(() => menu.value);
 </script>
 
 <template>

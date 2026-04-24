@@ -50,4 +50,6 @@ export interface QuoteDto {
   garageEmail?: string;
   garagePercentageCommission?: number;
   totalHt?: number;
+  commissionRate?: number | null;
+  commissionPaid?: boolean;
 }

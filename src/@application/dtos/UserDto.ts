@@ -9,4 +9,5 @@ export interface UserDto {
   role: 'admin' | 'garage' | 'technician' | 'independant_technician' | 'user';
   subscription?: SubscriptionApiModel;
   percentageCommission?: number;
+  isBlocked?: boolean;
 }

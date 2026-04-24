@@ -8,4 +8,5 @@ export interface UserViewModel {
   createdAt?: string;
   role?: string;
   percentageCommission?: number;
+  isBlocked?: boolean;
 }

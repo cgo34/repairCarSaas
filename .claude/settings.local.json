@@ -65,7 +65,12 @@
       "Bash(cat src/@presentation/mappers/LineItemMapper.ts)",
       "Bash(cat src/@presentation/mappers/LineItemViewMapper.ts)",
       "Bash(git merge *)",
-      "Bash(npx tsc *)"
+      "Bash(npx tsc *)",
+      "PowerShell(Get-ChildItem \"C:\\\\Program Files\\\\GitHub CLI\\\\\" -ErrorAction SilentlyContinue; Get-ChildItem \"$env:LOCALAPPDATA\\\\Programs\\\\GitHub CLI\\\\\" -ErrorAction SilentlyContinue)",
+      "Bash(xargs -I {} bash -c \"ls -la {}/enums/\")",
+      "Bash(python3 -c \"from reportlab.lib.pagesizes import A4; print\\('ok'\\)\")",
+      "Bash(python -c \"from reportlab.lib.pagesizes import A4; print\\('ok'\\)\")",
+      "Bash(python \"C:\\\\Users\\\\couta\\\\AppData\\\\Local\\\\Temp\\\\generate_c3_pdf.py\")"
     ]
   }
 }

@@ -1,4 +1,5 @@
 // src/@presentation/@ui/layouts/vertical-sidebar/menus/adminMenu.ts
+import { computed } from 'vue';
 import { IAuthState } from '@/@application/states/interfaces/IAuthState';
 import { container } from '@/@infrastructure/ioc/inversify.config';
 import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
@@ -12,7 +13,8 @@ import {
   ListIcon,
   LogoutIcon,
   ToolIcon,
-  UserIcon
+  UserIcon,
+  UserCogIcon
 } from 'vue-tabler-icons';
 
 
@@ -83,6 +85,11 @@ const adminMenu = [
     title: 'Utilisateurs',
     icon: UserIcon,
     to: '/Users',
+  },
+  {
+    title: 'Techniciens',
+    icon: UserCogIcon,
+    to: '/technicians',
   },
   { divider: true },
 
@@ -263,4 +270,4 @@ const userMenu = [
   },
 ];
 
-export const menu = user.value?.role === 'admin' ? adminMenu : userMenu
+export const menu = computed(() => adminMenu)

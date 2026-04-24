@@ -28,6 +28,7 @@ const SYMBOLS = {
     QuoteRepository: Symbol.for(SYMBOL_NAMES.QUOTE_REPOSITORY),
     QuoteDetailRepository: Symbol.for(SYMBOL_NAMES.QUOTE_DETAIL_REPOSITORY),
     CompanySettingsRepository: Symbol.for(SYMBOL_NAMES.COMPANY_SETTINGS_REPOSITORY),
+    TechnicianGarageAccessRepository: Symbol.for(SYMBOL_NAMES.TECHNICIAN_GARAGE_ACCESS_REPOSITORY),
     // -- Settings CarRepair Repositories
     BodyPartRepository: Symbol.for(SYMBOL_NAMES.BODY_PART_REPOSITORY),
     BodyMaterialRepository: Symbol.for(SYMBOL_NAMES.BODY_MATERIAL_REPOSITORY),
@@ -108,6 +109,7 @@ const SYMBOLS = {
       CalculateLineCostUseCase: Symbol.for(SYMBOL_NAMES.CALCULATE_LINE_COST_USE_CASE),
     },
     CompanySettings: Symbol.for(SYMBOL_NAMES.COMPANY_SETTINGS_USE_CASE),
+    TechnicianStats: Symbol.for(SYMBOL_NAMES.TECHNICIAN_STATS_USE_CASE),
     Quote: {
       QuoteUseCase: Symbol.for(SYMBOL_NAMES.QUOTE_USE_CASE),
       GetQuoteUseCase: Symbol.for(SYMBOL_NAMES.GET_QUOTE_USE_CASE),
@@ -184,6 +186,9 @@ const SYMBOLS = {
     CompanySettingsState: Symbol.for(SYMBOL_NAMES.COMPANY_SETTINGS_STATE),
     // -- Profile State
     ProfileState: Symbol.for(SYMBOL_NAMES.PROFILE_STATE),
+    // -- Technician States
+    TechniciansState: Symbol.for(SYMBOL_NAMES.TECHNICIANS_STATE),
+    TechnicianDetailState: Symbol.for(SYMBOL_NAMES.TECHNICIAN_DETAIL_STATE),
     // -- Invoices States
     Invoice: {
       InvoiceState: Symbol.for(SYMBOL_NAMES.INVOICE_STATE),
