@@ -21,11 +21,12 @@ export class SettingPriceRepository implements ISettingPriceRepository {
     private settingPriceImpactCountToUtRepository: ISettingPriceImpactCountToUtRepository,
   ) {}
 
-  async getByUserId(userId: string): Promise<SettingPriceDto> {
+  async getByUserId(userId: string): Promise<SettingPriceDto | null> {
     const general = await this.settingPriceGeneralRepository.getByUserId(userId);
 
     // Si l'utilisateur n'a pas encore configuré ses paramètres, on retourne les paramètres par défaut
     if (!general) {
+      return null;
       return this.getDefault();
     }
 
@@ -44,23 +45,29 @@ export class SettingPriceRepository implements ISettingPriceRepository {
   }
 
   async getDefault(): Promise<SettingPriceDto> {
-    const general = await this.settingPriceGeneralRepository.getAdmin();
-    const bodyParts = await this.settingPriceBodyPartCoefficientRepository.getAdmin();
-    const technicity = await this.settingPriceTechnicityCoefficientRepository.getAdmin();
-    const impactsCount = await this.settingPriceImpactCountToUtRepository.getAdmin();
+    const general = await this.settingPriceGeneralRepository.getDefault();
+    const bodyParts = await this.settingPriceBodyPartCoefficientRepository.getDefault();
+    const technicity = await this.settingPriceTechnicityCoefficientRepository.getDefault();
+    const impactsCount = await this.settingPriceImpactCountToUtRepository.getDefault();
 
     return { general, bodyParts, technicity, impactsCount };
   }
 
   async createForUser(userId: string): Promise<void> {
     // Vérifier si les settings existent déjà pour éviter les doublons
-    const existingSettings = await this.settingPriceGeneralRepository.getByUserId(userId);
-    if (existingSettings) {
+    const existingSettings = await this.getByUserId(userId);
+
+    console.log('existingSettings =', existingSettings);
+
+    if (existingSettings !== null) {
       console.log('[SettingPriceRepo] Settings already exist for user:', userId);
       return;
     }
 
+    console.log('[SettingPriceRepo] No existing settings found for user:', userId, 'Creating default settings...');
+
     const defaultSettings = await this.getDefault();
+    console.log('[SettingPriceRepo] Creating default settings for user:', userId, defaultSettings);
 
     // Créer les settings généraux
     try {
@@ -113,5 +120,7 @@ export class SettingPriceRepository implements ISettingPriceRepository {
         // Ignorer les doublons
       }
     }
+
+    console.log('End of create defautlt settings for user:', userId);
   }
 }

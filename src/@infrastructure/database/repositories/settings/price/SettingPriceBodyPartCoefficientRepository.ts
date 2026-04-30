@@ -13,11 +13,10 @@ import { inject, injectable } from 'inversify';
 export class SettingPriceBodyPartCoefficientRepository implements ISettingPriceBodyPartCoefficientRepository {
   constructor(@inject(SYMBOLS.Providers.ClientProvider) private clientProvider: IClientProvider<SupabaseClient>) {}
   
-  async getAdmin(): Promise<SettingPriceBodyPartCoefficientDto[]> {
+  async getDefault(): Promise<SettingPriceBodyPartCoefficientDto[]> {
     const { data, error } = await this.clientProvider.getClient()
-      .from('setting_price_body_part_coefficient')
+      .from('default_setting_price_body_part_coefficient')
       .select(`*, body_parts(*)`)
-      .eq('user_id', DEFAULT_SETTINGS_USER_ID)
       .returns<SettingPriceBodyPartCoefficientApiModel[]>();
 
     if (error) throw new Error('Error fetching default body part coefficient settings');

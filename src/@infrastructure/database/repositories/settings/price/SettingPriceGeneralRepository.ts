@@ -13,11 +13,10 @@ import { inject, injectable } from 'inversify';
 export class SettingPriceGeneralRepository implements ISettingPriceGeneralRepository {
   constructor(@inject(SYMBOLS.Providers.ClientProvider) private clientProvider: IClientProvider<SupabaseClient>) {}
   
-  async getAdmin(): Promise<SettingPriceGeneralDto> {
+  async getDefault(): Promise<SettingPriceGeneralDto> {
     const { data, error } = await this.clientProvider.getClient()
-      .from('setting_price_general')
+      .from('default_setting_price_general')
       .select('*')
-      .eq('user_id', DEFAULT_SETTINGS_USER_ID)
       .maybeSingle<SettingPriceGeneralApiModel>();
 
     if (error) throw new Error('Error fetching default general settings');

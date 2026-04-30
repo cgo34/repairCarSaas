@@ -13,7 +13,8 @@ export enum SYMBOL_NAMES {
     // #region -> REPOSITORIES
     AUTH_REPOSITORY = 'AuthRepository',
     USER_REPOSITORY = 'UserRepository',
-    
+    ORGANIZATION_REPOSITORY = 'OrganizationRepository',
+    ORGANIZATION_MEMBER_REPOSITORY = 'OrganizationMemberRepository',
     // -- Subscription REPOSITORIES
     SUBSCRIPTION_REPOSITORY = 'SubscriptionRepository',
 
@@ -42,6 +43,7 @@ export enum SYMBOL_NAMES {
     // #region -> SERVICES
     AUTH_SERVICE = 'AuthService',
     USER_SERVICE = 'UserService',
+    SUBSCRIPTION_SERVICE = 'SubscriptionService',
     GARAGE_SERVICE = 'GarageService',
     VEHICLE_SERVICE = 'VehicleService',
     NOTIFICATION_SERVICE = 'NotificationService',
@@ -71,6 +73,7 @@ export enum SYMBOL_NAMES {
     // -- User UseCases
     USER_USE_CASE = 'UserUseCase',
     CREATE_USER_USE_CASE = 'CreateUserUseCase',
+    CREATE_USER_WITH_ORGANIZATION_USE_CASE = 'CreateUserWithOrganizationUseCase',
     // -- Garage UseCases
     GARAGE_USE_CASE = 'GarageUseCase',
     VEHICLE_USE_CASE = 'VehicleUseCase',

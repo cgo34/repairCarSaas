@@ -12,11 +12,10 @@ import { inject, injectable } from 'inversify';
 export class SettingPriceImpactCountToUtRepository implements ISettingPriceImpactCountToUtRepository {
   constructor(@inject(SYMBOLS.Providers.ClientProvider) private clientProvider: IClientProvider<SupabaseClient>) {}
 
-  async getAdmin(): Promise<SettingPriceImpactCountToUtDto[]> {
+  async getDefault(): Promise<SettingPriceImpactCountToUtDto[]> {
     const { data, error } = await this.clientProvider.getClient()
-      .from('setting_price_impact_count_to_ut')
+      .from('default_setting_price_impact_count_to_ut')
       .select('*')
-      .eq('user_id', DEFAULT_SETTINGS_USER_ID)
       .returns<SettingPriceImpactCountToUtApiModel[]>();
 
     if (error)

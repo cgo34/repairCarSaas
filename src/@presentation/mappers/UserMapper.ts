@@ -9,7 +9,6 @@ export class UserMapper {
       fullName: viewModel.fullName,
       firstName: viewModel.firstName,
       lastName: viewModel.lastName,
-      role: viewModel.role as UserDto['role'],
       percentageCommission: viewModel.percentageCommission,
     };
   }
@@ -21,7 +20,6 @@ export class UserMapper {
       fullName: dto.fullName,
       firstName: dto.firstName,
       lastName: dto.lastName,
-      role: dto.role,
       percentageCommission: dto.percentageCommission,
     };
   }

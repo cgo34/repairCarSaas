@@ -15,6 +15,7 @@ import { SYMBOLS } from '@infrastructure/ioc/symbols';
 import { inject, injectable } from 'inversify';
 import { ref } from 'vue';
 import { SubscriptionDto } from '@/@application/dtos/SubscriptionDto';
+import { IRegisterUserWithOrganizationUseCase } from '@/@domain/useCases/auth/IRegisterUserWithOrganizationUseCase';
 
 @injectable()
 export class AuthState implements IAuthState {
@@ -40,6 +41,7 @@ export class AuthState implements IAuthState {
     @inject(SYMBOLS.UseCases.Auth.LoginUseCase) private loginUseCase: ILoginUseCase,
     @inject(SYMBOLS.UseCases.Auth.LogoutUseCase) private logoutUseCase: ILogoutUseCase,
     @inject(SYMBOLS.UseCases.User.CreateUserUseCase) private createUserUseCase: ICreateUserUseCase,
+    @inject(SYMBOLS.UseCases.User.CreateUserWithOrganizationUseCase) private createUserWithOrganizationUseCase: IRegisterUserWithOrganizationUseCase,
     @inject(SYMBOLS.UseCases.Setting.Price.AllUseCase) private settingPriceUseCase: ISettingPriceUseCase,
   ) {
     this.loadPersistedState();
@@ -149,13 +151,16 @@ export class AuthState implements IAuthState {
 
   async register(email: string, password: string, fullName: string): Promise<void> {
     try {
-      const { user, error } = await this.authUseCase.register.execute(email, password, fullName);
+      const user: UserDto = await this.createUserWithOrganizationUseCase.execute(email, password, fullName);
+      
       if (!user) {
         throw new AuthError(
           AuthErrorCode.REGISTRATION_FAILED,
           'Registration failed: no user returned'
         );
       }
+
+      console.log('User registered successfully:', user);
       // Mise à jour de l'état
       this.isAuthenticated.value = true;
       // Mapper UserDto -> UserViewModel
@@ -163,17 +168,6 @@ export class AuthState implements IAuthState {
 
       // Utilisation des méthodes communes
       this.pushState();
-      
-      // Une fois inscrit, créer son profil dans public.users
-      const userDto = PresentationUserMapper.viewToDto(this.user.value);
-      await this.createUserUseCase.execute(userDto);
-
-      // Copier les settings de prix par défaut (admin) pour le nouvel utilisateur
-      try {
-        await this.settingPriceUseCase.createSettingsForUser(this.user.value.id);
-      } catch (settingsError) {
-        console.error('[AuthState] Could not copy default price settings:', settingsError);
-      }      
     } catch (error) {
       throw new AuthError(
         AuthErrorCode.REGISTRATION_FAILED,
@@ -182,12 +176,10 @@ export class AuthState implements IAuthState {
       );
     }
 
-    
-      // ➕ Lier automatiquement le plan 'free'
-      const subscription = await this.authUseCase.subscribeToFreePlan.execute(this.user.value.id);
-      
-      this.subscription.value = subscription;
-      this.user.value.subscription = subscription;
+    // ➕ Lier automatiquement le plan 'free'
+    // const subscription = await this.authUseCase.subscribeToFreePlan.execute(this.user.value.id);
+    // this.subscription.value = subscription;
+    // this.user.value.subscription = subscription;
   }
 
  async logout(): Promise<void> {

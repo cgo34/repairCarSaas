@@ -2,7 +2,6 @@ import { SubscriptionPlanDto } from './SubscriptionPlanDto';
 
 export interface SubscriptionDto {
   id: string;
-  userId: string;
   planId: string;
   stripeSubscriptionId?: string;
   status: string;
@@ -10,4 +9,5 @@ export interface SubscriptionDto {
   endDate: string;
   createdAt: string;
   subscriptionPlan: SubscriptionPlanDto;
+  organizationId: string;
 }

@@ -19,7 +19,8 @@ const SYMBOLS = {
     SubscriptionRepository: Symbol.for(SYMBOL_NAMES.SUBSCRIPTION_REPOSITORY),
     GarageRepository: Symbol.for(SYMBOL_NAMES.GARAGE_REPOSITORY),
     VehicleRepository: Symbol.for(SYMBOL_NAMES.VEHICLE_REPOSITORY),
-    
+    OrganizationRepository: Symbol.for(SYMBOL_NAMES.ORGANIZATION_REPOSITORY),
+    OrganizationMemberRepository: Symbol.for(SYMBOL_NAMES.ORGANIZATION_MEMBER_REPOSITORY),
     // Document Status Repositories
     DocumentStatusRepository: Symbol.for(SYMBOL_NAMES.DOCUMENT_STATUS_REPOSITORY),
 
@@ -46,6 +47,7 @@ const SYMBOLS = {
   Services: {
     AuthService: Symbol.for(SYMBOL_NAMES.AUTH_SERVICE),
     UserService: Symbol.for(SYMBOL_NAMES.USER_SERVICE),
+    SubscriptionService: Symbol.for(SYMBOL_NAMES.SUBSCRIPTION_SERVICE),
     GarageService: Symbol.for(SYMBOL_NAMES.GARAGE_SERVICE),
     VehicleService: Symbol.for(SYMBOL_NAMES.VEHICLE_SERVICE),
     NotificationService: Symbol.for(SYMBOL_NAMES.NOTIFICATION_SERVICE),
@@ -83,6 +85,7 @@ const SYMBOLS = {
     UserUseCase: Symbol.for(SYMBOL_NAMES.USER_USE_CASE),
     User: {
       CreateUserUseCase: Symbol.for(SYMBOL_NAMES.CREATE_USER_USE_CASE),
+      CreateUserWithOrganizationUseCase: Symbol.for(SYMBOL_NAMES.CREATE_USER_WITH_ORGANIZATION_USE_CASE),
     },
     Garage: Symbol.for(SYMBOL_NAMES.GARAGE_USE_CASE),
     Vehicle: Symbol.for(SYMBOL_NAMES.VEHICLE_USE_CASE),

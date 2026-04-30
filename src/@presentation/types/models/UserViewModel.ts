@@ -6,6 +6,5 @@ export interface UserViewModel {
   firstName?: string;
   lastName?: string;
   createdAt?: string;
-  role?: string;
   percentageCommission?: number;
 }

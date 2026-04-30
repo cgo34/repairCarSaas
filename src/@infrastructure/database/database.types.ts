@@ -7,8 +7,43 @@ export type Json =
   | Json[]
 
 export type Database = {
+  // Allows to automatically instantiate createClient with right options
+  // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
+  __InternalSupabase: {
+    PostgrestVersion: "14.5"
+  }
   public: {
     Tables: {
+      billing_infos: {
+        Row: {
+          account_holder_name: string | null
+          bank_name: string | null
+          bic: string | null
+          created_at: string | null
+          iban: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          account_holder_name?: string | null
+          bank_name?: string | null
+          bic?: string | null
+          created_at?: string | null
+          iban?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          account_holder_name?: string | null
+          bank_name?: string | null
+          bic?: string | null
+          created_at?: string | null
+          iban?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       body_materials: {
         Row: {
           code: string | null
@@ -48,6 +83,290 @@ export type Database = {
         }
         Relationships: []
       }
+      company_profiles: {
+        Row: {
+          address: string
+          bic: string | null
+          capital: string | null
+          city: string
+          company_name: string
+          country: string
+          created_at: string | null
+          email: string | null
+          iban: string | null
+          id: string
+          late_payment_penalty: string | null
+          legal_form: string
+          payment_delay: number
+          phone: string | null
+          recovery_fee: string | null
+          siren: string | null
+          siret: string | null
+          tva_number: string | null
+          updated_at: string | null
+          user_id: string
+          website: string | null
+          zip_code: string
+        }
+        Insert: {
+          address?: string
+          bic?: string | null
+          capital?: string | null
+          city?: string
+          company_name?: string
+          country?: string
+          created_at?: string | null
+          email?: string | null
+          iban?: string | null
+          id?: string
+          late_payment_penalty?: string | null
+          legal_form?: string
+          payment_delay?: number
+          phone?: string | null
+          recovery_fee?: string | null
+          siren?: string | null
+          siret?: string | null
+          tva_number?: string | null
+          updated_at?: string | null
+          user_id: string
+          website?: string | null
+          zip_code?: string
+        }
+        Update: {
+          address?: string
+          bic?: string | null
+          capital?: string | null
+          city?: string
+          company_name?: string
+          country?: string
+          created_at?: string | null
+          email?: string | null
+          iban?: string | null
+          id?: string
+          late_payment_penalty?: string | null
+          legal_form?: string
+          payment_delay?: number
+          phone?: string | null
+          recovery_fee?: string | null
+          siren?: string | null
+          siret?: string | null
+          tva_number?: string | null
+          updated_at?: string | null
+          user_id?: string
+          website?: string | null
+          zip_code?: string
+        }
+        Relationships: []
+      }
+      company_settings: {
+        Row: {
+          address: string | null
+          bic: string | null
+          capital: string | null
+          city: string | null
+          company_name: string | null
+          country: string | null
+          created_at: string | null
+          email: string | null
+          iban: string | null
+          id: string
+          late_payment_penalty: string | null
+          legal_form: string | null
+          payment_delay: number | null
+          phone: string | null
+          recovery_fee: string | null
+          siren: string | null
+          siret: string | null
+          tva_number: string | null
+          updated_at: string | null
+          user_id: string
+          website: string | null
+          zip_code: string | null
+        }
+        Insert: {
+          address?: string | null
+          bic?: string | null
+          capital?: string | null
+          city?: string | null
+          company_name?: string | null
+          country?: string | null
+          created_at?: string | null
+          email?: string | null
+          iban?: string | null
+          id?: string
+          late_payment_penalty?: string | null
+          legal_form?: string | null
+          payment_delay?: number | null
+          phone?: string | null
+          recovery_fee?: string | null
+          siren?: string | null
+          siret?: string | null
+          tva_number?: string | null
+          updated_at?: string | null
+          user_id: string
+          website?: string | null
+          zip_code?: string | null
+        }
+        Update: {
+          address?: string | null
+          bic?: string | null
+          capital?: string | null
+          city?: string | null
+          company_name?: string | null
+          country?: string | null
+          created_at?: string | null
+          email?: string | null
+          iban?: string | null
+          id?: string
+          late_payment_penalty?: string | null
+          legal_form?: string | null
+          payment_delay?: number | null
+          phone?: string | null
+          recovery_fee?: string | null
+          siren?: string | null
+          siret?: string | null
+          tva_number?: string | null
+          updated_at?: string | null
+          user_id?: string
+          website?: string | null
+          zip_code?: string | null
+        }
+        Relationships: []
+      }
+      default_setting_price_body_part_coefficient: {
+        Row: {
+          body_part_id: string
+          created_at: string
+          difficulty_coefficient: number
+          id: string
+          updated_at: string
+        }
+        Insert: {
+          body_part_id: string
+          created_at?: string
+          difficulty_coefficient: number
+          id?: string
+          updated_at?: string
+        }
+        Update: {
+          body_part_id?: string
+          created_at?: string
+          difficulty_coefficient?: number
+          id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fk_default_setting_body_part"
+            columns: ["body_part_id"]
+            isOneToOne: true
+            referencedRelation: "body_parts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      default_setting_price_diameter_coefficient: {
+        Row: {
+          coefficient: number
+          created_at: string
+          diameter: number
+          id: string
+          updated_at: string
+        }
+        Insert: {
+          coefficient: number
+          created_at?: string
+          diameter: number
+          id?: string
+          updated_at?: string
+        }
+        Update: {
+          coefficient?: number
+          created_at?: string
+          diameter?: number
+          id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      default_setting_price_general: {
+        Row: {
+          created_at: string
+          hourly_rate: number
+          id: string
+          unit_time: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          hourly_rate: number
+          id?: string
+          unit_time: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          hourly_rate?: number
+          id?: string
+          unit_time?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      default_setting_price_impact_count_to_ut: {
+        Row: {
+          created_at: string
+          id: string
+          impact_count_max: number
+          impact_count_min: number
+          unit_time: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          impact_count_max: number
+          impact_count_min: number
+          unit_time: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          impact_count_max?: number
+          impact_count_min?: number
+          unit_time?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      default_setting_price_technicity_coefficient: {
+        Row: {
+          aluminium_coefficient: number
+          created_at: string
+          dap_coefficient: number
+          dsp_coefficient: number
+          id: string
+          updated_at: string
+        }
+        Insert: {
+          aluminium_coefficient: number
+          created_at?: string
+          dap_coefficient: number
+          dsp_coefficient: number
+          id?: string
+          updated_at?: string
+        }
+        Update: {
+          aluminium_coefficient?: number
+          created_at?: string
+          dap_coefficient?: number
+          dsp_coefficient?: number
+          id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       document_statuses: {
         Row: {
           code: string
@@ -74,6 +393,7 @@ export type Database = {
           email: string | null
           id: string
           name: string | null
+          organization_id: string | null
           percentage_commission: number | null
           phone: string | null
           user_id: string | null
@@ -86,6 +406,7 @@ export type Database = {
           email?: string | null
           id?: string
           name?: string | null
+          organization_id?: string | null
           percentage_commission?: number | null
           phone?: string | null
           user_id?: string | null
@@ -98,12 +419,20 @@ export type Database = {
           email?: string | null
           id?: string
           name?: string | null
+          organization_id?: string | null
           percentage_commission?: number | null
           phone?: string | null
           user_id?: string | null
           zip_code?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "garages_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "garages_user_id_fkey"
             columns: ["user_id"]
@@ -183,6 +512,7 @@ export type Database = {
           car_brand: string | null
           car_date: number | null
           car_id: string | null
+          car_immatriculation: string | null
           country: string | null
           created_at: string
           currency: string | null
@@ -200,18 +530,22 @@ export type Database = {
           invoice_number: string | null
           is_forfait: boolean | null
           is_sent: boolean | null
+          organization_id: string | null
           quote_number: string | null
           sent_at: string | null
           start_date: string | null
           status_id: string | null
           technician_id: string | null
+          total_ht: number | null
           updated_at: string
           user_id: string | null
+          vehicle_id: string | null
         }
         Insert: {
           car_brand?: string | null
           car_date?: number | null
           car_id?: string | null
+          car_immatriculation?: string | null
           country?: string | null
           created_at?: string
           currency?: string | null
@@ -229,18 +563,22 @@ export type Database = {
           invoice_number?: string | null
           is_forfait?: boolean | null
           is_sent?: boolean | null
+          organization_id?: string | null
           quote_number?: string | null
           sent_at?: string | null
           start_date?: string | null
           status_id?: string | null
           technician_id?: string | null
+          total_ht?: number | null
           updated_at?: string
           user_id?: string | null
+          vehicle_id?: string | null
         }
         Update: {
           car_brand?: string | null
           car_date?: number | null
           car_id?: string | null
+          car_immatriculation?: string | null
           country?: string | null
           created_at?: string
           currency?: string | null
@@ -258,13 +596,16 @@ export type Database = {
           invoice_number?: string | null
           is_forfait?: boolean | null
           is_sent?: boolean | null
+          organization_id?: string | null
           quote_number?: string | null
           sent_at?: string | null
           start_date?: string | null
           status_id?: string | null
           technician_id?: string | null
+          total_ht?: number | null
           updated_at?: string
           user_id?: string | null
+          vehicle_id?: string | null
         }
         Relationships: [
           {
@@ -272,6 +613,13 @@ export type Database = {
             columns: ["garage_id"]
             isOneToOne: false
             referencedRelation: "garages"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "invoices_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
             referencedColumns: ["id"]
           },
           {
@@ -295,7 +643,112 @@ export type Database = {
             referencedRelation: "users"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "invoices_vehicle_id_fkey"
+            columns: ["vehicle_id"]
+            isOneToOne: false
+            referencedRelation: "vehicles"
+            referencedColumns: ["id"]
+          },
         ]
+      }
+      organization_members: {
+        Row: {
+          created_at: string | null
+          id: string
+          organization_id: string
+          role: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          organization_id: string
+          role: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          organization_id?: string
+          role?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "organization_members_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      organizations: {
+        Row: {
+          created_at: string | null
+          id: string
+          name: string
+          owner_user_id: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          name: string
+          owner_user_id: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          name?: string
+          owner_user_id?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      professional_infos: {
+        Row: {
+          address_line: string | null
+          city: string | null
+          country: string | null
+          created_at: string | null
+          legal_company_name: string
+          legal_status: string | null
+          postal_code: string | null
+          siret_number: string | null
+          updated_at: string | null
+          user_id: string
+          vat_number: string | null
+        }
+        Insert: {
+          address_line?: string | null
+          city?: string | null
+          country?: string | null
+          created_at?: string | null
+          legal_company_name: string
+          legal_status?: string | null
+          postal_code?: string | null
+          siret_number?: string | null
+          updated_at?: string | null
+          user_id: string
+          vat_number?: string | null
+        }
+        Update: {
+          address_line?: string | null
+          city?: string | null
+          country?: string | null
+          created_at?: string | null
+          legal_company_name?: string
+          legal_status?: string | null
+          postal_code?: string | null
+          siret_number?: string | null
+          updated_at?: string | null
+          user_id?: string
+          vat_number?: string | null
+        }
+        Relationships: []
       }
       quote_details: {
         Row: {
@@ -367,6 +820,9 @@ export type Database = {
           car_brand: string | null
           car_date: number | null
           car_id: string | null
+          car_immatriculation: string | null
+          commission_paid: boolean
+          commission_rate: number | null
           country: string | null
           created_at: string | null
           currency: string | null
@@ -385,18 +841,24 @@ export type Database = {
           is_display_unit_price: boolean | null
           is_forfait: boolean | null
           is_sent: boolean | null
+          organization_id: string | null
           quote_number: string | null
           sent_at: string | null
           start_date: string | null
           status_id: string | null
           technician_id: string | null
+          total_ht: number | null
           updated_at: string | null
           user_id: string | null
+          vehicle_id: string | null
         }
         Insert: {
           car_brand?: string | null
           car_date?: number | null
           car_id?: string | null
+          car_immatriculation?: string | null
+          commission_paid?: boolean
+          commission_rate?: number | null
           country?: string | null
           created_at?: string | null
           currency?: string | null
@@ -415,18 +877,24 @@ export type Database = {
           is_display_unit_price?: boolean | null
           is_forfait?: boolean | null
           is_sent?: boolean | null
+          organization_id?: string | null
           quote_number?: string | null
           sent_at?: string | null
           start_date?: string | null
           status_id?: string | null
           technician_id?: string | null
+          total_ht?: number | null
           updated_at?: string | null
           user_id?: string | null
+          vehicle_id?: string | null
         }
         Update: {
           car_brand?: string | null
           car_date?: number | null
           car_id?: string | null
+          car_immatriculation?: string | null
+          commission_paid?: boolean
+          commission_rate?: number | null
           country?: string | null
           created_at?: string | null
           currency?: string | null
@@ -445,13 +913,16 @@ export type Database = {
           is_display_unit_price?: boolean | null
           is_forfait?: boolean | null
           is_sent?: boolean | null
+          organization_id?: string | null
           quote_number?: string | null
           sent_at?: string | null
           start_date?: string | null
           status_id?: string | null
           technician_id?: string | null
+          total_ht?: number | null
           updated_at?: string | null
           user_id?: string | null
+          vehicle_id?: string | null
         }
         Relationships: [
           {
@@ -459,6 +930,13 @@ export type Database = {
             columns: ["garage_id"]
             isOneToOne: false
             referencedRelation: "garages"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "quotes_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
             referencedColumns: ["id"]
           },
           {
@@ -482,6 +960,13 @@ export type Database = {
             referencedRelation: "users"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "quotes_vehicle_id_fkey"
+            columns: ["vehicle_id"]
+            isOneToOne: false
+            referencedRelation: "vehicles"
+            referencedColumns: ["id"]
+          },
         ]
       }
       repair_types: {
@@ -501,6 +986,39 @@ export type Database = {
           name?: string | null
         }
         Relationships: []
+      }
+      setting_price_body_material_coefficient: {
+        Row: {
+          body_material_id: string
+          material_coefficient: number | null
+          user_id: string
+        }
+        Insert: {
+          body_material_id: string
+          material_coefficient?: number | null
+          user_id: string
+        }
+        Update: {
+          body_material_id?: string
+          material_coefficient?: number | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "setting_price_body_material_coefficient_body_material_id_fkey"
+            columns: ["body_material_id"]
+            isOneToOne: false
+            referencedRelation: "body_materials"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "setting_price_body_material_coefficient_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       setting_price_body_part_coefficient: {
         Row: {
@@ -528,6 +1046,35 @@ export type Database = {
           },
           {
             foreignKeyName: "setting_price_body_part_coefficient_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      setting_price_diameter_coefficient: {
+        Row: {
+          coefficient: number | null
+          diameter: number | null
+          id: string
+          user_id: string | null
+        }
+        Insert: {
+          coefficient?: number | null
+          diameter?: number | null
+          id?: string
+          user_id?: string | null
+        }
+        Update: {
+          coefficient?: number | null
+          diameter?: number | null
+          id?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "setting_price_diameter_coefficient_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "users"
@@ -596,6 +1143,39 @@ export type Database = {
           },
         ]
       }
+      setting_price_repair_type_coefficient: {
+        Row: {
+          repair_type_coefficient: number | null
+          repair_type_id: string
+          user_id: string
+        }
+        Insert: {
+          repair_type_coefficient?: number | null
+          repair_type_id: string
+          user_id: string
+        }
+        Update: {
+          repair_type_coefficient?: number | null
+          repair_type_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "setting_price_repair_type_coefficient_repair_type_id_fkey"
+            columns: ["repair_type_id"]
+            isOneToOne: false
+            referencedRelation: "repair_types"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "setting_price_repair_type_coefficient_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       setting_price_technicity_coefficient: {
         Row: {
           aluminium_coefficient: number
@@ -636,6 +1216,7 @@ export type Database = {
       }
       subscription_plans: {
         Row: {
+          code: string
           created_at: string | null
           description: string | null
           id: string
@@ -644,6 +1225,7 @@ export type Database = {
           stripe_price_id: string | null
         }
         Insert: {
+          code?: string
           created_at?: string | null
           description?: string | null
           id?: string
@@ -652,6 +1234,7 @@ export type Database = {
           stripe_price_id?: string | null
         }
         Update: {
+          code?: string
           created_at?: string | null
           description?: string | null
           id?: string
@@ -666,33 +1249,40 @@ export type Database = {
           created_at: string | null
           end_date: string | null
           id: string
+          organization_id: string
           plan_id: string
           start_date: string
           status: string
           stripe_subscription_id: string | null
-          user_id: string
         }
         Insert: {
           created_at?: string | null
           end_date?: string | null
           id?: string
+          organization_id: string
           plan_id: string
           start_date: string
           status: string
           stripe_subscription_id?: string | null
-          user_id: string
         }
         Update: {
           created_at?: string | null
           end_date?: string | null
           id?: string
+          organization_id?: string
           plan_id?: string
           start_date?: string
           status?: string
           stripe_subscription_id?: string | null
-          user_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "subscriptions_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "subscriptions_plan_id_fkey"
             columns: ["plan_id"]
@@ -702,26 +1292,119 @@ export type Database = {
           },
         ]
       }
+      technician_garage_access: {
+        Row: {
+          garage_id: string | null
+          id: string
+          user_id: string | null
+        }
+        Insert: {
+          garage_id?: string | null
+          id?: string
+          user_id?: string | null
+        }
+        Update: {
+          garage_id?: string | null
+          id?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "technician_garage_access_garage_id_fkey"
+            columns: ["garage_id"]
+            isOneToOne: false
+            referencedRelation: "garages"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "technician_garage_access_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       users: {
         Row: {
           email: string
+          first_name: string | null
           full_name: string | null
           id: string
-          role: string | null
+          is_blocked: boolean
+          last_name: string | null
+          percentage_commission: number | null
+          phone: string | null
+          profile_picture_url: string | null
         }
         Insert: {
           email: string
+          first_name?: string | null
           full_name?: string | null
           id: string
-          role?: string | null
+          is_blocked?: boolean
+          last_name?: string | null
+          percentage_commission?: number | null
+          phone?: string | null
+          profile_picture_url?: string | null
         }
         Update: {
           email?: string
+          first_name?: string | null
           full_name?: string | null
           id?: string
-          role?: string | null
+          is_blocked?: boolean
+          last_name?: string | null
+          percentage_commission?: number | null
+          phone?: string | null
+          profile_picture_url?: string | null
         }
         Relationships: []
+      }
+      vehicles: {
+        Row: {
+          annee: number | null
+          created_at: string | null
+          garage_id: string | null
+          id: string
+          immatriculation: string | null
+          marque: string | null
+          user_id: string | null
+        }
+        Insert: {
+          annee?: number | null
+          created_at?: string | null
+          garage_id?: string | null
+          id?: string
+          immatriculation?: string | null
+          marque?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          annee?: number | null
+          created_at?: string | null
+          garage_id?: string | null
+          id?: string
+          immatriculation?: string | null
+          marque?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vehicles_garage_id_fkey"
+            columns: ["garage_id"]
+            isOneToOne: false
+            referencedRelation: "garages"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "vehicles_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
@@ -730,10 +1413,10 @@ export type Database = {
     Functions: {
       ensure_user_profile: {
         Args: {
-          user_id: string
           email: string
           full_name: string
           role: string
+          user_id: string
         }
         Returns: undefined
       }
@@ -747,21 +1430,25 @@ export type Database = {
   }
 }
 
-type DefaultSchema = Database[Extract<keyof Database, "public">]
+type DatabaseWithoutInternals = Omit<Database, "__InternalSupabase">
+
+type DefaultSchema = DatabaseWithoutInternals[Extract<keyof Database, "public">]
 
 export type Tables<
   DefaultSchemaTableNameOrOptions extends
     | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
-    | { schema: keyof Database },
+    | { schema: keyof DatabaseWithoutInternals },
   TableName extends DefaultSchemaTableNameOrOptions extends {
-    schema: keyof Database
+    schema: keyof DatabaseWithoutInternals
   }
-    ? keyof (Database[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
-        Database[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
+    ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+        DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
     : never = never,
-> = DefaultSchemaTableNameOrOptions extends { schema: keyof Database }
-  ? (Database[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
-      Database[DefaultSchemaTableNameOrOptions["schema"]]["Views"])[TableName] extends {
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+      DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])[TableName] extends {
       Row: infer R
     }
     ? R
@@ -779,14 +1466,16 @@ export type Tables<
 export type TablesInsert<
   DefaultSchemaTableNameOrOptions extends
     | keyof DefaultSchema["Tables"]
-    | { schema: keyof Database },
+    | { schema: keyof DatabaseWithoutInternals },
   TableName extends DefaultSchemaTableNameOrOptions extends {
-    schema: keyof Database
+    schema: keyof DatabaseWithoutInternals
   }
-    ? keyof Database[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
+    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
     : never = never,
-> = DefaultSchemaTableNameOrOptions extends { schema: keyof Database }
-  ? Database[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
       Insert: infer I
     }
     ? I
@@ -802,14 +1491,16 @@ export type TablesInsert<
 export type TablesUpdate<
   DefaultSchemaTableNameOrOptions extends
     | keyof DefaultSchema["Tables"]
-    | { schema: keyof Database },
+    | { schema: keyof DatabaseWithoutInternals },
   TableName extends DefaultSchemaTableNameOrOptions extends {
-    schema: keyof Database
+    schema: keyof DatabaseWithoutInternals
   }
-    ? keyof Database[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
+    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
     : never = never,
-> = DefaultSchemaTableNameOrOptions extends { schema: keyof Database }
-  ? Database[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
       Update: infer U
     }
     ? U
@@ -825,14 +1516,16 @@ export type TablesUpdate<
 export type Enums<
   DefaultSchemaEnumNameOrOptions extends
     | keyof DefaultSchema["Enums"]
-    | { schema: keyof Database },
+    | { schema: keyof DatabaseWithoutInternals },
   EnumName extends DefaultSchemaEnumNameOrOptions extends {
-    schema: keyof Database
+    schema: keyof DatabaseWithoutInternals
   }
-    ? keyof Database[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
+    ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
     : never = never,
-> = DefaultSchemaEnumNameOrOptions extends { schema: keyof Database }
-  ? Database[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"][EnumName]
+> = DefaultSchemaEnumNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"][EnumName]
   : DefaultSchemaEnumNameOrOptions extends keyof DefaultSchema["Enums"]
     ? DefaultSchema["Enums"][DefaultSchemaEnumNameOrOptions]
     : never
@@ -840,14 +1533,16 @@ export type Enums<
 export type CompositeTypes<
   PublicCompositeTypeNameOrOptions extends
     | keyof DefaultSchema["CompositeTypes"]
-    | { schema: keyof Database },
+    | { schema: keyof DatabaseWithoutInternals },
   CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
-    schema: keyof Database
+    schema: keyof DatabaseWithoutInternals
   }
-    ? keyof Database[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
+    ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
     : never = never,
-> = PublicCompositeTypeNameOrOptions extends { schema: keyof Database }
-  ? Database[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
+> = PublicCompositeTypeNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
   : PublicCompositeTypeNameOrOptions extends keyof DefaultSchema["CompositeTypes"]
     ? DefaultSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
     : never
