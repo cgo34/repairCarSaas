@@ -65,4 +65,27 @@ export class SubscriptionRepository implements ISubscriptionRepository {
 
     return SubscriptionMapper.apiToDto(data)
   }
+
+  async getSubscriptionByOrganizationId(organizationId: string): Promise<SubscriptionDto> {
+    console.log('Fetching subscription for organization ID:', organizationId);
+    const { data, error } = await this.clientProvider.getClient()
+      .from('subscriptions')
+      .select(`
+        *,
+        subscriptionPlan:subscription_plans(*)
+        `)
+      .eq('organization_id', organizationId)
+      .maybeSingle()
+
+    if (error) {
+      console.error('[SubscriptionRepo] getPlanByName error:', error)
+      throw error
+    }
+
+
+    console.log('Raw subscription data for organization', organizationId, ':', data);
+    const dto = SubscriptionMapper.apiToDto(data);
+    console.log('Fetched subscription for organization', organizationId, ':', dto);
+    return dto;
+  }
 }

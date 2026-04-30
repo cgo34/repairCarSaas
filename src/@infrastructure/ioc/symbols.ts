@@ -1,5 +1,6 @@
 // TODO: (GCE) -> TO BE MOVED TO CORE
 
+import { GetAuthenticatedUserContextUseCase } from "@/@application/useCases/auth/GetAuthenticatedUserContextUseCase";
 import { SYMBOL_NAMES } from "./symbolTypes";
 
 const SYMBOLS = {
@@ -75,6 +76,7 @@ const SYMBOLS = {
       LoginUseCase: Symbol.for(SYMBOL_NAMES.LOGIN_USE_CASE),
       LogoutUseCase: Symbol.for(SYMBOL_NAMES.LOGOUT_USE_CASE),
       RegisterUseCase: Symbol.for(SYMBOL_NAMES.REGISTER_USE_CASE),
+      GetAuthenticatedUserContextUseCase: Symbol.for(SYMBOL_NAMES.GET_AUTHENTICATED_USER_CONTEXT_USE_CASE),
     },
     // -- Subscription UseCases
     Subscription: {

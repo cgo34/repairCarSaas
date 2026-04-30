@@ -16,6 +16,8 @@ import { inject, injectable } from 'inversify';
 import { ref } from 'vue';
 import { SubscriptionDto } from '@/@application/dtos/SubscriptionDto';
 import { IRegisterUserWithOrganizationUseCase } from '@/@domain/useCases/auth/IRegisterUserWithOrganizationUseCase';
+import { IAuthenticatedUserContextUseCase } from '@/@domain/useCases/auth/IAuthenticatedUserContextUseCase';
+import { AuthenticatedUserDto } from '../dtos/AuthenticatedUserDto';
 
 @injectable()
 export class AuthState implements IAuthState {
@@ -27,6 +29,7 @@ export class AuthState implements IAuthState {
     createdAt: '',
     role: ''
   });
+  public userContext = ref<AuthenticatedUserDto | null>(null);
   public subscription = ref<SubscriptionDto | null>(null)
   public isAuthenticated = ref<boolean>(false);
 
@@ -37,6 +40,7 @@ export class AuthState implements IAuthState {
 
   constructor(
     @inject(SYMBOLS.UseCases.Subscription.GetCurrentSubscriptionUseCase) private getCurrentSubscription: IGetCurrentSubscriptionUseCase,
+    @inject(SYMBOLS.UseCases.Auth.GetAuthenticatedUserContextUseCase) private getAuthenticatedUserContextUseCase: IAuthenticatedUserContextUseCase,
     @inject(SYMBOLS.UseCases.Auth.Container) private authUseCase: IAuthUseCase,
     @inject(SYMBOLS.UseCases.Auth.LoginUseCase) private loginUseCase: ILoginUseCase,
     @inject(SYMBOLS.UseCases.Auth.LogoutUseCase) private logoutUseCase: ILogoutUseCase,
@@ -66,9 +70,9 @@ export class AuthState implements IAuthState {
   private createSnapshot(): IAuthStateSnapshot {
     return {
       user: this.user.value,
+      userContext: this.userContext.value,
       isAuthenticated: this.isAuthenticated.value,
-      subscription: this.subscription.value,
-      timestamp: new Date()
+      timestamp: new Date(),
     };
   }
 
@@ -98,8 +102,8 @@ export class AuthState implements IAuthState {
       if (stored) {
         const snapshot: IAuthStateSnapshot = JSON.parse(stored);
         this.user.value = snapshot.user;
+        this.userContext.value = snapshot.userContext;
         this.isAuthenticated.value = snapshot.isAuthenticated;
-        this.subscription.value = snapshot.subscription;
         this.stateHistory.push(snapshot);
       }
     } catch (error) {
@@ -107,40 +111,43 @@ export class AuthState implements IAuthState {
     }
   }
 
-  async login(email: string, password: string): Promise<void> {
+  async login(email: string, password: string): Promise<AuthenticatedUserDto | null> {
+
     try {
-      const userDto: UserDto = await this.authUseCase.login.execute(email, password);
-      if (!userDto) {
-        throw new AuthError(
-          AuthErrorCode.AUTH_NO_USER_RETURNED,
-          'No user returned after login'
-        );
-      }
-      // Récupérer la subscription (non-bloquant si erreur)
-      let subscription = null;
-      try {
-        subscription = await this.getCurrentSubscription.execute(userDto.id);
-      } catch (subError) {
-        console.warn('[AuthState] Could not fetch subscription, continuing login:', subError);
-      }
-      this.subscription.value = subscription;
-      this.user.value = PresentationUserMapper.dtoToView(userDto);
+      // ───────────────────────────────────────────────────────
+      // Login user
+      // ───────────────────────────────────────────────────────
+      await this.authUseCase.login.execute(email, password);
+
+      // ───────────────────────────────────────────────────────
+      // Hydrate authenticated user context
+      // ───────────────────────────────────────────────────────
+      const authenticatedUserContext =
+        await this.getAuthenticatedUserContextUseCase.execute();
+
+        console.log('Authenticated user context:', authenticatedUserContext);
+
+      // ───────────────────────────────────────────────────────
+      // Store authenticated context
+      // ───────────────────────────────────────────────────────
+      this.userContext.value = authenticatedUserContext;
+
       this.isAuthenticated.value = true;
+
       this.pushState();
-      
+
+      return this.userContext.value;
+
     } catch (error) {
       console.error('AuthState login error:', error);
-      
-      // Réinitialisation de l'état en cas d'erreur
-      this.user.value = {
-        id: '',
-        email: '',
-        password: '',
-        fullName: '',
-        createdAt: ''
-      };
+
+      // ───────────────────────────────────────────────────────
+      // Reset auth state
+      // ───────────────────────────────────────────────────────
+      // this.authenticatedUserContext.value = null;
+
       this.isAuthenticated.value = false;
-      this.subscription.value = null;
+
       throw new AuthError(
         AuthErrorCode.LOGIN_FAILED,
         'Login failed',
@@ -148,6 +155,48 @@ export class AuthState implements IAuthState {
       );
     }
   }
+
+  // async login(email: string, password: string): Promise<void> {
+  //   try {
+  //     const userDto: UserDto = await this.authUseCase.login.execute(email, password);
+  //     if (!userDto) {
+  //       throw new AuthError(
+  //         AuthErrorCode.AUTH_NO_USER_RETURNED,
+  //         'No user returned after login'
+  //       );
+  //     }
+  //     // Récupérer la subscription (non-bloquant si erreur)
+  //     let subscription = null;
+  //     try {
+  //       subscription = await this.getCurrentSubscription.execute(userDto.id);
+  //     } catch (subError) {
+  //       console.warn('[AuthState] Could not fetch subscription, continuing login:', subError);
+  //     }
+  //     this.subscription.value = subscription;
+  //     this.user.value = PresentationUserMapper.dtoToView(userDto);
+  //     this.isAuthenticated.value = true;
+  //     this.pushState();
+      
+  //   } catch (error) {
+  //     console.error('AuthState login error:', error);
+      
+  //     // Réinitialisation de l'état en cas d'erreur
+  //     this.user.value = {
+  //       id: '',
+  //       email: '',
+  //       password: '',
+  //       fullName: '',
+  //       createdAt: ''
+  //     };
+  //     this.isAuthenticated.value = false;
+  //     this.subscription.value = null;
+  //     throw new AuthError(
+  //       AuthErrorCode.LOGIN_FAILED,
+  //       'Login failed',
+  //       error
+  //     );
+  //   }
+  // }
 
   async register(email: string, password: string, fullName: string): Promise<void> {
     try {
