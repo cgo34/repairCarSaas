@@ -70,6 +70,7 @@ export enum SYMBOL_NAMES {
     LOGIN_USE_CASE = 'LoginUseCase',
     LOGOUT_USE_CASE = 'LogoutUseCase',
     REGISTER_USE_CASE = 'RegisterUseCase',
+    GET_AUTHENTICATED_USER_CONTEXT_USE_CASE = 'GetAuthenticatedUserContextUseCase',
     // -- User UseCases
     USER_USE_CASE = 'UserUseCase',
     CREATE_USER_USE_CASE = 'CreateUserUseCase',

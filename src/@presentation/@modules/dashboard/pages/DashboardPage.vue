@@ -285,6 +285,10 @@ import { useAdminDashboardState } from '@/@presentation/@modules/dashboard/compo
 import DashboardStatCard from '@/@presentation/@ui/components/DashboardStatCard.vue';
 import MainLayout from '@/@presentation/@ui/layouts/MainLayout.vue';
 import { onMounted } from 'vue';
+import { useAuthState } from '../../auth/composables/useAuthState';
+
+const { userContext } = useAuthState();
+console.log('DashboardPage - userContext:', userContext.value);
 
 const {
   totalUsers,

@@ -14,6 +14,26 @@ export class OrganizationMemberRepository {
     private readonly clientProvider: IClientProvider<SupabaseClient>
   ) {}
 
+  async getByUserId(userId: string): Promise<OrganizationMemberDtoModel[]> {
+    console.log('Fetching organization members for user ID:', userId);
+    const { data, error } = await this.clientProvider
+      .getClient()
+      .from('organization_members')
+      .select('*')
+      .eq('user_id', userId);
+
+    if (error) {
+      console.error('[OrganizationMemberRepo] getByUserId error:', error);
+      return [];
+    }
+
+    console.log('Organization members for user', userId, ':', data);
+
+    const dto = data.map(OrganizationMemberMapper.apiToDto);
+    console.log('Mapped organization members DTOs for user', userId, ':', dto);
+    return dto;
+  }
+
   async create(member: OrganizationMemberDtoModel): Promise<OrganizationMemberDtoModel> {
     console.log('Creating organization member:', member);
     const api = OrganizationMemberMapper.dtoToApi(member);

@@ -13,6 +13,26 @@ export class OrganizationRepository {
     @inject(SYMBOLS.Providers.ClientProvider)
     private readonly clientProvider: IClientProvider<SupabaseClient>
   ) {}
+  
+  async getById(id: string): Promise<OrganizationDtoModel | null> {
+    console.log('Fetching organization by ID:', id);
+    const { data, error } = await this.clientProvider
+      .getClient()
+      .from('organizations')
+      .select('*')
+      .eq('id', id)
+      .limit(1)
+      .single<OrganizationApiModel>();
+
+    if (error) {
+      console.error('[OrganizationRepo] getById error:', error);
+      return null;
+    }
+
+    console.log('Fetched organization by ID', id, ':', data);
+
+    return OrganizationMapper.apiToDto(data);
+  }
 
   async create(organization: OrganizationDtoModel): Promise<OrganizationDtoModel> {
     console.log('Creating organization:', organization);

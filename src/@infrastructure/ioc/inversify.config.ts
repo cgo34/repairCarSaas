@@ -198,6 +198,7 @@ import { AuthUseCase } from '@application/useCases/auth/AuthUseCase';
 import { LoginUseCase } from '@application/useCases/auth/LoginUseCase';
 import { LogoutUseCase } from '@application/useCases/auth/LogoutUseCase';
 import { RegisterUseCase } from '@application/useCases/auth/RegisterUseCase';
+import { GetAuthenticatedUserContextUseCase } from '@application/useCases/auth/GetAuthenticatedUserContextUseCase';
 import { IAuthRepository } from '@domain/repositories/IAuthRepository';
 import { IAuthService } from '@domain/services/IAuthService';
 import { SupabaseClient } from '../database/clients/SupabaseClient';
@@ -224,6 +225,7 @@ import { IEmailService } from '../interfaces/IEmailService';
 import { Html2PdfGenerator } from '../pdf/Html2PdfGenerator';
 import { EmailService } from '../services/EmailService';
 import { ISubscriptionService } from '@/@application/services/subscription/ISubscriptionService';
+import { IAuthenticatedUserContextUseCase } from '@/@domain/useCases/auth/IAuthenticatedUserContextUseCase';
 
 const container = new Container({ defaultScope: 'Singleton' });
 
@@ -304,6 +306,7 @@ container.bind<IAuthUseCase>(SYMBOLS.UseCases.Auth.Container).to(AuthUseCase).in
 container.bind<ILoginUseCase>(SYMBOLS.UseCases.Auth.LoginUseCase).to(LoginUseCase).inSingletonScope();
 container.bind<ILogoutUseCase>(SYMBOLS.UseCases.Auth.LogoutUseCase).to(LogoutUseCase).inSingletonScope();
 container.bind<IRegisterUseCase>(SYMBOLS.UseCases.Auth.RegisterUseCase).to(RegisterUseCase).inSingletonScope();
+container.bind<IAuthenticatedUserContextUseCase>(SYMBOLS.UseCases.Auth.GetAuthenticatedUserContextUseCase).to(GetAuthenticatedUserContextUseCase).inSingletonScope();
 container.bind<ISubscribeToFreePlanUseCase>(SYMBOLS.UseCases.Subscription.SubscribeToFreePlanUseCase).to(SubscribeToFreePlanUseCase).inSingletonScope();
 container.bind<IGetCurrentSubscriptionUseCase>(SYMBOLS.UseCases.Subscription.GetCurrentSubscriptionUseCase).to(GetCurrentSubscriptionUseCase).inSingletonScope();
 /** 5.1. -- Garage CarRepair UseCases */

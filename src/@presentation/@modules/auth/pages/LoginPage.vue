@@ -1,7 +1,7 @@
 <template>
   <AuthLayout>
     <AuthForm
-      v-model:form-data="user"
+      v-model:form-data="form"
       :email-rules="emailRules"
       :password-rules="passwordRules"
       @submit="handleLogin"
@@ -14,7 +14,7 @@ import { useAuthState } from '@/@presentation/@modules/auth/composables/useAuthS
 import AuthForm from '@modules/auth/components/AuthForm.vue';
 import AuthLayout from '@modules/auth/layouts/AuthLayout.vue';
 
-const { login, user } = useAuthState();
+const { login, form } = useAuthState();
 
 const emailRules = [
   (v: string) => !!v || 'E-mail is required',
