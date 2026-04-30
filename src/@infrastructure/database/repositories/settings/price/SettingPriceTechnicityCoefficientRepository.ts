@@ -13,11 +13,10 @@ import { inject, injectable } from 'inversify';
 export class SettingPriceTechnicityCoefficientRepository implements ISettingPriceTechnicityCoefficientRepository {
   constructor(@inject(SYMBOLS.Providers.ClientProvider) private clientProvider: IClientProvider<SupabaseClient>) {}
     
-  async getAdmin(): Promise<SettingPriceTechnicityCoefficientDto> {
+  async getDefault(): Promise<SettingPriceTechnicityCoefficientDto> {
     const { data, error } = await this.clientProvider.getClient()
-      .from('setting_price_technicity_coefficient')
+      .from('default_setting_price_technicity_coefficient')
       .select('*')
-      .eq('user_id', DEFAULT_SETTINGS_USER_ID)
       .maybeSingle<SettingPriceTechnicityCoefficientApiModel>();
 
     if (error) throw new Error('Error fetching default technicity coefficient settings');

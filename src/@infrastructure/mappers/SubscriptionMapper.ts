@@ -9,7 +9,7 @@ export class SubscriptionMapper {
   static apiToDto(api: SubscriptionApiModel): SubscriptionDto {
     return {
       id: api.id,
-      userId: api.user_id,
+      organizationId: api.organization_id,
       planId: api.plan_id,
       stripeSubscriptionId: api.stripe_subscription_id ?? undefined,
       status: api.status,
@@ -33,7 +33,7 @@ export class SubscriptionMapper {
   static dtoToApi(dto: SubscriptionDto): SubscriptionApiModel {
     return {
       id: dto.id,
-      user_id: dto.userId,
+      organization_id: dto.organizationId,
       plan_id: dto.planId,
       stripe_subscription_id: dto.stripeSubscriptionId ?? null,
       status: dto.status,

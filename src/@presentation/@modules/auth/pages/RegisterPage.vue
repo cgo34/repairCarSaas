@@ -31,7 +31,7 @@ const handleRegister = async () => {
   try {
     await register().then(() => {
 
-      // window.location.href = '/dashboard';
+      window.location.href = '/dashboard';
     });
   } catch (error: unknown) {
     console.log(error);

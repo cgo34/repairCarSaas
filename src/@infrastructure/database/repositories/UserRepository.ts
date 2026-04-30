@@ -15,9 +15,12 @@ export class UserRepository implements IUserRepository {
     const { data, error } = await this.clientProvider.getClient()
       .from('users')
       .select(`
-        *
+        *,
+        quotes!quotes_technician_id_fkey(*)
       `)
       .returns<UserApiModel[]>();
+
+      console.log('get users with quotes:', data);
 
     if (error)
       throw new Error('Error fetching users');

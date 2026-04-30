@@ -1,9 +1,17 @@
+import { RegisterUserWithOrganizationUseCase } from '@/@application/useCases/auth/RegisterUserWithOrganizationUseCase';
+import { IRegisterUserWithOrganizationUseCase } from '@/@domain/useCases/auth/IRegisterUserWithOrganizationUseCase';
+
+import { OrganizationRepository } from '@/@infrastructure/database/repositories/OrganizationRepository';
+import { OrganizationMemberRepository } from '@/@infrastructure/database/repositories/OrganizationMemberRepository';
+import { IOrganizationRepository } from '@/@domain/repositories/IOrganizationRepository';
+import { IOrganizationMemberRepository } from '@/@domain/repositories/IOrganizationMemberRepository';
 // TODO: (GCE) -> TO BE MOVED TO CORE
 
 import { SYMBOLS } from '@infrastructure/ioc/symbols';
 import { Container } from 'inversify';
 import 'reflect-metadata';
 
+import { SubscriptionService } from '@/@application/services/subscription/SubscriptionService';
 import { BodyMaterialService } from '@/@application/services/carRepair/BodyMaterialService';
 import { BodyPartService } from '@/@application/services/carRepair/BodyPartService';
 import { DentRepairTypeService } from '@/@application/services/carRepair/DentRepairTypeService';
@@ -215,6 +223,7 @@ import { IClient } from '../interfaces/IClient';
 import { IEmailService } from '../interfaces/IEmailService';
 import { Html2PdfGenerator } from '../pdf/Html2PdfGenerator';
 import { EmailService } from '../services/EmailService';
+import { ISubscriptionService } from '@/@application/services/subscription/ISubscriptionService';
 
 const container = new Container({ defaultScope: 'Singleton' });
 
@@ -258,6 +267,10 @@ container.bind<IInvoiceDetailRepository>(SYMBOLS.Repositories.InvoiceDetailRepos
 /** 3.9. -- Company Settings Repository */
 container.bind<ICompanySettingsRepository>(SYMBOLS.Repositories.CompanySettingsRepository).to(CompanySettingsRepository).inSingletonScope();
 
+/** 3.10. -- Organization Repository */
+container.bind<IOrganizationRepository>(SYMBOLS.Repositories.OrganizationRepository).to(OrganizationRepository).inSingletonScope();
+container.bind<IOrganizationMemberRepository>(SYMBOLS.Repositories.OrganizationMemberRepository).to(OrganizationMemberRepository).inSingletonScope();
+
 /** 4 - SERVICES */
 container.bind<IAuthService>(SYMBOLS.Services.AuthService).to(AuthService).inSingletonScope();
 /** 4.1. -- Garage CarRepair Services */
@@ -282,6 +295,8 @@ container.bind<IPdfGenerator>(SYMBOLS.Services.PdfGeneratorService).to(Html2PdfG
 container.bind<IDownloadService>(SYMBOLS.Services.DownloadService).to(BrowserDownloadService);
 /** 4.8. -- Email Services */
 container.bind<IEmailService>(SYMBOLS.Services.EmailService).to(EmailService).inSingletonScope();
+/** 4.9. -- Subscription Services */
+container.bind<ISubscriptionService>(SYMBOLS.Services.SubscriptionService).to(SubscriptionService).inSingletonScope();
 
 
 /** 5 - USE CASES */
@@ -311,6 +326,7 @@ container.bind<IUserUseCase>(SYMBOLS.UseCases.UserUseCase).to(UserUseCase).inSin
 /** 5.7. -- Company Settings UseCase */
 container.bind<ICompanySettingsUseCase>(SYMBOLS.UseCases.CompanySettings).to(CompanySettingsUseCase).inSingletonScope();
 container.bind<ICreateUserUseCase>(SYMBOLS.UseCases.User.CreateUserUseCase).to(CreateUserUseCase).inSingletonScope();
+container.bind<IRegisterUserWithOrganizationUseCase>(SYMBOLS.UseCases.User.CreateUserWithOrganizationUseCase).to(RegisterUserWithOrganizationUseCase).inSingletonScope();
 /** 5.5. -- Cost Calculator UseCases */
 container.bind<ICalculateLineCostUseCase>(SYMBOLS.UseCases.CostCalculator.CalculateLineCostUseCase).to(CalculateLineCostUseCase).inSingletonScope();
 container.bind<ICalculateTotalCostUseCase>(SYMBOLS.UseCases.CostCalculator.CalculateTotalCostUseCase).to(CalculateTotalCostUseCase).inSingletonScope();

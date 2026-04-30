@@ -13,16 +13,16 @@ export class SubscriptionRepository implements ISubscriptionRepository {
     private readonly clientProvider: IClientProvider<SupabaseClient>
   ) {}
 
-  async getPlanByName(name: 'free' | 'silver' | 'gold') {
+  async getPlanByCode(code: string) {
     const { data, error } = await this.clientProvider.getClient()
       .from('subscription_plans')
       .select('id')
-      .eq('name', name)
+      .eq('code', code)
       .limit(1)
       .single()
 
     if (error) {
-      console.error('[SubscriptionRepo] getPlanByName error:', error)
+      console.error('[SubscriptionRepo] getPlanByCode error:', error)
       return null
     }
 
@@ -33,16 +33,18 @@ export class SubscriptionRepository implements ISubscriptionRepository {
     const { error } = await this.clientProvider.getClient()
       .from('subscriptions')
       .insert({
-        user_id: data.userId,
+        organization_id: data.organizationId,
         plan_id: data.planId,
         status: data.status,
         start_date: data.startDate.toISOString()
-      })
+      });
 
     if (error) {
-      console.error('[SubscriptionRepo] createSubscription error:', error)
-      throw error
+      console.error('[SubscriptionRepo] createSubscription error:', error);
+      throw error;
     }
+
+    console.log('Subscription created successfully for organization:', data.organizationId);
   }
 
   async getSubscriptionByUserId(userId: string): Promise<SubscriptionDto> {

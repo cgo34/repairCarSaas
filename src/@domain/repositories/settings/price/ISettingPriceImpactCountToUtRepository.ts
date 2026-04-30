@@ -1,7 +1,7 @@
 import { SettingPriceImpactCountToUtDto } from '@/@application/dtos/settings/price/SettingPriceImpactCountToUtDto';
 
 export interface ISettingPriceImpactCountToUtRepository {
-  getAdmin(): Promise<SettingPriceImpactCountToUtDto[]>;
+  getDefault(): Promise<SettingPriceImpactCountToUtDto[]>;
   getByUserId(userId: string): Promise<SettingPriceImpactCountToUtDto[]>;
   save(settings: SettingPriceImpactCountToUtDto[]): Promise<SettingPriceImpactCountToUtDto[]>;
   create(setting: SettingPriceImpactCountToUtDto): Promise<SettingPriceImpactCountToUtDto>;

@@ -2,7 +2,7 @@ import { SubscriptionPlanViewModel } from './SubscriptionPlanViewModel';
 
 export type SubscriptionViewModel = {
   id: string;
-  userId: string;
+  organization_id: string;
   planId: string;
   stripeSubscriptionId?: string;
   status: string;
