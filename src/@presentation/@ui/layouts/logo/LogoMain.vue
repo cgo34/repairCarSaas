@@ -2,5 +2,6 @@
 import LogoDark from './LogoDark.vue';
 </script>
 <template>
-  <LogoDark />
+  <!-- <LogoDark /> -->
+  <h1>RepairCar</h1>
 </template>
