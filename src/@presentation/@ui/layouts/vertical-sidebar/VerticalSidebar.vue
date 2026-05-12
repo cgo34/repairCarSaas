@@ -12,10 +12,11 @@ import NavItem from './NavItem/NavItem.vue';
 // import sidebarItems from './sidebarItem';
 // import Logo from '@presentation/@ui/layouts/logo/LogoMain.vue';
 import Logo from '../logo/LogoMain.vue';
+import { filterMenuByRole } from '@/@presentation/helpers/menu/filterMenuByRole';
 
 
 const authState = container.get<IAuthState>(SYMBOLS.States.AuthState);
-const { user, subscription } = authState
+const { userContext, subscription } = authState
 
 const {
     setMiniSidebar,
@@ -27,16 +28,17 @@ const {
 const userRole = 'admin'; // This should be dynamically determined
 
 const sidebarMenu = computed(() => {
-  switch (userRole) {
-    case 'admin':
-      return menu;
-    // case 'garage':
-    //   return garageMenu;
-    // case 'user':
-    //   return userMenu;
-    default:
-      return [];
-  }
+
+  const role =
+    userContext
+      .value
+      ?.membership
+      .role ?? '';
+
+  return filterMenuByRole(
+    menu,
+    role
+  );
 });
 </script>
 

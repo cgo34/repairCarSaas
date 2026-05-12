@@ -78,7 +78,9 @@ to: '/invoices',
 // ─────────────────────────────────────────────────────────
 // Organisation
 // ─────────────────────────────────────────────────────────
-{ header: 'Organisation' },
+{ header: 'Organisation',
+  roles: ['admin']
+},
 
 {
 title: 'Garages',
@@ -92,17 +94,20 @@ title: 'Techniciens',
 icon: UserIcon,
 to: '/organization/technicians',
 chip: isFreePlan ? 'Premium' : '',
+roles: ['admin'],
 },
 
 {
 title: 'Paramètres entreprise',
 icon: SettingsIcon,
 to: '/organization/settings',
+roles: ['admin'],
 },
 
 {
 title: 'Tarification',
 icon: FileEuroIcon,
+roles: ['admin'],
 children: [
 {
 title: 'Pièces carrosserie',
@@ -142,17 +147,24 @@ to: '/organization/pricing/variation-coefficients',
 ],
 },
 
-{ divider: true },
+{ 
+  divider: true,
+  roles: ['admin']
+},
 
 // ─────────────────────────────────────────────────────────
 // Abonnement
 // ─────────────────────────────────────────────────────────
-{ header: 'Abonnement' },
+{ 
+  header: 'Abonnement',
+  roles: ['admin']
+},
 
 {
 title: 'Mon abonnement',
 icon: CreditCardIcon,
 to: '/subscription',
+roles: ['admin']
 },
 ];
 
