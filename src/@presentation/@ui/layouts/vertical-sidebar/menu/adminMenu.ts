@@ -6,13 +6,14 @@ import {
 BuildingWarehouseIcon,
 CircleIcon,
 DashboardIcon,
-FileEuroIcon,
 FileInvoiceIcon,
+FileEuroIcon,
 ListIcon,
 ToolIcon,
 UserIcon,
 SettingsIcon,
 CreditCardIcon,
+ClockDollarIcon,
 } from 'vue-tabler-icons';
 
 const authState = container.get<IAuthState>(SYMBOLS.States.AuthState);
@@ -58,7 +59,7 @@ to: '/quotes',
 // ─────────────────────────────────────────────────────────
 {
 title: 'Factures',
-icon: FileInvoiceIcon,
+icon: FileEuroIcon,
 children: [
 {
 title: 'Nouvelle facture',
@@ -102,7 +103,8 @@ to: '/organization/settings',
 
 {
 title: 'Tarification',
-icon: FileEuroIcon,
+icon: ClockDollarIcon,
+roles: ['admin'],
 children: [
 {
 title: 'Pièces carrosserie',
