@@ -7,6 +7,11 @@ export const dashboardRoutes: RouteRecordRaw[] = [
     path: '/dashboard',
     name: 'Dashboard',
     component: DashboardPage,
-    meta: { requiresAuth: true },
+    meta: { 
+      requiresAuth: true,
+      breadcrumb: [
+        { title: 'Dashboard', href: '/dashboard' },
+      ]
+    },
   },
 ];

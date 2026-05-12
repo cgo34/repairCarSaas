@@ -20,49 +20,64 @@ const props = defineProps({
       cols="12"
       md="12"
     >
-      <v-card
+      <!-- <v-card
         variant="flat"
         class="px-4 py-3"
+      > -->
+      <v-row
+        no-gutters
+        class="align-center"
       >
-        <v-row
-          no-gutters
-          class="align-center"
-        >
-          <v-col md="5">
-            <h3 class="text-h3">
-              {{ props.title }}
-            </h3>
-          </v-col>
+        <v-col md="5">
+          <h3 class="text-h3">
+            {{ props.title }}
+          </h3>
+        </v-col>
 
-          <v-col
-            md="7"
-            sm="12"
-            cols="12"
+        <v-col
+          md="7"
+          sm="12"
+          cols="12"
+        >
+          <v-breadcrumbs
+            :items="props.breadcrumbs"
+            class="text-h5 justify-md-end pa-1"
           >
-            <v-breadcrumbs
-              :items="props.breadcrumbs"
-              class="text-h5 justify-md-end pa-1"
-            >
-              <template #divider>
-                <div class="d-flex align-center">
-                  <ChevronRightIcon size="17" />
-                </div>
-              </template>
-              <template #prepend>
-                <v-icon
-                  size="small"
-                  icon="mdi-home"
-                  class="text-secondary mr-2"
-                />
-                <div class="d-flex align-center">
-                  <ChevronRightIcon size="17" />
-                </div>
-              </template>
-            </v-breadcrumbs>
-          </v-col>
-        </v-row>
-      </v-card>
+            <template #divider>
+              <div class="d-flex align-center">
+                <ChevronRightIcon size="17" />
+              </div>
+            </template>
+            <template #prepend>
+              <v-icon
+                size="small"
+                icon="mdi-home"
+                class="text-secondary mr-2"
+              />
+              <div class="d-flex align-center">
+                <ChevronRightIcon size="17" />
+              </div>
+            </template>
+          </v-breadcrumbs>
+        </v-col>
+      </v-row>
+      <!-- </v-card> -->
     </v-col>
+    <!-- <v-col
+      cols="12"
+      md="12"
+    >
+      <v-row
+        no-gutters
+        class="align-start"
+      >
+        <v-col md="5">
+          <h3 class="text-h3">
+            {{ props.title }}
+          </h3>
+        </v-col>
+      </v-row>
+    </v-col> -->
   </v-row>
 </template>
 
