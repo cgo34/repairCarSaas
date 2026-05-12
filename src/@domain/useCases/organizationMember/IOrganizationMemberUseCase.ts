@@ -3,4 +3,5 @@ import { OrganizationMemberDtoModel } from '@/@application/dtos/OrganizationMemb
 export interface IOrganizationMemberUseCase {
   getByMemberId(userId: string): Promise<OrganizationMemberDtoModel[]>;
   getMembersByOrganizationId(organizationId: string): Promise<OrganizationMemberDtoModel[]>;
+  archiveMember(memberId: string): Promise<void>;
 }

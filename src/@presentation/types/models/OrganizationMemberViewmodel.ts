@@ -1,3 +1,5 @@
+import { OrganizationMemberStatusDtoTypes } from "@/@application/dtos/organizations/OrganizationMemberStatusDtoType";
+
 export type OrganizationMemberViewModel = {
   id?: string;
   user_id?: string;
@@ -7,4 +9,5 @@ export type OrganizationMemberViewModel = {
   last_name: string;
   email: string;
   percentage_commission: number;
+  status: OrganizationMemberStatusDtoTypes;
 };

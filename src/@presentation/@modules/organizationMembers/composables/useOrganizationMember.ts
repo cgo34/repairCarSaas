@@ -19,20 +19,16 @@ export function useOrganizationMember(): IUseOrganizationMember {
   const organizationMemberUseCase = container.get<IOrganizationMemberUseCase>(SYMBOLS.UseCases.OrganizationMemberUseCase);
   const createOrganizationTechnicianUseCase = container.get<ICreateOrganizationTechnicianUseCase>(SYMBOLS.UseCases.CreateOrganizationTechnicianUseCase);
 
-console.log(
-  'organizationMemberUseCase instance:',
-  organizationMemberUseCase
-);
-
-console.log(
-  'prototype methods:',
-  Object.getOwnPropertyNames(
-    Object.getPrototypeOf(organizationMemberUseCase)
-  )
-);
-
   const _users = ref<OrganizationMemberViewModel[]>([]);
-  const _selectedUser = ref<CreateOrganizationTechnicianViewModel>();
+  const _selectedUser = ref<CreateOrganizationTechnicianViewModel>({
+    organization_id: '',
+    first_name: '',
+    last_name: '',
+    email: '',
+    role: 'technician',
+    percentage_commission: 0,
+  });
+  const _editingUser = ref<OrganizationMemberViewModel | null>(null);
   const loading = ref<boolean>(false);
   const error = ref<unknown>(null);
 
@@ -59,6 +55,17 @@ console.log(
   const selectUser = (user: CreateOrganizationTechnicianViewModel): void => {
     _selectedUser.value = { ...user };
   };
+
+  const editUser = (user: OrganizationMemberViewModel): void => {
+    _editingUser.value = {
+      organization_id: user.organization_id,
+      first_name: user.first_name,
+      last_name: user.last_name,
+      email: user.email,
+      role: user.role,
+      percentage_commission: user.percentage_commission,
+    };
+  }
 
   const resetSelectedUser = (): void => {
     _selectedUser.value = {
@@ -105,8 +112,7 @@ console.log(
   const deleteUser = async (id: string) => {
     loading.value = true;
     try {
-      return organizationMemberUseCase.delete(id).then(() => {
-        _users.value = _users.value.filter((u) => u.id !== id);
+      return organizationMemberUseCase.archiveMember(id).then(() => {
       });
     } finally {
       loading.value = false;

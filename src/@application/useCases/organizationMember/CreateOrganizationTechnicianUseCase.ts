@@ -30,9 +30,11 @@ export class CreateOrganizationTechnicianUseCase {
       // 1. Create auth user
       // ─────────────────────────────────────
 
-      authUserId = await this.authRepository.createTechnician(
+      authUserId = await this.organizationMemberRepository.createOrganizationTechnician(
         dto
       );
+
+      console.log('Auth user created with ID:', authUserId);
 
       // ─────────────────────────────────────
       // 2. Create public.users

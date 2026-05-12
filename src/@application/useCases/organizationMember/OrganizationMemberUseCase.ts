@@ -17,5 +17,10 @@ export class OrganizationMemberUseCase implements IOrganizationMemberUseCase {
 
   async getByMemberId(userId: string): Promise<OrganizationMemberDtoModel[]> {
     return this.organizationMemberRepository.getByMemberId(userId);
+  }  
+
+  async archiveMember(memberId: string): Promise<void> {
+    console.log('Archiving member with ID:', memberId);
+    await this.organizationMemberRepository.archiveMember(memberId);
   }
 }

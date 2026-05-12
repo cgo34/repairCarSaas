@@ -657,21 +657,27 @@ export type Database = {
           created_at: string | null
           id: string
           organization_id: string
+          percentage_commission: number | null
           role: string
+          status: Database["public"]["Enums"]["organization_member_status"]
           user_id: string
         }
         Insert: {
           created_at?: string | null
           id?: string
           organization_id: string
+          percentage_commission?: number | null
           role: string
+          status?: Database["public"]["Enums"]["organization_member_status"]
           user_id: string
         }
         Update: {
           created_at?: string | null
           id?: string
           organization_id?: string
+          percentage_commission?: number | null
           role?: string
+          status?: Database["public"]["Enums"]["organization_member_status"]
           user_id?: string
         }
         Relationships: [
@@ -680,6 +686,13 @@ export type Database = {
             columns: ["organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "organization_members_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
             referencedColumns: ["id"]
           },
         ]
@@ -1422,7 +1435,7 @@ export type Database = {
       }
     }
     Enums: {
-      [_ in never]: never
+      organization_member_status: "pending" | "active" | "blocked" | "archived"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -1549,6 +1562,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      organization_member_status: ["pending", "active", "blocked", "archived"],
+    },
   },
 } as const

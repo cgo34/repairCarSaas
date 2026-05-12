@@ -1,3 +1,5 @@
+import { OrganizationMemberStatusApiTypes } from "./OrganizationMemberStatusApiTypes";
+
 export type OrganizationMemberApiModel = {
   id?: string;
   user_id: string;
@@ -5,4 +7,5 @@ export type OrganizationMemberApiModel = {
   role: string;
   percentage_commission: number;
   created_at: string;
+  status: OrganizationMemberStatusApiTypes;
 };

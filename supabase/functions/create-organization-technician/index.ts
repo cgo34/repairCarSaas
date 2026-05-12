@@ -71,7 +71,10 @@ serve(async (req) => {
     // 4. send invitation email
 
     await supabaseAdmin.auth.resetPasswordForEmail(
-      body.email
+      body.email,
+      {
+        redirectTo: 'http://localhost:3000/reset-password'
+      }
     )
 
     return new Response(

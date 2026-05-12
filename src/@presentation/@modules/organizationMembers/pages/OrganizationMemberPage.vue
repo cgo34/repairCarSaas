@@ -4,7 +4,6 @@
     <SubscriptionOverlay v-if="isFreePlan" />
     <v-container fluid>
       <v-row>
-        {{ selectedUser }}
         <v-data-table
           :headers="headers"
           :items="users"
@@ -45,19 +44,19 @@
                       <v-row>
                         <v-col cols="6">
                           <v-text-field
-                            v-model="selectedUser.first_name"
+                            v-model="selectedUser.users.first_name"
                             label="Prénom"
                           />
                         </v-col>
                         <v-col cols="6">
                           <v-text-field
-                            v-model="selectedUser.last_name"
+                            v-model="selectedUser.users.last_name"
                             label="Nom"
                           />
                         </v-col>
                         <v-col cols="12">
                           <v-text-field
-                            v-model="selectedUser.email"
+                            v-model="selectedUser.users.email"
                             label="Email"
                           />
                         </v-col>
@@ -132,6 +131,18 @@
           </template>
           <!-- #ENDREGION -->
 
+          <!-- #REGION -> STATUS -->
+          <template #item.status="{ item }">
+            <v-chip
+              :color="getStatusColor(item.status)"
+              size="small"
+              label
+            >
+              {{ item.status }}
+            </v-chip>
+          </template>
+          <!-- #ENDREGION -->
+
           <!-- #REGION -> ITEM ACTIONS -->
           <template #item.actions="{ item }">
             <v-icon
@@ -162,6 +173,7 @@ import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
 import SubscriptionOverlay from '@/@presentation/@ui/components/SubscriptionOverlay.vue';
 import MainLayout from '@/@presentation/@ui/layouts/MainLayout.vue';
 import { IUseOrganizationMember } from '@/@presentation/types/IUseOrganizationMember';
+import { OrganizationMemberViewModel } from '@/@presentation/types/models/OrganizationMemberViewmodel';
 import { computed, onMounted, ref } from 'vue';
 
 // Injection du state depuis Inversify
@@ -189,6 +201,7 @@ const headers = [
   { title: 'Email', key: 'users.email' },
   { title: 'Rôle', key: 'role', sortable: false },
   { title: 'Commission', key: 'percentage_commission', align: 'end', sortable: false },
+  { title: 'Statut', key: 'status', sortable: false },
   { title: 'Actions', sortable: false, key: 'actions' },
 ] as const;
 
@@ -208,9 +221,20 @@ const roleColor = (role?: string) => {
   }
 };
 
+const getStatusColor = (status?: string) => {
+  switch (status) {
+    case 'pending': return 'orange';
+    case 'active': return 'green';
+    case 'archived': return 'grey';
+    case 'blocked': return 'red';
+    default: return 'grey';
+  }
+};
+
 const formTitle = computed(() => (selectedUser.value?.id ? "Modifier l'Utilisateur" : 'Nouvel Utilisateur'));
 
-const onEditBtnClick = (item: UserViewModel) => {
+const onEditBtnClick = (item: OrganizationMemberViewModel) => {
+  console.log('edit user with id:', item);
   selectUser(item);
   dialog.value = true;
 };
@@ -226,13 +250,15 @@ const onSaveEditDialogBtnClick = async () => {
   dialog.value = false;
 };
 
-const onDeleteBtnClick = async (item: UserViewModel) => {
-  if (!item.id) return;
+const onDeleteBtnClick = async (item: OrganizationMemberViewModel) => {
+  if (!item.user_id) return;
 
-  const confirmed = confirm(`Êtes-vous sûr de vouloir supprimer l'utilisateur "${item.fullName}" ?`);
+  console.log('delete user with id:', item.user_id);
+
+  const confirmed = confirm(`Êtes-vous sûr de vouloir supprimer l'utilisateur "${item.users.first_name} ${item.users.last_name}" ?`);
   if (!confirmed) return;
 
-  await deleteUser(item.id);
+  await deleteUser(item.user_id);
 };
 
 onMounted(async () => {

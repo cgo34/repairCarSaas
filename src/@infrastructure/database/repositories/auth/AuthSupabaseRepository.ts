@@ -90,26 +90,6 @@ export class AuthSupabaseRepository implements IAuthRepository {
     }
   }
 
-  async createTechnician(
-    dto: CreateOrganizationTechnicianDto
-  ): Promise<void> {
-
-    const { error } =
-      await this.clientProvider
-        .getClient()
-        .functions
-        .invoke(
-          'create-organization-technician',
-          {
-            body: dto
-          }
-        )
-
-    if (error) {
-      throw error
-    }
-  }
-
   async sendResetPasswordEmail(
     email: string
   ): Promise<void> {
@@ -160,19 +140,5 @@ export class AuthSupabaseRepository implements IAuthRepository {
 
   onAuthStateChange(callback: (event: string, session: any) => void): void {
     this.clientProvider.getClient().auth.onAuthStateChange(callback);
-  }
-
-  async deleteUser(userId: string): Promise<void> {
-
-    const { error } =
-      await this.clientProvider
-        .getServiceRoleClient()
-        .auth
-        .admin
-        .deleteUser(userId);
-
-    if (error) {
-      throw error;
-    }
   }
 }
