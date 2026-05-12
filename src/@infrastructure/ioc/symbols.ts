@@ -1,5 +1,6 @@
 // TODO: (GCE) -> TO BE MOVED TO CORE
 
+import { GetAuthenticatedUserContextUseCase } from "@/@application/useCases/auth/GetAuthenticatedUserContextUseCase";
 import { SYMBOL_NAMES } from "./symbolTypes";
 
 const SYMBOLS = {
