@@ -75,6 +75,9 @@ export enum SYMBOL_NAMES {
     USER_USE_CASE = 'UserUseCase',
     CREATE_USER_USE_CASE = 'CreateUserUseCase',
     CREATE_USER_WITH_ORGANIZATION_USE_CASE = 'CreateUserWithOrganizationUseCase',
+    // -- Organization Member UseCases
+    ORGANIZATION_MEMBER_USE_CASE = 'OrganizationMemberUseCase',
+    CREATE_ORGANIZATION_TECHNICIAN_USE_CASE = 'CreateOrganizationTechnicianUseCase',
     // -- Garage UseCases
     GARAGE_USE_CASE = 'GarageUseCase',
     VEHICLE_USE_CASE = 'VehicleUseCase',
@@ -144,6 +147,7 @@ export enum SYMBOL_NAMES {
     SUBSCRIPTION_STATE = 'SubscriptionState',
     // -- User States
     USER_STATE = 'UserState',
+    ORGANIZATION_MEMBER_STATE = 'OrganizationMemberState',
     // -- Garage States
     GARAGE_STATE = 'GarageState',
     // -- Settings CarRepair States

@@ -89,6 +89,8 @@ const SYMBOLS = {
       CreateUserUseCase: Symbol.for(SYMBOL_NAMES.CREATE_USER_USE_CASE),
       CreateUserWithOrganizationUseCase: Symbol.for(SYMBOL_NAMES.CREATE_USER_WITH_ORGANIZATION_USE_CASE),
     },
+    OrganizationMemberUseCase: Symbol.for(SYMBOL_NAMES.ORGANIZATION_MEMBER_USE_CASE),
+    CreateOrganizationTechnicianUseCase: Symbol.for(SYMBOL_NAMES.CREATE_ORGANIZATION_TECHNICIAN_USE_CASE),
     Garage: Symbol.for(SYMBOL_NAMES.GARAGE_USE_CASE),
     Vehicle: Symbol.for(SYMBOL_NAMES.VEHICLE_USE_CASE),
     GetDocumentStatus: Symbol.for(SYMBOL_NAMES.GET_DOCUMENT_STATUS_USE_CASE),
@@ -158,6 +160,7 @@ const SYMBOLS = {
     SubscriptionState: Symbol.for(SYMBOL_NAMES.SUBSCRIPTION_STATE),
     // -- User States
     UserState: Symbol.for(SYMBOL_NAMES.USER_STATE),
+    OrganizationMemberState: Symbol.for(SYMBOL_NAMES.ORGANIZATION_MEMBER_STATE),
     // -- Garage States
     GarageState: Symbol.for(SYMBOL_NAMES.GARAGE_STATE),
     // -- Settings CarRepair States

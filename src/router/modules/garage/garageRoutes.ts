@@ -3,13 +3,13 @@ import { RouteRecordRaw } from 'vue-router';
 
 export const garageRoutes: RouteRecordRaw[] = [
   {
-    path: '/garages',
+    path: '/organization/garages',
     name: 'Garages',
     component: GaragesPage,
     meta: {
       requiresAuth: true,
       breadcrumb: [
-        { title: 'Garages', href: '/garages' },
+        { title: 'Garages', href: '/organization/garages' },
       ]
     },
   },

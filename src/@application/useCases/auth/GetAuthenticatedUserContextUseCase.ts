@@ -42,7 +42,7 @@ export class GetAuthenticatedUserContextUseCase implements IAuthenticatedUserCon
     // Get organization membership
     // ───────────────────────────────────────────────────────
     const membership =
-      await this.organizationMemberRepository.getByUserId(authUser.id);
+      await this.organizationMemberRepository.getByMemberId(authUser.id);
 
     if (!membership) {
       throw new Error('Organization membership not found');
@@ -90,7 +90,7 @@ export class GetAuthenticatedUserContextUseCase implements IAuthenticatedUserCon
       },
 
       membership: {
-        role: membership.role,
+        role: membership[0].role,
       },
 
       subscription: {

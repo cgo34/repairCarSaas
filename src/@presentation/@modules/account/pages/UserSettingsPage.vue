@@ -8,7 +8,9 @@
       <!-- Header -->
       <div class="d-flex align-center gap-3 mb-6">
         <div>
-          <h1 class="text-h5 font-weight-bold mb-1">Mon profil</h1>
+          <h1 class="text-h5 font-weight-bold mb-1">
+            Mon profil
+          </h1>
           <p class="text-body-2 text-medium-emphasis mb-0">
             Vos informations personnelles.
           </p>
@@ -30,7 +32,10 @@
         class="d-flex justify-center align-center"
         style="height: 200px;"
       >
-        <v-progress-circular indeterminate color="primary" />
+        <v-progress-circular
+          indeterminate
+          color="primary"
+        />
       </div>
 
       <v-form
@@ -39,13 +44,19 @@
         @submit.prevent="onSave"
       >
         <!-- Identité -->
-        <v-card class="mb-4" variant="outlined">
+        <v-card
+          class="mb-4"
+          variant="outlined"
+        >
           <v-card-title class="text-subtitle-1 font-weight-semibold pa-4 pb-2">
             Identité
           </v-card-title>
           <v-card-text class="pa-4 pt-2">
             <v-row dense>
-              <v-col cols="12" sm="6">
+              <v-col
+                cols="12"
+                sm="6"
+              >
                 <v-text-field
                   v-model="form.firstName"
                   label="Prénom"
@@ -54,7 +65,10 @@
                   clearable
                 />
               </v-col>
-              <v-col cols="12" sm="6">
+              <v-col
+                cols="12"
+                sm="6"
+              >
                 <v-text-field
                   v-model="form.lastName"
                   label="Nom"
@@ -151,7 +165,7 @@ async function onSave() {
 }
 
 onMounted(async () => {
-  const userId = authState.user?.value?.id;
+  const userId = authState.userContext?.value?.id;
   if (!userId) return;
   await profileState.init(userId);
   syncForm();

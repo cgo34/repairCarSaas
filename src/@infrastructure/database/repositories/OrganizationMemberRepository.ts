@@ -6,6 +6,7 @@ import { SYMBOLS } from "@infrastructure/ioc/symbols";
 import { OrganizationMemberDtoModel } from "@application/dtos/OrganizationMemberDtoModel";
 import { OrganizationMemberApiModel } from "@infrastructure/database/api/OrganizationMemberApiModel";
 import { OrganizationMemberMapper } from "@infrastructure/mappers/OrganizationMemberMapper";
+import { CreateOrganizationTechnicianDto } from "@/@application/dtos/organizations/CreateOrganizationTechnicianDto";
 
 @injectable()
 export class OrganizationMemberRepository {
@@ -14,7 +15,7 @@ export class OrganizationMemberRepository {
     private readonly clientProvider: IClientProvider<SupabaseClient>
   ) {}
 
-  async getByUserId(userId: string): Promise<OrganizationMemberDtoModel[]> {
+  async getByMemberId(userId: string): Promise<OrganizationMemberDtoModel[]> {
     console.log('Fetching organization members for user ID:', userId);
     const { data, error } = await this.clientProvider
       .getClient()
@@ -23,7 +24,7 @@ export class OrganizationMemberRepository {
       .eq('user_id', userId);
 
     if (error) {
-      console.error('[OrganizationMemberRepo] getByUserId error:', error);
+      console.error('[OrganizationMemberRepo] getByMemberId error:', error);
       return [];
     }
 
@@ -34,17 +35,56 @@ export class OrganizationMemberRepository {
     return dto;
   }
 
-  async create(member: OrganizationMemberDtoModel): Promise<OrganizationMemberDtoModel> {
-    console.log('Creating organization member:', member);
-    const api = OrganizationMemberMapper.dtoToApi(member);
-    const { data, error } = await this.clientProvider
-      .getClient()
+  async getMembersByOrganizationId(organizationId: string): Promise<OrganizationMemberDtoModel[]> {
+    const { data, error } = await this.clientProvider.getClient()
       .from('organization_members')
-      .insert(api)
-      .select('*')
-      .single<OrganizationMemberApiModel>();
+      .select(`*, users!organization_members_user_id_fkey(id, email, full_name, first_name, last_name)`)
+      .eq('organization_id', organizationId)
+      .returns<OrganizationMemberApiModel[]>();
 
-    if (error) throw new Error('Error creating organization member');
-    return OrganizationMemberMapper.apiToDto(data);
+      console.log('get organization members:', data);
+
+    if (error)
+      throw new Error('Error fetching organization members');
+    
+    return data.map(OrganizationMemberMapper.apiToDto);
+  }
+  
+  async createOrganizationTechnician(
+    dto: CreateOrganizationTechnicianDto
+  ): Promise<void> {
+
+    const { error } =
+      await this.clientProvider
+        .getClient()
+        .functions
+        .invoke(
+          'create-organization-technician',
+          {
+            body: dto
+          }
+        )
+
+    if (error) {
+      throw error
+    }
+  }
+
+
+  async archiveMember(memberId: string): Promise<void> {
+    console.log('Archiving member with ID:', memberId);
+
+    const { error } =
+      await this.clientProvider
+        .getClient()
+        .from('organization_members')
+        .update({
+          status: 'archived'
+        })
+        .eq('user_id', memberId);
+
+    if (error) {
+      throw error;
+    }
   }
 }

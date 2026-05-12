@@ -27,6 +27,8 @@ export function useSettingPriceTechnicityCoefficientState(): IUseSettingPriceTec
   const error = ref<unknown>(null);
 
   const init = async () => {
+    console.log('Initializing SettingPriceTechnicityCoefficientState');
+    console.log('Current user :', authState.userContext.value);
     return fetchSettings().then(() => {
       return;
     });
@@ -35,9 +37,9 @@ export function useSettingPriceTechnicityCoefficientState(): IUseSettingPriceTec
   const fetchSettings = async (): Promise<SettingPriceTechnicityCoefficientViewModel> => {
     loading.value = true;
     try {
-      if (!authState.user?.value?.id) throw new Error('User does not exist');
+      if (!authState.userContext.value?.id) throw new Error('User does not exist');
 
-      return useCase.getByUserId(authState.user?.value?.id).then((dto) => {      
+      return useCase.getByUserId(authState.userContext.value?.id).then((dto) => {      
         if (!dto) {
           useCase.getAdmin().then((adminDto) => {
             const adminView = SettingPriceTechnicityCoefficientMapper.dtoToView(adminDto);
@@ -47,7 +49,7 @@ export function useSettingPriceTechnicityCoefficientState(): IUseSettingPriceTec
             _settings.value.dapCoefficient = adminView.dapCoefficient
             _settings.value.dspCoefficient = adminView.dspCoefficient
             _settings.value.aluminiumCoefficient = adminView.aluminiumCoefficient
-            _settings.value.userId = authState.user?.value?.id ?? ''
+            _settings.value.userId = authState.userContext.value?.id ?? ''
             return _settings.value;
           })
 

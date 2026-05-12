@@ -72,13 +72,13 @@ export function useAdminDashboardState() {
   const fetchDashboardStats = async () => {
     loading.value = true;
     try {
-      if (!authState.user.value) throw new Error('User not found');
+      if (!authState.userContext.value) throw new Error('User not found');
 
       const [garagesResult, usersResult, quotesResult, invoicesResult] = await Promise.allSettled([
         garageUseCase.getGarages(),
         userUseCase.getUsers(),
-        quotesUseCase.execute(authState.user.value.id),
-        invoicesUseCase.execute(authState.user.value.id),
+        quotesUseCase.execute(authState.userContext.value.id),
+        invoicesUseCase.execute(authState.userContext.value.id),
       ]);
 
       if (garagesResult.status === 'fulfilled') totalGarages.value = garagesResult.value.length;

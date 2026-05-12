@@ -14,6 +14,7 @@ export class UserMapper {
   }
 
   static dtoToView(dto: UserDto): UserViewModel {
+    console.log('Mapping UserDto to UserViewModel:', dto);
     return {
       id: dto.id ?? '',
       email: dto.email,

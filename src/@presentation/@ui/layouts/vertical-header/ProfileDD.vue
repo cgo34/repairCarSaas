@@ -6,7 +6,7 @@ import { BuildingIcon, LogoutIcon, SettingsIcon, UserIcon } from 'vue-tabler-ico
 import { useRouter } from 'vue-router';
 
 const authState = container.get<IAuthState>(SYMBOLS.States.AuthState);
-const { user } = authState;
+const { userContext } = authState;
 const router = useRouter();
 
 const roleFr = (role?: string) => ({
@@ -31,11 +31,11 @@ const initials = (name?: string) => {
         color="primary"
         size="44"
       >
-        <span class="text-body-1 font-weight-bold text-white">{{ initials(user?.fullName) }}</span>
+        <span class="text-body-1 font-weight-bold text-white">{{ initials(userContext?.email) }}</span>
       </v-avatar>
       <div class="min-w-0">
         <div class="text-subtitle-1 font-weight-semibold text-truncate">
-          {{ user?.fullName }}
+          {{ userContext?.email }}
         </div>
         <v-chip
           size="x-small"
@@ -43,7 +43,7 @@ const initials = (name?: string) => {
           variant="tonal"
           class="mt-1"
         >
-          {{ roleFr(user?.role) }}
+          {{ roleFr(userContext?.membership?.role) }}
         </v-chip>
       </div>
     </div>
