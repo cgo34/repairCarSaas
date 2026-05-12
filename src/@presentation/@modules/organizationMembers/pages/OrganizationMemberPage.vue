@@ -43,10 +43,16 @@
                   <v-card-text>
                     <v-container>
                       <v-row>
-                        <v-col cols="12">
+                        <v-col cols="6">
                           <v-text-field
-                            v-model="selectedUser.fullName"
-                            label="Nom Complet"
+                            v-model="selectedUser.first_name"
+                            label="Prénom"
+                          />
+                        </v-col>
+                        <v-col cols="6">
+                          <v-text-field
+                            v-model="selectedUser.last_name"
+                            label="Nom"
                           />
                         </v-col>
                         <v-col cols="12">
@@ -72,7 +78,7 @@
                           md="6"
                         >
                           <v-text-field
-                            v-model.number="selectedUser.percentageCommission"
+                            v-model.number="selectedUser.percentage_commission"
                             label="Commission (%)"
                             type="number"
                             min="0"
@@ -121,8 +127,8 @@
           <!-- #ENDREGION -->
 
           <!-- #REGION -> COMMISSION -->
-          <template #item.percentageCommission="{ item }">
-            {{ item.percentageCommission ? `${item.percentageCommission} %` : '—' }}
+          <template #item.percentage_commission="{ item }">
+            {{ item.percentage_commission ? `${item.percentage_commission} %` : '—' }}
           </template>
           <!-- #ENDREGION -->
 
@@ -155,12 +161,11 @@ import { container } from '@/@infrastructure/ioc/inversify.config';
 import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
 import SubscriptionOverlay from '@/@presentation/@ui/components/SubscriptionOverlay.vue';
 import MainLayout from '@/@presentation/@ui/layouts/MainLayout.vue';
-import { IUseUserState } from '@/@presentation/types/composables/IUseUserState';
-import { UserViewModel } from '@/@presentation/types/models/UserViewModel';
+import { IUseOrganizationMember } from '@/@presentation/types/IUseOrganizationMember';
 import { computed, onMounted, ref } from 'vue';
 
 // Injection du state depuis Inversify
-const useUserState = container.get<IUseUserState>(SYMBOLS.States.UserState);
+const useOrganizationMember = container.get<IUseOrganizationMember>(SYMBOLS.States.OrganizationMemberState);
 const authState = container.get<IAuthState>(SYMBOLS.States.AuthState);
 const { isFreePlan } = authState
 
@@ -174,24 +179,21 @@ const {
   updateUser,
   deleteUser,
   resetSelectedUser
-} = useUserState;
+} = useOrganizationMember;
 
 const dialog = ref<boolean>(false);
 
 const headers = [
-  { title: 'Nom Complet', align: 'start', key: 'fullName' },
-  { title: 'Email', key: 'email' },
+  { title: 'Prénom', align: 'start', key: 'users.first_name' },
+  { title: 'Nom', align: 'start', key: 'users.last_name' },
+  { title: 'Email', key: 'users.email' },
   { title: 'Rôle', key: 'role', sortable: false },
-  { title: 'Commission', key: 'percentageCommission', sortable: false },
+  { title: 'Commission', key: 'percentage_commission', align: 'end', sortable: false },
   { title: 'Actions', sortable: false, key: 'actions' },
 ] as const;
 
 const roleOptions = [
-  { label: 'Admin', value: 'admin' },
-  { label: 'Garage', value: 'garage' },
-  { label: 'Technicien', value: 'technician' },
-  { label: 'Technicien indépendant', value: 'independant_technician' },
-  { label: 'Utilisateur', value: 'user' },
+  { label: 'Technicien', value: 'technician' }
 ];
 
 const roleLabel = (role?: string) => roleOptions.find(r => r.value === role)?.label ?? role ?? '—';

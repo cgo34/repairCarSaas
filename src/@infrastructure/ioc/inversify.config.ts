@@ -226,6 +226,12 @@ import { Html2PdfGenerator } from '../pdf/Html2PdfGenerator';
 import { EmailService } from '../services/EmailService';
 import { ISubscriptionService } from '@/@application/services/subscription/ISubscriptionService';
 import { IAuthenticatedUserContextUseCase } from '@/@domain/useCases/auth/IAuthenticatedUserContextUseCase';
+import { IOrganizationMemberUseCase } from '@/@domain/useCases/organizationMember/IOrganizationMemberUseCase';
+import { OrganizationMemberUseCase } from '@/@application/useCases/organizationMember/OrganizationMemberUseCase';
+import { IUseOrganizationMember } from '@/@presentation/types/IUseOrganizationMember';
+import { useOrganizationMember } from '@/@presentation/@modules/organizationMembers/composables/useOrganizationMember';
+import { CreateOrganizationTechnicianUseCase } from '@/@application/useCases/organizationMember/CreateOrganizationTechnicianUseCase';
+import { ICreateOrganizationTechnicianUseCase } from '@/@domain/useCases/organizationMember/ICreateOrganizationTechnicianUseCase';
 
 const container = new Container({ defaultScope: 'Singleton' });
 
@@ -326,10 +332,13 @@ container.bind<ISettingPriceTechnicityCoefficientUseCase>(SYMBOLS.UseCases.Setti
 container.bind<ISettingPriceImpactCountToUtUseCase>(SYMBOLS.UseCases.Setting.Price.ImpactCountToUtUseCase).to(SettingPriceImpactCountToUtUseCase).inSingletonScope();
 /** 5.4. -- User CarRepair UseCases */
 container.bind<IUserUseCase>(SYMBOLS.UseCases.UserUseCase).to(UserUseCase).inSingletonScope();
+container.bind<ICreateOrganizationTechnicianUseCase>(SYMBOLS.UseCases.CreateOrganizationTechnicianUseCase).to(CreateOrganizationTechnicianUseCase).inSingletonScope();
 /** 5.7. -- Company Settings UseCase */
 container.bind<ICompanySettingsUseCase>(SYMBOLS.UseCases.CompanySettings).to(CompanySettingsUseCase).inSingletonScope();
 container.bind<ICreateUserUseCase>(SYMBOLS.UseCases.User.CreateUserUseCase).to(CreateUserUseCase).inSingletonScope();
 container.bind<IRegisterUserWithOrganizationUseCase>(SYMBOLS.UseCases.User.CreateUserWithOrganizationUseCase).to(RegisterUserWithOrganizationUseCase).inSingletonScope();
+/** 5.4. -- Organization Member UseCases */
+container.bind<IOrganizationMemberUseCase>(SYMBOLS.UseCases.OrganizationMemberUseCase).to(OrganizationMemberUseCase).inSingletonScope();
 /** 5.5. -- Cost Calculator UseCases */
 container.bind<ICalculateLineCostUseCase>(SYMBOLS.UseCases.CostCalculator.CalculateLineCostUseCase).to(CalculateLineCostUseCase).inSingletonScope();
 container.bind<ICalculateTotalCostUseCase>(SYMBOLS.UseCases.CostCalculator.CalculateTotalCostUseCase).to(CalculateTotalCostUseCase).inSingletonScope();
@@ -385,6 +394,9 @@ container.bind<IUseGarageState>(SYMBOLS.States.GarageState).toDynamicValue(() =>
 /** 6.2. -- Users CarRepair States */
 container.bind<IUseUserState>(SYMBOLS.States.UserState).toDynamicValue(() => {
   return useUserState();
+});
+container.bind<IUseOrganizationMember>(SYMBOLS.States.OrganizationMemberState).toDynamicValue(() => {
+  return useOrganizationMember();
 });
 /** 6.2. -- Settings CarRepair States */
 // Crée une factory injectable

@@ -30,10 +30,10 @@ export function useSettingPriceImpactCountToUtState(): IUseSettingPriceImpactCou
   const fetchSettings = async (): Promise<SettingPriceImpactCountToUtViewModel[]> => {
     loading.value = true;
     try {
-      if (!authState.user?.value?.id)
+      if (!authState.userContext.value?.id)
         throw new Error('User does not exist');
 
-      return useCase.getByUserId(authState.user?.value?.id).then((dtos) => {
+      return useCase.getByUserId(authState.userContext.value?.id).then((dtos) => {
             
         if (!dtos.length) {
           useCase.getAdmin().then((adminDtos) => {         
@@ -42,7 +42,7 @@ export function useSettingPriceImpactCountToUtState(): IUseSettingPriceImpactCou
               return {
                 ...viewModel,
                 id: undefined,
-                userId: authState.user?.value?.id
+                userId: authState.userContext.value?.id ?? ''
               }
             })
             
@@ -79,7 +79,7 @@ export function useSettingPriceImpactCountToUtState(): IUseSettingPriceImpactCou
   const addSetting = async (setting: SettingPriceImpactCountToUtViewModel) => {
     loading.value = true;
     try {
-      setting.userId = authState.user?.value?.id || '';
+      setting.userId = authState.userContext.value?.id ?? '';
       const dto = SettingPriceImpactCountToUtMapper.viewToDto(setting);
       return useCase.create(dto).then((createdDto) => {
         const viewModel = SettingPriceImpactCountToUtMapper.dtoToView(createdDto);

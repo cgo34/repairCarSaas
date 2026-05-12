@@ -33,10 +33,10 @@ export function useSettingPriceGeneralState(): IUseSettingPriceGeneralState {
   const fetchSettings = async (): Promise<SettingPriceGeneralViewModel> => {
     loading.value = true;
     try {
-      if (!authState.user?.value?.id)
+      if (!authState.userContext.value?.id)
         throw new Error('User does not exist');
 
-      return settingPriceGeneralUseCase.getByUserId(authState.user?.value?.id).then((data) => {        
+      return settingPriceGeneralUseCase.getByUserId(authState.userContext.value?.id).then((data) => {        
         if (!data) {
           settingPriceGeneralUseCase.getAdmin().then((adminData) => {            
             _settings.value.hourlyRate = adminData.hourlyRate;

@@ -14,7 +14,7 @@ export class OrganizationMemberRepository {
     private readonly clientProvider: IClientProvider<SupabaseClient>
   ) {}
 
-  async getByUserId(userId: string): Promise<OrganizationMemberDtoModel[]> {
+  async getByMemberId(userId: string): Promise<OrganizationMemberDtoModel[]> {
     console.log('Fetching organization members for user ID:', userId);
     const { data, error } = await this.clientProvider
       .getClient()
@@ -23,7 +23,7 @@ export class OrganizationMemberRepository {
       .eq('user_id', userId);
 
     if (error) {
-      console.error('[OrganizationMemberRepo] getByUserId error:', error);
+      console.error('[OrganizationMemberRepo] getByMemberId error:', error);
       return [];
     }
 
@@ -32,6 +32,21 @@ export class OrganizationMemberRepository {
     const dto = data.map(OrganizationMemberMapper.apiToDto);
     console.log('Mapped organization members DTOs for user', userId, ':', dto);
     return dto;
+  }
+
+  async getMembersByOrganizationId(organizationId: string): Promise<OrganizationMemberDtoModel[]> {
+    const { data, error } = await this.clientProvider.getClient()
+      .from('organization_members')
+      .select(`*, users!organization_members_user_id_fkey(id, email, full_name, first_name, last_name)`)
+      .eq('organization_id', organizationId)
+      .returns<OrganizationMemberApiModel[]>();
+
+      console.log('get organization members:', data);
+
+    if (error)
+      throw new Error('Error fetching organization members');
+    
+    return data.map(OrganizationMemberMapper.apiToDto);
   }
 
   async create(member: OrganizationMemberDtoModel): Promise<OrganizationMemberDtoModel> {

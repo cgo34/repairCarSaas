@@ -9,6 +9,7 @@ import { AuthError, AuthResponse } from '@supabase/supabase-js';
 import { inject, injectable } from 'inversify';
 import { SupabaseClient } from '../../clients/SupabaseClient';
 import { UserApiModel } from '../../api/UserApiModel';
+import { CreateOrganizationTechnicianDto } from '@/@application/dtos/organizations/CreateOrganizationTechnicianDto';
 
 const USER_PROFILE_SELECT = 'id, email, full_name, first_name, last_name, role, percentage_commission';
 
@@ -18,7 +19,7 @@ export class AuthSupabaseRepository implements IAuthRepository {
 
   async login(email: string, password: string): Promise<UserDto> {
     try {
-      const { data } = await this.clientProvider.getClient().auth.signIn(email, password) as SupabaseAuthResponse;
+      const { data } = await this.clientProvider.getClient().auth.signInWithPassword({ email, password }) as SupabaseAuthResponse;
 
       if (!data.user) {
         throw new Error('No user data in response');
@@ -77,8 +78,51 @@ export class AuthSupabaseRepository implements IAuthRepository {
     return { user: userDto, error };
   }
 
-  async logout(): Promise<{ error: AuthError | null }> {
-    return await this.clientProvider.getClient().auth.signOut();
+  async logout(): Promise<void> {
+    const { error } =
+      await this.clientProvider
+        .getClient()
+        .auth
+        .signOut();
+
+    if (error) {
+      throw error;
+    }
+  }
+
+  async createTechnician(
+    dto: CreateOrganizationTechnicianDto
+  ): Promise<void> {
+
+    const { error } =
+      await this.clientProvider
+        .getClient()
+        .functions
+        .invoke(
+          'create-organization-technician',
+          {
+            body: dto
+          }
+        )
+
+    if (error) {
+      throw error
+    }
+  }
+
+  async sendResetPasswordEmail(
+    email: string
+  ): Promise<void> {
+
+    const { error } =
+      await this.clientProvider
+        .getClient()
+        .auth
+        .resetPasswordForEmail(email);
+
+    if (error) {
+      throw error;
+    }
   }
 
   async getCurrentUser(): Promise<UserDto | null> {
@@ -111,10 +155,24 @@ export class AuthSupabaseRepository implements IAuthRepository {
   }
 
   async getUserSession(): Promise<any> {
-    return await this.clientProvider.getClient().auth.session();
+    return await this.clientProvider.getClient().auth.getSession();
   }
 
   onAuthStateChange(callback: (event: string, session: any) => void): void {
     this.clientProvider.getClient().auth.onAuthStateChange(callback);
+  }
+
+  async deleteUser(userId: string): Promise<void> {
+
+    const { error } =
+      await this.clientProvider
+        .getServiceRoleClient()
+        .auth
+        .admin
+        .deleteUser(userId);
+
+    if (error) {
+      throw error;
+    }
   }
 }
