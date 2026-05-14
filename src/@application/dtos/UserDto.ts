@@ -1,11 +1,10 @@
 import { SubscriptionApiModel } from '../../@infrastructure/database/api/SubscriptionApiModel';
 
-export interface UserDto {
+export type UserDto = {
   id: string;
   email: string;
-  fullName: string;
-  firstName?: string;
-  lastName?: string;
+  full_name: string;
+  first_name?: string;
+  last_name?: string;
   subscription?: SubscriptionApiModel;
-  percentageCommission?: number;
 }

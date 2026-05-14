@@ -6,13 +6,13 @@
       <v-row>
         <v-data-table
           :headers="headers"
-          :items="users"
+          :items="members"
           :sort-by="[{ key: 'fullName', order: 'asc' }]"
         >
           <!-- #REGION -> TOP BAR -->
           <template #top>
             <v-toolbar flat>
-              <v-toolbar-title>Gestion des Utilisateurs</v-toolbar-title>
+              <v-toolbar-title>Gestion des membres</v-toolbar-title>
               <v-divider
                 class="mx-4"
                 inset
@@ -31,7 +31,7 @@
                     color="primary"
                     v-bind="props"
                   >
-                    Ajouter un Utilisateur
+                    Ajouter un Membre
                   </v-btn>
                 </template>
                 <v-card>
@@ -44,19 +44,19 @@
                       <v-row>
                         <v-col cols="6">
                           <v-text-field
-                            v-model="selectedUser.users.first_name"
+                            v-model="selectedMemberForm.first_name"
                             label="Prénom"
                           />
                         </v-col>
                         <v-col cols="6">
                           <v-text-field
-                            v-model="selectedUser.users.last_name"
+                            v-model="selectedMemberForm.last_name"
                             label="Nom"
                           />
                         </v-col>
                         <v-col cols="12">
                           <v-text-field
-                            v-model="selectedUser.users.email"
+                            v-model="selectedMemberForm.email"
                             label="Email"
                           />
                         </v-col>
@@ -65,7 +65,7 @@
                           md="6"
                         >
                           <v-select
-                            v-model="selectedUser.role"
+                            v-model="selectedMemberForm.role"
                             :items="roleOptions"
                             item-title="label"
                             item-value="value"
@@ -77,7 +77,7 @@
                           md="6"
                         >
                           <v-text-field
-                            v-model.number="selectedUser.percentage_commission"
+                            v-model.number="selectedMemberForm.percentage_commission"
                             label="Commission (%)"
                             type="number"
                             min="0"
@@ -173,7 +173,7 @@ import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
 import SubscriptionOverlay from '@/@presentation/@ui/components/SubscriptionOverlay.vue';
 import MainLayout from '@/@presentation/@ui/layouts/MainLayout.vue';
 import { IUseOrganizationMember } from '@/@presentation/types/IUseOrganizationMember';
-import { OrganizationMemberViewModel } from '@/@presentation/types/models/OrganizationMemberViewmodel';
+import { OrganizationMemberViewModel } from '@/@presentation/types/models/organizations/OrganizationMemberViewmodel';
 import { computed, onMounted, ref } from 'vue';
 
 // Injection du state depuis Inversify
@@ -183,14 +183,18 @@ const { isFreePlan } = authState
 
 
 const {
-  users,
-  selectedUser,
+  members,
+  selectedMemberForm,
+
   init,
-  selectUser,
-  addUser,
-  updateUser,
-  deleteUser,
-  resetSelectedUser
+
+  selectMember,
+
+  addMember,
+  updateMember,
+  archiveMember,
+
+  resetSelectedMemberForm,
 } = useOrganizationMember;
 
 const dialog = ref<boolean>(false);
@@ -231,34 +235,38 @@ const getStatusColor = (status?: string) => {
   }
 };
 
-const formTitle = computed(() => (selectedUser.value?.id ? "Modifier l'Utilisateur" : 'Nouvel Utilisateur'));
+const formTitle = computed(() =>
+  selectedMemberForm.value?.id
+    ? 'Modifier le membre'
+    : 'Nouveau membre'
+);
 
 const onEditBtnClick = (item: OrganizationMemberViewModel) => {
   console.log('edit user with id:', item);
-  selectUser(item);
+  selectMember(item);
   dialog.value = true;
 };
 
 const onCloseEditDialogBtnClick = () => {
-  resetSelectedUser();
+  resetSelectedMemberForm();
   dialog.value = false;
 };
 
 const onSaveEditDialogBtnClick = async () => {
-  if (selectedUser.value?.id) await updateUser(selectedUser.value);
-  else await addUser(selectedUser.value);
+  if (selectedMemberForm.value?.id) await updateMember(selectedMemberForm.value);
+  else await addMember(selectedMemberForm.value);
   dialog.value = false;
 };
 
 const onDeleteBtnClick = async (item: OrganizationMemberViewModel) => {
-  if (!item.user_id) return;
+  if (!item.id) return;
 
-  console.log('delete user with id:', item.user_id);
+  console.log('delete member with id:', item.id);
 
   const confirmed = confirm(`Êtes-vous sûr de vouloir supprimer l'utilisateur "${item.users.first_name} ${item.users.last_name}" ?`);
   if (!confirmed) return;
 
-  await deleteUser(item.user_id);
+  await archiveMember(item.id);
 };
 
 onMounted(async () => {

@@ -3,7 +3,7 @@ import { inject, injectable } from "inversify";
 import { IClientProvider } from "@infrastructure/interfaces/IClientProvider";
 import { SupabaseClient } from "@infrastructure/database/clients/SupabaseClient";
 import { SYMBOLS } from "@infrastructure/ioc/symbols";
-import { OrganizationMemberDtoModel } from "@application/dtos/OrganizationMemberDtoModel";
+import { OrganizationMemberDto } from "@/@application/dtos/organizations/OrganizationMemberDto";
 import { OrganizationMemberApiModel } from "@infrastructure/database/api/OrganizationMemberApiModel";
 import { OrganizationMemberMapper } from "@infrastructure/mappers/OrganizationMemberMapper";
 import { CreateOrganizationTechnicianDto } from "@/@application/dtos/organizations/CreateOrganizationTechnicianDto";
@@ -15,34 +15,31 @@ export class OrganizationMemberRepository {
     private readonly clientProvider: IClientProvider<SupabaseClient>
   ) {}
 
-  async getByMemberId(userId: string): Promise<OrganizationMemberDtoModel[]> {
-    console.log('Fetching organization members for user ID:', userId);
+  async getByMemberId(memberId: string): Promise<OrganizationMemberDto[]> {
     const { data, error } = await this.clientProvider
       .getClient()
       .from('organization_members')
       .select('*')
-      .eq('user_id', userId);
+      .eq('id', memberId);
 
     if (error) {
       console.error('[OrganizationMemberRepo] getByMemberId error:', error);
       return [];
     }
 
-    console.log('Organization members for user', userId, ':', data);
+    console.log('Organization members for member', memberId, ':', data);
 
     const dto = data.map(OrganizationMemberMapper.apiToDto);
-    console.log('Mapped organization members DTOs for user', userId, ':', dto);
+    console.log('Mapped organization members DTOs for member', memberId, ':', dto);
     return dto;
   }
 
-  async getMembersByOrganizationId(organizationId: string): Promise<OrganizationMemberDtoModel[]> {
+  async getMembersByOrganizationId(organizationId: string): Promise<OrganizationMemberDto[]> {
     const { data, error } = await this.clientProvider.getClient()
       .from('organization_members')
       .select(`*, users!organization_members_user_id_fkey(id, email, full_name, first_name, last_name)`)
       .eq('organization_id', organizationId)
       .returns<OrganizationMemberApiModel[]>();
-
-      console.log('get organization members:', data);
 
     if (error)
       throw new Error('Error fetching organization members');
@@ -50,11 +47,8 @@ export class OrganizationMemberRepository {
     return data.map(OrganizationMemberMapper.apiToDto);
   }
   
-  async createOrganizationTechnician(
-    dto: CreateOrganizationTechnicianDto
-  ): Promise<void> {
-
-    const { error } =
+  async createOrganizationTechnician(dto: CreateOrganizationTechnicianDto): Promise<OrganizationMemberApiModel> {
+    const { data, error } =
       await this.clientProvider
         .getClient()
         .functions
@@ -68,12 +62,12 @@ export class OrganizationMemberRepository {
     if (error) {
       throw error
     }
+
+    return data.member as OrganizationMemberApiModel;
   }
 
 
   async archiveMember(memberId: string): Promise<void> {
-    console.log('Archiving member with ID:', memberId);
-
     const { error } =
       await this.clientProvider
         .getClient()
@@ -81,7 +75,7 @@ export class OrganizationMemberRepository {
         .update({
           status: 'archived'
         })
-        .eq('user_id', memberId);
+        .eq('id', memberId);
 
     if (error) {
       throw error;

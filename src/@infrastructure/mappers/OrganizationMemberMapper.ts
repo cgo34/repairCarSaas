@@ -1,12 +1,12 @@
-import { OrganizationMemberDtoModel } from "@application/dtos/OrganizationMemberDtoModel";
+import { OrganizationMemberDto } from "@/@application/dtos/organizations/OrganizationMemberDto";
 import { OrganizationMemberApiModel } from "@infrastructure/database/api/OrganizationMemberApiModel";
 
 export class OrganizationMemberMapper {
-  static apiToDto(api: OrganizationMemberApiModel): OrganizationMemberDtoModel {
+  static apiToDto(api: OrganizationMemberApiModel): OrganizationMemberDto {
     return { ...api };
   }
 
-  static dtoToApi(dto: OrganizationMemberDtoModel): OrganizationMemberApiModel {
+  static dtoToApi(dto: OrganizationMemberDto): OrganizationMemberApiModel {
     return { ...dto };
   }
 }

@@ -1,7 +1,7 @@
 import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
 import { inject, injectable } from 'inversify';
 import { IOrganizationMemberUseCase } from '@/@domain/useCases/organizationMember/IOrganizationMemberUseCase';
-import { OrganizationMemberDtoModel } from '@/@application/dtos/OrganizationMemberDtoModel';
+import { OrganizationMemberDto } from '@/@application/dtos/organizations/OrganizationMemberDto';
 import { IOrganizationMemberRepository } from '@/@domain/repositories/IOrganizationMemberRepository';
 
 @injectable()
@@ -11,16 +11,15 @@ export class OrganizationMemberUseCase implements IOrganizationMemberUseCase {
     private readonly organizationMemberRepository: IOrganizationMemberRepository
   ) {}
 
-  async getMembersByOrganizationId(organizationId: string): Promise<OrganizationMemberDtoModel[]> {
+  async getMembersByOrganizationId(organizationId: string): Promise<OrganizationMemberDto[]> {
     return this.organizationMemberRepository.getMembersByOrganizationId(organizationId);
   }
 
-  async getByMemberId(userId: string): Promise<OrganizationMemberDtoModel[]> {
+  async getByMemberId(userId: string): Promise<OrganizationMemberDto[]> {
     return this.organizationMemberRepository.getByMemberId(userId);
   }  
 
   async archiveMember(memberId: string): Promise<void> {
-    console.log('Archiving member with ID:', memberId);
-    await this.organizationMemberRepository.archiveMember(memberId);
+    return await this.organizationMemberRepository.archiveMember(memberId);
   }
 }

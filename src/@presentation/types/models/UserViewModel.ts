@@ -1,10 +1,8 @@
-export interface UserViewModel {
+export type UserViewModel = {
   id: string;
   email: string;
-  password?: string;
-  fullName: string;
   firstName?: string;
   lastName?: string;
-  createdAt?: string;
+  role?: 'technician' | 'manager' | 'admin';
   percentageCommission?: number;
 }

@@ -54,7 +54,7 @@ serve(async (req) => {
 
     // 3. create organization_members
 
-    const { error: memberError } =
+    const { data: createdMember, error: memberError } =
       await supabaseAdmin
         .from('organization_members')
         .insert({
@@ -63,6 +63,20 @@ serve(async (req) => {
           role: body.role,
           percentage_commission: body.percentage_commission,
         })
+        .select(`
+          id,
+          user_id,
+          organization_id,
+          role,
+          percentage_commission,
+          status,
+          users (
+            first_name,
+            last_name,
+            email
+          )
+        `)
+        .single()
 
     if (memberError) {
       throw memberError
@@ -79,7 +93,8 @@ serve(async (req) => {
 
     return new Response(
       JSON.stringify({
-        success: true
+        success: true,
+        member: createdMember
       }),
       {
         headers: {
