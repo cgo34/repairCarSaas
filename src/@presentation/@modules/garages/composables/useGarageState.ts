@@ -1,123 +1,272 @@
-import { IAuthState } from '@/@application/states/interfaces/IAuthState';
-import { IGarageUseCase } from '@/@domain/useCases/IGarageUseCase';
-import { container } from '@/@infrastructure/ioc/inversify.config';
-import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
-import { GarageMapper } from '@/@presentation/mappers/GarageMapper';
-import { IUseGarageState } from '@/@presentation/types/composables/IUseGarageState';
-import { GarageViewModel } from '@/@presentation/types/models/GarageViewModel';
-import { JsonHelper } from '@/helpers/jsonHelper';
 import { computed, ref } from 'vue';
 
+import { IAuthState } from '@/@application/states/interfaces/IAuthState';
+
+import { IGarageUseCase } from '@/@domain/useCases/IGarageUseCase';
+
+import { container } from '@/@infrastructure/ioc/inversify.config';
+import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
+
+import { GarageMapper } from '@/@presentation/mappers/GarageMapper';
+
+import { GarageFormFactory } from '@/@presentation/factories/GarageFormFactory';
+
+import { IUseGarageState } from '@/@presentation/types/composables/IUseGarageState';
+
+import { GarageForm } from '@/@presentation/types/forms/GarageForm';
+
+import { GarageViewModel } from '@/@presentation/types/models/GarageViewModel';
+
 export function useGarageState(): IUseGarageState {
-  const authState = container.get<IAuthState>(SYMBOLS.States.AuthState);
-  const garageUseCase = container.get<IGarageUseCase>(SYMBOLS.UseCases.Garage);
-  
+  const authState = container.get<IAuthState>(
+    SYMBOLS.States.AuthState
+  );
+
+  const garageUseCase = container.get<IGarageUseCase>(
+    SYMBOLS.UseCases.Garage
+  );
+
+  /**
+   * ============================================================
+   * STATE
+   * ============================================================
+   */
+
   const _garages = ref<GarageViewModel[]>([]);
-  const _selectedGarage = ref<GarageViewModel>({
-    userId: '',
-    name: '',
-    code: '',
-    address: '',
-    zipCode: '',
-    city: '',
-    phone: '',
-    email: '',
-    percentageCommission: 0,
-  });
+
+  const _selectedGarageForm = ref<GarageForm>(
+    GarageFormFactory.createEmpty()
+  );
+
   const loading = ref<boolean>(false);
+
   const error = ref<unknown>(null);
 
-  const init = async () => {
-    return fetchGarages().then(() => {
-      return;
-    });
+  /**
+   * ============================================================
+   * INIT
+   * ============================================================
+   */
+
+  const init = async (): Promise<void> => {
+    await fetchGarages();
   };
 
-  const fetchGarages = async (): Promise<GarageViewModel[]> => {
-    loading.value = true;
-    try {
-      if (!authState.user?.value?.id) throw new Error('User does not exist');
+  /**
+   * ============================================================
+   * FETCH GARAGES
+   * ============================================================
+   */
 
-      return garageUseCase.getByUserId(authState.user?.value?.id).then((data) => {
-        const viewModels = data.map((g) => GarageMapper.dtoToView(g));
-        _garages.value = viewModels;
-        return viewModels;
-      });
+  const fetchGarages = async (): Promise<
+    GarageViewModel[]
+  > => {
+    loading.value = true;
+
+    try {
+      const organizationId =
+        authState.userContext.value?.organization.id;
+
+      if (!organizationId) {
+        throw new Error('Organization id is required');
+      }
+
+      const data =
+        await garageUseCase.getGaragesByOrganizationId(
+          organizationId
+        );
+
+      const garages =
+        data.map(GarageMapper.dtoToView);
+
+      _garages.value = garages;
+
+      return garages;
     } catch (e) {
+      error.value = e;
+
       throw e;
     } finally {
       loading.value = false;
     }
   };
 
-  const selectGarage = (garage: GarageViewModel): void => {
-    _selectedGarage.value = JsonHelper.clone(garage);
+  /**
+   * ============================================================
+   * SELECT GARAGE
+   * ============================================================
+   */
+
+  const selectGarage = (
+    garage: GarageViewModel
+  ): void => {
+    _selectedGarageForm.value =
+      GarageFormFactory.createFromGarage(
+        garage
+      );
   };
 
-  const resetSelectedGarage = (): void => {
-    _selectedGarage.value = {
-      userId: '',
-      name: '',
-      code: '',
-      address: '',
-      zipCode: '',
-      city: '',
-      phone: '',
-      email: '',
-      percentageCommission: 0,
+  /**
+   * ============================================================
+   * RESET FORM
+   * ============================================================
+   */
+
+  const resetSelectedGarageForm =
+    (): void => {
+      _selectedGarageForm.value =
+        GarageFormFactory.createEmpty();
     };
-  };
 
-  const addGarage = async (garage: GarageViewModel) => {
+  /**
+   * ============================================================
+   * ADD GARAGE
+   * ============================================================
+   */
+
+  const addGarage = async (
+    form: GarageForm
+  ): Promise<void> => {
     loading.value = true;
+
     try {
-      garage.userId = authState.user?.value?.id ?? '';
-      return garageUseCase.create(GarageMapper.viewToDto(garage)).then((data) => {
-        const dataViewModel = GarageMapper.dtoToView(data);
-        _garages.value.push(dataViewModel);
-        resetSelectedGarage();
-        return dataViewModel;
-      });
+      const organizationId = authState.userContext.value?.organization.id ?? '';
+
+      const garageToCreate = GarageMapper.viewToDto(form);
+      garageToCreate.organization_id = organizationId;
+
+      const createdGarage = await garageUseCase.create(garageToCreate);
+
+      const garageViewModel = GarageMapper.dtoToView(createdGarage);
+
+      _garages.value.push(garageViewModel);
+
+      resetSelectedGarageForm();
+    } catch (e) {
+      error.value = e;
+
+      throw e;
     } finally {
       loading.value = false;
     }
   };
 
-  const updateGarage = async (garage: GarageViewModel) => {
+  /**
+   * ============================================================
+   * UPDATE GARAGE
+   * ============================================================
+   */
+
+  const updateGarage = async (
+    form: GarageForm
+  ): Promise<void> => {
     loading.value = true;
+
     try {
-      return garageUseCase.update(GarageMapper.viewToDto(garage)).then((data) => {
-        const dataViewModel = GarageMapper.dtoToView(data);
-        _garages.value = _garages.value.map((g) => (g.id === garage.id ? dataViewModel : g));
-        return dataViewModel;
-      });
+      if (!form.id) {
+        throw new Error('Garage id is required');
+      }
+
+      const updatedGarage =
+        await garageUseCase.update({
+          id: form.id,
+
+          organization_id:
+            form.organization_id,
+
+          name: form.name,
+          code: form.code,
+
+          address: form.address,
+          zip_code: form.zip_code,
+          city: form.city,
+
+          phone: form.phone,
+          email: form.email,
+        });
+
+      const garageViewModel =
+        GarageMapper.dtoToView(
+          updatedGarage
+        );
+
+      _garages.value =
+        _garages.value.map(garage =>
+          garage.id === form.id
+            ? garageViewModel
+            : garage
+        );
+
+      resetSelectedGarageForm();
+    } catch (e) {
+      error.value = e;
+
+      throw e;
     } finally {
       loading.value = false;
     }
   };
 
-  const deleteGarage = async (id: string) => {
+  /**
+   * ============================================================
+   * DELETE GARAGE
+   * ============================================================
+   */
+
+  const archiveGarage = async (
+    id: string
+  ): Promise<void> => {
     loading.value = true;
+
     try {
-      return garageUseCase.delete(id).then(() => {
-        _garages.value = _garages.value.filter((g) => g.id !== id);
-      });
+      const archivedGarage = await garageUseCase.archive(id);
+
+      _garages.value = _garages.value.map(
+        garage =>
+          garage.id === id
+            ? archivedGarage
+            : garage
+      );
+    } catch (e) {
+      error.value = e;
+
+      throw e;
     } finally {
       loading.value = false;
     }
   };
+
+  /**
+   * ============================================================
+   * EXPOSE
+   * ============================================================
+   */
 
   return {
-    garages: computed(() => _garages.value),
-    selectedGarage: computed(() => _selectedGarage.value),
+    garages: computed(
+      () => _garages.value
+    ),
+
+    selectedGarageForm: computed(
+      () => _selectedGarageForm.value
+    ),
+
     loading,
+
     error,
+
     init,
+
     fetchGarages,
+
     selectGarage,
+
     addGarage,
+
     updateGarage,
-    deleteGarage,
-    resetSelectedGarage,
+
+    archiveGarage,
+
+    resetSelectedGarageForm,
   };
 }

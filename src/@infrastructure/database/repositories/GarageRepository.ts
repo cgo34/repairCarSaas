@@ -21,12 +21,12 @@ export class GarageRepository implements IGarageRepository {
 
     return data.map(GarageMapper.apiToDto);
   }
-  
-  async getByUserId(userId: string): Promise<GarageDto[]> {
+
+  async getByOrganizationId(organizationId: string): Promise<GarageDto[]> {
     const { data, error } = await this.clientProvider.getClient()
       .from('garages')
       .select('*')
-      .eq('user_id', userId)
+      .eq('organization_id', organizationId)
       .returns<GarageApiModel[]>();
 
     if (error) throw new Error('Error fetching garages');
@@ -34,26 +34,17 @@ export class GarageRepository implements IGarageRepository {
     return data.map(GarageMapper.apiToDto);
   }
 
-  async getById(id: string): Promise<GarageDto | null> {
-    const { data, error } = await this.clientProvider.getClient()
-      .from('garages')
-      .select('*')
-      .eq('id', id)
-      .single<GarageApiModel>();
-
-    if (error) throw new Error('Error fetching garage');
-
-    return data ? GarageMapper.apiToDto(data) : null;
-  }
-
   async create(garage: GarageDto): Promise<GarageDto> {
     const garageApi = GarageMapper.dtoToApi(garage);
+    console?.log('Creating garage with API model:', garageApi);
 
-    const { data, error } = await this.clientProvider.getClient()
-      .from('garages')
-      .insert(garageApi)
-      .select('*')
-      .single<GarageApiModel>();
+    const { data, error } =
+      await this.clientProvider
+        .getClient()
+        .from('garages')
+        .insert(garageApi)
+        .select('*')
+        .single<GarageApiModel>();
 
     if (error) throw new Error('Error creating garage');
 
@@ -77,12 +68,24 @@ export class GarageRepository implements IGarageRepository {
     return GarageMapper.apiToDto(data);
   }
 
-  async delete(id: string): Promise<void> {
-    const { error } = await this.clientProvider.getClient()
-      .from('garages')
-      .delete()
-      .eq('id', id);
+async archive(id: string): Promise<GarageDto> {
+    const { data, error } =
+      await this.clientProvider
+        .getClient()
+        .from('garages')
+        .update({
+          archived_at: new Date().toISOString(),
+        })
+        .eq('id', id)
+        .select('*')
+        .single<GarageApiModel>();
 
-    if (error) throw new Error('Error deleting garage');
+    if (error) {
+      throw new Error(
+        'Error archiving garage'
+      );
+    }
+
+    return GarageMapper.apiToDto(data);
   }
 }

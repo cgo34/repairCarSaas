@@ -172,7 +172,7 @@ import { container } from '@/@infrastructure/ioc/inversify.config';
 import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
 import SubscriptionOverlay from '@/@presentation/@ui/components/SubscriptionOverlay.vue';
 import MainLayout from '@/@presentation/@ui/layouts/MainLayout.vue';
-import { IUseOrganizationMember } from '@/@presentation/types/IUseOrganizationMember';
+import { IUseOrganizationMember } from '@/@presentation/types/composables/IUseOrganizationMember';
 import { OrganizationMemberViewModel } from '@/@presentation/types/models/organizations/OrganizationMemberViewmodel';
 import { computed, onMounted, ref } from 'vue';
 

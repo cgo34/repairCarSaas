@@ -1,12 +1,12 @@
 export interface GarageDto {
   id?: string;
-  userId: string;
+  organization_id: string;
   name: string;
   code: string;
   address: string;
-  zipCode: string;
+  zip_code: string;
   city: string;
   phone: string;
   email: string;
-  percentageCommission: number;
+  archived_at?: string | null;
 }

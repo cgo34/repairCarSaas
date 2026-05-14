@@ -5,7 +5,7 @@ import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
 import { IAuthState } from '@/@application/states/interfaces/IAuthState';
 import { IOrganizationMemberUseCase } from '@/@domain/useCases/organizationMember/IOrganizationMemberUseCase';
 import { ICreateOrganizationTechnicianUseCase } from '@/@domain/useCases/organizationMember/ICreateOrganizationTechnicianUseCase';
-import { IUseOrganizationMember } from '@/@presentation/types/IUseOrganizationMember';
+import { IUseOrganizationMember } from '@/@presentation/types/composables/IUseOrganizationMember';
 
 import { OrganizationMemberFormFactory } from '@/@presentation/factories/OrganizationMemberFormFactory';
 import { OrganizationMemberForm } from '@/@presentation/types/forms/OrganizationMemberForm';
