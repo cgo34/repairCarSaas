@@ -1,5 +1,5 @@
 import OrganizationMembersPage from '@/@presentation/@modules/organizationMembers/pages/OrganizationMemberPage.vue';
-import OrganizationSettingsPage from '@/@presentation/@modules/account/pages/CompanySettingsPage.vue';
+import OrganizationProfilePage from '@/@presentation/@modules/organizations/pages/OrganizationProfilePage.vue';
 import { RouteRecordRaw } from 'vue-router';
 
 export const usersRoutes: RouteRecordRaw[] = [
@@ -17,7 +17,7 @@ export const usersRoutes: RouteRecordRaw[] = [
   {
     path: '/organization/settings',
     name: 'Settings',
-    component: OrganizationSettingsPage,
+    component: OrganizationProfilePage,
     meta: {
       requiresAuth: true,
       breadcrumb: [

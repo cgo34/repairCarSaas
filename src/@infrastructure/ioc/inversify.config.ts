@@ -1,6 +1,7 @@
 import { RegisterUserWithOrganizationUseCase } from '@/@application/useCases/auth/RegisterUserWithOrganizationUseCase';
 import { IRegisterUserWithOrganizationUseCase } from '@/@domain/useCases/auth/IRegisterUserWithOrganizationUseCase';
 
+import { OrganizationProfileRepository } from '@/@infrastructure/database/repositories/organizations/OrganizationProfileRepository';
 import { OrganizationRepository } from '@/@infrastructure/database/repositories/OrganizationRepository';
 import { OrganizationMemberRepository } from '@/@infrastructure/database/repositories/OrganizationMemberRepository';
 import { IOrganizationRepository } from '@/@domain/repositories/IOrganizationRepository';
@@ -232,6 +233,11 @@ import { IUseOrganizationMember } from '@/@presentation/types/composables/IUseOr
 import { useOrganizationMember } from '@/@presentation/@modules/organizationMembers/composables/useOrganizationMember';
 import { CreateOrganizationTechnicianUseCase } from '@/@application/useCases/organizationMember/CreateOrganizationTechnicianUseCase';
 import { ICreateOrganizationTechnicianUseCase } from '@/@domain/useCases/organizationMember/ICreateOrganizationTechnicianUseCase';
+import { IOrganizationProfileRepository } from '@/@domain/repositories/organizations/IOrganizationProfileRepository';
+import { IOrganizationProfileUseCase } from '@/@domain/useCases/organizations/IOrganizationProfileUseCase';
+import { OrganizationProfileUseCase } from '@/@application/useCases/organizations/OrganizationProfileUseCase';
+import { IUseOrganizationProfileState } from '@/@presentation/types/composables/IUseOrganizationProfile';
+import { useOrganizationProfileState } from '@/@presentation/@modules/organizations/composables/useOrganizationProfileState';
 
 const container = new Container({ defaultScope: 'Singleton' });
 
@@ -276,6 +282,7 @@ container.bind<IInvoiceDetailRepository>(SYMBOLS.Repositories.InvoiceDetailRepos
 container.bind<ICompanySettingsRepository>(SYMBOLS.Repositories.CompanySettingsRepository).to(CompanySettingsRepository).inSingletonScope();
 
 /** 3.10. -- Organization Repository */
+container.bind<IOrganizationProfileRepository>(SYMBOLS.Repositories.OrganizationProfileRepository).to(OrganizationProfileRepository).inSingletonScope
 container.bind<IOrganizationRepository>(SYMBOLS.Repositories.OrganizationRepository).to(OrganizationRepository).inSingletonScope();
 container.bind<IOrganizationMemberRepository>(SYMBOLS.Repositories.OrganizationMemberRepository).to(OrganizationMemberRepository).inSingletonScope();
 
@@ -339,6 +346,7 @@ container.bind<ICreateUserUseCase>(SYMBOLS.UseCases.User.CreateUserUseCase).to(C
 container.bind<IRegisterUserWithOrganizationUseCase>(SYMBOLS.UseCases.User.CreateUserWithOrganizationUseCase).to(RegisterUserWithOrganizationUseCase).inSingletonScope();
 /** 5.4. -- Organization Member UseCases */
 container.bind<IOrganizationMemberUseCase>(SYMBOLS.UseCases.OrganizationMemberUseCase).to(OrganizationMemberUseCase).inSingletonScope();
+container.bind<IOrganizationProfileUseCase>(SYMBOLS.UseCases.OrganizationProfileUseCase).to(OrganizationProfileUseCase).inSingletonScope();
 /** 5.5. -- Cost Calculator UseCases */
 container.bind<ICalculateLineCostUseCase>(SYMBOLS.UseCases.CostCalculator.CalculateLineCostUseCase).to(CalculateLineCostUseCase).inSingletonScope();
 container.bind<ICalculateTotalCostUseCase>(SYMBOLS.UseCases.CostCalculator.CalculateTotalCostUseCase).to(CalculateTotalCostUseCase).inSingletonScope();
@@ -397,6 +405,9 @@ container.bind<IUseUserState>(SYMBOLS.States.UserState).toDynamicValue(() => {
 });
 container.bind<IUseOrganizationMember>(SYMBOLS.States.OrganizationMemberState).toDynamicValue(() => {
   return useOrganizationMember();
+});
+container.bind<IUseOrganizationProfileState>(SYMBOLS.States.OrganizationProfileState).toDynamicValue(() => {
+  return useOrganizationProfileState();
 });
 /** 6.2. -- Settings CarRepair States */
 // Crée une factory injectable

@@ -14,6 +14,7 @@ export enum SYMBOL_NAMES {
     AUTH_REPOSITORY = 'AuthRepository',
     USER_REPOSITORY = 'UserRepository',
     ORGANIZATION_REPOSITORY = 'OrganizationRepository',
+    ORGANIZATION_PROFILE_REPOSITORY = 'OrganizationProfileRepository',
     ORGANIZATION_MEMBER_REPOSITORY = 'OrganizationMemberRepository',
     // -- Subscription REPOSITORIES
     SUBSCRIPTION_REPOSITORY = 'SubscriptionRepository',
@@ -76,6 +77,7 @@ export enum SYMBOL_NAMES {
     CREATE_USER_USE_CASE = 'CreateUserUseCase',
     CREATE_USER_WITH_ORGANIZATION_USE_CASE = 'CreateUserWithOrganizationUseCase',
     // -- Organization Member UseCases
+    ORGANIZATION_PROFILE_USE_CASE = 'OrganizationProfileUseCase',
     ORGANIZATION_MEMBER_USE_CASE = 'OrganizationMemberUseCase',
     CREATE_ORGANIZATION_TECHNICIAN_USE_CASE = 'CreateOrganizationTechnicianUseCase',
     // -- Garage UseCases
@@ -147,6 +149,7 @@ export enum SYMBOL_NAMES {
     SUBSCRIPTION_STATE = 'SubscriptionState',
     // -- User States
     USER_STATE = 'UserState',
+    ORGANIZATION_PROFILE_STATE = 'OrganizationProfileState',
     ORGANIZATION_MEMBER_STATE = 'OrganizationMemberState',
     // -- Garage States
     GARAGE_STATE = 'GarageState',
