@@ -1,3 +1,4 @@
+import { OrganizationMemberDto } from "@/@application/dtos/organizations/OrganizationMemberDto";
 import { CreateOrganizationTechnicianDto } from "@/@application/dtos/organizations/CreateOrganizationTechnicianDto";
 import { IAuthRepository } from "@/@domain/repositories/IAuthRepository";
 import { IOrganizationMemberRepository } from "@/@domain/repositories/IOrganizationMemberRepository";
@@ -20,8 +21,8 @@ export class CreateOrganizationTechnicianUseCase {
 
   async execute(
     dto: CreateOrganizationTechnicianDto
-  ): Promise<void> {
-    let authUserId: string | null = null;
+  ): Promise<OrganizationMemberDto> {
+    let memberCreated: OrganizationMemberDto | null = null;
 
     console.log('Executing CreateOrganizationTechnicianUseCase with DTO:', dto);
 
@@ -30,11 +31,13 @@ export class CreateOrganizationTechnicianUseCase {
       // 1. Create auth user
       // ─────────────────────────────────────
 
-      authUserId = await this.organizationMemberRepository.createOrganizationTechnician(
+      memberCreated = await this.organizationMemberRepository.createOrganizationTechnician(
         dto
       );
 
-      console.log('Auth user created with ID:', authUserId);
+      console.log('Organization member created:', memberCreated);
+
+      return memberCreated;
 
       // ─────────────────────────────────────
       // 2. Create public.users
@@ -69,8 +72,8 @@ export class CreateOrganizationTechnicianUseCase {
     } catch (error) {
 
       // rollback auth user
-      if (authUserId) {
-        await this.authRepository.deleteUser(authUserId);
+      if (memberCreated) {
+        await this.authRepository.deleteUser(memberCreated.user_id);
       }
 
       throw error;

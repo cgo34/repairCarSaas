@@ -1,6 +1,7 @@
-export type CreateOrganizationTechnicianDto = {
+export type TechnicianViewModel = {
+  id: string;
   organization_id: string;
-  role: 'technician' | 'manager' | 'admin';
+  role: 'technician';
   first_name: string;
   last_name: string;
   email: string;

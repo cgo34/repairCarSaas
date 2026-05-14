@@ -1,9 +1,9 @@
 import { CreateOrganizationTechnicianDto } from "@/@application/dtos/organizations/CreateOrganizationTechnicianDto";
-import { OrganizationMemberDtoModel } from "@application/dtos/OrganizationMemberDtoModel";
+import { OrganizationMemberDto } from "@/@application/dtos/organizations/OrganizationMemberDto";
 
 export interface IOrganizationMemberRepository {
-  getMembersByOrganizationId(organizationId: string): Promise<OrganizationMemberDtoModel[]>;
-  getByMemberId(userId: string): Promise<OrganizationMemberDtoModel[]>;
-  createOrganizationTechnician(dto: CreateOrganizationTechnicianDto): Promise<string>;
+  getMembersByOrganizationId(organizationId: string): Promise<OrganizationMemberDto[]>;
+  getByMemberId(userId: string): Promise<OrganizationMemberDto[]>;
+  createOrganizationTechnician(dto: CreateOrganizationTechnicianDto): Promise<OrganizationMemberDto>;
   archiveMember(memberId: string): Promise<void>;
 }

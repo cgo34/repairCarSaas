@@ -1,135 +1,275 @@
-import { CreateOrganizationTechnicianDto } from '@/@application/dtos/organizations/CreateOrganizationTechnicianDto';
-import { IAuthState } from '@/@application/states/interfaces/IAuthState';
-import { IUserUseCase } from '@/@domain/useCases/IUserUseCase';
-import { ICreateOrganizationTechnicianUseCase } from '@/@domain/useCases/organizationMember/ICreateOrganizationTechnicianUseCase';
-import { IOrganizationMemberUseCase } from '@/@domain/useCases/organizationMember/IOrganizationMemberUseCase';
+import { computed, ref } from 'vue';
 import { container } from '@/@infrastructure/ioc/inversify.config';
 import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
-import { OrganizationMemberMapper } from '@/@infrastructure/mappers/OrganizationMemberMapper';
-import { UserMapper } from '@/@presentation/mappers/UserMapper';
-import { IUseUserState } from '@/@presentation/types/composables/IUseUserState';
+
+import { IAuthState } from '@/@application/states/interfaces/IAuthState';
+import { IOrganizationMemberUseCase } from '@/@domain/useCases/organizationMember/IOrganizationMemberUseCase';
+import { ICreateOrganizationTechnicianUseCase } from '@/@domain/useCases/organizationMember/ICreateOrganizationTechnicianUseCase';
 import { IUseOrganizationMember } from '@/@presentation/types/IUseOrganizationMember';
-import { OrganizationMemberViewModel } from '@/@presentation/types/models/OrganizationMemberViewmodel';
-import { CreateOrganizationTechnicianViewModel } from '@/@presentation/types/models/organizations/CreateOrganizationTechnicianViewModel';
-import { UserViewModel } from '@/@presentation/types/models/UserViewModel';
-import { computed, ref } from 'vue';
+
+import { OrganizationMemberFormFactory } from '@/@presentation/factories/OrganizationMemberFormFactory';
+import { OrganizationMemberForm } from '@/@presentation/types/forms/OrganizationMemberForm';
+import { OrganizationMemberViewModel } from '@/@presentation/types/models/organizations/OrganizationMemberViewmodel';
+import { OrganizationMemberMapper } from '@/@presentation/mappers/organizations/OrganizationMemberMapper';
 
 export function useOrganizationMember(): IUseOrganizationMember {
-  const authState = container.get<IAuthState>(SYMBOLS.States.AuthState);
-  const organizationMemberUseCase = container.get<IOrganizationMemberUseCase>(SYMBOLS.UseCases.OrganizationMemberUseCase);
-  const createOrganizationTechnicianUseCase = container.get<ICreateOrganizationTechnicianUseCase>(SYMBOLS.UseCases.CreateOrganizationTechnicianUseCase);
+  const authState = container.get<IAuthState>(
+    SYMBOLS.States.AuthState
+  );
 
-  const _users = ref<OrganizationMemberViewModel[]>([]);
-  const _selectedUser = ref<CreateOrganizationTechnicianViewModel>({
-    organization_id: '',
-    first_name: '',
-    last_name: '',
-    email: '',
-    role: 'technician',
-    percentage_commission: 0,
-  });
-  const _editingUser = ref<OrganizationMemberViewModel | null>(null);
+  const organizationMemberUseCase =
+    container.get<IOrganizationMemberUseCase>(
+      SYMBOLS.UseCases.OrganizationMemberUseCase
+    );
+
+  const createOrganizationTechnicianUseCase =
+    container.get<ICreateOrganizationTechnicianUseCase>(
+      SYMBOLS.UseCases.CreateOrganizationTechnicianUseCase
+    );
+
+  /**
+   * ============================================================
+   * STATE
+   * ============================================================
+   */
+
+  const _members = ref<OrganizationMemberViewModel[]>([]);
+
+  const _selectedMemberForm = ref<OrganizationMemberForm>(
+    OrganizationMemberFormFactory.createEmpty()
+  );
+
   const loading = ref<boolean>(false);
+
   const error = ref<unknown>(null);
 
-  const init = async () => {
-    return getUsers().then(() => {});
+  /**
+   * ============================================================
+   * INIT
+   * ============================================================
+   */
+
+  const init = async (): Promise<void> => {
+    await getMembers();
   };
 
-  const getUsers = async (): Promise<OrganizationMemberViewModel[]> => {
+  /**
+   * ============================================================
+   * GET MEMBERS
+   * ============================================================
+   */
+
+  const getMembers = async (): Promise<
+    OrganizationMemberViewModel[]
+  > => {
     loading.value = true;
+
     try {
-      console.log('Fetching organization members for organization ID:', authState.userContext.value?.organization.id);
-      return organizationMemberUseCase.getMembersByOrganizationId(authState.userContext.value?.organization.id ?? '').then((data) => {
-        _users.value = data //.map(OrganizationMemberMapper.dtoToView);
-        return _users.value;
-      });
+      const organizationId = authState.userContext.value?.organization.id ?? '';
+
+      const data =
+        await organizationMemberUseCase.getMembersByOrganizationId(
+          organizationId
+        );
+
+      _members.value = data.map(dto =>
+        OrganizationMemberMapper.dtoToView(dto)
+      );
+
+      return _members.value;
     } catch (e) {
       error.value = e;
+
       throw e;
     } finally {
       loading.value = false;
     }
   };
 
-  const selectUser = (user: CreateOrganizationTechnicianViewModel): void => {
-    _selectedUser.value = { ...user };
+  /**
+   * ============================================================
+   * SELECT MEMBER
+   * ============================================================
+   */
+
+  const selectMember = (member: OrganizationMemberViewModel): void => {
+    _selectedMemberForm.value =OrganizationMemberFormFactory.createFromMember(member);
   };
 
-  const editUser = (user: OrganizationMemberViewModel): void => {
-    _editingUser.value = {
-      organization_id: user.organization_id,
-      first_name: user.first_name,
-      last_name: user.last_name,
-      email: user.email,
-      role: user.role,
-      percentage_commission: user.percentage_commission,
-    };
-  }
+  /**
+   * ============================================================
+   * RESET FORM
+   * ============================================================
+   */
 
-  const resetSelectedUser = (): void => {
-    _selectedUser.value = {
-      organization_id: '',
-      first_name: '',
-      last_name: '',
-      email: '',
-      role: 'technician',
-      percentage_commission: 0,
-    };
+  const resetSelectedMemberForm = (): void => {
+    _selectedMemberForm.value = OrganizationMemberFormFactory.createEmpty();
   };
 
-  const addUser = async (user: CreateOrganizationTechnicianViewModel) => {
+  /**
+   * ============================================================
+   * ADD MEMBER
+   * ============================================================
+   */
+
+  const addMember = async (form: OrganizationMemberForm): Promise<void> => {
     loading.value = true;
-    console.log('Adding user with data:', user);
-    try {
-      return createOrganizationTechnicianUseCase.execute({
-          ...user,
-          organization_id: authState.userContext.value?.organization.id ?? '',
-        }).then((data) => {
-          const newUser = data //OrganizationMemberMapper.dtoToView(data);
-          console.log('User added successfully:', newUser);
-          _users.value.push(newUser);
-          resetSelectedUser();
-          return newUser;
-        });
-    } finally {
-      loading.value = false;
-    }
-  };
 
-  const updateUser = async (user: OrganizationMemberViewModel): Promise<OrganizationMemberViewModel> => {
-    loading.value = true;
     try {
-      const dto = OrganizationMemberMapper.viewToDto(user);
-      await organizationMemberUseCase.updateUser(user.id, dto);
-      _users.value = _users.value.map((u) => (u.id === user.id ? { ...user } : u));
-      return { ...user };
-    } finally {
-      loading.value = false;
-    }
-  };
 
-  const deleteUser = async (id: string) => {
-    loading.value = true;
-    try {
-      return organizationMemberUseCase.archiveMember(id).then(() => {
+      const organizationId = authState.userContext.value?.organization.id ?? '';
+
+      const createdMember = await createOrganizationTechnicianUseCase.execute({
+        organization_id: organizationId,
+
+        first_name: form.first_name,
+        last_name: form.last_name,
+        email: form.email,
+
+        role: form.role,
+
+        percentage_commission: form.percentage_commission,
       });
+
+      console.log('Created member:', createdMember);
+
+      _members.value.push(createdMember);
+
+      resetSelectedMemberForm();
+    } catch (e) {
+      error.value = e;
+
+      throw e;
     } finally {
       loading.value = false;
     }
   };
+
+  /**
+   * ============================================================
+   * UPDATE MEMBER
+   * ============================================================
+   */
+
+  const updateMember = async (form: OrganizationMemberForm): Promise<void> => {
+    loading.value = true;
+
+    try {
+      if (!form.id) {
+        throw new Error('Member id is required');
+      }
+
+      const dto = {
+        first_name: form.first_name,
+        last_name: form.last_name,
+        email: form.email,
+
+        role: form.role,
+
+        percentage_commission:
+          form.percentage_commission,
+      };
+
+      await organizationMemberUseCase.updateUser(
+        form.id,
+        dto
+      );
+
+      _members.value = _members.value.map(member =>
+        member.id === form.id
+          ? {
+              ...member,
+
+              role: form.role,
+
+              percentage_commission:
+                form.percentage_commission,
+
+              users: {
+                ...member.users,
+
+                first_name: form.first_name,
+                last_name: form.last_name,
+                email: form.email,
+              },
+            }
+          : member
+      );
+
+      const updatedMember =
+        _members.value.find(
+          member => member.id === form.id
+        );
+
+      if (!updatedMember) {
+        throw new Error('Updated member not found');
+      }
+
+      resetSelectedMemberForm();
+    } catch (e) {
+      error.value = e;
+
+      throw e;
+    } finally {
+      loading.value = false;
+    }
+  };
+
+  /**
+   * ============================================================
+   * ARCHIVE MEMBER
+   * ============================================================
+   */
+
+  const archiveMember = async (id: string): Promise<void> => {
+    loading.value = true;
+
+    try {
+      await organizationMemberUseCase.archiveMember(id)
+
+      _members.value = _members.value.map(member =>
+        member.id === id
+          ? { ...member, status: 'archived' }
+          : member
+      )
+    } catch (e) {
+      error.value = e;
+
+      throw e;
+    } finally {
+      loading.value = false;
+    }
+  };
+
+  /**
+   * ============================================================
+   * EXPOSE
+   * ============================================================
+   */
 
   return {
-    users: computed(() => _users.value),
-    selectedUser: computed(() => _selectedUser.value),
+    members: computed(() => _members.value),
+
+    selectedMemberForm: computed(
+      () => _selectedMemberForm.value
+    ),
+
     loading,
+
     error,
+
     init,
-    getUsers,
-    selectUser,
-    addUser,
-    updateUser,
-    deleteUser,
-    resetSelectedUser,
+
+    getMembers,
+
+    selectMember,
+
+    addMember,
+
+    updateMember,
+
+    archiveMember,
+
+    resetSelectedMemberForm,
   };
 }
