@@ -14,36 +14,6 @@ export type Database = {
   }
   public: {
     Tables: {
-      billing_infos: {
-        Row: {
-          account_holder_name: string | null
-          bank_name: string | null
-          bic: string | null
-          created_at: string | null
-          iban: string | null
-          updated_at: string | null
-          user_id: string
-        }
-        Insert: {
-          account_holder_name?: string | null
-          bank_name?: string | null
-          bic?: string | null
-          created_at?: string | null
-          iban?: string | null
-          updated_at?: string | null
-          user_id: string
-        }
-        Update: {
-          account_holder_name?: string | null
-          bank_name?: string | null
-          bic?: string | null
-          created_at?: string | null
-          iban?: string | null
-          updated_at?: string | null
-          user_id?: string
-        }
-        Relationships: []
-      }
       body_materials: {
         Row: {
           code: string | null
@@ -80,81 +50,6 @@ export type Database = {
           color?: string | null
           id?: string
           name?: string | null
-        }
-        Relationships: []
-      }
-      company_profiles: {
-        Row: {
-          address: string
-          bic: string | null
-          capital: string | null
-          city: string
-          company_name: string
-          country: string
-          created_at: string | null
-          email: string | null
-          iban: string | null
-          id: string
-          late_payment_penalty: string | null
-          legal_form: string
-          payment_delay: number
-          phone: string | null
-          recovery_fee: string | null
-          siren: string | null
-          siret: string | null
-          tva_number: string | null
-          updated_at: string | null
-          user_id: string
-          website: string | null
-          zip_code: string
-        }
-        Insert: {
-          address?: string
-          bic?: string | null
-          capital?: string | null
-          city?: string
-          company_name?: string
-          country?: string
-          created_at?: string | null
-          email?: string | null
-          iban?: string | null
-          id?: string
-          late_payment_penalty?: string | null
-          legal_form?: string
-          payment_delay?: number
-          phone?: string | null
-          recovery_fee?: string | null
-          siren?: string | null
-          siret?: string | null
-          tva_number?: string | null
-          updated_at?: string | null
-          user_id: string
-          website?: string | null
-          zip_code?: string
-        }
-        Update: {
-          address?: string
-          bic?: string | null
-          capital?: string | null
-          city?: string
-          company_name?: string
-          country?: string
-          created_at?: string | null
-          email?: string | null
-          iban?: string | null
-          id?: string
-          late_payment_penalty?: string | null
-          legal_form?: string
-          payment_delay?: number
-          phone?: string | null
-          recovery_fee?: string | null
-          siren?: string | null
-          siret?: string | null
-          tva_number?: string | null
-          updated_at?: string | null
-          user_id?: string
-          website?: string | null
-          zip_code?: string
         }
         Relationships: []
       }
@@ -530,13 +425,6 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "invoice_details_invoice_id_fkey"
-            columns: ["invoice_id"]
-            isOneToOne: false
-            referencedRelation: "invoices"
-            referencedColumns: ["id"]
-          },
-          {
             foreignKeyName: "invoice_details_repair_type_id_fkey"
             columns: ["repair_type_id"]
             isOneToOne: false
@@ -547,12 +435,16 @@ export type Database = {
       }
       invoices: {
         Row: {
+          archived_at: string | null
+          assigned_member_id: string | null
           car_brand: string | null
-          car_date: number | null
-          car_id: string | null
           car_immatriculation: string | null
+          car_year: number | null
+          commission_paid: boolean
+          commission_rate: number | null
           country: string | null
           created_at: string
+          created_by_member_id: string
           currency: string | null
           end_date: string | null
           forfait_amount: number | null
@@ -566,26 +458,32 @@ export type Database = {
           garage_zip_code: string | null
           id: string
           invoice_number: string | null
-          is_forfait: boolean | null
-          is_sent: boolean | null
-          organization_id: string | null
+          is_compute_commission_without_dent_removal: boolean
+          is_display_unit_price: boolean
+          is_forfait: boolean
+          is_sent: boolean
+          organization_id: string
+          quote_id: string | null
           quote_number: string | null
           sent_at: string | null
           start_date: string | null
           status_id: string | null
-          technician_id: string | null
-          total_ht: number | null
-          updated_at: string
-          user_id: string | null
-          vehicle_id: string | null
+          total_commission: number
+          total_ht: number
+          total_ttc: number
+          updated_at: string | null
         }
         Insert: {
+          archived_at?: string | null
+          assigned_member_id?: string | null
           car_brand?: string | null
-          car_date?: number | null
-          car_id?: string | null
           car_immatriculation?: string | null
+          car_year?: number | null
+          commission_paid?: boolean
+          commission_rate?: number | null
           country?: string | null
           created_at?: string
+          created_by_member_id: string
           currency?: string | null
           end_date?: string | null
           forfait_amount?: number | null
@@ -599,26 +497,32 @@ export type Database = {
           garage_zip_code?: string | null
           id?: string
           invoice_number?: string | null
-          is_forfait?: boolean | null
-          is_sent?: boolean | null
-          organization_id?: string | null
+          is_compute_commission_without_dent_removal?: boolean
+          is_display_unit_price?: boolean
+          is_forfait?: boolean
+          is_sent?: boolean
+          organization_id: string
+          quote_id?: string | null
           quote_number?: string | null
           sent_at?: string | null
           start_date?: string | null
           status_id?: string | null
-          technician_id?: string | null
-          total_ht?: number | null
-          updated_at?: string
-          user_id?: string | null
-          vehicle_id?: string | null
+          total_commission?: number
+          total_ht?: number
+          total_ttc?: number
+          updated_at?: string | null
         }
         Update: {
+          archived_at?: string | null
+          assigned_member_id?: string | null
           car_brand?: string | null
-          car_date?: number | null
-          car_id?: string | null
           car_immatriculation?: string | null
+          car_year?: number | null
+          commission_paid?: boolean
+          commission_rate?: number | null
           country?: string | null
           created_at?: string
+          created_by_member_id?: string
           currency?: string | null
           end_date?: string | null
           forfait_amount?: number | null
@@ -632,20 +536,36 @@ export type Database = {
           garage_zip_code?: string | null
           id?: string
           invoice_number?: string | null
-          is_forfait?: boolean | null
-          is_sent?: boolean | null
-          organization_id?: string | null
+          is_compute_commission_without_dent_removal?: boolean
+          is_display_unit_price?: boolean
+          is_forfait?: boolean
+          is_sent?: boolean
+          organization_id?: string
+          quote_id?: string | null
           quote_number?: string | null
           sent_at?: string | null
           start_date?: string | null
           status_id?: string | null
-          technician_id?: string | null
-          total_ht?: number | null
-          updated_at?: string
-          user_id?: string | null
-          vehicle_id?: string | null
+          total_commission?: number
+          total_ht?: number
+          total_ttc?: number
+          updated_at?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "invoices_assigned_member_id_fkey"
+            columns: ["assigned_member_id"]
+            isOneToOne: false
+            referencedRelation: "organization_members"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "invoices_created_by_member_id_fkey"
+            columns: ["created_by_member_id"]
+            isOneToOne: false
+            referencedRelation: "organization_members"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "invoices_garage_id_fkey"
             columns: ["garage_id"]
@@ -661,31 +581,17 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "invoices_quote_number_fkey"
-            columns: ["quote_number"]
+            foreignKeyName: "invoices_quote_id_fkey"
+            columns: ["quote_id"]
             isOneToOne: false
             referencedRelation: "quotes"
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "invoices_status_fkey"
+            foreignKeyName: "invoices_status_id_fkey"
             columns: ["status_id"]
             isOneToOne: false
             referencedRelation: "document_statuses"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "invoices_technician_id_fkey"
-            columns: ["technician_id"]
-            isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "invoices_vehicle_id_fkey"
-            columns: ["vehicle_id"]
-            isOneToOne: false
-            referencedRelation: "vehicles"
             referencedColumns: ["id"]
           },
         ]
@@ -731,6 +637,92 @@ export type Database = {
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      organization_profiles: {
+        Row: {
+          address: string
+          archived_at: string | null
+          bic: string | null
+          capital: string | null
+          city: string
+          company_name: string
+          country: string
+          created_at: string
+          email: string | null
+          iban: string | null
+          id: string
+          late_payment_penalty: string | null
+          legal_form: string
+          organization_id: string
+          payment_delay: number
+          phone: string | null
+          recovery_fee: string | null
+          siren: string | null
+          siret: string | null
+          tva_number: string | null
+          updated_at: string | null
+          website: string | null
+          zip_code: string
+        }
+        Insert: {
+          address?: string
+          archived_at?: string | null
+          bic?: string | null
+          capital?: string | null
+          city?: string
+          company_name?: string
+          country?: string
+          created_at?: string
+          email?: string | null
+          iban?: string | null
+          id?: string
+          late_payment_penalty?: string | null
+          legal_form?: string
+          organization_id: string
+          payment_delay?: number
+          phone?: string | null
+          recovery_fee?: string | null
+          siren?: string | null
+          siret?: string | null
+          tva_number?: string | null
+          updated_at?: string | null
+          website?: string | null
+          zip_code?: string
+        }
+        Update: {
+          address?: string
+          archived_at?: string | null
+          bic?: string | null
+          capital?: string | null
+          city?: string
+          company_name?: string
+          country?: string
+          created_at?: string
+          email?: string | null
+          iban?: string | null
+          id?: string
+          late_payment_penalty?: string | null
+          legal_form?: string
+          organization_id?: string
+          payment_delay?: number
+          phone?: string | null
+          recovery_fee?: string | null
+          siren?: string | null
+          siret?: string | null
+          tva_number?: string | null
+          updated_at?: string | null
+          website?: string | null
+          zip_code?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "organization_profiles_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: true
+            referencedRelation: "organizations"
             referencedColumns: ["id"]
           },
         ]
@@ -819,48 +811,6 @@ export type Database = {
         }
         Relationships: []
       }
-      professional_infos: {
-        Row: {
-          address_line: string | null
-          city: string | null
-          country: string | null
-          created_at: string | null
-          legal_company_name: string
-          legal_status: string | null
-          postal_code: string | null
-          siret_number: string | null
-          updated_at: string | null
-          user_id: string
-          vat_number: string | null
-        }
-        Insert: {
-          address_line?: string | null
-          city?: string | null
-          country?: string | null
-          created_at?: string | null
-          legal_company_name: string
-          legal_status?: string | null
-          postal_code?: string | null
-          siret_number?: string | null
-          updated_at?: string | null
-          user_id: string
-          vat_number?: string | null
-        }
-        Update: {
-          address_line?: string | null
-          city?: string | null
-          country?: string | null
-          created_at?: string | null
-          legal_company_name?: string
-          legal_status?: string | null
-          postal_code?: string | null
-          siret_number?: string | null
-          updated_at?: string | null
-          user_id?: string
-          vat_number?: string | null
-        }
-        Relationships: []
-      }
       quote_details: {
         Row: {
           body_material_id: string | null
@@ -911,13 +861,6 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "quote_details_quote_id_fkey"
-            columns: ["quote_id"]
-            isOneToOne: false
-            referencedRelation: "quotes"
-            referencedColumns: ["id"]
-          },
-          {
             foreignKeyName: "quote_details_repair_type_id_fkey"
             columns: ["repair_type_id"]
             isOneToOne: false
@@ -928,14 +871,16 @@ export type Database = {
       }
       quotes: {
         Row: {
+          archived_at: string | null
+          assigned_member_id: string | null
           car_brand: string | null
-          car_date: number | null
-          car_id: string | null
           car_immatriculation: string | null
+          car_year: number | null
           commission_paid: boolean
           commission_rate: number | null
           country: string | null
-          created_at: string | null
+          created_at: string
+          created_by_member_id: string
           currency: string | null
           end_date: string | null
           forfait_amount: number | null
@@ -952,26 +897,25 @@ export type Database = {
           is_display_unit_price: boolean | null
           is_forfait: boolean | null
           is_sent: boolean | null
-          organization_id: string | null
+          organization_id: string
           quote_number: string | null
           sent_at: string | null
           start_date: string | null
           status_id: string | null
-          technician_id: string | null
           total_ht: number | null
           updated_at: string | null
-          user_id: string | null
-          vehicle_id: string | null
         }
         Insert: {
+          archived_at?: string | null
+          assigned_member_id?: string | null
           car_brand?: string | null
-          car_date?: number | null
-          car_id?: string | null
           car_immatriculation?: string | null
+          car_year?: number | null
           commission_paid?: boolean
           commission_rate?: number | null
           country?: string | null
-          created_at?: string | null
+          created_at?: string
+          created_by_member_id: string
           currency?: string | null
           end_date?: string | null
           forfait_amount?: number | null
@@ -988,26 +932,25 @@ export type Database = {
           is_display_unit_price?: boolean | null
           is_forfait?: boolean | null
           is_sent?: boolean | null
-          organization_id?: string | null
+          organization_id: string
           quote_number?: string | null
           sent_at?: string | null
           start_date?: string | null
           status_id?: string | null
-          technician_id?: string | null
           total_ht?: number | null
           updated_at?: string | null
-          user_id?: string | null
-          vehicle_id?: string | null
         }
         Update: {
+          archived_at?: string | null
+          assigned_member_id?: string | null
           car_brand?: string | null
-          car_date?: number | null
-          car_id?: string | null
           car_immatriculation?: string | null
+          car_year?: number | null
           commission_paid?: boolean
           commission_rate?: number | null
           country?: string | null
-          created_at?: string | null
+          created_at?: string
+          created_by_member_id?: string
           currency?: string | null
           end_date?: string | null
           forfait_amount?: number | null
@@ -1024,18 +967,29 @@ export type Database = {
           is_display_unit_price?: boolean | null
           is_forfait?: boolean | null
           is_sent?: boolean | null
-          organization_id?: string | null
+          organization_id?: string
           quote_number?: string | null
           sent_at?: string | null
           start_date?: string | null
           status_id?: string | null
-          technician_id?: string | null
           total_ht?: number | null
           updated_at?: string | null
-          user_id?: string | null
-          vehicle_id?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "quotes_assigned_member_id_fkey"
+            columns: ["assigned_member_id"]
+            isOneToOne: false
+            referencedRelation: "organization_members"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "quotes_created_by_member_id_fkey"
+            columns: ["created_by_member_id"]
+            isOneToOne: false
+            referencedRelation: "organization_members"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "quotes_garage_id_fkey"
             columns: ["garage_id"]
@@ -1055,27 +1009,6 @@ export type Database = {
             columns: ["status_id"]
             isOneToOne: false
             referencedRelation: "document_statuses"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "quotes_technician_id_fkey"
-            columns: ["technician_id"]
-            isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "quotes_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "quotes_vehicle_id_fkey"
-            columns: ["vehicle_id"]
-            isOneToOne: false
-            referencedRelation: "vehicles"
             referencedColumns: ["id"]
           },
         ]
