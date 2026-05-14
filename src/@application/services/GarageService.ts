@@ -15,8 +15,8 @@ export class GarageService implements IGarageService {
     return await this.garageRepository.getGarages();
   }
 
-  async getByUserId(userId: string): Promise<GarageDto[]> {
-    return await this.garageRepository.getByUserId(userId);
+  async getByOrganizationId(organizationId: string): Promise<GarageDto[]> {
+    return await this.garageRepository.getByOrganizationId(organizationId);
   }
 
   async getById(id: string): Promise<GarageDto | null> {

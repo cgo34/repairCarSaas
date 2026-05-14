@@ -1,43 +1,33 @@
-import { IGarageService } from '@/@domain/services/IGarageService';
 import { IGarageUseCase } from '@/@domain/useCases/IGarageUseCase';
 import { GarageDto } from '@/@application/dtos/GarageDto';
 import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
 import { inject, injectable } from 'inversify';
+import { IGarageRepository } from '@/@domain/repositories/IGarageRepository';
 
 @injectable()
 export class GarageUseCase implements IGarageUseCase {
   constructor(
-    @inject(SYMBOLS.Services.GarageService)
-    private readonly garageService: IGarageService
+      @inject(SYMBOLS.Repositories.GarageRepository)
+      private readonly garageRepository: IGarageRepository
   ) {}
 
-
-  async getGarages(): Promise<GarageDto[]> {
-    return this.garageService.getGarages();
+  async getGaragesByOrganizationId(organizationId: string): Promise<GarageDto[]> {
+    return this.garageRepository.getByOrganizationId(organizationId);
   }
 
-
-  async getByUserId(userId: string): Promise<GarageDto[]> {
-    return this.garageService.getByUserId(userId);
-  }
-
-
-  async getById(id: string): Promise<GarageDto | null> {
-    return this.garageService.getById(id);
-  }
-
+  // async getById(id: string): Promise<GarageDto | null> {
+  //   return this.garageRepository.getById(id);
+  // }
 
   async create(garage: GarageDto): Promise<GarageDto> {
-    return this.garageService.create(garage);
+    return this.garageRepository.create(garage);
   }
-
 
   async update(garage: GarageDto): Promise<GarageDto> {
-    return this.garageService.update(garage);
+    return this.garageRepository.update(garage);
   }
 
-
-  async delete(id: string): Promise<void> {
-    return this.garageService.delete(id);
+  async archive(id: string): Promise<GarageDto> {
+    return this.garageRepository.archive(id);
   }
 }

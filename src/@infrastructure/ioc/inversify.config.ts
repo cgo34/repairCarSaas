@@ -228,7 +228,7 @@ import { ISubscriptionService } from '@/@application/services/subscription/ISubs
 import { IAuthenticatedUserContextUseCase } from '@/@domain/useCases/auth/IAuthenticatedUserContextUseCase';
 import { IOrganizationMemberUseCase } from '@/@domain/useCases/organizationMember/IOrganizationMemberUseCase';
 import { OrganizationMemberUseCase } from '@/@application/useCases/organizationMember/OrganizationMemberUseCase';
-import { IUseOrganizationMember } from '@/@presentation/types/IUseOrganizationMember';
+import { IUseOrganizationMember } from '@/@presentation/types/composables/IUseOrganizationMember';
 import { useOrganizationMember } from '@/@presentation/@modules/organizationMembers/composables/useOrganizationMember';
 import { CreateOrganizationTechnicianUseCase } from '@/@application/useCases/organizationMember/CreateOrganizationTechnicianUseCase';
 import { ICreateOrganizationTechnicianUseCase } from '@/@domain/useCases/organizationMember/ICreateOrganizationTechnicianUseCase';

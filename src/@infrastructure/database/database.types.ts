@@ -385,44 +385,89 @@ export type Database = {
         }
         Relationships: []
       }
+      garage_members: {
+        Row: {
+          created_at: string | null
+          garage_id: string
+          id: string
+          organization_member_id: string
+          percentage_commission: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          garage_id: string
+          id?: string
+          organization_member_id: string
+          percentage_commission?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          garage_id?: string
+          id?: string
+          organization_member_id?: string
+          percentage_commission?: number | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "garage_technicians_garage_id_fkey"
+            columns: ["garage_id"]
+            isOneToOne: false
+            referencedRelation: "garages"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "garage_technicians_member_id_fkey"
+            columns: ["organization_member_id"]
+            isOneToOne: false
+            referencedRelation: "organization_members"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       garages: {
         Row: {
           address: string | null
+          archived_at: string | null
           city: string | null
           code: string | null
+          created_at: string
           email: string | null
           id: string
           name: string | null
           organization_id: string | null
-          percentage_commission: number | null
           phone: string | null
-          user_id: string | null
+          updated_at: string | null
           zip_code: string | null
         }
         Insert: {
           address?: string | null
+          archived_at?: string | null
           city?: string | null
           code?: string | null
+          created_at?: string
           email?: string | null
           id?: string
           name?: string | null
           organization_id?: string | null
-          percentage_commission?: number | null
           phone?: string | null
-          user_id?: string | null
+          updated_at?: string | null
           zip_code?: string | null
         }
         Update: {
           address?: string | null
+          archived_at?: string | null
           city?: string | null
           code?: string | null
+          created_at?: string
           email?: string | null
           id?: string
           name?: string | null
           organization_id?: string | null
-          percentage_commission?: number | null
           phone?: string | null
-          user_id?: string | null
+          updated_at?: string | null
           zip_code?: string | null
         }
         Relationships: [
@@ -431,13 +476,6 @@ export type Database = {
             columns: ["organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "garages_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "users"
             referencedColumns: ["id"]
           },
         ]
@@ -699,25 +737,85 @@ export type Database = {
       }
       organizations: {
         Row: {
+          address: string | null
+          bic: string | null
+          city: string | null
+          collection_fee: string | null
+          country_code: string | null
           created_at: string | null
+          currency: string | null
+          email: string | null
+          iban: string | null
           id: string
+          late_penalty: string | null
+          legal_form: string | null
+          legal_name: string | null
           name: string
           owner_user_id: string
+          payment_delay_days: number | null
+          phone: string | null
+          postal_code: string | null
+          share_capital: string | null
+          siren: string | null
+          siret: string | null
           updated_at: string | null
+          vat_number: string | null
+          vat_rate: number | null
+          website: string | null
         }
         Insert: {
+          address?: string | null
+          bic?: string | null
+          city?: string | null
+          collection_fee?: string | null
+          country_code?: string | null
           created_at?: string | null
+          currency?: string | null
+          email?: string | null
+          iban?: string | null
           id?: string
+          late_penalty?: string | null
+          legal_form?: string | null
+          legal_name?: string | null
           name: string
           owner_user_id: string
+          payment_delay_days?: number | null
+          phone?: string | null
+          postal_code?: string | null
+          share_capital?: string | null
+          siren?: string | null
+          siret?: string | null
           updated_at?: string | null
+          vat_number?: string | null
+          vat_rate?: number | null
+          website?: string | null
         }
         Update: {
+          address?: string | null
+          bic?: string | null
+          city?: string | null
+          collection_fee?: string | null
+          country_code?: string | null
           created_at?: string | null
+          currency?: string | null
+          email?: string | null
+          iban?: string | null
           id?: string
+          late_penalty?: string | null
+          legal_form?: string | null
+          legal_name?: string | null
           name?: string
           owner_user_id?: string
+          payment_delay_days?: number | null
+          phone?: string | null
+          postal_code?: string | null
+          share_capital?: string | null
+          siren?: string | null
+          siret?: string | null
           updated_at?: string | null
+          vat_number?: string | null
+          vat_rate?: number | null
+          website?: string | null
         }
         Relationships: []
       }
@@ -1261,7 +1359,11 @@ export type Database = {
         Row: {
           created_at: string | null
           end_date: string | null
+          extra_seat_price: number
+          extra_seats: number
           id: string
+          included_seats: number
+          max_seats: number | null
           organization_id: string
           plan_id: string
           start_date: string
@@ -1271,7 +1373,11 @@ export type Database = {
         Insert: {
           created_at?: string | null
           end_date?: string | null
+          extra_seat_price?: number
+          extra_seats?: number
           id?: string
+          included_seats?: number
+          max_seats?: number | null
           organization_id: string
           plan_id: string
           start_date: string
@@ -1281,7 +1387,11 @@ export type Database = {
         Update: {
           created_at?: string | null
           end_date?: string | null
+          extra_seat_price?: number
+          extra_seats?: number
           id?: string
+          included_seats?: number
+          max_seats?: number | null
           organization_id?: string
           plan_id?: string
           start_date?: string
@@ -1301,39 +1411,6 @@ export type Database = {
             columns: ["plan_id"]
             isOneToOne: false
             referencedRelation: "subscription_plans"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      technician_garage_access: {
-        Row: {
-          garage_id: string | null
-          id: string
-          user_id: string | null
-        }
-        Insert: {
-          garage_id?: string | null
-          id?: string
-          user_id?: string | null
-        }
-        Update: {
-          garage_id?: string | null
-          id?: string
-          user_id?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "technician_garage_access_garage_id_fkey"
-            columns: ["garage_id"]
-            isOneToOne: false
-            referencedRelation: "garages"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "technician_garage_access_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "users"
             referencedColumns: ["id"]
           },
         ]
@@ -1432,6 +1509,10 @@ export type Database = {
           user_id: string
         }
         Returns: undefined
+      }
+      is_organization_admin: {
+        Args: { target_organization_id: string }
+        Returns: boolean
       }
     }
     Enums: {

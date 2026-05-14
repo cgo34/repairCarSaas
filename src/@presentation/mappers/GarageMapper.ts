@@ -5,30 +5,30 @@ export class GarageMapper {
   static viewToDto(viewModel: GarageViewModel): GarageDto {
     return {
       id: viewModel.id,
-      userId: viewModel.userId,
+      organization_id: viewModel.organization_id,
       name: viewModel.name,
-      code: viewModel.code,
+      code: viewModel.name.toLowerCase().replace(/\s+/g, '-'),
       address: viewModel.address,
-      zipCode: viewModel.zipCode,
+      zip_code: viewModel.zip_code,
       city: viewModel.city,
       phone: viewModel.phone,
       email: viewModel.email,
-      percentageCommission: viewModel.percentageCommission
+      archived_at: viewModel.archived_at ?? null,
     };
   }
 
   static dtoToView(dto: GarageDto): GarageViewModel {
     return {
       id: dto.id,
-      userId: dto.userId,
+      organization_id: dto.organization_id,
       name: dto.name,
       code: dto.code,
       address: dto.address,
-      zipCode: dto.zipCode,
+      zip_code: dto.zip_code,
       city: dto.city,
       phone: dto.phone,
       email: dto.email,
-      percentageCommission: dto.percentageCommission
+      archived_at: dto.archived_at ?? null,
     };
   }
 }

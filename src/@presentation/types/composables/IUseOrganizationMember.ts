@@ -1,7 +1,7 @@
 import { ComputedRef, Ref } from 'vue';
 
-import { OrganizationMemberViewModel } from './models/organizations/OrganizationMemberViewmodel';
-import { OrganizationMemberForm } from './forms/OrganizationMemberForm';
+import { OrganizationMemberViewModel } from '../models/organizations/OrganizationMemberViewmodel';
+import { OrganizationMemberForm } from '../forms/OrganizationMemberForm';
 
 export interface IUseOrganizationMember {
   members: ComputedRef<OrganizationMemberViewModel[]>;
