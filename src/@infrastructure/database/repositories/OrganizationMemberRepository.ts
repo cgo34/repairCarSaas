@@ -20,7 +20,7 @@ export class OrganizationMemberRepository {
       .getClient()
       .from('organization_members')
       .select('*')
-      .eq('id', memberId);
+      .eq('user_id', memberId);
 
     if (error) {
       console.error('[OrganizationMemberRepo] getByMemberId error:', error);
