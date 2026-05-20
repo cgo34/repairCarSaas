@@ -3,7 +3,9 @@ import { container } from '@/@infrastructure/ioc/inversify.config';
 import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
 
 import {
-BuildingWarehouseIcon,
+  BuildingCommunityIcon,
+// BuildingWarehouseIcon,
+SettingsDollarIcon,
 CircleIcon,
 DashboardIcon,
 FileInvoiceIcon,
@@ -13,7 +15,7 @@ ToolIcon,
 UserIcon,
 SettingsIcon,
 CreditCardIcon,
-ClockDollarIcon,
+// ClockDollarIcon,
 } from 'vue-tabler-icons';
 
 const authState = container.get<IAuthState>(SYMBOLS.States.AuthState);
@@ -85,15 +87,15 @@ to: '/invoices',
 
 {
 title: 'Garages',
-icon: BuildingWarehouseIcon,
+icon: BuildingCommunityIcon,
 to: '/organization/garages',
 chip: isFreePlan ? 'Premium' : '',
 },
 
 {
-title: 'Techniciens',
+title: 'Utilisateurs',
 icon: UserIcon,
-to: '/organization/technicians',
+to: '/organization/members',
 chip: isFreePlan ? 'Premium' : '',
 roles: ['admin'],
 },
@@ -107,23 +109,26 @@ roles: ['admin'],
 
 {
 title: 'Tarification',
-icon: ClockDollarIcon,
+icon: SettingsDollarIcon,
 roles: ['admin'],
 children: [
 {
 title: 'Pièces carrosserie',
 icon: CircleIcon,
 to: '/organization/pricing/body-parts',
+roles: ['superadmin']
 },
 {
 title: 'Matériaux carrosserie',
 icon: CircleIcon,
 to: '/organization/pricing/body-materials',
+roles: ['superadmin'],
 },
 {
 title: 'Types de réparation',
 icon: ToolIcon,
 to: '/organization/pricing/repair-types',
+roles: ['superadmin'],
 },
 {
 title: 'Paramètres généraux',

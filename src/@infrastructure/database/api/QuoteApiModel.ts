@@ -42,5 +42,7 @@ export interface QuoteApiModel {
   garage_percentage_commission?: number;
 
   total_ht?: number;
+  commission_rate?: number | null;
+  commission_paid?: boolean;
   quote_details?: QuoteDetailApiModel[];
 }

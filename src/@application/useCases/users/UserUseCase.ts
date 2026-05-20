@@ -19,7 +19,15 @@ export class UserUseCase implements IUserUseCase {
     return this.userService.getUserById(id);
   }
 
+  async createUser(user: UserDto): Promise<UserDto> {
+    return this.userService.createUser(user);
+  }
+
   async updateUser(id: string, user: Partial<UserDto>): Promise<void> {
     return this.userService.updateUser(id, user);
+  }
+
+  async deleteUser(id: string): Promise<void> {
+    return this.userService.deleteUser(id);
   }
 }
