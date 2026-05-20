@@ -28,7 +28,7 @@ export class SettingPriceBodyPartCoefficientRepository implements ISettingPriceB
     const { data, error } = await this.clientProvider.getClient()
       .from('setting_price_body_part_coefficient')
       .select('*, body_parts(*)')
-      .eq('user_id', userId)
+      .eq('organization_id', userId)
       .returns<SettingPriceBodyPartCoefficientApiModel[]>();
 
     if (error) throw new Error('Error fetching body part coefficient settings');
@@ -41,7 +41,7 @@ export class SettingPriceBodyPartCoefficientRepository implements ISettingPriceB
     
     const { data, error } = await this.clientProvider.getClient()
       .from('setting_price_body_part_coefficient')
-      .upsert(settingsApi, { onConflict: ['user_id, body_part_id'], defaultToNull: false })
+      .upsert(settingsApi, { onConflict: ['organization_id, body_part_id'], defaultToNull: false })
       .select('*')
       .returns<SettingPriceBodyPartCoefficientApiModel[]>();
 

@@ -16,7 +16,7 @@ export class SettingPriceBodyMaterialCoefficientRepository implements ISettingPr
     const { data, error } = await this.clientProvider.getClient()
       .from('setting_price_body_material_coefficient')
       .select('*, body_materials(*)')
-      .eq('user_id', userId)
+      .eq('organization_id', userId)
       .returns<SettingPriceBodyMaterialCoefficientApiModel[]>();
 
     if (error) throw new Error('Error fetching body material coefficient settings');
@@ -32,7 +32,7 @@ export class SettingPriceBodyMaterialCoefficientRepository implements ISettingPr
       .insert({
         material_coefficient: settingApi.material_coefficient,
         body_material_id: settingApi.body_materials?.id,
-        user_id: settingApi.user_id
+        organization_id: settingApi.organization_id
       })
       .select('*, body_materials(*)')
       .single<SettingPriceBodyMaterialCoefficientApiModel>();

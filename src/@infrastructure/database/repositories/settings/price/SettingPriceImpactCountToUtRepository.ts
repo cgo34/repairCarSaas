@@ -28,7 +28,7 @@ export class SettingPriceImpactCountToUtRepository implements ISettingPriceImpac
     const { data, error } = await this.clientProvider.getClient()
       .from('setting_price_impact_count_to_ut')
       .select('*')
-      .eq('user_id', userId)
+      .eq('organization_id', userId)
       .returns<SettingPriceImpactCountToUtApiModel[]>();
 
     if (error)

@@ -16,7 +16,7 @@ export class SettingPriceRepairTypeCoefficientRepository implements ISettingPric
     const { data, error } = await this.clientProvider.getClient()
       .from('setting_price_repair_type_coefficient')
       .select('*, repair_types(*)')
-      .eq('user_id', userId)
+      .eq('organization_id', userId)
       .returns<SettingPriceRepairTypeCoefficientApiModel[]>();
 
     if (error) throw new Error('Error fetching body material coefficient settings');
@@ -32,7 +32,7 @@ export class SettingPriceRepairTypeCoefficientRepository implements ISettingPric
       .insert({
         repair_type_coefficient: settingApi.repair_type_coefficient,
         repair_type_id: settingApi.repair_types?.id,
-        user_id: settingApi.user_id
+        organization_id: settingApi.organization_id
       })
       .select('*, repair_types(*)')
       .single<SettingPriceRepairTypeCoefficientApiModel>();

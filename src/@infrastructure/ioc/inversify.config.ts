@@ -238,6 +238,10 @@ import { IOrganizationProfileUseCase } from '@/@domain/useCases/organizations/IO
 import { OrganizationProfileUseCase } from '@/@application/useCases/organizations/OrganizationProfileUseCase';
 import { IUseOrganizationProfileState } from '@/@presentation/types/composables/IUseOrganizationProfile';
 import { useOrganizationProfileState } from '@/@presentation/@modules/organizations/composables/useOrganizationProfileState';
+import { ISettingPriceDiameterCoefficientRepository } from '@/@domain/repositories/settings/price/ISettingPriceDiameterCoefficientRepository';
+import { SettingPriceDiameterCoefficientRepository } from '../database/repositories/settings/price/SettingPriceDiameterCoefficientRepository';
+import { ISettingPriceDiameterCoefficientUseCase } from '@/@domain/useCases/settings/price/ISettingPriceDiameterCoefficientUseCase';
+import { SettingPriceDiameterCoefficientUseCase } from '@/@application/useCases/settings/price/SettingPriceDiameterCoefficientUseCase';
 
 const container = new Container({ defaultScope: 'Singleton' });
 
@@ -263,6 +267,7 @@ container.bind<IDentRepairTypeRepository>(SYMBOLS.Repositories.DentRepairTypeRep
 /** 3.3 -- Settings CarRepair Repositories */
 container.bind<ISettingPriceRepository>(SYMBOLS.Repositories.Setting.Price.SettingPriceRepository).to(SettingPriceRepository).inSingletonScope();
 container.bind<ISettingPriceGeneralRepository>(SYMBOLS.Repositories.Setting.Price.SettingPriceGeneralRepository).to(SettingPriceGeneralRepository).inSingletonScope();
+container.bind<ISettingPriceDiameterCoefficientRepository>(SYMBOLS.Repositories.Setting.Price.SettingPriceDiameterCoefficientRepository).to(SettingPriceDiameterCoefficientRepository).inSingletonScope();
 container.bind<ISettingPriceBodyPartCoefficientRepository>(SYMBOLS.Repositories.Setting.Price.SettingPriceBodyPartCoefficient).to(SettingPriceBodyPartCoefficientRepository).inSingletonScope();
 container.bind<ISettingPriceTechnicityCoefficientRepository>(SYMBOLS.Repositories.Setting.Price.SettingPriceTechnicityCoefficient).to(SettingPriceTechnicityCoefficientRepository).inSingletonScope();
 container.bind<ISettingPriceImpactCountToUtRepository>(SYMBOLS.Repositories.Setting.Price.SettingPriceImpactCountToUtRepository).to(SettingPriceImpactCountToUtRepository).inSingletonScope();
@@ -334,6 +339,7 @@ container.bind<IDentRepairTypeUseCase>(SYMBOLS.UseCases.CarRepair.DentRepairType
 /** 5.3. -- Settings Prices CarRepair UseCases */
 container.bind<ISettingPriceUseCase>(SYMBOLS.UseCases.Setting.Price.AllUseCase).to(SettingPriceUseCase).inSingletonScope();
 container.bind<ISettingPriceGeneralUseCase>(SYMBOLS.UseCases.Setting.Price.GeneralUseCase).to(SettingPriceGeneralUseCase).inSingletonScope();
+container.bind<ISettingPriceDiameterCoefficientUseCase>(SYMBOLS.UseCases.Setting.Price.DiameterCoefficientUseCase).to(SettingPriceDiameterCoefficientUseCase).inSingletonScope();
 container.bind<ISettingPriceBodyPartCoefficientUseCase>(SYMBOLS.UseCases.Setting.Price.BodyPartCoefficientUseCase).to(SettingPriceBodyPartCoefficientUseCase).inSingletonScope();
 container.bind<ISettingPriceTechnicityCoefficientUseCase>(SYMBOLS.UseCases.Setting.Price.TechnicityCoefficientUseCase).to(SettingPriceTechnicityCoefficientUseCase).inSingletonScope();
 container.bind<ISettingPriceImpactCountToUtUseCase>(SYMBOLS.UseCases.Setting.Price.ImpactCountToUtUseCase).to(SettingPriceImpactCountToUtUseCase).inSingletonScope();
@@ -424,6 +430,11 @@ container.bind<IDentRepairTypeState>(SYMBOLS.States.CarRepair.DentRepairTypeStat
 container.bind<IUseSettingPriceGeneralState>(SYMBOLS.States.Setting.Price.GeneralState).toDynamicValue(() => {
   return useSettingPriceGeneralState();
 });
+
+container.bind<IUseSettingPriceDiameterCoefficientState>(SYMBOLS.States.Setting.Price.DiameterCoefficientState).toDynamicValue(() => {
+  return useSettingPriceDiameterCoefficientState();
+});
+
 container.bind<IUseSettingPriceBodyPartCoefficientState>(SYMBOLS.States.Setting.Price.BodyPartCoefficientState).toDynamicValue(() => {
   return useSettingPriceBodyPartCoefficientState();
 });

@@ -33,7 +33,7 @@ export function useSettingPriceImpactCountToUtState(): IUseSettingPriceImpactCou
       if (!authState.userContext.value?.id)
         throw new Error('User does not exist');
 
-      return useCase.getByUserId(authState.userContext.value?.id).then((dtos) => {
+      return useCase.getByUserId(authState.userContext.value?.organization.id).then((dtos) => {
             
         if (!dtos.length) {
           useCase.getAdmin().then((adminDtos) => {         
@@ -42,7 +42,7 @@ export function useSettingPriceImpactCountToUtState(): IUseSettingPriceImpactCou
               return {
                 ...viewModel,
                 id: undefined,
-                userId: authState.userContext.value?.id ?? ''
+                organization_id: authState.userContext.value?.organization.id ?? ''
               }
             })
             
