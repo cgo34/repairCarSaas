@@ -114,16 +114,19 @@ children: [
 title: 'Pièces carrosserie',
 icon: CircleIcon,
 to: '/organization/pricing/body-parts',
+roles: ['superadmin']
 },
 {
 title: 'Matériaux carrosserie',
 icon: CircleIcon,
 to: '/organization/pricing/body-materials',
+roles: ['superadmin'],
 },
 {
 title: 'Types de réparation',
 icon: ToolIcon,
 to: '/organization/pricing/repair-types',
+roles: ['superadmin'],
 },
 {
 title: 'Paramètres généraux',
