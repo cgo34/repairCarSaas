@@ -270,6 +270,7 @@ const onDeleteBtnClick = async (item: OrganizationMemberViewModel) => {
 };
 
 onMounted(async () => {
+  console.log('Mounted OrganizationMemberPage, initializing data...');
   await init();
 });
 </script>

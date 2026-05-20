@@ -3,6 +3,7 @@ import { ISubscriptionState } from '@/@application/states/interfaces/ISubscripti
 import { IGarageUseCase } from '@/@domain/useCases/IGarageUseCase';
 import { IUserUseCase } from '@/@domain/useCases/IUserUseCase';
 import { IInvoicesUseCase } from '@/@domain/useCases/invoices/IInvoicesUseCase';
+import { IOrganizationMemberUseCase } from '@/@domain/useCases/organizationMember/IOrganizationMemberUseCase';
 import { IQuotesUseCase } from '@/@domain/useCases/quotes/IQuotesUseCase';
 import { container } from '@/@infrastructure/ioc/inversify.config';
 import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
@@ -17,7 +18,7 @@ export function useAdminDashboardState() {
   const subscriptionState = container.get<ISubscriptionState>(SYMBOLS.States.SubscriptionState);
 
   const garageUseCase = container.get<IGarageUseCase>(SYMBOLS.UseCases.Garage);
-  const userUseCase = container.get<IUserUseCase>(SYMBOLS.UseCases.UserUseCase);
+  const userUseCase = container.get<IOrganizationMemberUseCase>(SYMBOLS.UseCases.OrganizationMemberUseCase);
   const quotesUseCase = container.get<IQuotesUseCase>(SYMBOLS.UseCases.Quote.GetQuotesUseCase);
   const invoicesUseCase = container.get<IInvoicesUseCase>(SYMBOLS.UseCases.Invoice.GetInvoicesUseCase);
 
@@ -75,8 +76,8 @@ export function useAdminDashboardState() {
       if (!authState.userContext.value) throw new Error('User not found');
 
       const [garagesResult, usersResult, quotesResult, invoicesResult] = await Promise.allSettled([
-        garageUseCase.getGarages(),
-        userUseCase.getUsers(),
+        garageUseCase.getGaragesByOrganizationId(authState.userContext.value.organization.id),
+        userUseCase.getMembersByOrganizationId(authState.userContext.value.organization.id),
         quotesUseCase.execute(authState.userContext.value.id),
         invoicesUseCase.execute(authState.userContext.value.id),
       ]);
