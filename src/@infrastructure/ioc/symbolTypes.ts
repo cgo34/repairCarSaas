@@ -37,6 +37,7 @@ export enum SYMBOL_NAMES {
     SETTING_PRICE_REPOSITORY = 'SettingPriceRepository',
     SETTING_PRICE_GENERAL_REPOSITORY = 'SettingPriceGeneralRepository',
     SETTING_PRICE_IMPACT_COUNT_TO_UT_REPOSITORY = 'SettingPriceImpactCountToUtRepository',
+    SETTING_PRICE_DIAMETER_COEFFICIENT_REPOSITORY = 'SettingPriceDiameterCoefficientRepository',
     SETTING_PRICE_BODY_PART_COEFFICIENT = 'SettingPriceBodyPartCoefficient',
     SETTING_PRICE_TECHNICITY_COEFFICIENT_REPOSITORY = 'SettingPriceTechnicityCoefficientRepository',
     // #endregion
@@ -90,6 +91,7 @@ export enum SYMBOL_NAMES {
     // -- Settings Prices CarRepair UseCases
     SETTING_PRICE_USE_CASE = 'SettingPriceUseCase',
     SETTING_PRICE_GENERAL_USE_CASE = 'SettingPriceGeneralUseCase',
+    SETTING_PRICE_DIAMETER_COEFFICIENT_USE_CASE = 'SettingPriceDiameterCoefficientUseCase',
     SETTING_PRICE_IMPACT_COUNT_TO_UT_USE_CASE = 'SettingPriceImpactCountToUtUseCase',
     SETTING_PRICE_BODY_PART_COEFFICIENT_USE_CASE = 'SettingPriceBodyPartCoefficientUseCase',
     SETTING_PRICE_TECHNICITY_COEFFICIENT_USE_CASE = 'SettingPriceTechnicityCoefficientUseCase',
@@ -161,6 +163,7 @@ export enum SYMBOL_NAMES {
     // -- Settings Prices CarRepair States
     SETTING_PRICE_STATE = 'SettingPriceState',
     SETTING_PRICE_GENERAL_STATE = 'SettingPriceGeneralState',
+    SETTING_PRICE_DIAMETER_COEFFICIENT_STATE = 'SettingPriceDiameterCoefficientState',
     SETTING_PRICE_IMPACT_COUNT_TO_UT_STATE = 'SettingPriceImpactCountToUtState',
     SETTING_PRICE_BODY_PART_COEFFICIENT_STATE = 'SettingPriceBodyPartCoefficientState',
     SETTING_PRICE_TECHNICITY_COEFFICIENT_STATE = 'SettingPriceTechnicityCoefficientState',

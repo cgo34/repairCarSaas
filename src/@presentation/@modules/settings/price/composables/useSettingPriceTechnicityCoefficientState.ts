@@ -39,7 +39,7 @@ export function useSettingPriceTechnicityCoefficientState(): IUseSettingPriceTec
     try {
       if (!authState.userContext.value?.id) throw new Error('User does not exist');
 
-      return useCase.getByUserId(authState.userContext.value?.id).then((dto) => {      
+      return useCase.getByUserId(authState.userContext.value?.organization.id).then((dto) => {      
         if (!dto) {
           useCase.getAdmin().then((adminDto) => {
             const adminView = SettingPriceTechnicityCoefficientMapper.dtoToView(adminDto);
@@ -49,7 +49,7 @@ export function useSettingPriceTechnicityCoefficientState(): IUseSettingPriceTec
             _settings.value.dapCoefficient = adminView.dapCoefficient
             _settings.value.dspCoefficient = adminView.dspCoefficient
             _settings.value.aluminiumCoefficient = adminView.aluminiumCoefficient
-            _settings.value.userId = authState.userContext.value?.id ?? ''
+            _settings.value.organization_id = authState.userContext.value?.organization.id ?? ''
             return _settings.value;
           })
 

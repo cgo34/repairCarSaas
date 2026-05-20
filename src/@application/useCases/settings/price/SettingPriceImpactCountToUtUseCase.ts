@@ -12,7 +12,7 @@ export class SettingPriceImpactCountToUtUseCase implements ISettingPriceImpactCo
     ) {}
 
     async getAdmin(): Promise<SettingPriceImpactCountToUtDto[]> {
-      return this.repository.getAdmin();
+      return this.repository.getDefault();
     }
 
     async getByUserId(userId: string): Promise<SettingPriceImpactCountToUtDto[]> {

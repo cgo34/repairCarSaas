@@ -29,7 +29,7 @@ export class SettingPriceTechnicityCoefficientRepository implements ISettingPric
     const { data, error } = await this.clientProvider.getClient()
       .from('setting_price_technicity_coefficient')
       .select('*')
-      .eq('user_id', userId)
+      .eq('organization_id', userId)
       .maybeSingle<SettingPriceTechnicityCoefficientApiModel>();
 
     if (error) throw new Error('Error fetching technicity coefficient settings');

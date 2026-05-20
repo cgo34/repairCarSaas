@@ -39,6 +39,7 @@ const SYMBOLS = {
       Price: {
         SettingPriceRepository: Symbol.for(SYMBOL_NAMES.SETTING_PRICE_REPOSITORY),
         SettingPriceGeneralRepository: Symbol.for(SYMBOL_NAMES.SETTING_PRICE_GENERAL_REPOSITORY),
+        SettingPriceDiameterCoefficientRepository: Symbol.for(SYMBOL_NAMES.SETTING_PRICE_DIAMETER_COEFFICIENT_REPOSITORY),
         SettingPriceImpactCountToUtRepository: Symbol.for(SYMBOL_NAMES.SETTING_PRICE_IMPACT_COUNT_TO_UT_REPOSITORY),
         SettingPriceBodyPartCoefficient: Symbol.for(SYMBOL_NAMES.SETTING_PRICE_BODY_PART_COEFFICIENT),
         SettingPriceTechnicityCoefficient: Symbol.for(SYMBOL_NAMES.SETTING_PRICE_TECHNICITY_COEFFICIENT_REPOSITORY),
@@ -106,6 +107,7 @@ const SYMBOLS = {
       Price: {
         AllUseCase: Symbol.for(SYMBOL_NAMES.SETTING_PRICE_USE_CASE),
         GeneralUseCase: Symbol.for(SYMBOL_NAMES.SETTING_PRICE_GENERAL_USE_CASE),
+        DiameterCoefficientUseCase: Symbol.for(SYMBOL_NAMES.SETTING_PRICE_DIAMETER_COEFFICIENT_USE_CASE),
         ImpactCountToUtUseCase: Symbol.for(SYMBOL_NAMES.SETTING_PRICE_IMPACT_COUNT_TO_UT_USE_CASE),
         BodyPartCoefficientUseCase: Symbol.for(SYMBOL_NAMES.SETTING_PRICE_BODY_PART_COEFFICIENT_USE_CASE),
         TechnicityCoefficientUseCase: Symbol.for(SYMBOL_NAMES.SETTING_PRICE_TECHNICITY_COEFFICIENT_USE_CASE),
@@ -177,6 +179,7 @@ const SYMBOLS = {
       Price: {
         All: Symbol.for(SYMBOL_NAMES.SETTING_PRICE_STATE),
         GeneralState: Symbol.for(SYMBOL_NAMES.SETTING_PRICE_GENERAL_STATE),
+        DiameterCoefficientState: Symbol.for(SYMBOL_NAMES.SETTING_PRICE_DIAMETER_COEFFICIENT_STATE),
         ImpactCountToUtState: Symbol.for(SYMBOL_NAMES.SETTING_PRICE_IMPACT_COUNT_TO_UT_STATE),
         BodyPartCoefficientState: Symbol.for(SYMBOL_NAMES.SETTING_PRICE_BODY_PART_COEFFICIENT_STATE),
         TechnicityCoefficientState: Symbol.for(SYMBOL_NAMES.SETTING_PRICE_TECHNICITY_COEFFICIENT_STATE),
