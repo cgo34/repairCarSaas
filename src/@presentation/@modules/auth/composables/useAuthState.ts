@@ -27,10 +27,12 @@ export function useAuthState() {
     error.value = null;
 
     try {
-      await authState.login(
+      const user = await authState.login(
         form.value.email,
         form.value.password
       );
+
+      console.log('Authenticated user:', user);
     } catch (e) {
       error.value = e as AuthError;
       throw e;
