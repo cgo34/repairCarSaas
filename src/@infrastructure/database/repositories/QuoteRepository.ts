@@ -122,26 +122,61 @@ export class QuoteRepository implements IQuoteRepository {
   }
 
   /**
-   * Récupère un devis par ID.
+   * ============================================================
+   * GET QUOTE BY ID
+   * ============================================================
    */
-  async getById(id: string): Promise<QuoteDto | null> {
-    const { data, error } = await this.clientProvider.getClient()
-      .from('quotes')
-      .select(`
-        *,
-        user:users!quotes_user_id_fkey(*),
-        technician:users!quotes_technician_id_fkey(*),
-        garage:garages(*),
-        status:document_statuses(*)
-      `)
-      .eq('id', id)
-      .single<QuoteApiModel>();
 
-    if (error)
-      throw new Error('Error fetching quote');    
+  async getById(
+    id: string
+  ): Promise<QuoteDto | null> {
 
-    return data ? QuoteMapper.apiToDto(data) : null;
-  }  
+    const { data, error } =
+      await this.clientProvider
+        .getClient()
+        .from('quotes')
+        .select(`
+          *,
+
+          created_by_member:organization_members!quotes_created_by_member_id_fkey(
+            *,
+            users(*)
+          ),
+
+          assigned_member:organization_members!quotes_assigned_member_id_fkey(
+            *,
+            users(*)
+          ),
+
+          garage:garages(*),
+
+          status:document_statuses(*),
+
+          quote_details(
+            *,
+            body_part:body_parts(*),
+            body_material:body_materials(*),
+            repair_type:repair_types(*)
+          )
+        `)
+        .eq('id', id)
+        .single<QuoteApiModel>();
+
+    if (error) {
+      console.error(
+        '[QuoteRepository] getById error:',
+        error
+      );
+
+      throw new Error(
+        'Error fetching quote'
+      );
+    }
+
+    return data
+      ? QuoteMapper.apiToDto(data)
+      : null;
+  }
 
   /**
    * Crée un devis.
