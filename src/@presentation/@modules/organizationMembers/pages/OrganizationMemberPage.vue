@@ -148,6 +148,13 @@
             <v-icon
               class="me-2"
               size="small"
+              @click="onViewBtnClick(item)"
+            >
+              mdi-eye
+            </v-icon>
+            <v-icon
+              class="me-2"
+              size="small"
               @click="onEditBtnClick(item)"
             >
               mdi-pencil
@@ -174,6 +181,7 @@ import SubscriptionOverlay from '@/@presentation/@ui/components/SubscriptionOver
 import MainLayout from '@/@presentation/@ui/layouts/MainLayout.vue';
 import { IUseOrganizationMember } from '@/@presentation/types/composables/IUseOrganizationMember';
 import { OrganizationMemberViewModel } from '@/@presentation/types/models/organizations/OrganizationMemberViewmodel';
+import router from '@/router';
 import { computed, onMounted, ref } from 'vue';
 
 // Injection du state depuis Inversify
@@ -240,6 +248,11 @@ const formTitle = computed(() =>
     ? 'Modifier le membre'
     : 'Nouveau membre'
 );
+
+const onViewBtnClick = (item: OrganizationMemberViewModel) => {
+  console.log('view user with id:', item);
+  router.push(`/organization/members/${item.user_id}`); // Redirige vers la page de détail du membre
+};
 
 const onEditBtnClick = (item: OrganizationMemberViewModel) => {
   console.log('edit user with id:', item);
