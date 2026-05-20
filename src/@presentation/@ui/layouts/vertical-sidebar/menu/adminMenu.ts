@@ -93,7 +93,7 @@ chip: isFreePlan ? 'Premium' : '',
 {
 title: 'Techniciens',
 icon: UserIcon,
-to: '/organization/technicians',
+to: '/organization/members',
 chip: isFreePlan ? 'Premium' : '',
 roles: ['admin'],
 },

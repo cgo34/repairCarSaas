@@ -1,27 +1,46 @@
 <template>
   <MainLayout>
-    <v-container fluid class="pa-4" style="max-width: 1100px;">
-
+    <v-container
+      fluid
+      class="pa-4"
+      style="max-width: 1100px;"
+    >
       <!-- Loading -->
-      <div v-if="state.loading.value" class="d-flex justify-center align-center" style="height: 300px;">
-        <v-progress-circular indeterminate color="primary" />
+      <div
+        v-if="state.loading.value"
+        class="d-flex justify-center align-center"
+        style="height: 300px;"
+      >
+        <v-progress-circular
+          indeterminate
+          color="primary"
+        />
       </div>
 
       <template v-else-if="state.technician.value">
-
         <!-- Header -->
         <div class="d-flex align-center gap-4 mb-6">
-          <v-avatar color="primary" size="56">
+          <v-avatar
+            color="primary"
+            size="56"
+          >
             <span class="text-h6 font-weight-bold text-white">
               {{ initials(state.technician.value.fullName) }}
             </span>
           </v-avatar>
           <div>
-            <h1 class="text-h5 font-weight-bold mb-0">{{ state.technician.value.fullName }}</h1>
-            <p class="text-body-2 text-medium-emphasis mb-0">{{ state.technician.value.email }}</p>
+            <h1 class="text-h5 font-weight-bold mb-0">
+              {{ state.technician.value.fullName }}
+            </h1>
+            <p class="text-body-2 text-medium-emphasis mb-0">
+              {{ state.technician.value.email }}
+            </p>
           </div>
           <v-spacer />
-          <v-chip :color="state.technician.value.isBlocked ? 'error' : 'success'" variant="tonal">
+          <v-chip
+            :color="state.technician.value.isBlocked ? 'error' : 'success'"
+            variant="tonal"
+          >
             {{ state.technician.value.isBlocked ? 'Bloqué' : 'Actif' }}
           </v-chip>
           <v-btn
@@ -36,29 +55,65 @@
         </div>
 
         <!-- Stats -->
-        <v-row dense class="mb-4">
-          <v-col cols="12" sm="4">
-            <v-card variant="outlined" class="text-center pa-4">
-              <div class="text-h4 font-weight-bold text-primary">{{ state.stats.value?.quotesInProgress ?? '—' }}</div>
-              <div class="text-body-2 text-medium-emphasis mt-1">Devis en cours</div>
+        <v-row
+          dense
+          class="mb-4"
+        >
+          <v-col
+            cols="12"
+            sm="4"
+          >
+            <v-card
+              variant="outlined"
+              class="text-center pa-4"
+            >
+              <div class="text-h4 font-weight-bold text-primary">
+                {{ state.stats.value?.quotesInProgress ?? '—' }}
+              </div>
+              <div class="text-body-2 text-medium-emphasis mt-1">
+                Devis en cours
+              </div>
             </v-card>
           </v-col>
-          <v-col cols="12" sm="4">
-            <v-card variant="outlined" class="text-center pa-4">
-              <div class="text-h4 font-weight-bold text-primary">{{ state.stats.value?.invoicesCount ?? '—' }}</div>
-              <div class="text-body-2 text-medium-emphasis mt-1">Factures</div>
+          <v-col
+            cols="12"
+            sm="4"
+          >
+            <v-card
+              variant="outlined"
+              class="text-center pa-4"
+            >
+              <div class="text-h4 font-weight-bold text-primary">
+                {{ state.stats.value?.invoicesCount ?? '—' }}
+              </div>
+              <div class="text-body-2 text-medium-emphasis mt-1">
+                Factures
+              </div>
             </v-card>
           </v-col>
-          <v-col cols="12" sm="4">
-            <v-card variant="outlined" class="text-center pa-4">
-              <div class="text-h4 font-weight-bold text-success">{{ formatCurrency(state.stats.value?.commissionDue) }}</div>
-              <div class="text-body-2 text-medium-emphasis mt-1">Commission due</div>
+          <v-col
+            cols="12"
+            sm="4"
+          >
+            <v-card
+              variant="outlined"
+              class="text-center pa-4"
+            >
+              <div class="text-h4 font-weight-bold text-success">
+                {{ formatCurrency(state.stats.value?.commissionDue) }}
+              </div>
+              <div class="text-body-2 text-medium-emphasis mt-1">
+                Commission due
+              </div>
             </v-card>
           </v-col>
         </v-row>
 
         <!-- Devis liés au technicien -->
-        <v-card variant="outlined" class="mb-4">
+        <v-card
+          variant="outlined"
+          class="mb-4"
+        >
           <v-card-title class="text-subtitle-1 font-weight-bold pa-4 pb-2">
             Devis liés au technicien
           </v-card-title>
@@ -76,8 +131,12 @@
 
             <!-- Véhicule -->
             <template #item.car="{ item }">
-              <div class="text-body-2">{{ item.carBrand }}</div>
-              <div class="text-caption text-medium-emphasis">{{ item.carImmatriculation }}</div>
+              <div class="text-body-2">
+                {{ item.carBrand }}
+              </div>
+              <div class="text-caption text-medium-emphasis">
+                {{ item.carImmatriculation }}
+              </div>
             </template>
 
             <!-- Date -->
@@ -92,7 +151,10 @@
 
             <!-- Commission % -->
             <template #item.commissionRate="{ item }">
-              <div class="d-flex align-center gap-1" style="min-width: 120px;">
+              <div
+                class="d-flex align-center gap-1"
+                style="min-width: 120px;"
+              >
                 <v-text-field
                   :model-value="getRate(item)"
                   type="number"
@@ -146,8 +208,12 @@
                   icon
                   @click="saveRate(item)"
                 >
-                  <v-icon size="18">mdi-content-save</v-icon>
-                  <v-tooltip activator="parent">Enregistrer le taux</v-tooltip>
+                  <v-icon size="18">
+                    mdi-content-save
+                  </v-icon>
+                  <v-tooltip activator="parent">
+                    Enregistrer le taux
+                  </v-tooltip>
                 </v-btn>
               </div>
             </template>
@@ -159,13 +225,22 @@
           <v-card-title class="text-subtitle-1 font-weight-bold pa-4 pb-2 d-flex align-center">
             Garages assignés
             <v-spacer />
-            <v-btn size="small" color="primary" variant="tonal" prepend-icon="mdi-plus" @click="garageDialog = true">
+            <v-btn
+              size="small"
+              color="primary"
+              variant="tonal"
+              prepend-icon="mdi-plus"
+              @click="garageDialog = true"
+            >
               Assigner
             </v-btn>
           </v-card-title>
           <v-divider />
           <v-card-text class="pa-4">
-            <div v-if="state.assignedGarages.value.length" class="d-flex flex-wrap gap-2">
+            <div
+              v-if="state.assignedGarages.value.length"
+              class="d-flex flex-wrap gap-2"
+            >
               <v-chip
                 v-for="garage in state.assignedGarages.value"
                 :key="garage.id"
@@ -177,10 +252,14 @@
                 {{ garage.name }}
               </v-chip>
             </div>
-            <p v-else class="text-body-2 text-medium-emphasis mb-0">Aucun garage assigné.</p>
+            <p
+              v-else
+              class="text-body-2 text-medium-emphasis mb-0"
+            >
+              Aucun garage assigné.
+            </p>
           </v-card-text>
         </v-card>
-
       </template>
 
       <!-- Dialog assignation garage -->
@@ -192,7 +271,6 @@
         @assign-garage="state.assignGarage($event)"
         @remove-garage="state.removeGarage($event)"
       />
-
     </v-container>
   </MainLayout>
 </template>
@@ -201,7 +279,7 @@
 import { onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 import MainLayout from '@/@presentation/@ui/layouts/MainLayout.vue';
-import AssignGarageDialog from '../components/AssignGarageDialog.vue';
+import AssignGarageDialog from '@/@presentation/@modules/technicians/components/AssignGarageDialog.vue';
 import { IUseTechnicianDetailState } from '@/@presentation/types/composables/IUseTechnicianDetailState';
 import { IGarageUseCase } from '@/@domain/useCases/IGarageUseCase';
 import { GarageDto } from '@/@application/dtos/GarageDto';

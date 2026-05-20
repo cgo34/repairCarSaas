@@ -158,7 +158,7 @@ import { IClientProvider } from '@/@infrastructure/interfaces/IClientProvider';
 import { useCompanySettingsState } from '@/@presentation/@modules/account/composables/useCompanySettingsState';
 import { useProfileState } from '@/@presentation/@modules/account/composables/useProfileState';
 import { useTechniciansState } from '@/@presentation/@modules/technicians/composables/useTechniciansState';
-import { useTechnicianDetailState } from '@/@presentation/@modules/technicians/composables/useTechnicianDetailState';
+import { useTechnicianDetailState } from '@/@presentation/@modules/organizationMembers/composables/useTechnicianDetailState';
 import { useGarageState } from '@/@presentation/@modules/garages/composables/useGarageState';
 import { useCreateInvoiceState } from '@/@presentation/@modules/invoices/composables/useCreateInvoiceState';
 import { useEditInvoiceState } from '@/@presentation/@modules/invoices/composables/useEditInvoiceState';
