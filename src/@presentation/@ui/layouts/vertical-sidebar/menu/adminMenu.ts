@@ -5,6 +5,7 @@ import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
 import {
   BuildingCommunityIcon,
 // BuildingWarehouseIcon,
+SettingsDollarIcon,
 CircleIcon,
 DashboardIcon,
 FileInvoiceIcon,
@@ -14,7 +15,7 @@ ToolIcon,
 UserIcon,
 SettingsIcon,
 CreditCardIcon,
-ClockDollarIcon,
+// ClockDollarIcon,
 } from 'vue-tabler-icons';
 
 const authState = container.get<IAuthState>(SYMBOLS.States.AuthState);
@@ -108,7 +109,7 @@ roles: ['admin'],
 
 {
 title: 'Tarification',
-icon: ClockDollarIcon,
+icon: SettingsDollarIcon,
 roles: ['admin'],
 children: [
 {
