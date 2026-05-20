@@ -20,8 +20,12 @@ export function useQuotesState() {
   // #region -> METHODS
   const init = async () => {
     
-    if (authState.isAuthenticated && authState.user.value) {
-      const quotesDto = await getQuotesUseCase.execute(authState.user.value?.id);
+    if (authState.isAuthenticated && authState.userContext.value) {
+      const quotesDto = await getQuotesUseCase.execute(
+        authState.userContext.value?.organization.id,
+        authState.userContext.value?.membership.id,
+        authState.userContext.value?.membership.role
+      );
       _quotes.value = quotesDto.map(quote => QuoteMapper.dtoToView(quote));
     }
   }

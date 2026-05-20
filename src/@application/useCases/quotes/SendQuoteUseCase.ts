@@ -37,15 +37,47 @@ export class SendQuoteUseCase implements ISendQuoteUseCase {
       throw new Error('Garage email not found');
     }
 
-    // Extract base64 from data URL (format: "data:application/pdf;base64,...")
-    const pdfBase64 = this.extractBase64FromDataUrl(pdfDataUrl);
 
+    // Extract base64 from data URL (format: "data:application/pdf;base64,...")
+    const pdfBase64 = await this.urlToBase64(pdfDataUrl);
     await this.emailService.sendQuoteEmail(quote.garage.email, quote.quoteNumber, pdfBase64);
   }
+
+  private async urlToBase64(url: string): Promise<string> {
+    // Handle blob URLs (e.g., "blob:http://localhost:5173/xxx")
+    if (url.startsWith('blob:')) {
+      const response = await fetch(url);
+      const blob = await response.blob();
+      return await this.blobToBase64(blob);
+    }
+    
+    // Handle data URLs (e.g., "data:application/pdf;base64,...")
+    if (url.startsWith('data:')) {
+      return this.extractBase64FromDataUrl(url);
+    }
+    
+    throw new Error('Unsupported URL format for PDF');
+  }
+
+  private blobToBase64(blob: Blob): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const dataUrl = reader.result as string;
+        // Extract base64 from the data URL
+        const base64 = this.extractBase64FromDataUrl(dataUrl);
+        resolve(base64);
+      };
+      reader.onerror = reject;
+      reader.readAsDataURL(blob);
+    });
+  }
+
 
   private extractBase64FromDataUrl(dataUrl: string): string {
     const base64Marker = ';base64,';
     const base64Index = dataUrl.indexOf(base64Marker);
+    console.log('Data URL:', dataUrl, base64Index);
     if (base64Index === -1) {
       throw new Error('Invalid data URL format');
     }

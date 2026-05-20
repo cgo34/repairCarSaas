@@ -63,7 +63,6 @@ export class OrganizationProfileRepository
   async update(
     dto: OrganizationProfileDto
   ): Promise<OrganizationProfileDto> {
-    console.log('Updating organization profile with DTO:', dto);
     const apiModel =
       OrganizationProfileMapper.dtoToApi(dto);
 

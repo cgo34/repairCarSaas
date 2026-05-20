@@ -40,7 +40,6 @@ export class DocumentStatusRepository implements IDocumentStatusRepository {
     if (error)
       throw new Error(`Error fetching document status with code: ${code}`);
 
-    console.log('DocumentStatusRepository.getByCode - data from DB:', data);
     return DocumentStatusMapper.apiToDto(data);
   }
 }

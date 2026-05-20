@@ -62,17 +62,12 @@ export class SettingPriceRepository implements ISettingPriceRepository {
     // Vérifier si les settings existent déjà pour éviter les doublons
     const existingSettings = await this.getByorganizationId(organizationId);
 
-    console.log('existingSettings =', existingSettings);
-
     if (existingSettings !== null) {
       console.log('[SettingPriceRepo] Settings already exist for user:', organizationId);
       return;
     }
 
-    console.log('[SettingPriceRepo] No existing settings found for user:', organizationId, 'Creating default settings...');
-
     const defaultSettings = await this.getDefault();
-    console.log('[SettingPriceRepo] Creating default settings for user:', organizationId, defaultSettings);
 
     // Créer les settings généraux
     try {
@@ -141,7 +136,5 @@ export class SettingPriceRepository implements ISettingPriceRepository {
         // Ignorer les doublons
       }
     }
-
-    console.log('End of create defautlt settings for user:', organizationId);
   }
 }

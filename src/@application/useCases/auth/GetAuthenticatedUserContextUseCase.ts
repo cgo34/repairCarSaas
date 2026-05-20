@@ -37,7 +37,6 @@ export class GetAuthenticatedUserContextUseCase implements IAuthenticatedUserCon
       throw new Error('Authenticated user not found');
     }
 
-    console.log('IN USE CASE : Authenticated user session:', session);
     // ───────────────────────────────────────────────────────
     // Get organization membership
     // ───────────────────────────────────────────────────────
@@ -47,8 +46,6 @@ export class GetAuthenticatedUserContextUseCase implements IAuthenticatedUserCon
     if (!membership) {
       throw new Error('Organization membership not found');
     }
-
-    console.log('IN USE CASE : Organization id membership for user', membership, membership.organizationId);
 
     // ───────────────────────────────────────────────────────
     // Get organization
@@ -62,7 +59,6 @@ export class GetAuthenticatedUserContextUseCase implements IAuthenticatedUserCon
       throw new Error('Organization not found');
     }
 
-    console.log('IN USE CASE : Organization for user', organization);
     // ───────────────────────────────────────────────────────
     // Get subscription
     // ───────────────────────────────────────────────────────
@@ -70,8 +66,6 @@ export class GetAuthenticatedUserContextUseCase implements IAuthenticatedUserCon
       await this.subscriptionRepository.getSubscriptionByOrganizationId(
         membership[0].organization_id
       );
-
-      console.log('IN USE CASE : Subscription for organization', subscription);
       
     if (!subscription) {
       throw new Error('Subscription not found');
@@ -89,9 +83,7 @@ export class GetAuthenticatedUserContextUseCase implements IAuthenticatedUserCon
         name: organization.name,
       },
 
-      membership: {
-        role: membership[0].role,
-      },
+      membership: membership[0],
 
       subscription: {
         id: subscription.id,

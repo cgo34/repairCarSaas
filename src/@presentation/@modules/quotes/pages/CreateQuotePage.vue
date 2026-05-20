@@ -93,7 +93,7 @@
           <v-autocomplete
             :model-value="selectedTechnician"
             :items="technicians"
-            item-title="fullName"
+            :item-title="item => `${item.users.first_name} ${item.users.last_name}`"
             item-value="id"
             return-object
             label="Sélectionner un technicien"
@@ -112,7 +112,7 @@
                     size="36"
                   >
                     <span class="text-caption font-weight-bold text-white">
-                      {{ initials(item.raw.fullName) }}
+                      {{ initials(item.raw.users.first_name + ' ' + item.raw.users.last_name) }}
                     </span>
                   </v-avatar>
                 </template>
@@ -127,9 +127,9 @@
                   <span
                     style="font-size:10px"
                     class="text-white"
-                  >{{ initials(item.raw.fullName) }}</span>
+                  >{{ initials(item.raw.users.first_name + ' ' + item.raw.users.last_name) }}</span>
                 </v-avatar>
-                <span>{{ item.raw.fullName }}</span>
+                <span>{{ item.raw.users.first_name }} {{ item.raw.users.last_name }}</span>
               </div>
             </template>
           </v-autocomplete>

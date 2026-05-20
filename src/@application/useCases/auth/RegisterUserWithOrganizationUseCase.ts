@@ -43,8 +43,6 @@ export class RegisterUserWithOrganizationUseCase implements IRegisterUserWithOrg
       // await this.authRepository.getUserSession();
 
       const session = await this.authRepository.getUserSession();
-      console.log('SESSION:', session);
-
 
       const organization = await this.organizationRepository.create({
         name: `${fullName}'s workspace`,

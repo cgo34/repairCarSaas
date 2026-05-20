@@ -27,10 +27,7 @@ export class OrganizationMemberRepository {
       return [];
     }
 
-    console.log('Organization members for member', memberId, ':', data);
-
     const dto = data.map(OrganizationMemberMapper.apiToDto);
-    console.log('Mapped organization members DTOs for member', memberId, ':', dto);
     return dto;
   }
 

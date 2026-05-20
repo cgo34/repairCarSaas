@@ -257,12 +257,10 @@ const formTitle = computed(() =>
 );
 
 const onViewBtnClick = (item: OrganizationMemberViewModel) => {
-  console.log('view user with id:', item);
   router.push(`/organization/members/${item.user_id}`); // Redirige vers la page de détail du membre
 };
 
 const onEditBtnClick = (item: OrganizationMemberViewModel) => {
-  console.log('edit user with id:', item);
   selectMember(item);
   dialog.value = true;
 };
@@ -285,8 +283,6 @@ const onSaveEditDialogBtnClick = async () => {
 const onDeleteBtnClick = async (item: OrganizationMemberViewModel) => {
   if (!item.id) return;
 
-  console.log('delete member with id:', item.id);
-
   const confirmed = confirm(`Êtes-vous sûr de vouloir supprimer l'utilisateur "${item.users.first_name} ${item.users.last_name}" ?`);
   if (!confirmed) return;
 
@@ -294,7 +290,6 @@ const onDeleteBtnClick = async (item: OrganizationMemberViewModel) => {
 };
 
 onMounted(async () => {
-  console.log('Mounted OrganizationMemberPage, initializing data...');
   await init();
 });
 </script>

@@ -40,7 +40,6 @@ export class DuplicateQuoteToInvoiceUseCase {
       statusId: pendingStatus?.id,
       status: pendingStatus
     }
-    console.log('invoice to create', invoice);
     
     // const invoiceLines = QuoteMapper.quoteLinesToInvoiceLines(quoteLines)
     

@@ -84,7 +84,7 @@ const { init, downloadPdf, sendQuote, quote, pdfUrl, filename  } = useViewQuoteS
 const onSendBtnClick = () => {
   console.log('onSendBtnClick');
   // router.push(`/quotes/send/${route.params.id}`);
-  // sendQuote();
+  sendQuote();
 };
 
 onMounted(async () => {

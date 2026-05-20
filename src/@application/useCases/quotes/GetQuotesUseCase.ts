@@ -8,7 +8,7 @@ export class GetQuotesUseCase {
   constructor(@inject(SYMBOLS.Repositories.QuoteRepository) private quoteRepository: IQuoteRepository) {}
 
 
-  async execute(userId: string) {
-    return await this.quoteRepository.getAllByUserId(userId);
+  async execute(organizationId: string, memberId: string, role: 'admin' | 'manager' | 'technician') {
+    return await this.quoteRepository.getAllByOrganizationMemberId(organizationId, memberId, role);
   }
 }

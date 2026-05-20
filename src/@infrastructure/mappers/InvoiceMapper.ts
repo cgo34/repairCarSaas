@@ -8,8 +8,6 @@ export class InvoiceMapper {
    * Convertit un `InvoiceApiModel` (BDD) en `InvoiceDto` (Application)
    */
   static apiToDto(api: InvoiceApiModel): InvoiceDto {
-    console.log(api);
-    
     return {
       id: api.id,
       invoiceNumber: api.invoice_number,

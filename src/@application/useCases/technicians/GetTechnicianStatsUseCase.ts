@@ -45,7 +45,6 @@ export class GetTechnicianStatsUseCase implements IGetTechnicianStatsUseCase {
       .maybeSingle<{ percentage_commission: number | string }>();
 
     if (userError) console.error('[Stats] commission error:', userError.message);
-    console.log('[Stats] technicianId:', technicianId, '| userData:', userData, '| totalHt:', totalHt);
 
     const pct = parseFloat(String(userData?.percentage_commission ?? 0));
 

@@ -14,11 +14,11 @@ export class QuoteRepository implements IQuoteRepository {
   /**
    * Génère un numéro de devis unique.
    */
-  async generateQuoteNumber(userId: string): Promise<string> {
+  async generateQuoteNumber(organizationId: string): Promise<string> {
     const { count, error } = await this.clientProvider.getClient()
     .from('quotes')
     .select('*', { count: 'exact', head: true }) // ⚡ Optimisé pour éviter un gros dataset
-    .eq('user_id', userId);
+    .eq('organization_id', organizationId);
     
     if (error)
       throw new Error('Error generating quote number');
@@ -26,8 +26,7 @@ export class QuoteRepository implements IQuoteRepository {
     // Format : DYYMMXXXX (D = Devis, YY = année, MM = mois, XXXX = compteur)
     const year = new Date().getFullYear().toString().slice(-2);
     const month = new Date().getMonth().toString().slice(-2);
-    const quoteNumber = `D${year}${month}${(count! + 1).toString().padStart(4, '0')}`;
-    
+    const quoteNumber = `D${year}${month}-${((count ?? 0) + 1).toString().padStart(4, '0')}`;
     return quoteNumber;
   }
 
@@ -70,26 +69,114 @@ export class QuoteRepository implements IQuoteRepository {
   }
 
   /**
-   * Récupère un devis par ID.
+   * ============================================================
+   * GET ALL BY ORGANIZATION MEMBER
+   * ============================================================
    */
-  async getById(id: string): Promise<QuoteDto | null> {
-    const { data, error } = await this.clientProvider.getClient()
+
+  async getAllByOrganizationMemberId(
+    organizationId: string,
+    memberId: string,
+    role: 'admin' | 'manager' | 'technician',
+  ): Promise<QuoteDto[]> {
+    console.log(`[QuoteRepository] Fetching quotes for organizationId=${organizationId}, memberId=${memberId}, role=${role}`);
+    let query = this.clientProvider
+      .getClient()
       .from('quotes')
       .select(`
         *,
-        user:users!quotes_user_id_fkey(*),
-        technician:users!quotes_technician_id_fkey(*),
+
+        assigned_member:organization_members!quotes_assigned_member_id_fkey(
+          *,
+          users(*)
+        ),
+
+        created_by_member:organization_members!quotes_created_by_member_id_fkey(
+          *,
+          users(*)
+        ),
+
         garage:garages(*),
-        status:document_statuses(*)
+
+        status:document_statuses(*),
+
+        quote_details(*)
       `)
-      .eq('id', id)
-      .single<QuoteApiModel>();
+      .eq('organization_id', organizationId);
 
-    if (error)
-      throw new Error('Error fetching quote');    
+    if (role === 'technician') {
+      query = query.or(
+        `assigned_member_id.eq.${memberId},created_by_member_id.eq.${memberId}`
+      );
+    }
 
-    return data ? QuoteMapper.apiToDto(data) : null;
-  }  
+    const { data, error } =
+      await query.returns<QuoteApiModel[]>();
+
+    if (error) {
+      console.error('[QuoteRepository] getAllByOrganizationMemberId error:', error);
+      throw new Error('Error fetching quotes');
+    }
+
+    return data.map(QuoteMapper.apiToDto);
+  }
+
+  /**
+   * ============================================================
+   * GET QUOTE BY ID
+   * ============================================================
+   */
+
+  async getById(
+    id: string
+  ): Promise<QuoteDto | null> {
+
+    const { data, error } =
+      await this.clientProvider
+        .getClient()
+        .from('quotes')
+        .select(`
+          *,
+
+          created_by_member:organization_members!quotes_created_by_member_id_fkey(
+            *,
+            users(*)
+          ),
+
+          assigned_member:organization_members!quotes_assigned_member_id_fkey(
+            *,
+            users(*)
+          ),
+
+          garage:garages(*),
+
+          status:document_statuses(*),
+
+          quote_details(
+            *,
+            body_part:body_parts(*),
+            body_material:body_materials(*),
+            repair_type:repair_types(*)
+          )
+        `)
+        .eq('id', id)
+        .single<QuoteApiModel>();
+
+    if (error) {
+      console.error(
+        '[QuoteRepository] getById error:',
+        error
+      );
+
+      throw new Error(
+        'Error fetching quote'
+      );
+    }
+
+    return data
+      ? QuoteMapper.apiToDto(data)
+      : null;
+  }
 
   /**
    * Crée un devis.

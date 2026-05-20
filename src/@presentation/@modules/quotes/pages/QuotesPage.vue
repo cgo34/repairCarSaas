@@ -152,6 +152,15 @@
           <template #item.actions="{ item }">
             <div class="d-flex align-center">
               <v-btn
+                icon
+                variant="text"
+                size="small"
+                title="Aperçu PDF"
+                @click="onViewPdfBtnClick(item.id)"
+              >
+                <v-icon>mdi-file-pdf-box</v-icon>
+              </v-btn>
+              <v-btn
                 icon="mdi-pencil"
                 size="x-small"
                 variant="text"
@@ -212,7 +221,7 @@ import { QuoteViewModel } from '@/@presentation/types/models/QuoteViewModel';
 import JSZip from 'jszip';
 import { computed, onMounted, reactive, ref } from 'vue';
 import { useDisplay } from 'vuetify';
-import { useRouter } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 
 // #region -> DEPENDENCIES
 const regionManager = container.get<IRegionManager>(SYMBOLS.Managers.regionManager);
@@ -224,6 +233,7 @@ const companySettingsUseCase = container.get<ICompanySettingsUseCase>(SYMBOLS.Us
 
 // #region -> STATE
 const router = useRouter();
+const route = useRoute();
 const { mobile } = useDisplay();
 const { init, quotes, deleteQuote } = useQuoteState;
 const {
@@ -312,6 +322,14 @@ const onBulkDownload = async () => {
 const onAddQuote = () => {
   router.push('/quotes/add');
 }
+
+const onViewPdfBtnClick = (quoteId: string | undefined) => {
+  if (!quoteId) {
+    return;
+  }
+  
+  router.push(`/quotes/${quoteId}/view`)
+};
 
 const onEditQuote = (quoteId: string | undefined) => {
   if (!quoteId) {

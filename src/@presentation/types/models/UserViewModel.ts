@@ -1,9 +1,7 @@
 export type UserViewModel = {
   id: string;
   email: string;
-  firstName?: string;
-  lastName?: string;
-  role?: 'technician' | 'manager' | 'admin';
-  percentageCommission?: number;
-  isBlocked?: boolean;
+  full_name: string;
+  first_name?: string;
+  last_name?: string;
 }
