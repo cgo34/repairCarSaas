@@ -3,7 +3,8 @@ import { container } from '@/@infrastructure/ioc/inversify.config';
 import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
 
 import {
-BuildingWarehouseIcon,
+  BuildingCommunityIcon,
+// BuildingWarehouseIcon,
 CircleIcon,
 DashboardIcon,
 FileInvoiceIcon,
@@ -85,13 +86,13 @@ to: '/invoices',
 
 {
 title: 'Garages',
-icon: BuildingWarehouseIcon,
+icon: BuildingCommunityIcon,
 to: '/organization/garages',
 chip: isFreePlan ? 'Premium' : '',
 },
 
 {
-title: 'Techniciens',
+title: 'Utilisateurs',
 icon: UserIcon,
 to: '/organization/members',
 chip: isFreePlan ? 'Premium' : '',

@@ -160,6 +160,13 @@
               mdi-pencil
             </v-icon>
             <v-icon
+              class="me-2"
+              size="small"
+              @click="onAddGarageBtnClick(item)"
+            >
+              mdi-office-building-plus
+            </v-icon>
+            <v-icon
               size="small"
               @click="onDeleteBtnClick(item)"
             >
@@ -259,6 +266,10 @@ const onEditBtnClick = (item: OrganizationMemberViewModel) => {
   selectMember(item);
   dialog.value = true;
 };
+
+const onAddGarageBtnClick = (item: OrganizationMemberViewModel) => {
+  console.log('add garage for user with id:', item);
+}
 
 const onCloseEditDialogBtnClick = () => {
   resetSelectedMemberForm();
