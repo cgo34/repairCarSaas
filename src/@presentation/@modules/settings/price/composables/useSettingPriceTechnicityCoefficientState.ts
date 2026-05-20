@@ -27,8 +27,6 @@ export function useSettingPriceTechnicityCoefficientState(): IUseSettingPriceTec
   const error = ref<unknown>(null);
 
   const init = async () => {
-    console.log('Initializing SettingPriceTechnicityCoefficientState');
-    console.log('Current user :', authState.userContext.value);
     return fetchSettings().then(() => {
       return;
     });

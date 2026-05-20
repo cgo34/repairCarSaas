@@ -131,8 +131,6 @@ export function useOrganizationMember(): IUseOrganizationMember {
         percentage_commission: form.percentage_commission,
       });
 
-      console.log('Created member:', createdMember);
-
       _members.value.push(createdMember);
 
       resetSelectedMemberForm();

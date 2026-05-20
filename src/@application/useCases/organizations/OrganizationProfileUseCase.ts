@@ -31,7 +31,6 @@ export class OrganizationProfileUseCase
   async updateProfile(
     dto: OrganizationProfileDto
   ): Promise<OrganizationProfileDto> {
-    console.log('UseCase : Updating organization profile with DTO:', dto);
     return this.repository.update(dto);
   }
 }

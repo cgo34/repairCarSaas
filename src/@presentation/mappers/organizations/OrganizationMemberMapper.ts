@@ -1,4 +1,5 @@
 import { OrganizationMemberDto } from '@/@application/dtos/organizations/OrganizationMemberDto';
+import { UserDto } from '@/@application/dtos/UserDto';
 
 import {
   OrganizationMemberUserViewModel,
@@ -29,7 +30,7 @@ export class OrganizationMemberMapper {
 
       status: dto.status,
 
-      users: this.mapUserDtoToView(dto.users),
+      users: OrganizationMemberMapper.mapUserDtoToView(dto.users),
     };
   }
 
@@ -79,10 +80,12 @@ export class OrganizationMemberMapper {
    */
 
   private static mapUserDtoToView(
-    user: OrganizationMemberDto['users']
+    user: UserDto
   ): OrganizationMemberUserViewModel {
     return {
       id: user.id,
+
+      full_name: user.full_name,
 
       first_name: user.first_name ?? '',
 

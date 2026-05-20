@@ -13,7 +13,6 @@ export class AddQuoteLineItemUseCase implements IAddQuoteLineItemUseCase {
   ) {}
 
   async executeQuote(lineItem: LineItemDto): Promise<LineItemDto> {
-    console.log('Adding line item to quote:', lineItem);
     return this.quoteDetailRepository.insert(lineItem);
   }
 }

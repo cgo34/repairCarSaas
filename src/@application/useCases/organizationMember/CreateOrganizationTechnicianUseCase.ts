@@ -24,8 +24,6 @@ export class CreateOrganizationTechnicianUseCase {
   ): Promise<OrganizationMemberDto> {
     let memberCreated: OrganizationMemberDto | null = null;
 
-    console.log('Executing CreateOrganizationTechnicianUseCase with DTO:', dto);
-
     try {
       // ─────────────────────────────────────
       // 1. Create auth user
@@ -34,8 +32,6 @@ export class CreateOrganizationTechnicianUseCase {
       memberCreated = await this.organizationMemberRepository.createOrganizationTechnician(
         dto
       );
-
-      console.log('Organization member created:', memberCreated);
 
       return memberCreated;
 

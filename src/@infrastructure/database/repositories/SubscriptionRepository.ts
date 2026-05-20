@@ -43,8 +43,6 @@ export class SubscriptionRepository implements ISubscriptionRepository {
       console.error('[SubscriptionRepo] createSubscription error:', error);
       throw error;
     }
-
-    console.log('Subscription created successfully for organization:', data.organizationId);
   }
 
   async getSubscriptionByUserId(userId: string): Promise<SubscriptionDto> {
@@ -67,7 +65,6 @@ export class SubscriptionRepository implements ISubscriptionRepository {
   }
 
   async getSubscriptionByOrganizationId(organizationId: string): Promise<SubscriptionDto> {
-    console.log('Fetching subscription for organization ID:', organizationId);
     const { data, error } = await this.clientProvider.getClient()
       .from('subscriptions')
       .select(`
@@ -82,10 +79,7 @@ export class SubscriptionRepository implements ISubscriptionRepository {
       throw error
     }
 
-
-    console.log('Raw subscription data for organization', organizationId, ':', data);
     const dto = SubscriptionMapper.apiToDto(data);
-    console.log('Fetched subscription for organization', organizationId, ':', dto);
     return dto;
   }
 }

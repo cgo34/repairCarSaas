@@ -19,6 +19,9 @@ import { UserViewModel } from '@/@presentation/types/models/UserViewModel';
 import { VehicleViewModel } from '@/@presentation/types/models/VehicleViewModel';
 import { DocumentStatuseMapper } from '@/@presentation/mappers/DocumentStatuseMapper';
 import { computed, ref } from 'vue';
+import { IOrganizationMemberUseCase } from '@/@domain/useCases/organizationMember/IOrganizationMemberUseCase';
+import { OrganizationMemberMapper } from '@/@presentation/mappers/organizations/OrganizationMemberMapper';
+import { OrganizationMemberViewModel } from '@/@presentation/types/models/organizations/OrganizationMemberViewmodel';
 // endregion
 
 export function useCreateQuoteState() {
@@ -28,7 +31,7 @@ export function useCreateQuoteState() {
   const insertQuoteUseCase = container.get<IInsertQuoteUseCase>(SYMBOLS.UseCases.Quote.InsertQuoteUseCase);
   const getDocumentStatusUseCase = container.get<IGetDocumentStatusUseCase>(SYMBOLS.UseCases.GetDocumentStatus);
   const garageUseCase = container.get<IGarageUseCase>(SYMBOLS.UseCases.Garage);
-  const technicianUseCase = container.get<IUserUseCase>(SYMBOLS.UseCases.UserUseCase);
+  const technicianUseCase = container.get<IOrganizationMemberUseCase>(SYMBOLS.UseCases.OrganizationMemberUseCase);
   // const vehicleUseCase = container.get<IVehicleUseCase>(SYMBOLS.UseCases.Vehicle);
   // #endregion
 
@@ -38,9 +41,9 @@ export function useCreateQuoteState() {
 
   const _quote = ref<QuoteViewModel | undefined>(undefined);
 
-  const _technicians = ref<UserViewModel[]>([]);
+  const _technicians = ref<OrganizationMemberViewModel[]>([]);
   const _garages = ref<GarageViewModel[]>([]);
-  const _selectedTechnician = ref<UserViewModel>();
+  const _selectedTechnician = ref<OrganizationMemberViewModel>();
   const _selectedGarage = ref<GarageViewModel>();
   const _vehicles = ref<VehicleViewModel[]>([]);
   const _selectedVehicle = ref<VehicleViewModel | undefined>(undefined);
@@ -56,17 +59,17 @@ export function useCreateQuoteState() {
   const init = async () => {
     loading.value = true;
     try {
-      if (!authState.user.value)
-        throw new Error('User not found');
+      // if (!authState.user.value)
+      //   throw new Error('User not found');
 
       resetQuote();
 
       // Orchestration des appels aux UseCases
       const [quoteNumber, statusDto, garageResult, technicianResult] = await Promise.all([
-        createQuoteUseCase.execute(authState.user.value.id),
+        createQuoteUseCase.execute(authState.userContext.value.organization.id),
         getDocumentStatusUseCase.getByCode('processing'),
-        garageUseCase.getByUserId(authState.user.value.id).catch(() => []),
-        technicianUseCase.getUsers().catch(() => []),
+        garageUseCase.getGaragesByOrganizationId(authState.userContext.value.organization.id).catch(() => []),
+        technicianUseCase.getMembersByOrganizationId(authState.userContext.value.organization.id).catch(() => []),
       ]);
 
       // Conversion DTO → ViewModel
@@ -75,33 +78,43 @@ export function useCreateQuoteState() {
       const endDate = new Date(startDate);
       endDate.setMonth(endDate.getMonth() + 1);
 
+      
       // Construction du ViewModel (brouillon - l'id sera généré par Supabase à l'INSERT)
       _quote.value = {
+        organization_id: authState.userContext.value.organization.id,
+        created_by_member_id: authState.userContext.value.membership.id,
+
         quoteNumber,
         status_id: status.id,
         status,
+
         startDate: startDate.toISOString(),
         endDate: endDate.toISOString(),
-        userId: authState.user.value.id,
+
+        // userId: authState.user.value.id,
+
         isForfait: false,
         isDisplayUnitPrice: true,
         isComputeCommissionWithoutDentRemoval: true,
+
         country: 'FR',
         currency: 'EUR',
+
         isSent: false,
       };
 
       _garages.value = garageResult.map(GarageMapper.dtoToView);
-      _technicians.value = technicianResult.map(UserMapper.dtoToView);
-      
+      _technicians.value = technicianResult.map(OrganizationMemberMapper.dtoToView);
+
       // Sélection du technicien courant par défaut
-      const currentTechnician = _technicians.value.find((t) => t.id === authState.user.value?.id);
+      const currentTechnician = _technicians.value.find((t) => t.user_id === authState.userContext.value?.id);
       if (currentTechnician && _quote.value) {
         _selectedTechnician.value = currentTechnician;
-        _quote.value.technician = currentTechnician;
-        _quote.value.technicianId = currentTechnician.id;
+        _quote.value.assignedMember = currentTechnician;
+        _quote.value.assigned_member_id = currentTechnician.id;
       }
 
+      
     } catch (e) {
       error.value = e;
     } finally {
@@ -141,15 +154,16 @@ export function useCreateQuoteState() {
   const carInformations = computed(() => ({
     immatriculation: _quote.value?.carImmatriculation ?? '',
     brand: _quote.value?.carBrand ?? '',
-    dateEntryCirculation: _quote.value?.carDateEntryCirculation ?? '',
+    year: _quote.value?.carYear ?? '',
   }));
   
 
-  const selectTechnician = (technician: UserViewModel) => {
+  const selectTechnician = (technician: OrganizationMemberViewModel) => {
     _selectedTechnician.value = technician;
     if (_quote.value) {
-      _quote.value.technician = technician;
-      _quote.value.technicianId = technician.id;
+      
+      _quote.value.assigned_member_id = technician.id;
+      // _quote.value.technicianId = technician.id;
     }
   }
 
@@ -162,11 +176,11 @@ export function useCreateQuoteState() {
       _quote.value.garageId = garage.id;
       _quote.value.garageName = garage.name;
       _quote.value.garageAddress = garage.address;
-      _quote.value.garageZipCode = garage.zipCode;
+      _quote.value.garageZipCode = garage.zip_code;
       _quote.value.garageCity = garage.city;
       _quote.value.garagePhone = garage.phone;
       _quote.value.garageEmail = garage.email;
-      _quote.value.garagePercentageCommission = garage.percentageCommission;
+      _quote.value.garagePercentageCommission = garage.percentage_commission;
     }
 
     // if (garage?.id) {
@@ -183,7 +197,7 @@ export function useCreateQuoteState() {
       _quote.value.vehicleId = vehicle.id;
       _quote.value.carImmatriculation = vehicle.immatriculation;
       _quote.value.carBrand = vehicle.marque;
-      _quote.value.carDateEntryCirculation = vehicle.annee?.toString() ?? '';
+      _quote.value.carYear = vehicle.annee?.toString() ?? '';
     }
   }
 
@@ -222,7 +236,7 @@ export function useCreateQuoteState() {
 
   const setCarDateEntryCirculation = (dateEntryCirculation: string) => {
     if (_quote.value) {
-      _quote.value.carDateEntryCirculation = dateEntryCirculation;
+      _quote.value.carYear = dateEntryCirculation;
     }
   }
 
@@ -262,16 +276,16 @@ export function useCreateQuoteState() {
   }
 
   const save = async () => {
-    if (!authState.user.value)
+    if (!authState.userContext.value)
       throw new Error('User not found');
 
     if (!_quote.value)
       throw new Error('Quote not found');
 
-    if (!_quote.value.garage || !_quote.value.technician)
+    if (!_quote.value.garageId || !_quote.value.assigned_member_id)
       throw new Error('Garage or Technician not selected');
 
-    if (!_quote.value.carImmatriculation || !_quote.value.carBrand || !_quote.value.carDateEntryCirculation)
+    if (!_quote.value.carImmatriculation || !_quote.value.carBrand || !_quote.value.carYear)
       throw new Error('Car informations not set');
 
     loading.value = true;

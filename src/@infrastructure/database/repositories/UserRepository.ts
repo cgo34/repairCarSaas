@@ -20,8 +20,6 @@ export class UserRepository implements IUserRepository {
       `)
       .returns<UserApiModel[]>();
 
-      console.log('get users with quotes:', data);
-
     if (error)
       throw new Error('Error fetching users');
     

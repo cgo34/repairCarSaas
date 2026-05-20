@@ -32,7 +32,6 @@ export function useAuthState() {
         form.value.password
       );
 
-      console.log('Authenticated user:', user);
     } catch (e) {
       error.value = e as AuthError;
       throw e;

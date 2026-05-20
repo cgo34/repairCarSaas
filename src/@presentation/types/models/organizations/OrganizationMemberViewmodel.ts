@@ -2,6 +2,7 @@ import { OrganizationMemberStatusDtoTypes } from '@/@application/dtos/organizati
 
 export type OrganizationMemberUserViewModel = {
   id: string;
+  full_name: string;
   first_name: string;
   last_name: string;
   email: string;

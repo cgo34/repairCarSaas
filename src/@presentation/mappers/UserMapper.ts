@@ -6,24 +6,19 @@ export class UserMapper {
     return {
       id: viewModel.id,
       email: viewModel.email,
-      fullName: viewModel.fullName,
-      firstName: viewModel.firstName,
-      lastName: viewModel.lastName,
-      percentageCommission: viewModel.percentageCommission,
-      isBlocked: viewModel.isBlocked,
+      full_name: viewModel.full_name,
+      first_name: viewModel.first_name,
+      last_name: viewModel.last_name,
     };
   }
 
   static dtoToView(dto: UserDto): UserViewModel {
-    console.log('Mapping UserDto to UserViewModel:', dto);
     return {
       id: dto.id ?? '',
       email: dto.email,
-      fullName: dto.fullName,
-      firstName: dto.firstName,
-      lastName: dto.lastName,
-      percentageCommission: dto.percentageCommission,
-      isBlocked: dto.isBlocked,
+      full_name: dto.full_name,
+      first_name: dto.first_name,
+      last_name: dto.last_name,
     };
   }
 }

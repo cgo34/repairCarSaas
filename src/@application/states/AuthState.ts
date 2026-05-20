@@ -125,8 +125,6 @@ export class AuthState implements IAuthState {
       const authenticatedUserContext =
         await this.getAuthenticatedUserContextUseCase.execute();
 
-        console.log('Authenticated user context:', authenticatedUserContext);
-
       // ───────────────────────────────────────────────────────
       // Store authenticated context
       // ───────────────────────────────────────────────────────
@@ -209,7 +207,6 @@ export class AuthState implements IAuthState {
         );
       }
 
-      console.log('User registered successfully:', user);
       // Mise à jour de l'état
       this.isAuthenticated.value = true;
       // Mapper UserDto -> UserViewModel

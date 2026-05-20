@@ -8,6 +8,9 @@ export type AuthenticatedUserDto = {
   };
 
   membership: {
+    id: string;
+    percentage_commission: number;
+    status: 'active' | 'pending' | 'blocked' | 'archived';
     role: 'admin' | 'technician' | 'manager';
   };
 
