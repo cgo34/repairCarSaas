@@ -26,7 +26,7 @@
               size="large"
               icon
               variant="flat"
-              color="secondary"
+              color="primary"
               @click.stop=""
             >
               <SettingsIcon class="icon" />

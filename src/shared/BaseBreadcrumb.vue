@@ -52,7 +52,7 @@ const props = defineProps({
               <v-icon
                 size="small"
                 icon="mdi-home"
-                class="text-secondary mr-2"
+                class="text-primary mr-2"
               />
               <div class="d-flex align-center">
                 <ChevronRightIcon size="17" />

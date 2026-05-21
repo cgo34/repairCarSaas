@@ -206,7 +206,6 @@ import { GarageViewModel } from '@/@presentation/types/models/GarageViewModel';
  * STATE
  * ============================================================
  */
-
 const useGarageState =
   container.get<IUseGarageState>(
     SYMBOLS.States.GarageState
@@ -251,49 +250,57 @@ const dialog = ref<boolean>(false);
  * ============================================================
  */
 
-const headers = [
-  {
-    title: 'Nom',
-    align: 'start',
-    key: 'name',
-  },
+const headers = computed(() => {
+  const baseHeaders = [
+    {
+      title: 'Nom',
+      align: 'start',
+      key: 'name',
+    },
 
-  {
-    title: 'Téléphone',
-    key: 'phone',
-  },
+    {
+      title: 'Téléphone',
+      key: 'phone',
+    },
 
-  {
-    title: 'Email',
-    key: 'email',
-  },
+    {
+      title: 'Email',
+      key: 'email',
+    },
 
-  {
-    title: 'Ville',
-    key: 'city',
-  },
+    {
+      title: 'Ville',
+      key: 'city',
+    },
 
-  {
-    title: 'Code postal',
-    key: 'zip_code',
-  },
+    {
+      title: 'Code postal',
+      key: 'zip_code',
+    },
 
-  {
-    title: 'Adresse',
-    key: 'address',
-  },
+    {
+      title: 'Adresse',
+      key: 'address',
+    },
 
-  {
-    title: 'Statut',
-    key: 'archived_at',
-  },
+    {
+      title: 'Statut',
+      key: 'archived_at',
+    },
+  ];
 
-  {
-    title: 'Actions',
-    sortable: false,
-    key: 'actions',
-  },
-] as const;
+  const isAdmin =
+    authState.userContext?.membership?.role === 'admin';
+
+  // if (isAdmin) {
+    baseHeaders.push({
+      title: 'Actions',
+      key: 'actions',
+    });
+  // }
+
+  return baseHeaders;
+});
 
 /**
  * ============================================================

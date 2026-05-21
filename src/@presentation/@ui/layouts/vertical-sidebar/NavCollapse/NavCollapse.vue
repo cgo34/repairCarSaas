@@ -19,7 +19,7 @@ const props = defineProps({ item: Object, level: Number });
         :value="item.title"
         rounded
         class="mb-1"
-        color="secondary"
+        color="primary"
       >
         <!---Icon  -->
         <template #prepend>

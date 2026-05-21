@@ -30,8 +30,8 @@ function searchbox() {
     height="80"
   >
     <v-btn
-      class="hidden-md-and-down text-secondary"
-      color="lightsecondary"
+      class="hidden-md-and-down text-primary"
+      color="lightprimary"
       icon
       rounded="sm"
       variant="flat"
@@ -44,8 +44,8 @@ function searchbox() {
       />
     </v-btn>
     <v-btn
-      class="hidden-lg-and-up text-secondary ms-3"
-      color="lightsecondary"
+      class="hidden-lg-and-up text-primary ms-3"
+      color="lightprimary"
       icon
       rounded="sm"
       variant="flat"
@@ -60,8 +60,8 @@ function searchbox() {
 
     <!-- search mobile -->
     <v-btn
-      class="hidden-lg-and-up text-secondary ml-3"
-      color="lightsecondary"
+      class="hidden-lg-and-up text-primary ml-3"
+      color="lightprimary"
       icon
       rounded="sm"
       variant="flat"
@@ -100,16 +100,24 @@ function searchbox() {
     <!-- Theme Switch -->
     <v-btn
       icon
-      class="text-secondary mx-2"
-      color="lightsecondary"
+      class="text-primary mx-2"
+      color="lightprimary"
       rounded="sm"
       size="small"
       variant="flat"
       :title="isDarkTheme ? 'Passer en mode clair' : 'Passer en mode sombre'"
       @click="toggleTheme"
     >
-      <MoonIcon v-if="!isDarkTheme" size="20" stroke-width="1.5" />
-      <SunIcon v-else size="20" stroke-width="1.5" />
+      <MoonIcon
+        v-if="!isDarkTheme"
+        size="20"
+        stroke-width="1.5"
+      />
+      <SunIcon
+        v-else
+        size="20"
+        stroke-width="1.5"
+      />
     </v-btn>
 
     <!-- ---------------------------------------------- -->
@@ -119,8 +127,8 @@ function searchbox() {
       <template #activator="{ props }">
         <v-btn
           icon
-          class="text-secondary mx-3"
-          color="lightsecondary"
+          class="text-primary mx-3"
+          color="lightprimary"
           rounded="sm"
           size="small"
           variant="flat"

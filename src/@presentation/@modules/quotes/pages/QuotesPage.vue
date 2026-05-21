@@ -142,6 +142,36 @@
               size="small"
             />
           </template>
+          
+          <template #item.technician="{ item }">
+            {{
+              `${item.assignedMember?.users?.first_name ?? ''} ${item.assignedMember?.users?.last_name ?? ''}`.trim()
+            }}
+          </template>
+          
+          <template #item.sent="{ item }">
+            <div class="tw-flex tw-items-center tw-gap-2">
+              <v-chip
+                :color="item.isSent ? 'success' : 'error'"
+                variant="tonal"
+                size="small"
+              >
+                <v-icon start>
+                  {{
+                    item.isSent
+                      ? 'mdi-check-circle'
+                      : 'mdi-close-circle'
+                  }}
+                </v-icon>
+
+                {{
+                  item.isSent && item.sentAt
+                    ? new Date(item.sentAt).toLocaleDateString('fr-FR')
+                    : 'Non envoyé'
+                }}
+              </v-chip>
+            </div>
+          </template>
 
           <template #item.total="{ item }">
             <span class="font-weight-medium">
@@ -150,6 +180,81 @@
           </template>
 
           <template #item.actions="{ item }">
+            <div class="tw-flex tw-items-center tw-gap-1">
+              <!-- send -->
+              <v-tooltip text="Envoyer">
+                <template #activator="{ props }">
+                  <v-btn
+                    v-bind="props"
+                    icon
+                    variant="text"
+                    size="small"
+                    class="action-btn"
+                    @click="onSendBtnClick(item.id)"
+                  >
+                    <v-icon size="18">
+                      mdi-send
+                    </v-icon>
+                  </v-btn>
+                </template>
+              </v-tooltip>
+
+              <!-- PDF -->
+              <v-tooltip text="Voir">
+                <template #activator="{ props }">
+                  <v-btn
+                    v-bind="props"
+                    icon
+                    variant="text"
+                    size="small"
+                    class="action-btn"
+                    @click="onViewPdfBtnClick(item.id)"
+                  >
+                    <v-icon size="18">
+                      mdi-file-pdf-box
+                    </v-icon>
+                  </v-btn>
+                </template>
+              </v-tooltip>
+
+              <!-- EDIT -->
+              <v-tooltip text="Modifier">
+                <template #activator="{ props }">
+                  <v-btn
+                    v-bind="props"
+                    icon
+                    variant="text"
+                    size="small"
+                    class="action-btn"
+                    @click="onEditQuote(item.id)"
+                  >
+                    <v-icon size="18">
+                      mdi-pencil
+                    </v-icon>
+                  </v-btn>
+                </template>
+              </v-tooltip>
+
+              <!-- DELETE -->
+              <v-tooltip text="Supprimer">
+                <template #activator="{ props }">
+                  <v-btn
+                    v-bind="props"
+                    icon
+                    variant="text"
+                    size="small"
+                    class="action-btn action-btn-delete"
+                    @click="onDeleteBtnClick(item.id)"
+                  >
+                    <v-icon size="18">
+                      mdi-trash-can-outline
+                    </v-icon>
+                  </v-btn>
+                </template>
+              </v-tooltip>
+            </div>
+          </template>
+          <!-- <template #item.actions="{ item }">
             <div class="d-flex align-center">
               <v-btn
                 icon
@@ -175,7 +280,7 @@
                 @click="onDeleteBtnClick(item.id)"
               />
             </div>
-          </template>
+          </template> -->
         </v-data-table>
       </v-card>
     </v-container>
@@ -265,7 +370,8 @@ const desktopHeaders = [
   { title: 'Statut', align: 'start' as const, key: 'status' },
   { title: 'Modèle', key: 'carBrand' },
   { title: 'Garage', key: 'garage.name' },
-  { title: 'Technicien', key: 'technician.fullName' },
+  { title: 'Technicien', key: 'technician' },
+  { title: 'Envoyé', key: 'sent' },
   { title: 'Total', key: 'total' },
   { title: 'Actions', sortable: false, key: 'actions' },
 ];
@@ -323,6 +429,14 @@ const onAddQuote = () => {
   router.push('/quotes/add');
 }
 
+const onSendBtnClick = (quoteId: string | undefined) => {
+  if (!quoteId) {
+    return;
+  }
+
+  // router.push(`/quotes/${quoteId}/send/`);
+};
+
 const onViewPdfBtnClick = (quoteId: string | undefined) => {
   if (!quoteId) {
     return;
@@ -377,4 +491,19 @@ onMounted(async () => {
 
 .slide-up-enter-active, .slide-up-leave-active { transition: all 0.2s ease; }
 .slide-up-enter-from, .slide-up-leave-to { opacity: 0; transform: translateY(8px); }
+
+.action-btn {
+  color: rgba(0, 0, 0, 0.75);
+  transition: all 0.2s ease;
+}
+
+.action-btn:hover {
+  color: rgb(var(--v-theme-primary));
+  background: rgba(var(--v-theme-primary), 0.06);
+}
+
+.action-btn-delete:hover {
+  color: rgb(var(--v-theme-error));
+  background: rgba(var(--v-theme-error), 0.06);
+}
 </style>

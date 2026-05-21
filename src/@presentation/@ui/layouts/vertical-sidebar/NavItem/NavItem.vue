@@ -11,7 +11,7 @@ const props = defineProps({ item: Object, level: Number });
     :href="item.type === 'external' ? item.to : ''"
     rounded
     class="mb-1"
-    color="secondary"
+    color="primary"
     :disabled="item.disabled"
     :target="item.type === 'external' ? '_blank' : ''"
   >
