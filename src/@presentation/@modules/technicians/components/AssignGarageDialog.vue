@@ -1,5 +1,8 @@
 <template>
-  <v-dialog v-model="dialog" max-width="520">
+  <v-dialog
+    v-model="dialog"
+    max-width="520"
+  >
     <v-card>
       <v-card-title class="text-subtitle-1 font-weight-bold pa-4 pb-2">
         Assigner des garages
@@ -21,8 +24,13 @@
           clearable
         />
 
-        <div v-if="assignedGarages.length" class="mt-2">
-          <p class="text-body-2 font-weight-medium mb-2">Garages assignés :</p>
+        <div
+          v-if="assignedGarages.length"
+          class="mt-2"
+        >
+          <p class="text-body-2 font-weight-medium mb-2">
+            Garages assignés :
+          </p>
           <v-chip
             v-for="garage in assignedGarages"
             :key="garage.id"
@@ -35,13 +43,23 @@
             {{ garage.name }}
           </v-chip>
         </div>
-        <p v-else class="text-body-2 text-medium-emphasis">Aucun garage assigné.</p>
+        <p
+          v-else
+          class="text-body-2 text-medium-emphasis"
+        >
+          Aucun garage assigné.
+        </p>
       </v-card-text>
 
       <v-divider />
       <v-card-actions class="pa-4">
         <v-spacer />
-        <v-btn variant="text" @click="dialog = false">Annuler</v-btn>
+        <v-btn
+          variant="text"
+          @click="dialog = false"
+        >
+          Annuler
+        </v-btn>
         <v-btn
           color="primary"
           variant="flat"

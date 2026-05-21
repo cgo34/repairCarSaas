@@ -4,15 +4,15 @@ import { shallowRef } from 'vue';
 const footerLink = shallowRef([
   {
     title: 'Home',
-    url: 'https://berrydashboard.io/vue/free'
+    url: '/dashboard'
   },
   {
     title: 'Documentation',
-    url: 'https://codedthemes.gitbook.io/berry-vuetify/'
+    url: '#'
   },
   {
     title: 'Support',
-    url: 'https://codedthemes.support-hub.io/'
+    url: '#'
   }
 ]);
 </script>
@@ -28,12 +28,12 @@ const footerLink = shallowRef([
         sm="6"
       >
         <p class="text-body-1 mb-0 text-sm-left text-center">
-          Berry ♥ crafted by Team
+          Car Dent Repair ♥ Made with love by
           <a
-            href="https://themeforest.net/user/codedthemes"
+            href="#"
             class="text-darkText text-decoration-none"
             target="_blank"
-          >Codedthemes</a>
+          >CGOnline</a>
         </p>
       </v-col>
       <v-col
@@ -45,7 +45,7 @@ const footerLink = shallowRef([
           v-for="(item, i) in footerLink"
           :key="i"
           class="mx-2 text-body-1 text-darkText text-decoration-none"
-          target="_blank"
+          target="self"
           :href="item.url"
         >
           {{ item.title }}
