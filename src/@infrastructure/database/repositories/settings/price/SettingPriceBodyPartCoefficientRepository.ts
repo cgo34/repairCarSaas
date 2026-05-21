@@ -24,11 +24,11 @@ export class SettingPriceBodyPartCoefficientRepository implements ISettingPriceB
     return data.map(SettingPriceBodyPartCoefficientMapper.apiToDto);
   }
 
-  async getByUserId(userId: string): Promise<SettingPriceBodyPartCoefficientDto[]> {
+  async getByorganizationId(organizationId: string): Promise<SettingPriceBodyPartCoefficientDto[]> {
     const { data, error } = await this.clientProvider.getClient()
       .from('setting_price_body_part_coefficient')
       .select('*, body_parts(*)')
-      .eq('organization_id', userId)
+      .eq('organization_id', organizationId)
       .returns<SettingPriceBodyPartCoefficientApiModel[]>();
 
     if (error) throw new Error('Error fetching body part coefficient settings');

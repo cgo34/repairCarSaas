@@ -1,7 +1,7 @@
 import { SettingPriceDto } from '@/@application/dtos/settings/price/SettingPriceDto';
 
 export interface ISettingPriceUseCase {
-  getByUserId(userId: string): Promise<SettingPriceDto>;
+  getByorganizationId(organizationId: string): Promise<SettingPriceDto>;
   getDefaultSettings(): Promise<SettingPriceDto>;
   createSettingsForUser(userId: string): Promise<void>;
 }

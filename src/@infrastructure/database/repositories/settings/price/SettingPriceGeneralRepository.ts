@@ -25,11 +25,11 @@ export class SettingPriceGeneralRepository implements ISettingPriceGeneralReposi
     return SettingPriceGeneralMapper.apiToDto(data);
   }
 
-  async getByUserId(userId: string): Promise<SettingPriceGeneralDto | null> {
+  async getByorganizationId(organizationId: string): Promise<SettingPriceGeneralDto | null> {
     const { data, error } = await this.clientProvider.getClient()
       .from('setting_price_general')
       .select('*')
-      .eq('organization_id', userId)
+      .eq('organization_id', organizationId)
       .maybeSingle<SettingPriceGeneralApiModel>();
 
     if (error) throw new Error('Error fetching general settings');

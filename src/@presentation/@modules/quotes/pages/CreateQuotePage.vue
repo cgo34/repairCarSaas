@@ -143,7 +143,7 @@
                 size="18"
                 color="primary"
               >
-                mdi-garage-open-variant
+                mdi-garage
               </v-icon>
             </div>
             <span class="text-subtitle-2 font-weight-semibold">Client / Garage</span>
@@ -160,7 +160,7 @@
             density="comfortable"
             clearable
             hide-details="auto"
-            prepend-inner-icon="mdi-store-search-outline"
+            prepend-inner-icon="mdi-garage"
             @update:model-value="onSelectGarage"
           >
             <template #item="{ props: itemProps, item }">
@@ -170,7 +170,7 @@
               >
                 <template #prepend>
                   <v-icon color="primary">
-                    mdi-garage-variant
+                    mdi-garage
                   </v-icon>
                 </template>
               </v-list-item>
@@ -233,19 +233,7 @@
 
         <!-- ───── Section 4 : Véhicule ───── -->
         <div class="section-card mb-4">
-          <div class="section-header mb-3">
-            <div class="section-icon">
-              <v-icon
-                size="18"
-                color="primary"
-              >
-                mdi-car-outline
-              </v-icon>
-            </div>
-            <span class="text-subtitle-2 font-weight-semibold">Véhicule</span>
-          </div>
-
-          <v-autocomplete
+          <!-- <v-autocomplete
             :model-value="selectedVehicle"
             :items="vehiclesList"
             :item-title="v => v.immatriculation + ' — ' + v.marque + (v.annee ? ' ' + v.annee : '')"
@@ -261,13 +249,18 @@
             prepend-inner-icon="mdi-car-search-outline"
             class="mb-3"
             @update:model-value="onSelectVehicle"
-          />
+          /> -->
 
-          <div class="text-caption text-medium-emphasis mb-3 d-flex align-center gap-1">
-            <v-icon size="14">
-              mdi-information-outline
-            </v-icon>
-            Ou renseignez manuellement :
+          <div class="section-header mb-3">
+            <div class="section-icon">
+              <v-icon
+                size="18"
+                color="primary"
+              >
+                mdi-car
+              </v-icon>
+            </div>
+            <span class="text-subtitle-2 font-weight-semibold">Informations véhicule</span>
           </div>
 
           <v-row dense>
