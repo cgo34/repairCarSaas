@@ -71,6 +71,7 @@ jobs:
     name: Build Application
     needs: lint_and_typecheck
     runs-on: ubuntu-latest
+    if: always()
 
     steps:
       # Checkout du repository
@@ -110,7 +111,7 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
 
-    if: github.ref == 'refs/heads/develop'
+    if: always() && github.ref == 'refs/heads/develop'
 
     environment:
       name: development
