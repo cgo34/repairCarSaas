@@ -24,6 +24,7 @@
           :items="state.technicians.value"
           :items-per-page="10"
           hover
+          class="text-subtitle-2"
         >
           <!-- Nom -->
           <template #item.fullName="{ item }">

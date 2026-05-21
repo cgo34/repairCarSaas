@@ -8,6 +8,7 @@
           :headers="headers"
           :items="members"
           :sort-by="[{ key: 'fullName', order: 'asc' }]"
+          class="text-subtitle-2"
         >
           <!-- #REGION -> TOP BAR -->
           <template #top>
@@ -147,27 +148,27 @@
           <template #item.actions="{ item }">
             <v-icon
               class="me-2"
-              size="small"
+              size="default"
               @click="onViewBtnClick(item)"
             >
               mdi-eye
             </v-icon>
             <v-icon
               class="me-2"
-              size="small"
+              size="default"
               @click="onEditBtnClick(item)"
             >
               mdi-pencil
             </v-icon>
             <v-icon
               class="me-2"
-              size="small"
+              size="default"
               @click="onAddGarageBtnClick(item)"
             >
               mdi-office-building-plus
             </v-icon>
             <v-icon
-              size="small"
+              size="default"
               @click="onDeleteBtnClick(item)"
             >
               mdi-delete
