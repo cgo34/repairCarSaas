@@ -24,11 +24,11 @@ export class SettingPriceImpactCountToUtRepository implements ISettingPriceImpac
     return data.map(SettingPriceImpactCountToUtMapper.apiToDto);
   }
 
-  async getByUserId(userId: string): Promise<SettingPriceImpactCountToUtDto[]> {
+  async getByorganizationId(organizationId: string): Promise<SettingPriceImpactCountToUtDto[]> {
     const { data, error } = await this.clientProvider.getClient()
       .from('setting_price_impact_count_to_ut')
       .select('*')
-      .eq('organization_id', userId)
+      .eq('organization_id', organizationId)
       .returns<SettingPriceImpactCountToUtApiModel[]>();
 
     if (error)

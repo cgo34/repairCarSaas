@@ -13,19 +13,27 @@
           <!-- Gauche : retour + titre -->
           <div class="d-flex flex-column align-center gap-2 min-w-0">
             <div class="min-w-0">
-              <div class="d-flex flex-column  align-center gap-2 flex-wrap">
-                <span class="text-subtitle-1 font-weight-bold text-truncate my-2">
+              <div class="d-flex flex-column  align-left gap-2 flex-wrap">
+                <div>
+                  <span class="text-subtitle-1 font-weight-bold text-truncate my-2">
+                    Devis numéro :
+                  </span>
                   {{ quoteInformations.number || 'Devis' }}
-                </span>
-                <v-chip
-                  v-if="quoteInformations.status"
-                  :color="statusColor(quoteInformations.status?.code)"
-                  size="small"
-                  variant="tonal"
-                  label
-                >
-                  {{ statusLabel(quoteInformations.status?.code) }}
-                </v-chip>
+                </div>
+                <div>
+                  <span class="text-subtitle-1 font-weight-bold text-truncate my-2">
+                    Statut :
+                  </span>
+                  <v-chip
+                    v-if="quoteInformations.status"
+                    :color="statusColor(quoteInformations.status?.code)"
+                    size="small"
+                    variant="tonal"
+                    label
+                  >
+                    {{ statusLabel(quoteInformations.status?.code) }}
+                  </v-chip>
+                </div>
               </div>
             </div>
           </div>
@@ -167,14 +175,13 @@
           <v-autocomplete
             :model-value="selectedTechnician"
             :items="technicians"
-            item-title="fullName"
+            :item-title="item => `${item.users.first_name} ${item.users.last_name}`"
             item-value="id"
             return-object
             label="Sélectionner un technicien"
             variant="outlined"
             density="comfortable"
-            :clearable="!isReadOnly"
-            :readonly="isReadOnly"
+            clearable
             hide-details="auto"
             prepend-inner-icon="mdi-account-search-outline"
             @update:model-value="onSelectTechnician"
@@ -187,7 +194,7 @@
                     size="36"
                   >
                     <span class="text-caption font-weight-bold text-white">
-                      {{ initials(item.raw.fullName) }}
+                      {{ initials(item.raw.users.first_name + ' ' + item.raw.users.last_name) }}
                     </span>
                   </v-avatar>
                 </template>
@@ -202,9 +209,9 @@
                   <span
                     style="font-size:10px"
                     class="text-white"
-                  >{{ initials(item.raw.fullName) }}</span>
+                  >{{ initials(item.raw.users.first_name + ' ' + item.raw.users.last_name) }}</span>
                 </v-avatar>
-                <span>{{ item.raw.fullName }}</span>
+                <span>{{ item.raw.users.first_name }} {{ item.raw.users.last_name }}</span>
               </div>
             </template>
           </v-autocomplete>
@@ -218,7 +225,7 @@
                 size="18"
                 color="primary"
               >
-                mdi-garage-open-variant
+                mdi-garage
               </v-icon>
             </div>
             <span class="text-subtitle-2 font-weight-semibold">Client / Garage</span>
@@ -236,7 +243,7 @@
             :clearable="!isReadOnly"
             :readonly="isReadOnly"
             hide-details="auto"
-            prepend-inner-icon="mdi-store-search-outline"
+            prepend-inner-icon="mdi-garage"
             @update:model-value="onSelectGarage"
           >
             <template #item="{ props: itemProps, item }">
@@ -246,7 +253,7 @@
               >
                 <template #prepend>
                   <v-icon color="primary">
-                    mdi-garage-variant
+                    mdi-garage
                   </v-icon>
                 </template>
               </v-list-item>
@@ -310,7 +317,7 @@
 
         <!-- ── Section 4 : Véhicule ── -->
         <div class="section-card mb-4">
-          <div class="section-header mb-3">
+          <!-- <div class="section-header mb-3">
             <div class="section-icon">
               <v-icon
                 size="18"
@@ -320,9 +327,9 @@
               </v-icon>
             </div>
             <span class="text-subtitle-2 font-weight-semibold">Véhicule</span>
-          </div>
+          </div> -->
 
-          <v-autocomplete
+          <!-- <v-autocomplete
             :model-value="selectedVehicle"
             :items="vehiclesList"
             :item-title="v => v.immatriculation + ' — ' + v.marque + (v.annee ? ' ' + v.annee : '')"
@@ -338,13 +345,18 @@
             prepend-inner-icon="mdi-car-search-outline"
             class="mb-3"
             @update:model-value="onSelectVehicle"
-          />
+          /> -->
 
-          <div class="text-caption text-medium-emphasis mb-3 d-flex align-center gap-1">
-            <v-icon size="14">
-              mdi-information-outline
-            </v-icon>
-            Informations manuelles :
+          <div class="section-header mb-3">
+            <div class="section-icon">
+              <v-icon
+                size="18"
+                color="primary"
+              >
+                mdi-car
+              </v-icon>
+            </div>
+            <span class="text-subtitle-2 font-weight-semibold">Informations véhicule :</span>
           </div>
 
           <v-row dense>
@@ -383,7 +395,7 @@
               sm="4"
             >
               <v-text-field
-                v-model="carInformations.dateEntryCirculation"
+                v-model="carInformations.carYear"
                 label="Année"
                 variant="outlined"
                 density="comfortable"
@@ -540,7 +552,7 @@
               :key="line.id"
               class="line-item-card"
             >
-              <div class="d-flex align-start justify-space-between">
+              <div class="d-flex align-center justify-space-between">
                 <div class="flex-grow-1 min-w-0">
                   <!-- Pièce + matériau -->
                   <div class="d-flex align-center gap-2 mb-1 flex-wrap">
@@ -551,7 +563,8 @@
                       v-if="line.bodyMaterial"
                       size="x-small"
                       variant="tonal"
-                      color="blue-grey"
+                      color="primary"
+                      class="ml-2"
                     >
                       {{ line.bodyMaterial.name }}
                     </v-chip>
@@ -559,7 +572,8 @@
                       v-if="line.repairType"
                       size="x-small"
                       variant="tonal"
-                      color="indigo"
+                      color="primary"
+                      class="ml-2"
                     >
                       {{ line.repairType.name }}
                     </v-chip>
@@ -567,15 +581,18 @@
                   <!-- Impacts -->
                   <div class="d-flex gap-3 text-caption text-medium-emphasis">
                     <span>Ø 25 : <strong>{{ line.impactCount25 ?? 0 }}</strong></span>
-                    <span>Ø 35 : <strong>{{ line.impactCount35 ?? 0 }}</strong></span>
-                    <span v-if="line.dentRemovalPrice">
-                      Dégarn. : <strong>{{ line.dentRemovalPrice.toFixed(2) }} {{ selectedCountry?.currencySymbol || '€' }}</strong>
+                    <span class="ml-2">Ø 35 : <strong>{{ line.impactCount35 ?? 0 }}</strong></span>
+                    <span
+                      v-if="line.dentRemovalPrice"
+                      class="ml-2"
+                    >
+                      Dégarnissage : <strong>{{ line.dentRemovalPrice.toFixed(2) }} {{ selectedCountry?.currencySymbol || '€' }}</strong>
                     </span>
                   </div>
                 </div>
                 <!-- Prix + supprimer -->
-                <div class="d-flex flex-column align-end gap-1 ml-2 flex-shrink-0">
-                  <span class="text-body-2 font-weight-bold text-primary">
+                <div class="d-flex align-center gap-1 ml-2 flex-shrink-0">
+                  <span class="text-body-1 font-weight-bold text-primary">
                     {{ line.price?.toFixed(2) ?? '0.00' }} {{ selectedCountry?.currencySymbol || '€' }}
                   </span>
                   <v-btn
@@ -753,6 +770,7 @@ import { IUseEditQuoteState } from '@/@presentation/types/composables/IUseEditQu
 import { CountryViewModel } from '@/@presentation/types/models/CountryViewModel';
 import { GarageViewModel } from '@/@presentation/types/models/GarageViewModel';
 import { LineItemViewModel } from '@/@presentation/types/models/LineItemViewModel';
+import { OrganizationMemberViewModel } from '@/@presentation/types/models/organizations/OrganizationMemberViewmodel';
 import { UserViewModel } from '@/@presentation/types/models/UserViewModel';
 import { VehicleViewModel } from '@/@presentation/types/models/VehicleViewModel';
 import { computed, onMounted, ref } from 'vue';
@@ -788,7 +806,7 @@ const {
   carInformations,
   setCarImmatriculation,
   setCarBrand,
-  setCarDateEntryCirculation,
+  setCarYear,
   availableBodyParts,
   isForfait,
   isDisplayUnitPrice,
@@ -854,14 +872,14 @@ const statusLabel = (code?: string) => {
 };
 
 // ── Handlers form ─────────────────────────────────────────────────────────────
-const onSelectTechnician = (t: UserViewModel) => selectTechnician(t);
+const onSelectTechnician = (t: OrganizationMemberViewModel) => selectTechnician(t);
 const onSelectGarage = (g: GarageViewModel) => selectGarage(g);
 const onSelectVehicle = (v: VehicleViewModel | undefined) => selectVehicle(v);
 const onEditCustomerBtnClick = () => garageDialogRef.value?.open();
 const onGarageValidated = (g: GarageViewModel) => setGarage(g);
 const onCarImmatriculationUpdated = (v: string) => setCarImmatriculation(v);
 const onCarBrandUpdated = (v: string) => setCarBrand(v);
-const onCarYearUpdated = (v: string) => setCarDateEntryCirculation(v);
+const onCarYearUpdated = (v: string) => setCarYear(v);
 const onUpdateIsForfait = (v: boolean | null) => setIsForfait(v ?? false);
 const onUpdateForfaitAmount = (v: number) => setForfaitAmount(Number(v));
 const onUpdateIsDisplayUnitPrice = (v: boolean | null) => setIsDisplayUnitPrice(v ?? true);
@@ -943,10 +961,10 @@ onMounted(async () => {
 }
 
 .line-item-card {
-  border: 1px solid rgba(var(--v-border-color), 0.15);
+  /* border: 1px solid rgba(var(--v-border-color), 0.15); */
   border-radius: 12px;
   padding: 12px;
-  background: rgba(var(--v-theme-surface-variant), 0.3);
+  background: rgba(var(--v-theme-surface-variant), 0.1);
 }
 
 /* Totaux */

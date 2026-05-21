@@ -25,11 +25,11 @@ export class SettingPriceTechnicityCoefficientRepository implements ISettingPric
     return SettingPriceTechnicityCoefficientMapper.apiToDto(data);
   }
 
-  async getByUserId(userId: string): Promise<SettingPriceTechnicityCoefficientDto | null> {
+  async getByorganizationId(organizationId: string): Promise<SettingPriceTechnicityCoefficientDto | null> {
     const { data, error } = await this.clientProvider.getClient()
       .from('setting_price_technicity_coefficient')
       .select('*')
-      .eq('organization_id', userId)
+      .eq('organization_id', organizationId)
       .maybeSingle<SettingPriceTechnicityCoefficientApiModel>();
 
     if (error) throw new Error('Error fetching technicity coefficient settings');

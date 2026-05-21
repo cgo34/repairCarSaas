@@ -12,11 +12,11 @@ import { inject, injectable } from 'inversify';
 export class SettingPriceRepairTypeCoefficientRepository implements ISettingPriceRepairTypeCoefficientRepository {
   constructor(@inject(SYMBOLS.Providers.ClientProvider) private clientProvider: IClientProvider<SupabaseClient>) {}
 
-  async getByUserId(userId: string): Promise<SettingPriceRepairTypeCoefficientDto[]> {
+  async getByorganizationId(organizationId: string): Promise<SettingPriceRepairTypeCoefficientDto[]> {
     const { data, error } = await this.clientProvider.getClient()
       .from('setting_price_repair_type_coefficient')
       .select('*, repair_types(*)')
-      .eq('organization_id', userId)
+      .eq('organization_id', organizationId)
       .returns<SettingPriceRepairTypeCoefficientApiModel[]>();
 
     if (error) throw new Error('Error fetching body material coefficient settings');

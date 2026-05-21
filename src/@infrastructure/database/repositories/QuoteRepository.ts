@@ -79,7 +79,6 @@ export class QuoteRepository implements IQuoteRepository {
     memberId: string,
     role: 'admin' | 'manager' | 'technician',
   ): Promise<QuoteDto[]> {
-    console.log(`[QuoteRepository] Fetching quotes for organizationId=${organizationId}, memberId=${memberId}, role=${role}`);
     let query = this.clientProvider
       .getClient()
       .from('quotes')
@@ -199,27 +198,63 @@ export class QuoteRepository implements IQuoteRepository {
   /**
    * Met à jour un devis.
    */
-  async update(quote: QuoteDto): Promise<QuoteDto> {
-    const quoteApi = QuoteMapper.dtoToApi(quote);
+  async update(
+    quote: QuoteDto
+  ): Promise<QuoteDto> {
+    const quoteApi =
+      QuoteMapper.dtoToApi(quote);
 
-    if (!quoteApi.id) throw new Error('Quote ID is required');
+    if (!quoteApi.id) {
+      throw new Error(
+        'Quote ID is required'
+      );
+    }
 
-    const { data, error } = await this.clientProvider.getClient()
-      .from('quotes')
-      .update({...quoteApi, updated_at: new Date().toISOString()})
-      .eq('id', quoteApi.id)
-      .select(`
-        *,
-        user:users!quotes_user_id_fkey(*),
-        technician:users!quotes_technician_id_fkey(*),
-        garage:garages(*)
-      `)
-      .single<QuoteApiModel>();
+    const { data, error } =
+      await this.clientProvider
+        .getClient()
+        .from('quotes')
+        .update({
+          ...quoteApi,
+          updated_at:
+            new Date().toISOString(),
+        })
+        .eq('id', quoteApi.id)
+        .select(`
+          *,
 
-    if (error)
-      throw new Error('Error updating quote');
+          assigned_member:organization_members!quotes_assigned_member_id_fkey(
+            *,
+            users(*)
+          ),
 
-    return QuoteMapper.apiToDto(data);
+          created_by_member:organization_members!quotes_created_by_member_id_fkey(
+            *,
+            users(*)
+          ),
+
+          garage:garages(*),
+
+          status:document_statuses(*),
+
+          quote_details(*)
+        `)
+        .single<QuoteApiModel>();
+
+    if (error) {
+      console.error(
+        '[QuoteRepository] update error:',
+        error
+      );
+
+      throw new Error(
+        'Error updating quote'
+      );
+    }
+
+    return QuoteMapper.apiToDto(
+      data
+    );
   }
 
   /**

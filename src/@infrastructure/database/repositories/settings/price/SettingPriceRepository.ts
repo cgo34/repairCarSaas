@@ -29,12 +29,11 @@ export class SettingPriceRepository implements ISettingPriceRepository {
 
     // Si l'utilisateur n'a pas encore configuré ses paramètres, on retourne les paramètres par défaut
     if (!general) {
-      return null;
       return this.getDefault();
     }
 
-    const [diameters, bodyParts, technicity, impactsCount] = await Promise.all([
-      this.settingPriceDiameterCoefficientRepository.getByorganizationId(organizationId),
+    const [bodyParts, technicity, impactsCount] = await Promise.all([
+      // this.settingPriceDiameterCoefficientRepository.getByorganizationId(organizationId),
       this.settingPriceBodyPartCoefficientRepository.getByorganizationId(organizationId),
       this.settingPriceTechnicityCoefficientRepository.getByorganizationId(organizationId),
       this.settingPriceImpactCountToUtRepository.getByorganizationId(organizationId),
@@ -45,17 +44,17 @@ export class SettingPriceRepository implements ISettingPriceRepository {
       return this.getDefault();
     }
 
-    return { general, diameters, bodyParts: bodyParts ?? [], technicity, impactsCount: impactsCount ?? [] };
+    return { general, bodyParts: bodyParts ?? [], technicity, impactsCount: impactsCount ?? [] };
   }
 
   async getDefault(): Promise<SettingPriceDto> {
     const general = await this.settingPriceGeneralRepository.getDefault();
-    const diameters = await this.settingPriceDiameterCoefficientRepository.getDefault();
+    // const diameters = await this.settingPriceDiameterCoefficientRepository.getDefault();
     const bodyParts = await this.settingPriceBodyPartCoefficientRepository.getDefault();
     const technicity = await this.settingPriceTechnicityCoefficientRepository.getDefault();
     const impactsCount = await this.settingPriceImpactCountToUtRepository.getDefault();
 
-    return { general, diameters, bodyParts, technicity, impactsCount };
+    return { general, /* diameters, */ bodyParts, technicity, impactsCount };
   }
 
   async createForUser(organizationId: string): Promise<void> {

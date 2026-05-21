@@ -12,8 +12,8 @@ export class SettingPriceUseCase implements ISettingPriceUseCase {
     private settingPriceRepository: ISettingPriceRepository,
   ) {}
 
-  async getByUserId(userId: string): Promise<SettingPriceDto> {
-    return this.settingPriceRepository.getByUserId(userId);
+  async getByorganizationId(organizationId: string): Promise<SettingPriceDto> {
+    return this.settingPriceRepository.getByorganizationId(organizationId);
   }
 
   async getDefaultSettings(): Promise<SettingPriceDto> {

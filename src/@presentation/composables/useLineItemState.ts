@@ -45,14 +45,14 @@ export function useLineItemState() {
   const init = async () => {
     loading.value = true;
     try {
-      if (!authState.user.value)
+      if (!authState.userContext.value)
         throw new Error('User not found');      
 
       const [bodyMaterialResult, repairTypeResult, priceParamsResult] =
         await Promise.allSettled([
           bodyMaterialUseCase.executeGetAll(),
           repairTypeUseCase.executeGetAll(),
-          priceParamsUseCase.getByUserId(authState.user.value?.id),
+          priceParamsUseCase.getByorganizationId(authState.userContext.value?.organization.id),
         ]);
 
       if (bodyMaterialResult.status === 'fulfilled')
