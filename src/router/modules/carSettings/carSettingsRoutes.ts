@@ -74,8 +74,6 @@ export const carSettingsRoutes: RouteRecordRaw[] = [
       requiresAuth: true,
       breadcrumb: [
         { title: 'Dashboard', href: '/dashboard' },
-        { title: 'Settings', href: '/organization/settings' },
-        { title: 'Prices', href: '/organization/pricing' },
         { title: 'General Price', href: '/organization/pricing/general' }
       ]
     }
@@ -88,8 +86,6 @@ export const carSettingsRoutes: RouteRecordRaw[] = [
       requiresAuth: true,
       breadcrumb: [
         { title: 'Dashboard', href: '/dashboard' },
-        { title: 'Settings', href: '/organization/settings' },
-        { title: 'Prices', href: '/organization/pricing' },
         { title: 'Impact Unit Time', href: '/organization/pricing/impact-unit-time' }
       ]
     }
@@ -102,10 +98,7 @@ export const carSettingsRoutes: RouteRecordRaw[] = [
       requiresAuth: true,
       breadcrumb: [
         { title: 'Dashboard', href: '/dashboard' },
-        { title: 'Settings', href: '/organization/settings' },
-        { title: 'Prices', href: '/organization/pricing' },
-        { title: 'Coefficient', href: '/organization/pricing/coefficient' },
-        { title: 'Variation', href: '/organization/pricing/variation-coefficients' }
+        { title: 'Variation coefficients', href: '/organization/pricing/variation-coefficients' }
       ]
     }
   },
@@ -117,10 +110,7 @@ export const carSettingsRoutes: RouteRecordRaw[] = [
       requiresAuth: true,
       breadcrumb: [
         { title: 'Dashboard', href: '/dashboard' },
-        { title: 'Settings', href: '/organization/settings' },
-        { title: 'Prices', href: '/organization/pricing' },
-        { title: 'Coefficient', href: '/organization/pricing/coefficient' },
-        { title: 'Technicity', href: '/organization/pricing/technicity-coefficients' }
+        { title: 'Technicity coefficients', href: '/organization/pricing/technicity-coefficients' }
       ]
     }
   },

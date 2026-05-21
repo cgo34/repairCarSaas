@@ -1,6 +1,6 @@
 <template>
   <MainLayout>
-    <BackButton fallback-path="/quotes" />
+    <BackButton />
     <v-container
       fluid
       class="pa-0 mt-4 edit-quote-container"

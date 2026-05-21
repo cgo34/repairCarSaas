@@ -26,7 +26,9 @@ export function useQuotesState() {
         authState.userContext.value?.membership.id,
         authState.userContext.value?.membership.role
       );
+      console.log('Quotes DTO:', quotesDto);
       _quotes.value = quotesDto.map(quote => QuoteMapper.dtoToView(quote));
+      console.log('Mapped Quotes:', _quotes.value);
     }
   }
 

@@ -10,7 +10,7 @@
         color="transparent"
       >
         <template #prepend>
-          <BackButton :fallback-path="`/quotes/${quote?.id}/edit`" />
+          <BackButton />
         </template>
         <template #append>
           <DownloadButton
