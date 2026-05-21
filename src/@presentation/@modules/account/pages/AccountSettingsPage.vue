@@ -1,33 +1,57 @@
 <template>
   <MainLayout>
-    <v-container fluid class="pa-4" style="max-width: 860px;">
-
+    <v-container
+      fluid
+      class="pa-4"
+      style="max-width: 860px;"
+    >
       <!-- Header -->
       <div class="d-flex align-center gap-3 mb-6">
         <div>
-          <h1 class="text-h5 font-weight-bold mb-1">Paramètres de l'entreprise</h1>
+          <h1 class="text-h5 font-weight-bold mb-1">
+            Paramètres de l'entreprise
+          </h1>
           <p class="text-body-2 text-medium-emphasis mb-0">
             Ces informations apparaissent sur vos devis et factures.
           </p>
         </div>
         <v-spacer />
-        <v-chip v-if="saved" color="success" variant="tonal" prepend-icon="mdi-check">
+        <v-chip
+          v-if="saved"
+          color="success"
+          variant="tonal"
+          prepend-icon="mdi-check"
+        >
           Enregistré
         </v-chip>
       </div>
 
-      <v-form ref="formRef" @submit.prevent="onSave">
+      <v-form
+        ref="formRef"
+        @submit.prevent="onSave"
+      >
         <v-row>
-
           <!-- ─── Identité légale ─────────────────────────────── -->
           <v-col cols="12">
             <div class="section-header mb-3">
-              <v-icon size="18" color="primary" class="mr-2">mdi-office-building</v-icon>
+              <v-icon
+                size="18"
+                color="primary"
+                class="mr-2"
+              >
+                mdi-office-building
+              </v-icon>
               <span class="text-subtitle-1 font-weight-semibold">Identité légale</span>
             </div>
-            <v-card variant="outlined" class="pa-4">
+            <v-card
+              variant="outlined"
+              class="pa-4"
+            >
               <v-row dense>
-                <v-col cols="12" md="7">
+                <v-col
+                  cols="12"
+                  md="7"
+                >
                   <v-text-field
                     v-model="form.companyName"
                     label="Nom de l'entreprise *"
@@ -36,7 +60,10 @@
                     density="comfortable"
                   />
                 </v-col>
-                <v-col cols="12" md="5">
+                <v-col
+                  cols="12"
+                  md="5"
+                >
                   <v-select
                     v-model="form.legalForm"
                     label="Forme juridique *"
@@ -46,7 +73,10 @@
                     density="comfortable"
                   />
                 </v-col>
-                <v-col cols="12" md="4">
+                <v-col
+                  cols="12"
+                  md="4"
+                >
                   <v-text-field
                     v-model="form.siren"
                     label="SIREN *"
@@ -58,7 +88,10 @@
                     maxlength="9"
                   />
                 </v-col>
-                <v-col cols="12" md="4">
+                <v-col
+                  cols="12"
+                  md="4"
+                >
                   <v-text-field
                     v-model="form.siret"
                     label="SIRET *"
@@ -70,7 +103,10 @@
                     maxlength="14"
                   />
                 </v-col>
-                <v-col cols="12" md="4">
+                <v-col
+                  cols="12"
+                  md="4"
+                >
                   <v-text-field
                     v-model="form.tvaNumber"
                     label="N° TVA intracommunautaire"
@@ -79,7 +115,10 @@
                     placeholder="FR12345678901"
                   />
                 </v-col>
-                <v-col cols="12" md="6">
+                <v-col
+                  cols="12"
+                  md="6"
+                >
                   <v-text-field
                     v-model="form.capital"
                     label="Capital social"
@@ -97,10 +136,19 @@
           <!-- ─── Coordonnées ────────────────────────────────── -->
           <v-col cols="12">
             <div class="section-header mb-3 mt-2">
-              <v-icon size="18" color="primary" class="mr-2">mdi-map-marker</v-icon>
+              <v-icon
+                size="18"
+                color="primary"
+                class="mr-2"
+              >
+                mdi-map-marker
+              </v-icon>
               <span class="text-subtitle-1 font-weight-semibold">Coordonnées</span>
             </div>
-            <v-card variant="outlined" class="pa-4">
+            <v-card
+              variant="outlined"
+              class="pa-4"
+            >
               <v-row dense>
                 <v-col cols="12">
                   <v-text-field
@@ -137,7 +185,10 @@
                     density="comfortable"
                   />
                 </v-col>
-                <v-col cols="12" md="4">
+                <v-col
+                  cols="12"
+                  md="4"
+                >
                   <v-text-field
                     v-model="form.phone"
                     label="Téléphone"
@@ -146,7 +197,10 @@
                     prepend-inner-icon="mdi-phone"
                   />
                 </v-col>
-                <v-col cols="12" md="4">
+                <v-col
+                  cols="12"
+                  md="4"
+                >
                   <v-text-field
                     v-model="form.email"
                     label="Email"
@@ -156,7 +210,10 @@
                     :rules="[emailRule]"
                   />
                 </v-col>
-                <v-col cols="12" md="4">
+                <v-col
+                  cols="12"
+                  md="4"
+                >
                   <v-text-field
                     v-model="form.website"
                     label="Site web"
@@ -173,12 +230,24 @@
           <!-- ─── Coordonnées bancaires ──────────────────────── -->
           <v-col cols="12">
             <div class="section-header mb-3 mt-2">
-              <v-icon size="18" color="primary" class="mr-2">mdi-bank</v-icon>
+              <v-icon
+                size="18"
+                color="primary"
+                class="mr-2"
+              >
+                mdi-bank
+              </v-icon>
               <span class="text-subtitle-1 font-weight-semibold">Coordonnées bancaires</span>
             </div>
-            <v-card variant="outlined" class="pa-4">
+            <v-card
+              variant="outlined"
+              class="pa-4"
+            >
               <v-row dense>
-                <v-col cols="12" md="8">
+                <v-col
+                  cols="12"
+                  md="8"
+                >
                   <v-text-field
                     v-model="form.iban"
                     label="IBAN"
@@ -189,7 +258,10 @@
                     persistent-hint
                   />
                 </v-col>
-                <v-col cols="12" md="4">
+                <v-col
+                  cols="12"
+                  md="4"
+                >
                   <v-text-field
                     v-model="form.bic"
                     label="BIC / SWIFT"
@@ -205,12 +277,24 @@
           <!-- ─── Conditions de paiement ─────────────────────── -->
           <v-col cols="12">
             <div class="section-header mb-3 mt-2">
-              <v-icon size="18" color="primary" class="mr-2">mdi-clock-outline</v-icon>
+              <v-icon
+                size="18"
+                color="primary"
+                class="mr-2"
+              >
+                mdi-clock-outline
+              </v-icon>
               <span class="text-subtitle-1 font-weight-semibold">Conditions de paiement</span>
             </div>
-            <v-card variant="outlined" class="pa-4">
+            <v-card
+              variant="outlined"
+              class="pa-4"
+            >
               <v-row dense>
-                <v-col cols="12" md="4">
+                <v-col
+                  cols="12"
+                  md="4"
+                >
                   <v-select
                     v-model="form.paymentDelay"
                     label="Délai de paiement *"
@@ -222,7 +306,10 @@
                     density="comfortable"
                   />
                 </v-col>
-                <v-col cols="12" md="4">
+                <v-col
+                  cols="12"
+                  md="4"
+                >
                   <v-text-field
                     v-model="form.latePaymentPenalty"
                     label="Pénalités de retard"
@@ -233,7 +320,10 @@
                     persistent-hint
                   />
                 </v-col>
-                <v-col cols="12" md="4">
+                <v-col
+                  cols="12"
+                  md="4"
+                >
                   <v-text-field
                     v-model="form.recoveryFee"
                     label="Indemnité forfaitaire de recouvrement"
@@ -249,7 +339,10 @@
           </v-col>
 
           <!-- ─── Actions ───────────────────────────────────── -->
-          <v-col cols="12" class="d-flex justify-end gap-3 mt-2">
+          <v-col
+            cols="12"
+            class="d-flex justify-end gap-3 mt-2"
+          >
             <v-btn
               variant="text"
               color="error"
@@ -267,10 +360,8 @@
               Enregistrer
             </v-btn>
           </v-col>
-
         </v-row>
       </v-form>
-
     </v-container>
   </MainLayout>
 </template>

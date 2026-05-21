@@ -1,11 +1,15 @@
 <template>
   <MainLayout>
-    <v-container fluid class="pa-4">
-
+    <v-container
+      fluid
+      class="pa-4"
+    >
       <!-- Header -->
       <div class="d-flex align-center gap-3 mb-6">
         <div>
-          <h1 class="text-h5 font-weight-bold mb-1">Techniciens</h1>
+          <h1 class="text-h5 font-weight-bold mb-1">
+            Techniciens
+          </h1>
           <p class="text-body-2 text-medium-emphasis mb-0">
             Gestion et statistiques des techniciens
           </p>
@@ -13,12 +17,22 @@
       </div>
 
       <!-- Loading -->
-      <div v-if="state.loading.value" class="d-flex justify-center align-center" style="height: 300px;">
-        <v-progress-circular indeterminate color="primary" />
+      <div
+        v-if="state.loading.value"
+        class="d-flex justify-center align-center"
+        style="height: 300px;"
+      >
+        <v-progress-circular
+          indeterminate
+          color="primary"
+        />
       </div>
 
       <!-- Table -->
-      <v-card v-else variant="outlined">
+      <v-card
+        v-else
+        variant="outlined"
+      >
         <v-data-table
           :headers="headers"
           :items="state.technicians.value"
@@ -29,21 +43,32 @@
           <!-- Nom -->
           <template #item.fullName="{ item }">
             <div class="d-flex align-center gap-2 py-2">
-              <v-avatar color="primary" size="34">
+              <v-avatar
+                color="primary"
+                size="34"
+              >
                 <span class="text-caption font-weight-bold text-white">
                   {{ initials(item.fullName) }}
                 </span>
               </v-avatar>
               <div>
-                <div class="text-body-2 font-weight-medium">{{ item.fullName }}</div>
-                <div class="text-caption text-medium-emphasis">{{ item.email }}</div>
+                <div class="text-body-2 font-weight-medium">
+                  {{ item.fullName }}
+                </div>
+                <div class="text-caption text-medium-emphasis">
+                  {{ item.email }}
+                </div>
               </div>
             </div>
           </template>
 
           <!-- Rôle -->
           <template #item.role="{ item }">
-            <v-chip size="x-small" :color="item.role === 'independant_technician' ? 'orange' : 'green'" variant="tonal">
+            <v-chip
+              size="x-small"
+              :color="item.role === 'independant_technician' ? 'orange' : 'green'"
+              variant="tonal"
+            >
               {{ item.role === 'independant_technician' ? 'Indépendant' : 'Technicien' }}
             </v-chip>
           </template>
@@ -85,8 +110,12 @@
                 variant="text"
                 :to="`/technicians/${item.id}`"
               >
-                <v-icon size="18">mdi-eye</v-icon>
-                <v-tooltip activator="parent">Voir le détail</v-tooltip>
+                <v-icon size="18">
+                  mdi-eye
+                </v-icon>
+                <v-tooltip activator="parent">
+                  Voir le détail
+                </v-tooltip>
               </v-btn>
               <v-btn
                 icon
@@ -95,7 +124,9 @@
                 :color="item.isBlocked ? 'success' : 'error'"
                 @click="toggleBlock(item)"
               >
-                <v-icon size="18">{{ item.isBlocked ? 'mdi-lock-open' : 'mdi-lock' }}</v-icon>
+                <v-icon size="18">
+                  {{ item.isBlocked ? 'mdi-lock-open' : 'mdi-lock' }}
+                </v-icon>
                 <v-tooltip activator="parent">
                   {{ item.isBlocked ? 'Débloquer' : 'Bloquer' }}
                 </v-tooltip>
@@ -104,7 +135,6 @@
           </template>
         </v-data-table>
       </v-card>
-
     </v-container>
   </MainLayout>
 </template>

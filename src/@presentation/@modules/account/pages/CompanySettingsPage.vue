@@ -8,7 +8,9 @@
       <!-- Header -->
       <div class="d-flex align-center gap-3 mb-6">
         <div>
-          <h1 class="text-h5 font-weight-bold mb-1">Paramètres de l'entreprise</h1>
+          <h1 class="text-h5 font-weight-bold mb-1">
+            Paramètres de l'entreprise
+          </h1>
           <p class="text-body-2 text-medium-emphasis mb-0">
             Ces informations apparaissent sur vos devis et factures.
           </p>
@@ -29,7 +31,6 @@
         @submit.prevent="onSave"
       >
         <v-row>
-
           <!-- ─── Identité légale ─────────────────────────────── -->
           <v-col cols="12">
             <div class="section-header mb-3">
@@ -37,7 +38,9 @@
                 size="18"
                 color="primary"
                 class="mr-2"
-              >mdi-office-building</v-icon>
+              >
+                mdi-office-building
+              </v-icon>
               <span class="text-subtitle-1 font-weight-semibold">Identité légale</span>
             </div>
             <v-card
@@ -137,7 +140,9 @@
                 size="18"
                 color="primary"
                 class="mr-2"
-              >mdi-map-marker</v-icon>
+              >
+                mdi-map-marker
+              </v-icon>
               <span class="text-subtitle-1 font-weight-semibold">Coordonnées</span>
             </div>
             <v-card
@@ -229,7 +234,9 @@
                 size="18"
                 color="primary"
                 class="mr-2"
-              >mdi-bank</v-icon>
+              >
+                mdi-bank
+              </v-icon>
               <span class="text-subtitle-1 font-weight-semibold">Coordonnées bancaires</span>
             </div>
             <v-card
@@ -274,7 +281,9 @@
                 size="18"
                 color="primary"
                 class="mr-2"
-              >mdi-clock-outline</v-icon>
+              >
+                mdi-clock-outline
+              </v-icon>
               <span class="text-subtitle-1 font-weight-semibold">Conditions de paiement</span>
             </div>
             <v-card
@@ -352,10 +361,8 @@
               Enregistrer
             </v-btn>
           </v-col>
-
         </v-row>
       </v-form>
-
     </v-container>
   </MainLayout>
 

@@ -12,4 +12,3 @@ export class GarageService {
     if (error) throw new Error(error.message);
   }
 }
-Garage, 
