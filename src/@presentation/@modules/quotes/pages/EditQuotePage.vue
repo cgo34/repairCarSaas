@@ -6,8 +6,8 @@
       class="pa-0 mt-4 edit-quote-container"
     >
       <!-- ═══════════════════════════════════════════════════
-           HEADER sticky
-      ════════════════════════════════════════════════════ -->
+            HEADER sticky
+        ════════════════════════════════════════════════════ -->
       <div class="page-header px-3 py-2">
         <div class="d-flex align-center justify-space-between">
           <!-- Gauche : retour + titre -->
@@ -108,8 +108,8 @@
       </div>
 
       <!-- ═══════════════════════════════════════════════════
-           FORM
-      ════════════════════════════════════════════════════ -->
+            FORM
+        ════════════════════════════════════════════════════ -->
       <v-form
         ref="form"
         class="px-3 pt-3 pb-28"
@@ -318,34 +318,34 @@
         <!-- ── Section 4 : Véhicule ── -->
         <div class="section-card mb-4">
           <!-- <div class="section-header mb-3">
-            <div class="section-icon">
-              <v-icon
-                size="18"
-                color="primary"
-              >
-                mdi-car-outline
-              </v-icon>
-            </div>
-            <span class="text-subtitle-2 font-weight-semibold">Véhicule</span>
-          </div> -->
+              <div class="section-icon">
+                <v-icon
+                  size="18"
+                  color="primary"
+                >
+                  mdi-car-outline
+                </v-icon>
+              </div>
+              <span class="text-subtitle-2 font-weight-semibold">Véhicule</span>
+            </div> -->
 
           <!-- <v-autocomplete
-            :model-value="selectedVehicle"
-            :items="vehiclesList"
-            :item-title="v => v.immatriculation + ' — ' + v.marque + (v.annee ? ' ' + v.annee : '')"
-            item-value="id"
-            return-object
-            label="Véhicule existant (optionnel)"
-            variant="outlined"
-            density="comfortable"
-            clearable
-            :disabled="!selectedGarage || isReadOnly"
-            :no-data-text="selectedGarage ? 'Aucun véhicule trouvé' : 'Sélectionnez d\'abord un garage'"
-            hide-details="auto"
-            prepend-inner-icon="mdi-car-search-outline"
-            class="mb-3"
-            @update:model-value="onSelectVehicle"
-          /> -->
+              :model-value="selectedVehicle"
+              :items="vehiclesList"
+              :item-title="v => v.immatriculation + ' — ' + v.marque + (v.annee ? ' ' + v.annee : '')"
+              item-value="id"
+              return-object
+              label="Véhicule existant (optionnel)"
+              variant="outlined"
+              density="comfortable"
+              clearable
+              :disabled="!selectedGarage || isReadOnly"
+              :no-data-text="selectedGarage ? 'Aucun véhicule trouvé' : 'Sélectionnez d\'abord un garage'"
+              hide-details="auto"
+              prepend-inner-icon="mdi-car-search-outline"
+              class="mb-3"
+              @update:model-value="onSelectVehicle"
+            /> -->
 
           <div class="section-header mb-3">
             <div class="section-icon">
@@ -704,8 +704,8 @@
       </v-form>
 
       <!-- ═══════════════════════════════════════════════════
-           STICKY BOTTOM — Sauvegarder
-      ════════════════════════════════════════════════════ -->
+            STICKY BOTTOM — Sauvegarder
+        ════════════════════════════════════════════════════ -->
       <div
         v-if="!isReadOnly && quoteInformations.status?.code !== 'accepted'"
         class="sticky-bottom-bar"
@@ -752,255 +752,255 @@
   />
 </template>
 
-<script setup lang="ts">
-import { IAuthState } from '@/@application/states/interfaces/IAuthState';
-import { IRegionManager } from '@/@core/managers/interfaces/IRegionManager';
-import { container } from '@/@infrastructure/ioc/inversify.config';
-import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
-import BackButton from '@/@presentation/@ui/components/buttons/BackButton.vue';
-import MainLayout from '@/@presentation/@ui/layouts/MainLayout.vue';
-import AddLineItemDialog from '@/@presentation/components/AddLineItemDialog.vue';
-import { ConfirmDialogExposed } from '@/@presentation/components/ConfirmDialog';
-import ConfirmDialog from '@/@presentation/components/ConfirmDialog.vue';
-import CountrySelect from '@/@presentation/components/CountrySelect.vue';
-import { GarageDialogExposed } from '@/@presentation/components/GarageDialog';
-import GarageDialog from '@/@presentation/components/GarageDialog.vue';
-import type { AddLineItemDialogExposed } from '@/@presentation/types/components';
-import { IUseEditQuoteState } from '@/@presentation/types/composables/IUseEditQuoteState';
-import { CountryViewModel } from '@/@presentation/types/models/CountryViewModel';
-import { GarageViewModel } from '@/@presentation/types/models/GarageViewModel';
-import { LineItemViewModel } from '@/@presentation/types/models/LineItemViewModel';
-import { OrganizationMemberViewModel } from '@/@presentation/types/models/organizations/OrganizationMemberViewmodel';
-import { UserViewModel } from '@/@presentation/types/models/UserViewModel';
-import { VehicleViewModel } from '@/@presentation/types/models/VehicleViewModel';
-import { computed, onMounted, ref } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
+  <script setup lang="ts">
+  import { IAuthState } from '@/@application/states/interfaces/IAuthState';
+  import { IRegionManager } from '@/@core/managers/interfaces/IRegionManager';
+  import { container } from '@/@infrastructure/ioc/inversify.config';
+  import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
+  import BackButton from '@/@presentation/@ui/components/buttons/BackButton.vue';
+  import MainLayout from '@/@presentation/@ui/layouts/MainLayout.vue';
+  import AddLineItemDialog from '@/@presentation/components/AddLineItemDialog.vue';
+  import { ConfirmDialogExposed } from '@/@presentation/components/ConfirmDialog';
+  import ConfirmDialog from '@/@presentation/components/ConfirmDialog.vue';
+  import CountrySelect from '@/@presentation/components/CountrySelect.vue';
+  import { GarageDialogExposed } from '@/@presentation/components/GarageDialog';
+  import GarageDialog from '@/@presentation/components/GarageDialog.vue';
+  import type { AddLineItemDialogExposed } from '@/@presentation/types/components';
+  import { IUseEditQuoteState } from '@/@presentation/types/composables/IUseEditQuoteState';
+  import { CountryViewModel } from '@/@presentation/types/models/CountryViewModel';
+  import { GarageViewModel } from '@/@presentation/types/models/GarageViewModel';
+  import { LineItemViewModel } from '@/@presentation/types/models/LineItemViewModel';
+  import { OrganizationMemberViewModel } from '@/@presentation/types/models/organizations/OrganizationMemberViewmodel';
+  import { UserViewModel } from '@/@presentation/types/models/UserViewModel';
+  import { VehicleViewModel } from '@/@presentation/types/models/VehicleViewModel';
+  import { computed, onMounted, ref } from 'vue';
+  import { useRoute, useRouter } from 'vue-router';
 
-// ── Services ─────────────────────────────────────────────────────────────────
-const regionManager = container.get<IRegionManager>(SYMBOLS.Managers.regionManager);
-const authState = container.get<IAuthState>(SYMBOLS.States.AuthState);
-const { isFreePlan } = authState;
+  // ── Services ─────────────────────────────────────────────────────────────────
+  const regionManager = container.get<IRegionManager>(SYMBOLS.Managers.regionManager);
+  const authState = container.get<IAuthState>(SYMBOLS.States.AuthState);
+  const { isFreePlan } = authState;
 
-// ── Refs dialogs ─────────────────────────────────────────────────────────────
-const garageDialogRef = ref<GarageDialogExposed>();
-const addLineItemDialogRef = ref<AddLineItemDialogExposed>();
-const deleteQuoteConfirmDialogRef = ref<ConfirmDialogExposed>();
+  // ── Refs dialogs ─────────────────────────────────────────────────────────────
+  const garageDialogRef = ref<GarageDialogExposed>();
+  const addLineItemDialogRef = ref<AddLineItemDialogExposed>();
+  const deleteQuoteConfirmDialogRef = ref<ConfirmDialogExposed>();
 
-// ── State ─────────────────────────────────────────────────────────────────────
-const useEditQuoteState = container.get<IUseEditQuoteState>(SYMBOLS.States.Quote.EditQuoteState);
+  // ── State ─────────────────────────────────────────────────────────────────────
+  const useEditQuoteState = container.get<IUseEditQuoteState>(SYMBOLS.States.Quote.EditQuoteState);
 
-const {
-  init,
-  quoteInformations,
-  expirationDate,
-  technicians,
-  garages,
-  selectedTechnician,
-  selectedGarage,
-  selectGarage,
-  selectTechnician,
-  setGarage,
-  vehicles,
-  selectedVehicle,
-  selectVehicle,
-  carInformations,
-  setCarImmatriculation,
-  setCarBrand,
-  setCarYear,
-  availableBodyParts,
-  isForfait,
-  isDisplayUnitPrice,
-  isComputeCommissionWithoutDentRemoval,
-  setIsForfait,
-  setForfaitAmount,
-  setIsDisplayUnitPrice,
-  setIsComputeCommissionWithoutDentRemoval,
-  forfaitAmount,
-  selectCountry,
-  selectedCountry,
-  quoteLines,
-  addLine,
-  removeLine,
-  subtotal,
-  totalDegarnissage,
-  subTotalWithDegarnissage,
-  totalTaxRate,
-  totalCommission,
-  total,
-  updateQuote,
-  deleteQuote,
-  duplicateQuoteToInvoice,
-  isReadOnly,
-  isAccepted,
-  // isRefused,
-  updateQuoteStatus,
-} = useEditQuoteState;
+  const {
+    init,
+    quoteInformations,
+    expirationDate,
+    technicians,
+    garages,
+    selectedTechnician,
+    selectedGarage,
+    selectGarage,
+    selectTechnician,
+    setGarage,
+    vehicles,
+    selectedVehicle,
+    selectVehicle,
+    carInformations,
+    setCarImmatriculation,
+    setCarBrand,
+    setCarYear,
+    availableBodyParts,
+    isForfait,
+    isDisplayUnitPrice,
+    isComputeCommissionWithoutDentRemoval,
+    setIsForfait,
+    setForfaitAmount,
+    setIsDisplayUnitPrice,
+    setIsComputeCommissionWithoutDentRemoval,
+    forfaitAmount,
+    selectCountry,
+    selectedCountry,
+    quoteLines,
+    addLine,
+    removeLine,
+    subtotal,
+    totalDegarnissage,
+    subTotalWithDegarnissage,
+    totalTaxRate,
+    totalCommission,
+    total,
+    updateQuote,
+    deleteQuote,
+    duplicateQuoteToInvoice,
+    isReadOnly,
+    isAccepted,
+    // isRefused,
+    updateQuoteStatus,
+  } = useEditQuoteState;
 
-const router = useRouter();
-const route = useRoute();
-const vehiclesList = computed(() => vehicles.value);
+  const router = useRouter();
+  const route = useRoute();
+  const vehiclesList = computed(() => vehicles.value);
 
-// ── Helpers ───────────────────────────────────────────────────────────────────
-const initials = (name: string) => {
-  if (!name) return '?';
-  return name.split(' ').map(n => n[0]).slice(0, 2).join('').toUpperCase();
-};
+  // ── Helpers ───────────────────────────────────────────────────────────────────
+  const initials = (name: string) => {
+    if (!name) return '?';
+    return name.split(' ').map(n => n[0]).slice(0, 2).join('').toUpperCase();
+  };
 
-const statusColor = (code?: string) => {
-  switch (code) {
-    case 'processing': return 'blue';
-    case 'accepted':   return 'success';
-    case 'refused':    return 'error';
-    case 'cancelled':  return 'error';
-    case 'invoiced':   return 'blue';
-    case 'pending':    return 'warning';
-    default:           return 'default';
+  const statusColor = (code?: string) => {
+    switch (code) {
+      case 'processing': return 'blue';
+      case 'accepted':   return 'success';
+      case 'refused':    return 'error';
+      case 'cancelled':  return 'error';
+      case 'invoiced':   return 'blue';
+      case 'pending':    return 'warning';
+      default:           return 'default';
+    }
+  };
+
+  const statusLabel = (code?: string) => {
+    switch (code) {
+      case 'accepted':   return 'Accepté';
+      case 'refused':    return 'Refusé';
+      case 'cancelled':  return 'Annulé';
+      case 'invoiced':   return 'Facturé';
+      case 'pending':    return 'En attente';
+      case 'draft':      return 'Brouillon';
+      case 'processing': return 'En cours';
+      default:           return code ?? '';
+    }
+  };
+
+  // ── Handlers form ─────────────────────────────────────────────────────────────
+  const onSelectTechnician = (t: OrganizationMemberViewModel) => selectTechnician(t);
+  const onSelectGarage = (g: GarageViewModel) => selectGarage(g);
+  const onSelectVehicle = (v: VehicleViewModel | undefined) => selectVehicle(v);
+  const onEditCustomerBtnClick = () => garageDialogRef.value?.open();
+  const onGarageValidated = (g: GarageViewModel) => setGarage(g);
+  const onCarImmatriculationUpdated = (v: string) => setCarImmatriculation(v);
+  const onCarBrandUpdated = (v: string) => setCarBrand(v);
+  const onCarYearUpdated = (v: string) => setCarYear(v);
+  const onUpdateIsForfait = (v: boolean | null) => setIsForfait(v ?? false);
+  const onUpdateForfaitAmount = (v: number) => setForfaitAmount(Number(v));
+  const onUpdateIsDisplayUnitPrice = (v: boolean | null) => setIsDisplayUnitPrice(v ?? true);
+  const onUpdateIsComputeCommissionWithoutDentRemoval = (v: boolean | null) => setIsComputeCommissionWithoutDentRemoval(v ?? true);
+  const onSelectCountry = (c: CountryViewModel | undefined) => {
+    if (c) {
+      selectCountry(c);
+    }
+  };
+
+  // ── Handlers lignes ───────────────────────────────────────────────────────────
+  const onAddItemBtnClick = () => addLineItemDialogRef.value?.open();
+  const onRemoveItemBtnClick = (item: LineItemViewModel) => removeLine(item.id);
+  const onAddLineItem = (item: LineItemViewModel) => addLine(item);
+
+  // ── Handlers actions ──────────────────────────────────────────────────────────
+  const onAcceptedBtnClick = () => updateQuoteStatus({ code: 'accepted'});
+  const onRefusedBtnClick = () => updateQuoteStatus({ code: 'refused'});
+  const onSendBtnClick = () => console.log('send quote');
+  const onDuplicateQuoteToInvoiceBtnClick = () => duplicateQuoteToInvoice();
+  const onViewPdfBtnClick = () => router.push(`/quotes/${route.params.id}/view`);
+  const onDeleteBtnClick = () => deleteQuoteConfirmDialogRef.value?.open();
+  const onConfirmDeleteQuote = () => {
+    deleteQuote();
+    router.push('/quotes/');
+  };
+  const onUpdateBtnClick = () => updateQuote();
+
+  onMounted(async () => {
+    await init(route.params.id);
+  });
+  </script>
+
+  <style scoped>
+  .edit-quote-container {
+    min-height: 100dvh;
+    background: rgb(var(--v-theme-background));
   }
-};
 
-const statusLabel = (code?: string) => {
-  switch (code) {
-    case 'accepted':   return 'Accepté';
-    case 'refused':    return 'Refusé';
-    case 'cancelled':  return 'Annulé';
-    case 'invoiced':   return 'Facturé';
-    case 'pending':    return 'En attente';
-    case 'draft':      return 'Brouillon';
-    case 'processing': return 'En cours';
-    default:           return code ?? '';
+  /* Header sticky */
+  .page-header {
+    background: rgb(var(--v-theme-surface));
+    border-bottom: 1px solid rgba(var(--v-border-color), 0.12);
+    position: sticky;
+    top: 0;
+    z-index: 10;
   }
-};
 
-// ── Handlers form ─────────────────────────────────────────────────────────────
-const onSelectTechnician = (t: OrganizationMemberViewModel) => selectTechnician(t);
-const onSelectGarage = (g: GarageViewModel) => selectGarage(g);
-const onSelectVehicle = (v: VehicleViewModel | undefined) => selectVehicle(v);
-const onEditCustomerBtnClick = () => garageDialogRef.value?.open();
-const onGarageValidated = (g: GarageViewModel) => setGarage(g);
-const onCarImmatriculationUpdated = (v: string) => setCarImmatriculation(v);
-const onCarBrandUpdated = (v: string) => setCarBrand(v);
-const onCarYearUpdated = (v: string) => setCarYear(v);
-const onUpdateIsForfait = (v: boolean | null) => setIsForfait(v ?? false);
-const onUpdateForfaitAmount = (v: number) => setForfaitAmount(Number(v));
-const onUpdateIsDisplayUnitPrice = (v: boolean | null) => setIsDisplayUnitPrice(v ?? true);
-const onUpdateIsComputeCommissionWithoutDentRemoval = (v: boolean | null) => setIsComputeCommissionWithoutDentRemoval(v ?? true);
-const onSelectCountry = (c: CountryViewModel | undefined) => {
-  if (c) {
-    selectCountry(c);
+  /* Section cards */
+  .section-card {
+    background: rgb(var(--v-theme-surface));
+    border-radius: 16px;
+    padding: 16px;
+    border: 1px solid rgba(var(--v-border-color), 0.08);
   }
- };
 
-// ── Handlers lignes ───────────────────────────────────────────────────────────
-const onAddItemBtnClick = () => addLineItemDialogRef.value?.open();
-const onRemoveItemBtnClick = (item: LineItemViewModel) => removeLine(item.id);
-const onAddLineItem = (item: LineItemViewModel) => addLine(item);
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
 
-// ── Handlers actions ──────────────────────────────────────────────────────────
-const onAcceptedBtnClick = () => updateQuoteStatus({ code: 'accepted'});
-const onRefusedBtnClick = () => updateQuoteStatus({ code: 'refused'});
-const onSendBtnClick = () => console.log('send quote');
-const onDuplicateQuoteToInvoiceBtnClick = () => duplicateQuoteToInvoice();
-const onViewPdfBtnClick = () => router.push(`/quotes/${route.params.id}/view`);
-const onDeleteBtnClick = () => deleteQuoteConfirmDialogRef.value?.open();
-const onConfirmDeleteQuote = () => {
-  deleteQuote();
-  router.push('/quotes/');
-};
-const onUpdateBtnClick = () => updateQuote();
+  .section-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: rgba(var(--v-theme-primary), 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
 
-onMounted(async () => {
-  await init(route.params.id);
-});
-</script>
+  /* Line items */
+  .line-items-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
 
-<style scoped>
-.edit-quote-container {
-  min-height: 100dvh;
-  background: rgb(var(--v-theme-background));
-}
+  .line-item-card {
+    /* border: 1px solid rgba(var(--v-border-color), 0.15); */
+    border-radius: 12px;
+    padding: 12px;
+    background: rgba(var(--v-theme-surface-variant), 0.1);
+  }
 
-/* Header sticky */
-.page-header {
-  background: rgb(var(--v-theme-surface));
-  border-bottom: 1px solid rgba(var(--v-border-color), 0.12);
-  position: sticky;
-  top: 0;
-  z-index: 10;
-}
+  /* Totaux */
+  .totals-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
 
-/* Section cards */
-.section-card {
-  background: rgb(var(--v-theme-surface));
-  border-radius: 16px;
-  padding: 16px;
-  border: 1px solid rgba(var(--v-border-color), 0.08);
-}
+  .total-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 0;
+  }
 
-.section-header {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
+  .total-row--final {
+    padding-top: 8px;
+  }
 
-.section-icon {
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
-  background: rgba(var(--v-theme-primary), 0.1);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
+  /* Sticky bottom */
+  .sticky-bottom-bar {
+    position: sticky;
+    bottom: 0;
+    z-index: 10;
+    padding: 12px 16px;
+    padding-bottom: max(12px, env(safe-area-inset-bottom));
+    background: rgb(var(--v-theme-surface));
+    border-top: 1px solid rgba(var(--v-border-color), 0.12);
+  }
 
-/* Line items */
-.line-items-list {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
+  .pb-28 {
+    padding-bottom: 80px;
+  }
 
-.line-item-card {
-  /* border: 1px solid rgba(var(--v-border-color), 0.15); */
-  border-radius: 12px;
-  padding: 12px;
-  background: rgba(var(--v-theme-surface-variant), 0.1);
-}
-
-/* Totaux */
-.totals-list {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.total-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 6px 0;
-}
-
-.total-row--final {
-  padding-top: 8px;
-}
-
-/* Sticky bottom */
-.sticky-bottom-bar {
-  position: sticky;
-  bottom: 0;
-  z-index: 10;
-  padding: 12px 16px;
-  padding-bottom: max(12px, env(safe-area-inset-bottom));
-  background: rgb(var(--v-theme-surface));
-  border-top: 1px solid rgba(var(--v-border-color), 0.12);
-}
-
-.pb-28 {
-  padding-bottom: 80px;
-}
-
-.min-w-0 {
-  min-width: 0;
-}
-</style>
+  .min-w-0 {
+    min-width: 0;
+  }
+  </style>

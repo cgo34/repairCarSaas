@@ -1,29 +1,39 @@
 <template>
   <MainLayout>
-    <v-container fluid class="pa-0 edit-invoice-container">
-
+    <v-container
+      fluid
+      class="pa-0 edit-invoice-container"
+    >
       <!-- ═══════════════════════════════════════════════════
            HEADER sticky
       ════════════════════════════════════════════════════ -->
       <div class="page-header px-3 py-2">
         <div class="d-flex align-center justify-space-between">
-
           <!-- Gauche : retour + titre -->
-          <div class="d-flex align-center gap-2 min-w-0">
-            <BackButton fallbackPath="/invoices" />
+          <div class="d-flex flex-column align-center gap-2 min-w-0">
             <div class="min-w-0">
-              <div class="text-subtitle-1 font-weight-bold text-truncate">
-                {{ invoiceInformations.number || 'Facture' }}
+              <div class="d-flex flex-column  align-left gap-2 flex-wrap">
+                <div>
+                  <span class="text-subtitle-1 font-weight-bold text-truncate my-2">
+                    Facture numéro :
+                  </span>
+                  {{ invoiceInformations.number || 'Facture' }}
+                </div>
+                <div>
+                  <span class="text-subtitle-1 font-weight-bold text-truncate my-2">
+                    Statut :
+                  </span>
+                  <v-chip
+                    v-if="invoiceStatus"
+                    size="x-small"
+                    :color="paymentStatusColor(invoiceStatus)"
+                    variant="tonal"
+                    class="mt-0"
+                  >
+                    {{ paymentStatusLabel(invoiceStatus) }}
+                  </v-chip>
+                </div>
               </div>
-              <v-chip
-                v-if="invoiceStatus"
-                size="x-small"
-                :color="paymentStatusColor(invoiceStatus)"
-                variant="tonal"
-                class="mt-0"
-              >
-                {{ paymentStatusLabel(invoiceStatus) }}
-              </v-chip>
             </div>
           </div>
 
@@ -43,11 +53,20 @@
             <!-- Menu overflow -->
             <v-menu location="bottom end">
               <template #activator="{ props: menuProps }">
-                <v-btn icon variant="text" size="small" v-bind="menuProps">
+                <v-btn
+                  icon
+                  variant="text"
+                  size="small"
+                  v-bind="menuProps"
+                >
                   <v-icon>mdi-dots-vertical</v-icon>
                 </v-btn>
               </template>
-              <v-list density="compact" rounded="lg" min-width="200">
+              <v-list
+                density="compact"
+                rounded="lg"
+                min-width="200"
+              >
                 <v-list-item
                   prepend-icon="mdi-send-outline"
                   title="Envoyer"
@@ -69,53 +88,26 @@
               </v-list>
             </v-menu>
           </div>
-
         </div>
       </div>
 
       <!-- ═══════════════════════════════════════════════════
            FORM
       ════════════════════════════════════════════════════ -->
-      <v-form ref="form" class="px-3 pt-3 pb-28">
-
-        <!-- ── Section 1 : Dates ── -->
-        <div class="section-card mb-4">
-          <div class="section-header mb-3">
-            <div class="section-icon">
-              <v-icon size="18" color="primary">mdi-calendar-outline</v-icon>
-            </div>
-            <span class="text-subtitle-2 font-weight-semibold">Dates</span>
-          </div>
-          <v-row dense>
-            <v-col cols="12" sm="6">
-              <v-text-field
-                v-model="invoiceInformations.date"
-                label="Date de facturation"
-                type="date"
-                variant="outlined"
-                density="comfortable"
-                hide-details="auto"
-              />
-            </v-col>
-            <v-col cols="12" sm="6">
-              <v-text-field
-                :model-value="expirationDate"
-                label="Échéance"
-                type="date"
-                variant="outlined"
-                density="comfortable"
-                readonly
-                hide-details="auto"
-              />
-            </v-col>
-          </v-row>
-        </div>
-
+      <v-form
+        ref="form"
+        class="px-3 pt-3 pb-28"
+      >
         <!-- ── Section : Statut de paiement ── -->
         <div class="section-card mb-4">
           <div class="section-header mb-3">
             <div class="section-icon">
-              <v-icon size="18" color="primary">mdi-cash-check</v-icon>
+              <v-icon
+                size="18"
+                color="primary"
+              >
+                mdi-cash-check
+              </v-icon>
             </div>
             <span class="text-subtitle-2 font-weight-semibold">Statut de paiement</span>
           </div>
@@ -146,23 +138,74 @@
           </div>
 
           <div class="mt-2 text-caption text-medium-emphasis d-flex align-center gap-1">
-            <v-icon size="13">mdi-information-outline</v-icon>
+            <v-icon size="13">
+              mdi-information-outline
+            </v-icon>
             Le statut est mis à jour immédiatement et reflété dans le tableau de bord.
           </div>
+        </div>
+        
+        <!-- ── Section 1 : Dates ── -->
+        <div class="section-card mb-4">
+          <div class="section-header mb-3">
+            <div class="section-icon">
+              <v-icon
+                size="18"
+                color="primary"
+              >
+                mdi-calendar-outline
+              </v-icon>
+            </div>
+            <span class="text-subtitle-2 font-weight-semibold">Dates</span>
+          </div>
+          <v-row dense>
+            <v-col
+              cols="12"
+              sm="6"
+            >
+              <v-text-field
+                v-model="invoiceInformations.date"
+                label="Date de facturation"
+                type="date"
+                variant="outlined"
+                density="comfortable"
+                hide-details="auto"
+              />
+            </v-col>
+            <v-col
+              cols="12"
+              sm="6"
+            >
+              <v-text-field
+                :model-value="expirationDate"
+                label="Échéance"
+                type="date"
+                variant="outlined"
+                density="comfortable"
+                readonly
+                hide-details="auto"
+              />
+            </v-col>
+          </v-row>
         </div>
 
         <!-- ── Section 2 : Technicien ── -->
         <div class="section-card mb-4">
           <div class="section-header mb-3">
             <div class="section-icon">
-              <v-icon size="18" color="primary">mdi-account-wrench-outline</v-icon>
+              <v-icon
+                size="18"
+                color="primary"
+              >
+                mdi-account-wrench-outline
+              </v-icon>
             </div>
             <span class="text-subtitle-2 font-weight-semibold">Technicien</span>
           </div>
           <v-autocomplete
             :model-value="selectedTechnician"
             :items="technicians"
-            item-title="fullName"
+            :item-title="item => `${item.users.first_name} ${item.users.last_name}`"
             item-value="id"
             return-object
             label="Sélectionner un technicien"
@@ -176,9 +219,12 @@
             <template #item="{ props: itemProps, item }">
               <v-list-item v-bind="itemProps">
                 <template #prepend>
-                  <v-avatar color="primary" size="36">
+                  <v-avatar
+                    color="primary"
+                    size="36"
+                  >
                     <span class="text-caption font-weight-bold text-white">
-                      {{ initials(item.raw.fullName) }}
+                      {{ initials(item.raw.users.first_name + ' ' + item.raw.users.last_name) }}
                     </span>
                   </v-avatar>
                 </template>
@@ -186,10 +232,16 @@
             </template>
             <template #selection="{ item }">
               <div class="d-flex align-center gap-2">
-                <v-avatar color="primary" size="24">
-                  <span style="font-size:10px" class="text-white">{{ initials(item.raw.fullName) }}</span>
+                <v-avatar
+                  color="primary"
+                  size="24"
+                >
+                  <span
+                    style="font-size:10px"
+                    class="text-white"
+                  >{{ initials(item.raw.users.first_name + ' ' + item.raw.users.last_name) }}</span>
                 </v-avatar>
-                <span>{{ item.raw.fullName }}</span>
+                <span>{{ item.raw.users.first_name }} {{ item.raw.users.last_name }}</span>
               </div>
             </template>
           </v-autocomplete>
@@ -199,7 +251,12 @@
         <div class="section-card mb-4">
           <div class="section-header mb-3">
             <div class="section-icon">
-              <v-icon size="18" color="primary">mdi-garage-open-variant</v-icon>
+              <v-icon
+                size="18"
+                color="primary"
+              >
+                mdi-garage
+              </v-icon>
             </div>
             <span class="text-subtitle-2 font-weight-semibold">Client / Garage</span>
           </div>
@@ -215,13 +272,18 @@
             density="comfortable"
             clearable
             hide-details="auto"
-            prepend-inner-icon="mdi-store-search-outline"
+            prepend-inner-icon="mdi-garage"
             @update:model-value="onSelectGarage"
           >
             <template #item="{ props: itemProps, item }">
-              <v-list-item v-bind="itemProps" :subtitle="item.raw.city ?? ''">
+              <v-list-item
+                v-bind="itemProps"
+                :subtitle="item.raw.city ?? ''"
+              >
                 <template #prepend>
-                  <v-icon color="primary">mdi-garage-variant</v-icon>
+                  <v-icon color="primary">
+                    mdi-garage
+                  </v-icon>
                 </template>
               </v-list-item>
             </template>
@@ -239,17 +301,40 @@
           </v-btn>
 
           <v-expand-transition>
-            <div v-if="selectedGarage" class="mt-3">
-              <v-card variant="tonal" color="primary" rounded="lg" class="pa-3">
+            <div
+              v-if="selectedGarage"
+              class="mt-3"
+            >
+              <v-card
+                variant="tonal"
+                color="primary"
+                rounded="lg"
+                class="pa-3"
+              >
                 <div class="d-flex align-center gap-2 mb-1">
-                  <v-icon size="18" color="primary">mdi-map-marker-outline</v-icon>
+                  <v-icon
+                    size="18"
+                    color="primary"
+                  >
+                    mdi-garage
+                  </v-icon>
                   <span class="text-body-2 font-weight-medium">{{ selectedGarage.name }}</span>
                 </div>
-                <div v-if="selectedGarage.address" class="text-caption text-medium-emphasis">
+                <div
+                  v-if="selectedGarage.address"
+                  class="text-caption text-medium-emphasis"
+                >
                   {{ selectedGarage.address }}<span v-if="selectedGarage.zipCode">, {{ selectedGarage.zipCode }}</span><span v-if="selectedGarage.city"> {{ selectedGarage.city }}</span>
                 </div>
-                <div v-if="selectedGarage.percentageCommission" class="mt-1">
-                  <v-chip size="x-small" color="orange" variant="tonal">
+                <div
+                  v-if="selectedGarage.percentageCommission"
+                  class="mt-1"
+                >
+                  <v-chip
+                    size="x-small"
+                    color="orange"
+                    variant="tonal"
+                  >
                     Commission {{ selectedGarage.percentageCommission }}%
                   </v-chip>
                 </div>
@@ -262,12 +347,17 @@
         <div class="section-card mb-4">
           <div class="section-header mb-3">
             <div class="section-icon">
-              <v-icon size="18" color="primary">mdi-car-outline</v-icon>
+              <v-icon
+                size="18"
+                color="primary"
+              >
+                mdi-car
+              </v-icon>
             </div>
             <span class="text-subtitle-2 font-weight-semibold">Véhicule</span>
           </div>
 
-          <v-autocomplete
+          <!-- <v-autocomplete
             :model-value="selectedVehicle"
             :items="vehiclesList"
             :item-title="v => v.immatriculation + ' — ' + v.marque + (v.annee ? ' ' + v.annee : '')"
@@ -283,15 +373,20 @@
             prepend-inner-icon="mdi-car-search-outline"
             class="mb-3"
             @update:model-value="onSelectVehicle"
-          />
+          /> -->
 
           <div class="text-caption text-medium-emphasis mb-3 d-flex align-center gap-1">
-            <v-icon size="14">mdi-information-outline</v-icon>
+            <v-icon size="14">
+              mdi-information-outline
+            </v-icon>
             Informations manuelles :
           </div>
 
           <v-row dense>
-            <v-col cols="12" sm="4">
+            <v-col
+              cols="12"
+              sm="4"
+            >
               <v-text-field
                 v-model="carInformations.immatriculation"
                 label="Immatriculation"
@@ -302,7 +397,10 @@
                 @update:model-value="onCarImmatriculationUpdated"
               />
             </v-col>
-            <v-col cols="12" sm="4">
+            <v-col
+              cols="12"
+              sm="4"
+            >
               <v-text-field
                 v-model="carInformations.brand"
                 label="Marque"
@@ -313,7 +411,10 @@
                 @update:model-value="onCarBrandUpdated"
               />
             </v-col>
-            <v-col cols="12" sm="4">
+            <v-col
+              cols="12"
+              sm="4"
+            >
               <v-text-field
                 v-model="carInformations.dateEntryCirculation"
                 label="Année"
@@ -331,22 +432,36 @@
         <div class="section-card mb-4">
           <div class="section-header mb-3">
             <div class="section-icon">
-              <v-icon size="18" color="primary">mdi-tune-variant</v-icon>
+              <v-icon
+                size="18"
+                color="primary"
+              >
+                mdi-tune-variant
+              </v-icon>
             </div>
             <span class="text-subtitle-2 font-weight-semibold">Options</span>
           </div>
 
           <div class="mb-3">
-            <div class="text-caption text-medium-emphasis mb-1 font-weight-medium">Pays &amp; TVA</div>
-            <CountrySelect :modelValue="selectedCountry" @select="onSelectCountry" />
+            <div class="text-caption text-medium-emphasis mb-1 font-weight-medium">
+              Pays &amp; TVA
+            </div>
+            <CountrySelect
+              :model-value="selectedCountry"
+              @select="onSelectCountry"
+            />
           </div>
 
           <v-divider class="my-3" />
 
           <div class="d-flex align-center justify-space-between py-2">
             <div>
-              <div class="text-body-2 font-weight-medium">Mode forfait</div>
-              <div class="text-caption text-medium-emphasis">Remplacer les lignes par un montant fixe</div>
+              <div class="text-body-2 font-weight-medium">
+                Mode forfait
+              </div>
+              <div class="text-caption text-medium-emphasis">
+                Remplacer les lignes par un montant fixe
+              </div>
             </div>
             <v-switch
               :model-value="isForfait"
@@ -358,7 +473,10 @@
           </div>
 
           <v-expand-transition>
-            <div v-if="isForfait" class="pb-2">
+            <div
+              v-if="isForfait"
+              class="pb-2"
+            >
               <v-text-field
                 :model-value="forfaitAmount"
                 label="Montant du forfait (€)"
@@ -376,8 +494,12 @@
             <v-divider class="my-1" />
             <div class="d-flex align-center justify-space-between py-2">
               <div>
-                <div class="text-body-2 font-weight-medium">Prix unitaires visibles</div>
-                <div class="text-caption text-medium-emphasis">Afficher le détail sur la facture</div>
+                <div class="text-body-2 font-weight-medium">
+                  Prix unitaires visibles
+                </div>
+                <div class="text-caption text-medium-emphasis">
+                  Afficher le détail sur la facture
+                </div>
               </div>
               <v-switch
                 :model-value="isDisplayUnitPrice"
@@ -391,8 +513,12 @@
             <v-divider class="my-1" />
             <div class="d-flex align-center justify-space-between py-2">
               <div>
-                <div class="text-body-2 font-weight-medium">Commission hors dégarnissage</div>
-                <div class="text-caption text-medium-emphasis">Exclure le dégarnissage de la base de commission</div>
+                <div class="text-body-2 font-weight-medium">
+                  Commission hors dégarnissage
+                </div>
+                <div class="text-caption text-medium-emphasis">
+                  Exclure le dégarnissage de la base de commission
+                </div>
               </div>
               <v-switch
                 :model-value="isComputeCommissionWithoutDentRemoval"
@@ -406,66 +532,114 @@
         </div>
 
         <!-- ── Section 6 : Lignes de la facture ── -->
-        <div v-if="!isForfait" class="section-card mb-4">
+        <div
+          v-if="!isForfait"
+          class="section-card mb-4"
+        >
           <div class="section-header mb-3">
             <div class="section-icon">
-              <v-icon size="18" color="primary">mdi-format-list-bulleted</v-icon>
+              <v-icon
+                size="18"
+                color="primary"
+              >
+                mdi-format-list-bulleted
+              </v-icon>
             </div>
             <span class="text-subtitle-2 font-weight-semibold">Éléments de la facture</span>
             <v-spacer />
-            <v-chip size="x-small" variant="tonal" color="primary">
+            <v-chip
+              size="x-small"
+              variant="tonal"
+              color="primary"
+            >
               {{ invoiceLines.length }}
             </v-chip>
           </div>
 
-          <div v-if="invoiceLines.length > 0" class="line-items-list">
+          <!-- Liste mobile des lignes -->
+          <div
+            v-if="invoiceLines.length > 0"
+            class="line-items-list"
+          >
             <div
               v-for="line in invoiceLines"
               :key="line.id"
               class="line-item-card"
             >
-              <div class="d-flex align-start justify-space-between">
+              <div class="d-flex align-center justify-space-between">
                 <div class="flex-grow-1 min-w-0">
+                  <!-- Pièce + matériau -->
                   <div class="d-flex align-center gap-2 mb-1 flex-wrap">
                     <span class="text-body-2 font-weight-medium">
                       {{ line.bodyPart?.name ?? '—' }}
                     </span>
-                    <v-chip v-if="line.bodyMaterial" size="x-small" variant="tonal" color="blue-grey">
+                    <v-chip
+                      v-if="line.bodyMaterial"
+                      size="x-small"
+                      variant="tonal"
+                      color="primary"
+                      class="ml-2"
+                    >
                       {{ line.bodyMaterial.name }}
                     </v-chip>
-                    <v-chip v-if="line.repairType" size="x-small" variant="tonal" color="indigo">
+                    <v-chip
+                      v-if="line.repairType"
+                      size="x-small"
+                      variant="tonal"
+                      color="primary"
+                      class="ml-2"
+                    >
                       {{ line.repairType.name }}
                     </v-chip>
                   </div>
+                  <!-- Impacts -->
                   <div class="d-flex gap-3 text-caption text-medium-emphasis">
                     <span>Ø 25 : <strong>{{ line.impactCount25 ?? 0 }}</strong></span>
-                    <span>Ø 35 : <strong>{{ line.impactCount35 ?? 0 }}</strong></span>
-                    <span v-if="line.dentRemovalPrice">
-                      Dégarn. : <strong>{{ line.dentRemovalPrice.toFixed(2) }} {{ selectedCountry?.currencySymbol || '€' }}</strong>
+                    <span class="ml-2">Ø 35 : <strong>{{ line.impactCount35 ?? 0 }}</strong></span>
+                    <span
+                      v-if="line.dentRemovalPrice"
+                      class="ml-2"
+                    >
+                      Dégarnissage : <strong>{{ line.dentRemovalPrice.toFixed(2) }} {{ selectedCountry?.currencySymbol || '€' }}</strong>
                     </span>
                   </div>
                 </div>
-                <div class="d-flex flex-column align-end gap-1 ml-2 flex-shrink-0">
-                  <span class="text-body-2 font-weight-bold text-primary">
+                <!-- Prix + supprimer -->
+                <div class="d-flex align-center gap-1 ml-2 flex-shrink-0">
+                  <span class="text-body-1 font-weight-bold text-primary">
                     {{ line.price?.toFixed(2) ?? '0.00' }} {{ selectedCountry?.currencySymbol || '€' }}
                   </span>
                   <v-btn
+                    v-if="!isReadOnly"
                     icon
                     variant="text"
                     size="x-small"
                     color="error"
                     @click="onRemoveItemBtnClick(line)"
                   >
-                    <v-icon size="16">mdi-delete-outline</v-icon>
+                    <v-icon size="16">
+                      mdi-delete-outline
+                    </v-icon>
                   </v-btn>
                 </div>
               </div>
             </div>
           </div>
 
-          <div v-else class="text-center py-6 text-medium-emphasis">
-            <v-icon size="40" class="mb-2 opacity-40">mdi-playlist-plus</v-icon>
-            <div class="text-body-2">Aucun élément pour l'instant</div>
+          <!-- État vide -->
+          <div
+            v-else
+            class="text-center py-6 text-medium-emphasis"
+          >
+            <v-icon
+              size="40"
+              class="mb-2 opacity-40"
+            >
+              mdi-playlist-plus
+            </v-icon>
+            <div class="text-body-2">
+              Aucun élément pour l'instant
+            </div>
           </div>
 
           <v-btn
@@ -484,7 +658,12 @@
         <div class="section-card mb-4">
           <div class="section-header mb-3">
             <div class="section-icon">
-              <v-icon size="18" color="primary">mdi-calculator-variant-outline</v-icon>
+              <v-icon
+                size="18"
+                color="primary"
+              >
+                mdi-calculator-variant-outline
+              </v-icon>
             </div>
             <span class="text-subtitle-2 font-weight-semibold">Récapitulatif</span>
           </div>
@@ -516,7 +695,10 @@
                 {{ regionManager.formatNumber(totalTaxRate) }} {{ selectedCountry?.currencySymbol || '€' }}
               </span>
             </div>
-            <div v-if="selectedGarage?.percentageCommission" class="total-row text-orange">
+            <div
+              v-if="selectedGarage?.percentageCommission"
+              class="total-row text-orange"
+            >
               <span class="text-body-2">Commission ({{ selectedGarage.percentageCommission }}%)</span>
               <span class="text-body-2 font-weight-medium">
                 {{ regionManager.formatNumber(totalCommission) }} {{ selectedCountry?.currencySymbol || '€' }}
@@ -531,7 +713,6 @@
             </div>
           </div>
         </div>
-
       </v-form>
 
       <!-- ═══════════════════════════════════════════════════
@@ -550,7 +731,6 @@
           Sauvegarder
         </v-btn>
       </div>
-
     </v-container>
   </MainLayout>
 
@@ -559,14 +739,14 @@
     ref="garageDialogRef"
     title="Modifier le client"
     persistent
-    :maxWidth="500"
+    :max-width="500"
     @validated="onGarageValidated"
   />
 
   <AddLineItemDialog
     ref="addLineItemDialogRef"
     title="Ajouter un élément"
-    :availableBodyParts="availableBodyParts"
+    :available-body-parts="availableBodyParts"
     @add="onAddLineItem"
   />
 
@@ -574,8 +754,8 @@
     ref="deleteInvoiceConfirmDialogRef"
     title="Supprimer la facture"
     message="Cette action est irréversible. Confirmer la suppression ?"
-    confirmLabel="Supprimer"
-    cancelLabel="Annuler"
+    confirm-label="Supprimer"
+    cancel-label="Annuler"
     type="warning"
     @confirm="onConfirmDeleteInvoice"
   />

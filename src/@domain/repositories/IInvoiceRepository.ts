@@ -2,10 +2,10 @@ import { InvoiceDto } from '@/@application/dtos/InvoiceDto';
 import { InvoiceStatusDto } from '@/@infrastructure/dtos/InvoiceStatusDto';
 
 export interface IInvoiceRepository {
-  generateInvoiceNumber(userId: string): Promise<string>;
+  generateInvoiceNumber(organizationId: string): Promise<string>;
   
   getAll(): Promise<InvoiceDto[]>;
-  getAllByUserId(userId: string): Promise<InvoiceDto[]>;
+  getAllByOrganizationMemberId(organizationId: string, memberId: string, role: 'admin' | 'manager' | 'technician'): Promise<InvoiceDto[]>;
   getById(id: string): Promise<InvoiceDto | null>;
   // getDetails(quoteId: string): Promise<LineItemDto[]>;
   create(quote: InvoiceDto): Promise<InvoiceDto>;

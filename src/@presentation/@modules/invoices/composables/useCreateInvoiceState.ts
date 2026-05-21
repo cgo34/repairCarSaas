@@ -1,327 +1,750 @@
 // region -> IMPORTS
+
 import { IAuthState } from '@/@application/states/interfaces/IAuthState';
+
 import { IGarageUseCase } from '@/@domain/useCases/IGarageUseCase';
-import { IVehicleUseCase } from '@/@domain/useCases/IVehicleUseCase';
-import { IUserUseCase } from '@/@domain/useCases/IUserUseCase';
+
 import { ICreateInvoiceUseCase } from '@/@domain/useCases/invoices/ICreateInvoiceUseCase';
+
 import { IInsertInvoiceUseCase } from '@/@domain/useCases/invoices/IInsertInvoiceUseCase';
+
+import { IGetDocumentStatusUseCase } from '@/@domain/useCases/IGetDocumentStatusUseCase';
+
+import { IOrganizationMemberUseCase } from '@/@domain/useCases/organizationMember/IOrganizationMemberUseCase';
+
 import { container } from '@/@infrastructure/ioc/inversify.config';
+
 import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
+
 import { GarageMapper } from '@/@presentation/mappers/GarageMapper';
-import { UserMapper } from '@/@presentation/mappers/UserMapper';
+
 import { InvoiceMapper } from '@/@presentation/mappers/InvoiceMapper';
-import { VehicleMapper } from '@/@presentation/mappers/VehicleMapper';
+
+import { OrganizationMemberMapper } from '@/@presentation/mappers/organizations/OrganizationMemberMapper';
+
+import { DocumentStatuseMapper } from '@/@presentation/mappers/DocumentStatuseMapper';
+
 import { CountryViewModel } from '@/@presentation/types/models/CountryViewModel';
+
 import { GarageViewModel } from '@/@presentation/types/models/GarageViewModel';
+
 import { InvoiceViewModel } from '@/@presentation/types/models/InvoiceViewModel';
-import { UserViewModel } from '@/@presentation/types/models/UserViewModel';
+
 import { VehicleViewModel } from '@/@presentation/types/models/VehicleViewModel';
+
+import { OrganizationMemberViewModel } from '@/@presentation/types/models/organizations/OrganizationMemberViewmodel';
+
 import { computed, ref } from 'vue';
+
 // endregion
 
 export function useCreateInvoiceState() {
+
   // #region -> DEPENDENCIES
-  const authState = container.get<IAuthState>(SYMBOLS.States.AuthState);
-  const createInvoiceUseCase = container.get<ICreateInvoiceUseCase>(SYMBOLS.UseCases.Invoice.CreateInvoiceUseCase);
-  const insertInvoiceUseCase = container.get<IInsertInvoiceUseCase>(SYMBOLS.UseCases.Invoice.InsertInvoiceUseCase);
-  const garageUseCase = container.get<IGarageUseCase>(SYMBOLS.UseCases.Garage);
-  const vehicleUseCase = container.get<IVehicleUseCase>(SYMBOLS.UseCases.Vehicle);
-  const technicianUseCase = container.get<IUserUseCase>(SYMBOLS.UseCases.UserUseCase);
+
+  const authState =
+    container.get<IAuthState>(
+      SYMBOLS.States.AuthState
+    );
+
+  const createInvoiceUseCase =
+    container.get<ICreateInvoiceUseCase>(
+      SYMBOLS.UseCases.Invoice.CreateInvoiceUseCase
+    );
+
+  const insertInvoiceUseCase =
+    container.get<IInsertInvoiceUseCase>(
+      SYMBOLS.UseCases.Invoice.InsertInvoiceUseCase
+    );
+
+  const getDocumentStatusUseCase =
+    container.get<IGetDocumentStatusUseCase>(
+      SYMBOLS.UseCases.GetDocumentStatus
+    );
+
+  const garageUseCase =
+    container.get<IGarageUseCase>(
+      SYMBOLS.UseCases.Garage
+    );
+
+  const technicianUseCase =
+    container.get<IOrganizationMemberUseCase>(
+      SYMBOLS.UseCases.OrganizationMemberUseCase
+    );
+
   // #endregion
 
   // #region -> REFS
+
   const loading = ref(false);
-  const error = ref(undefined);
 
-  const _invoice = ref<InvoiceViewModel | undefined>(undefined);
-  const _invoiceInformations = ref({
-    number: '',
-    date: '',
-    expirationDate: '',
-    status: 'draft',
-  });
+  const error = ref();
 
-  const _technicians = ref<UserViewModel[]>([]);
-  const _garages = ref<GarageViewModel[]>([]);
-  const _selectedTechnician = ref<UserViewModel>();
-  const _selectedGarage = ref<GarageViewModel>();
-  const _vehicles = ref<VehicleViewModel[]>([]);
-  const _selectedVehicle = ref<VehicleViewModel | undefined>(undefined);
+  const _invoice =
+    ref<InvoiceViewModel>();
 
-  const _carInformations = ref({
-    immatriculation: '',
-    brand: '',
-    dateEntryCirculation: '',
-  });
+  const _technicians =
+    ref<
+      OrganizationMemberViewModel[]
+    >([]);
 
-  const _isForfait = ref<boolean>(false);
-  const _isDisplayUnitPrice = ref<boolean>(true);
-  const _isComputeCommissionWithoutDentRemoval = ref<boolean>(true);
-  const _selectedCountry = ref<CountryViewModel>();
-// #endregion
+  const _garages =
+    ref<GarageViewModel[]>([]);
+
+  const _selectedTechnician =
+    ref<
+      OrganizationMemberViewModel
+    >();
+
+  const _selectedGarage =
+    ref<GarageViewModel>();
+
+  const _vehicles =
+    ref<VehicleViewModel[]>([]);
+
+  const _selectedVehicle =
+    ref<VehicleViewModel>();
+
+  const _isForfait =
+    ref<boolean>(false);
+
+  const _forfaitAmount =
+    ref<number>();
+
+  const _isDisplayUnitPrice =
+    ref<boolean>(true);
+
+  const _isComputeCommissionWithoutDentRemoval =
+    ref<boolean>(true);
+
+  const _selectedCountry =
+    ref<CountryViewModel>();
+
+  // #endregion
 
   // #region -> INIT
+
   const init = async () => {
+
     loading.value = true;
+
     try {
-      if (!authState.user.value)
-        throw new Error('User not found');
 
       resetInvoice();
 
+      const [
+        invoiceNumber,
+        statusDto,
+        garageResult,
+        technicianResult,
+      ] = await Promise.all([
+
+        createInvoiceUseCase.execute(
+          authState.userContext.value.organization.id
+        ),
+
+        getDocumentStatusUseCase.getByCode(
+          'processing'
+        ),
+
+        garageUseCase
+          .getGaragesByOrganizationId(
+            authState.userContext.value.organization.id
+          )
+          .catch(() => []),
+
+        technicianUseCase
+          .getMembersByOrganizationId(
+            authState.userContext.value.organization.id
+          )
+          .catch(() => []),
+      ]);
+
+      console.log('technicianResult', technicianResult);
+      
+      const status =
+        DocumentStatuseMapper.dtoToView(
+          statusDto
+        );
+
+      const startDate =
+        new Date();
+
+      const endDate =
+        new Date(startDate);
+
+      endDate.setMonth(
+        endDate.getMonth() + 1
+      );
+
       _invoice.value = {
-        invoiceNumber: '',
+
+        /**
+         * ============================================================
+         * ORGANIZATION
+         * ============================================================
+         */
+
+        organization_id:
+          authState.userContext.value.organization.id,
+
+        created_by_member_id:
+          authState.userContext.value.membership.id,
+
+        /**
+         * ============================================================
+         * DOCUMENT
+         * ============================================================
+         */
+
+        invoiceNumber,
+        quoteNumber: '',
+
+        status_id:
+          status.id,
+
+        status,
+
+        /**
+         * ============================================================
+         * DATES
+         * ============================================================
+         */
+
+        startDate:
+          startDate.toISOString(),
+
+        endDate:
+          endDate.toISOString(),
+
+        /**
+         * ============================================================
+         * PRICING
+         * ============================================================
+         */
+
         isForfait: false,
-        status: 'draft',
+
+        isDisplayUnitPrice: true,
+
+        isComputeCommissionWithoutDentRemoval:
+          true,
+
+        /**
+         * ============================================================
+         * COUNTRY
+         * ============================================================
+         */
+
         country: 'FR',
+
         currency: 'EUR',
+
+        /**
+         * ============================================================
+         * EMAIL
+         * ============================================================
+         */
+
         isSent: false,
-        sentAt: undefined,
-        userId: '',
-    
-        startDate: new Date().toISOString(),
-        endDate: '',
-    
-        garage: _selectedGarage.value,
-        technician: _selectedTechnician.value,
+      };
+
+      _garages.value =
+        garageResult.map(
+          GarageMapper.dtoToView
+        );
+
+      _technicians.value =
+        technicianResult.map(
+          OrganizationMemberMapper.dtoToView
+        );
+
+      /**
+       * ============================================================
+       * DEFAULT TECHNICIAN
+       * ============================================================
+       */
+
+      const currentTechnician =
+        _technicians.value.find(
+          (t) =>
+            t.user_id ===
+            authState.userContext.value.id
+        );
+
+      if (
+        currentTechnician &&
+        _invoice.value
+      ) {
+
+        _selectedTechnician.value =
+          currentTechnician;
+
+        _invoice.value.assignedMember =
+          currentTechnician;
+
+        _invoice.value.assigned_member_id =
+          currentTechnician.id;
       }
-      
-      const invoiceDto = await createInvoiceUseCase.execute(InvoiceMapper.viewToDto(_invoice.value), authState.user.value.id);
-      
-      _invoice.value = InvoiceMapper.dtoToView(invoiceDto);
-      
-      // TODO: (gce) -> MOVE TO MAPPER
-      _invoiceInformations.value.number = _invoice.value.invoiceNumber;
-      const startDate = new Date(_invoice.value.startDate);
-      _invoiceInformations.value.date = startDate.toISOString().split('T')[0];
 
-      // Ajout d’un mois
-      // const expirationDate = new Date(startDate);
-      // expirationDate.setMonth(expirationDate.getMonth() + 1);
-      // _invoiceInformations.value.expirationDate = expirationDate.toISOString().split('T')[0];
-      _invoiceInformations.value.status = _invoice.value.status;
-
-      const [garageResult, technicianResult] =
-        await Promise.allSettled([
-          garageUseCase.getByUserId(authState.user.value?.id),
-          technicianUseCase.getUsers(),
-        ]);
-
-      if (garageResult.status === 'fulfilled')
-        _garages.value = garageResult.value.map((g) => GarageMapper.dtoToView(g));
-
-      if (technicianResult.status === 'fulfilled')
-        _technicians.value = [
-          ...technicianResult.value.map((u) => UserMapper.dtoToView(u)),
-          // TODO: (gce) -> REMOVE MOCK
-          { id: '1', fullName: 'John Doe', email: 'technicien1@gmail.com', password: '123456789', createdAt: '2021-09-01T00:00:00' },
-          { id: '2', fullName: 'Albert Dupont', email: 'technicien2@gmail.com', password: '123456789', createdAt: '2021-09-01T00:00:00' },
-        ];
-
-      _selectedTechnician.value = _technicians.value.find((t) => t.id === authState.user.value?.id);
-      
     } catch (e) {
+
       error.value = e;
+
     } finally {
+
       loading.value = false;
     }
   };
+
   // #endregion
 
   // #region -> METHODS
+
   const resetInvoice = () => {
+
     _invoice.value = undefined;
-    _invoiceInformations.value = {
-      number: '',
-      date: '',
-      expirationDate: '',
-      status: 'draft',
-    };
+
     _technicians.value = [];
+
     _garages.value = [];
-    _selectedTechnician.value = undefined;
-    _selectedGarage.value = undefined;
-    _carInformations.value = {
-      immatriculation: 'xx-789-nn',
-      brand: 'Peugeot',
-      dateEntryCirculation: '2020',
-    };
+
+    _selectedTechnician.value =
+      undefined;
+
+    _selectedGarage.value =
+      undefined;
+
+    _selectedVehicle.value =
+      undefined;
   };
 
-  const expirationDate = computed(() => {
+  const invoiceInformations =
+    computed(() => ({
+      number:
+        _invoice.value?.invoiceNumber ?? '',
 
-    if (!_invoiceInformations.value.date)
-      return '';
+      date:
+        _invoice.value?.startDate
+          ? new Date(
+              _invoice.value.startDate
+            )
+              .toISOString()
+              .split('T')[0]
+          : '',
 
-    const date = new Date(_invoiceInformations.value.date);
-    date.setMonth(date.getMonth() + 1);
-    return date.toISOString().split('T')[0];
-  });
-  
+      expirationDate:
+        expirationDate.value,
 
-  const selectTechnician = (technician: UserViewModel) => {
-    _selectedTechnician.value = technician;
-  }
+      status_id:
+        _invoice.value?.status_id ?? '',
+    }));
 
-  const selectGarage = async (garage: GarageViewModel) => {
-    _selectedGarage.value = garage;
-    _selectedVehicle.value = undefined;
-    if (garage?.id) {
-      const result = await vehicleUseCase.getByGarageId(garage.id).catch(() => []);
-      _vehicles.value = result.map(VehicleMapper.dtoToView);
-    } else {
-      _vehicles.value = [];
-    }
-  }
+  const expirationDate =
+    computed(() => {
 
-  const selectVehicle = (vehicle: VehicleViewModel | undefined) => {
-    _selectedVehicle.value = vehicle;
-    if (vehicle) {
-      _carInformations.value = {
-        immatriculation: vehicle.immatriculation,
-        brand: vehicle.marque,
-        dateEntryCirculation: vehicle.annee?.toString() ?? '',
-      };
-    }
-  }
-
-  const setGarage = (garage: GarageViewModel) => {
-    const existingGarage = _garages.value.find(g => g.name === garage.name)
-
-    if (!existingGarage) {
-      _garages.value.push(garage)
-    }
-
-    _selectedGarage.value = garage
-  }
-
-  const setCarImmatriculation = (immatriculation: string) => {
-    _carInformations.value.immatriculation = immatriculation;
-  }
-
-  const setCarBrand = (brand: string) => {
-    _carInformations.value.brand = brand;
-  }
-
-  const setCarDateEntryCirculation = (dateEntryCirculation: string) => {
-    _carInformations.value.dateEntryCirculation = dateEntryCirculation;
-  }
-
-  const selectCountry = (country: CountryViewModel) => {
-    _selectedCountry.value = country;
-  }
-
-  const setIsForfait = (isForfait: boolean) => {
-    _isForfait.value = isForfait;
-
-    // if (isForfait) {
-    //   _isDisplayUnitPrice.value = false;
-    //   _isComputeCommissionWithoutDentRemoval.value = false;
-    // }
-  }
-
-  const setIsDisplayUnitPrice = (isDisplayUnitPrice: boolean) => {
-    _isDisplayUnitPrice.value = isDisplayUnitPrice;
-  }
-
-  const setIsComputeCommissionWithoutDentRemoval = (isComputeCommissionWithoutDentRemoval: boolean) => {
-    _isComputeCommissionWithoutDentRemoval.value = isComputeCommissionWithoutDentRemoval;
-  }
-
-  const save = async () => {
-    if (!authState.user.value)
-      throw new Error('User not found');
-
-    if (!_invoice.value)
-      throw new Error('Invoice not found');
-
-    if (!_selectedGarage.value || !_selectedTechnician.value)
-      throw new Error('Garage or Technician not selected');
-
-    if (!_carInformations.value.immatriculation || !_carInformations.value.brand || !_carInformations.value.dateEntryCirculation)
-      throw new Error('Car informations not set');
-
-    loading.value = true;
-    try {
-      _invoice.value = {
-        ..._invoice.value,
-        status: 'pending',
-        
-        garage: _selectedGarage.value,
-        technician: _selectedTechnician.value,
-
-        carBrand: _carInformations.value.brand,
-        carImmatriculation: _carInformations.value.immatriculation,
-        carDateEntryCirculation: _carInformations.value.dateEntryCirculation,
-        vehicleId: _selectedVehicle.value?.id,
-
-        isForfait: _isForfait.value,
-        isDisplayUnitPrice: _isDisplayUnitPrice.value,
-        isComputeCommissionWithoutDentRemoval: _isComputeCommissionWithoutDentRemoval.value,
-        
-        userId: authState.user.value.id,
+      if (
+        !_invoice.value?.startDate
+      ) {
+        return '';
       }
 
-      
+      const date = new Date(
+        _invoice.value.startDate
+      );
 
-      // TODO: (GCE) -> CHECK HERE LEVEL SUBSCRIPTION - IF 1 set single garage info with from quote _selectedGarage - ELSE set garage with _selectedGarage
-      _invoice.value.garageName = _selectedGarage.value.name
-      _invoice.value.garageAddress = _selectedGarage.value.address
-      _invoice.value.garageZipCode = _selectedGarage.value.zipCode
-      _invoice.value.garageCity = _selectedGarage.value.city
-      _invoice.value.garagePhone = _selectedGarage.value.phone
-      _invoice.value.garageEmail = _selectedGarage.value.email
-      _invoice.value.garagePercentageCommission = _selectedGarage.value.percentageCommission
-      
-      const invoiceDto = await insertInvoiceUseCase.execute(InvoiceMapper.viewToDto(_invoice.value)).then(async (invoice) => {
-        _invoice.value = InvoiceMapper.dtoToView(invoice);
-        if (!invoice.id)
-          throw new Error('Invoice not saved');
+      date.setMonth(
+        date.getMonth() + 1
+      );
 
-      });
-      
+      return date
+        .toISOString()
+        .split('T')[0];
+    });
+
+  const carInformations =
+    computed(() => ({
+      immatriculation:
+        _invoice.value
+          ?.carImmatriculation ?? '',
+
+      brand:
+        _invoice.value
+          ?.carBrand ?? '',
+
+      year:
+        _invoice.value
+          ?.carYear ?? '',
+    }));
+
+  const selectTechnician = (
+    technician:
+      OrganizationMemberViewModel
+  ) => {
+
+    _selectedTechnician.value =
+      technician;
+
+    if (_invoice.value) {
+
+      _invoice.value.assignedMember =
+        technician;
+
+      _invoice.value.assigned_member_id =
+        technician.id;
+    }
+  };
+
+  const selectGarage = async (
+    garage: GarageViewModel
+  ) => {
+
+    _selectedGarage.value =
+      garage;
+
+    if (_invoice.value) {
+
+      _invoice.value.garage =
+        garage;
+
+      _invoice.value.garageId =
+        garage.id;
+
+      _invoice.value.garageName =
+        garage.name;
+
+      _invoice.value.garageAddress =
+        garage.address;
+
+      _invoice.value.garageZipCode =
+        garage.zip_code;
+
+      _invoice.value.garageCity =
+        garage.city;
+
+      _invoice.value.garagePhone =
+        garage.phone;
+
+      _invoice.value.garageEmail =
+        garage.email;
+
+      _invoice.value.garagePercentageCommission =
+        garage.percentage_commission;
+    }
+  };
+
+  const selectVehicle = (
+    vehicle:
+      VehicleViewModel | undefined
+  ) => {
+
+    _selectedVehicle.value =
+      vehicle;
+
+    if (
+      vehicle &&
+      _invoice.value
+    ) {
+
+      _invoice.value.carImmatriculation =
+        vehicle.immatriculation;
+
+      _invoice.value.carBrand =
+        vehicle.marque;
+
+      _invoice.value.carYear =
+        vehicle.annee?.toString() ?? '';
+    }
+  };
+
+  const setGarage = (
+    garage: GarageViewModel
+  ) => {
+
+    if (!_invoice.value) {
+      return;
+    }
+
+    const existingGarage =
+      _garages.value.find(
+        (g) =>
+          g.name === garage.name
+      );
+
+    if (!existingGarage) {
+      _garages.value.push(garage);
+    }
+
+    _selectedGarage.value =
+      garage;
+
+    _invoice.value.garage =
+      garage;
+
+    _invoice.value.garageId =
+      garage.id;
+
+    _invoice.value.garageName =
+      garage.name;
+
+    _invoice.value.garageAddress =
+      garage.address;
+
+    _invoice.value.garageZipCode =
+      garage.zipCode;
+
+    _invoice.value.garageCity =
+      garage.city;
+
+    _invoice.value.garagePhone =
+      garage.phone;
+
+    _invoice.value.garageEmail =
+      garage.email;
+
+    _invoice.value.garagePercentageCommission =
+      garage.percentageCommission;
+  };
+
+  const setCarImmatriculation = (
+    immatriculation: string
+  ) => {
+
+    if (_invoice.value) {
+
+      _invoice.value.carImmatriculation =
+        immatriculation;
+    }
+  };
+
+  const setCarBrand = (
+    brand: string
+  ) => {
+
+    if (_invoice.value) {
+
+      _invoice.value.carBrand =
+        brand;
+    }
+  };
+
+  const setCarDateEntryCirculation = (
+    year: string
+  ) => {
+
+    if (_invoice.value) {
+
+      _invoice.value.carYear =
+        year;
+    }
+  };
+
+  const selectCountry = (
+    country: CountryViewModel
+  ) => {
+
+    _selectedCountry.value =
+      country;
+
+    if (_invoice.value) {
+
+      _invoice.value.country =
+        country;
+    }
+  };
+
+  const setIsForfait = (
+    isForfait: boolean
+  ) => {
+
+    _isForfait.value =
+      isForfait;
+
+    if (_invoice.value) {
+
+      _invoice.value.isForfait =
+        isForfait;
+    }
+  };
+
+  const setForfaitAmount = (
+    amount: number
+  ) => {
+
+    _forfaitAmount.value =
+      amount;
+
+    if (_invoice.value) {
+
+      _invoice.value.forfaitAmount =
+        amount;
+    }
+  };
+
+  const setIsDisplayUnitPrice = (
+    value: boolean
+  ) => {
+
+    _isDisplayUnitPrice.value =
+      value;
+
+    if (_invoice.value) {
+
+      _invoice.value.isDisplayUnitPrice =
+        value;
+    }
+  };
+
+  const setIsComputeCommissionWithoutDentRemoval = (
+    value: boolean
+  ) => {
+
+    _isComputeCommissionWithoutDentRemoval.value =
+      value;
+
+    if (_invoice.value) {
+
+      _invoice.value.isComputeCommissionWithoutDentRemoval =
+        value;
+    }
+  };
+
+  const save = async () => {
+
+    if (
+      !authState.userContext.value
+    ) {
+      throw new Error(
+        'User not found'
+      );
+    }
+
+    if (!_invoice.value) {
+      throw new Error(
+        'Invoice not found'
+      );
+    }
+
+    if (
+      !_invoice.value.garageId ||
+      !_invoice.value.assigned_member_id
+    ) {
+      throw new Error(
+        'Garage or Technician not selected'
+      );
+    }
+
+    loading.value = true;
+
+    try {
+
+      const savedInvoiceDto =
+        await insertInvoiceUseCase.execute(
+          InvoiceMapper.viewToDto(
+            _invoice.value
+          )
+        );
+
+      if (!savedInvoiceDto.id) {
+        throw new Error(
+          'Invoice not saved'
+        );
+      }
+
+      _invoice.value =
+        InvoiceMapper.dtoToView(
+          savedInvoiceDto
+        );
+
     } catch (e) {
+
       error.value = e;
+
     } finally {
+
       loading.value = false;
     }
-  }
+  };
+
   // #endregion
 
   return {
+
     loading,
     error,
     init,
 
-    invoice: computed(() => _invoice.value),
-    invoiceInformations: computed(() => _invoiceInformations.value),
+    invoice: computed(
+      () => _invoice.value
+    ),
+
+    invoiceInformations,
+
     expirationDate,
 
-    garages: computed(() => _garages.value),
-    technicians: computed(() => _technicians.value),
-    selectedTechnician: computed(() => _selectedTechnician.value),
-    selectedGarage: computed(() => _selectedGarage.value),
-    vehicles: computed(() => _vehicles.value),
-    selectedVehicle: computed(() => _selectedVehicle.value),
+    garages: computed(
+      () => _garages.value
+    ),
+
+    technicians: computed(
+      () => _technicians.value
+    ),
+
+    selectedTechnician: computed(
+      () => _selectedTechnician.value
+    ),
+
+    selectedGarage: computed(
+      () => _selectedGarage.value
+    ),
+
+    vehicles: computed(
+      () => _vehicles.value
+    ),
+
+    selectedVehicle: computed(
+      () => _selectedVehicle.value
+    ),
+
     selectTechnician,
     selectGarage,
     selectVehicle,
     setGarage,
 
-    carInformations: computed(() => _carInformations.value),
+    carInformations,
+
     setCarImmatriculation,
     setCarBrand,
     setCarDateEntryCirculation,
-    
-    isForfait: computed(() => _isForfait.value),
-    isDisplayUnitPrice: computed(() => _isDisplayUnitPrice.value),
-    isComputeCommissionWithoutDentRemoval: computed(() => _isComputeCommissionWithoutDentRemoval.value),
+
+    isForfait: computed(
+      () => _isForfait.value
+    ),
+
+    forfaitAmount: computed(
+      () => _forfaitAmount.value
+    ),
+
+    isDisplayUnitPrice: computed(
+      () => _isDisplayUnitPrice.value
+    ),
+
+    isComputeCommissionWithoutDentRemoval:
+      computed(
+        () =>
+          _isComputeCommissionWithoutDentRemoval.value
+      ),
+
     setIsForfait,
+    setForfaitAmount,
     setIsDisplayUnitPrice,
     setIsComputeCommissionWithoutDentRemoval,
-    
+
     selectCountry,
-    selectedCountry: computed(() => _selectedCountry.value),
+
+    selectedCountry: computed(
+      () => _selectedCountry.value
+    ),
 
     save,
   };

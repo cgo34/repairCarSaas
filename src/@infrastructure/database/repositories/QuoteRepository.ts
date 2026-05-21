@@ -25,7 +25,7 @@ export class QuoteRepository implements IQuoteRepository {
 
     // Format : DYYMMXXXX (D = Devis, YY = année, MM = mois, XXXX = compteur)
     const year = new Date().getFullYear().toString().slice(-2);
-    const month = new Date().getMonth().toString().slice(-2);
+    const month = (new Date().getMonth() + 1).toString().padStart(2, '0');
     const quoteNumber = `D${year}${month}-${((count ?? 0) + 1).toString().padStart(4, '0')}`;
     return quoteNumber;
   }

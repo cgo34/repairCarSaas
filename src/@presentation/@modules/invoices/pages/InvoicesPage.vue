@@ -1,11 +1,15 @@
 <template>
   <MainLayout>
-    <v-container fluid class="pa-3 pa-sm-4">
-
+    <v-container
+      fluid
+      class="pa-3 pa-sm-4"
+    >
       <!-- ── HEADER PAGE ─────────────────────────────────────── -->
       <div class="d-flex align-center justify-space-between mb-4">
         <div>
-          <h1 class="text-h6 font-weight-bold">Gestion des Factures</h1>
+          <h1 class="text-h6 font-weight-bold">
+            Gestion des Factures
+          </h1>
           <p class="text-caption text-medium-emphasis mt-n1">
             {{ filteredInvoices.length }} facture(s)<span v-if="dateFrom || dateTo"> · période sélectionnée</span>
           </p>
@@ -23,9 +27,13 @@
       </div>
 
       <!-- ── FILTER CARD ─────────────────────────────────────── -->
-      <v-card flat rounded="lg" border class="mb-3">
+      <v-card
+        flat
+        rounded="lg"
+        border
+        class="mb-3"
+      >
         <div class="px-3 pt-3 pb-2">
-
           <!-- Presets scroll horizontal sur mobile -->
           <div class="preset-scroll mb-2">
             <v-btn
@@ -73,7 +81,10 @@
             />
             <v-spacer v-if="!mobile" />
             <transition name="fade">
-              <div v-if="selectedInvoices.length > 0 && !mobile" class="d-flex align-center gap-2">
+              <div
+                v-if="selectedInvoices.length > 0 && !mobile"
+                class="d-flex align-center gap-2"
+              >
                 <span class="text-body-2 text-medium-emphasis">{{ selectedInvoices.length }} sélectionnée(s)</span>
                 <v-btn
                   color="primary"
@@ -86,7 +97,11 @@
                 >
                   Télécharger ZIP
                 </v-btn>
-                <v-btn variant="text" size="small" @click="selectedInvoices = []">
+                <v-btn
+                  variant="text"
+                  size="small"
+                  @click="selectedInvoices = []"
+                >
                   Tout désélectionner
                 </v-btn>
               </div>
@@ -96,10 +111,19 @@
 
         <!-- Barre sélection mobile -->
         <transition name="slide-up">
-          <div v-if="selectedInvoices.length > 0 && mobile" class="selection-bar-mobile px-3 py-2 d-flex align-center gap-2">
+          <div
+            v-if="selectedInvoices.length > 0 && mobile"
+            class="selection-bar-mobile px-3 py-2 d-flex align-center gap-2"
+          >
             <span class="text-body-2 font-weight-medium">{{ selectedInvoices.length }} sélectionnée(s)</span>
             <v-spacer />
-            <v-btn variant="text" size="small" @click="selectedInvoices = []">Annuler</v-btn>
+            <v-btn
+              variant="text"
+              size="small"
+              @click="selectedInvoices = []"
+            >
+              Annuler
+            </v-btn>
             <v-btn
               color="primary"
               variant="flat"
@@ -116,7 +140,11 @@
       </v-card>
 
       <!-- ── TABLE ───────────────────────────────────────────── -->
-      <v-card flat rounded="lg" border>
+      <v-card
+        flat
+        rounded="lg"
+        border
+      >
         <v-data-table
           v-model="selectedInvoices"
           :headers="activeHeaders"
@@ -140,7 +168,41 @@
           </template>
 
           <template #item.status="{ value }">
-            <v-chip :text="statusLabel(value)" :color="statusColor(value)" size="small" />
+            <v-chip
+              :text="statusLabel(value)"
+              :color="statusColor(value)"
+              size="small"
+            />
+          </template>
+
+          <template #item.technician="{ item }">
+            {{
+              `${item.assignedMember?.users?.first_name ?? ''} ${item.assignedMember?.users?.last_name ?? ''}`.trim()
+            }}
+          </template>
+
+          <template #item.sent="{ item }">
+            <div class="tw-flex tw-items-center tw-gap-2">
+              <v-chip
+                :color="item.isSent ? 'success' : 'error'"
+                variant="tonal"
+                size="small"
+              >
+                <v-icon start>
+                  {{
+                    item.isSent
+                      ? 'mdi-check-circle'
+                      : 'mdi-close-circle'
+                  }}
+                </v-icon>
+
+                {{
+                  item.isSent && item.sentAt
+                    ? new Date(item.sentAt).toLocaleDateString('fr-FR')
+                    : 'Non envoyé'
+                }}
+              </v-chip>
+            </div>
           </template>
 
           <template #item.total="{ item }">
@@ -149,10 +211,87 @@
             </span>
           </template>
 
-          <template #item.actions="{ item }">
+          <!-- <template #item.actions="{ item }">
             <div class="d-flex align-center">
               <v-btn icon="mdi-pencil" size="x-small" variant="text" @click="onEditInvoice(item)" />
               <v-btn icon="mdi-delete" size="x-small" variant="text" color="error" @click="onDeleteBtnClick(item.id)" />
+            </div>
+          </template> -->
+
+          
+          <template #item.actions="{ item }">
+            <div class="tw-flex tw-items-center tw-gap-1">
+              <!-- SEND -->
+              <v-tooltip text="Envoyer">
+                <template #activator="{ props }">
+                  <v-btn
+                    v-bind="props"
+                    icon
+                    variant="text"
+                    size="small"
+                    color="success"
+                    @click="onSendBtnClick(item.id)"
+                  >
+                    <v-icon size="18">
+                      mdi-send
+                    </v-icon>
+                  </v-btn>
+                </template>
+              </v-tooltip>
+
+              <!-- PDF -->
+              <v-tooltip text="Voir">
+                <template #activator="{ props }">
+                  <v-btn
+                    v-bind="props"
+                    icon
+                    variant="text"
+                    size="small"
+                    color="primary"
+                    @click="onViewPdfBtnClick(item.id)"
+                  >
+                    <v-icon size="18">
+                      mdi-file-pdf-box
+                    </v-icon>
+                  </v-btn>
+                </template>
+              </v-tooltip>
+
+              <!-- EDIT -->
+              <v-tooltip text="Modifier">
+                <template #activator="{ props }">
+                  <v-btn
+                    v-bind="props"
+                    icon
+                    variant="text"
+                    size="small"
+                    color="warning"
+                    @click="onEditInvoice(item.id)"
+                  >
+                    <v-icon size="18">
+                      mdi-pencil
+                    </v-icon>
+                  </v-btn>
+                </template>
+              </v-tooltip>
+
+              <!-- DELETE -->
+              <v-tooltip text="Supprimer">
+                <template #activator="{ props }">
+                  <v-btn
+                    v-bind="props"
+                    icon
+                    variant="text"
+                    size="small"
+                    color="error"
+                    @click="onDeleteBtnClick(item.id)"
+                  >
+                    <v-icon size="18">
+                      mdi-trash-can-outline
+                    </v-icon>
+                  </v-btn>
+                </template>
+              </v-tooltip>
             </div>
           </template>
 
@@ -170,18 +309,34 @@
               />
               <span class="text-caption text-medium-emphasis">Page {{ page }} / {{ pageCount }}</span>
               <div class="d-flex">
-                <v-btn icon="mdi-chevron-left" size="x-small" variant="text" :disabled="page <= 1" @click="prevPage" />
-                <v-btn icon="mdi-chevron-right" size="x-small" variant="text" :disabled="page >= pageCount" @click="nextPage" />
+                <v-btn
+                  icon="mdi-chevron-left"
+                  size="x-small"
+                  variant="text"
+                  :disabled="page <= 1"
+                  @click="prevPage"
+                />
+                <v-btn
+                  icon="mdi-chevron-right"
+                  size="x-small"
+                  variant="text"
+                  :disabled="page >= pageCount"
+                  @click="nextPage"
+                />
               </div>
             </div>
           </template>
         </v-data-table>
       </v-card>
-
     </v-container>
   </MainLayout>
 
-  <v-snackbar v-model="snackbar.show" :color="snackbar.color" timeout="4000" location="bottom right">
+  <v-snackbar
+    v-model="snackbar.show"
+    :color="snackbar.color"
+    timeout="4000"
+    location="bottom right"
+  >
     {{ snackbar.message }}
   </v-snackbar>
 
@@ -280,7 +435,8 @@ const desktopHeaders = [
   { title: 'Statut', align: 'start' as const, key: 'status' },
   { title: 'Modèle', key: 'carBrand' },
   { title: 'Garage', key: 'garage.name' },
-  { title: 'Technicien', key: 'technician.fullName' },
+  { title: 'Technicien', key: 'technician' },
+  { title: 'Envoyé', key: 'sent' },
   { title: 'Total', key: 'total' },
   { title: 'Actions', sortable: false, key: 'actions' },
 ];
@@ -337,7 +493,24 @@ const deleteInvoiceConfirmDialogRef = ref<ConfirmDialogExposed>();
 const _invoiceToDelete = ref<string | undefined>();
 
 const onAddInvoice           = () => router.push('/invoices/new');
-const onEditInvoice          = (item: InvoiceViewModel) => router.push(`/invoices/edit/${item.id}`);
+
+const onSendBtnClick = (invoiceId: string | undefined) => {
+  if (!invoiceId) {
+    return;
+  }
+
+  // router.push(`/invoices/${invoiceId}/send/`);
+};
+
+const onViewPdfBtnClick = (invoiceId: string | undefined) => {
+  if (!invoiceId) {
+    return;
+  }
+  
+  router.push(`/invoices/view/${invoiceId}`)
+};
+
+const onEditInvoice          = (id: string) => router.push(`/invoices/edit/${id}`);
 const onDeleteBtnClick       = (id?: string) => { if (!id) return; _invoiceToDelete.value = id; deleteInvoiceConfirmDialogRef.value?.open(); };
 const onConfirmDeleteInvoice = () => { if (_invoiceToDelete.value) deleteInvoice(_invoiceToDelete.value); };
 
