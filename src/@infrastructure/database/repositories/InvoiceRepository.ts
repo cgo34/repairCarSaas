@@ -15,34 +15,112 @@ export class InvoiceRepository implements IInvoiceRepository {
   /**
    * Génère un numéro de devis unique.
    */
-  async generateInvoiceNumber(userId: string): Promise<string> {
+  async generateInvoiceNumber(organizationId: string): Promise<string> {
     const { count, error } = await this.clientProvider.getClient()
     .from('invoices')
     .select('*', { count: 'exact', head: true }) // ⚡ Optimisé pour éviter un gros dataset
-    .eq('user_id', userId)
+    .eq('organization_id', organizationId);
     
     if (error)
       throw new Error('Error generating invoice number');
 
-    const year = new Date().getFullYear().toString().slice(-2);
-    const invoiceNumber = `F${year}${(count! + 1).toString().padStart(5, '0')}`;
+    const year = new Date()
+      .getFullYear()
+      .toString()
+      .slice(-2);
+
+    const month = (
+      new Date().getMonth() + 1
+    )
+      .toString()
+      .padStart(2, '0');
+
+    const invoiceNumber = `F${year}${month}-${(
+      (count ?? 0) + 1
+    )
+      .toString()
+      .padStart(4, '0')}`;
     
     return invoiceNumber;
   }
 
   /**
-   * Récupère tous les devis.
+   * ============================================================
+   * GET ALL BY ORGANIZATION MEMBER
+   * ============================================================
    */
-  async getAll(): Promise<InvoiceDto[]> {
-    const { data, error } = await this.clientProvider.getClient()
+
+  async getAllByOrganizationMemberId(
+    organizationId: string,
+    memberId: string,
+    role: 'admin' | 'manager' | 'technician',
+  ): Promise<InvoiceDto[]> {
+
+    let query = this.clientProvider
+      .getClient()
       .from('invoices')
-      .select('*')
-      .returns<InvoiceApiModel[]>();
+      .select(`
+        *,
 
-    if (error)
-      throw new Error('Error fetching invoices');
+        assigned_member:organization_members!invoices_assigned_member_id_fkey(
+          *,
+          users(*)
+        ),
 
-    return data.map(InvoiceMapper.apiToDto);
+        created_by_member:organization_members!invoices_created_by_member_id_fkey(
+          *,
+          users(*)
+        ),
+
+        garage:garages(*),
+
+        status:document_statuses(*),
+
+        invoice_details(*),
+
+        quote:quotes(*)
+      `)
+      .eq(
+        'organization_id',
+        organizationId
+      );
+
+    /**
+     * ============================================================
+     * TECHNICIAN
+     * ============================================================
+     */
+
+    if (role === 'technician') {
+
+      query = query.or(
+        `
+        assigned_member_id.eq.${memberId},
+        created_by_member_id.eq.${memberId}
+        `
+      );
+    }
+
+    const { data, error } =
+      await query.returns<
+        InvoiceApiModel[]
+      >();
+
+    if (error) {
+
+      console.error(
+        '[InvoiceRepository] getAllByOrganizationMemberId error:',
+        error
+      );
+
+      throw new Error(
+        'Error fetching invoices'
+      );
+    }
+
+    return data.map(
+      InvoiceMapper.apiToDto
+    );
   }
 
   /**
@@ -68,25 +146,63 @@ export class InvoiceRepository implements IInvoiceRepository {
   }
 
   /**
-   * Récupère un devis par ID.
+   * ============================================================
+   * GET INVOICE BY ID
+   * ============================================================
    */
-  async getById(id: string): Promise<InvoiceDto | null> {
-    const { data, error } = await this.clientProvider.getClient()
-      .from('invoices')
-      .select(`
-        *,
-        technician:users!invoices_technician_id_fkey(*),
-        garage:garages(*),
-        status:document_statuses(*),
-        quote:quotes(*)
-      `)
-      .eq('id', id)
-      .single<InvoiceApiModel>();
 
-    if (error)
-      throw new Error('Error fetching invoice');
+  async getById(
+    id: string
+  ): Promise<InvoiceDto | null> {
 
-    return data ? InvoiceMapper.apiToDto(data) : null;
+    const { data, error } =
+      await this.clientProvider
+        .getClient()
+        .from('invoices')
+        .select(`
+          *,
+
+          created_by_member:organization_members!invoices_created_by_member_id_fkey(
+            *,
+            users(*)
+          ),
+
+          assigned_member:organization_members!invoices_assigned_member_id_fkey(
+            *,
+            users(*)
+          ),
+
+          garage:garages(*),
+
+          status:document_statuses(*),
+
+          quote:quotes(*),
+
+          invoice_details(
+            *,
+            body_part:body_parts(*),
+            body_material:body_materials(*),
+            repair_type:repair_types(*)
+          )
+        `)
+        .eq('id', id)
+        .single<InvoiceApiModel>();
+
+    if (error) {
+
+      console.error(
+        '[InvoiceRepository] getById error:',
+        error
+      );
+
+      throw new Error(
+        'Error fetching invoice'
+      );
+    }
+
+    return data
+      ? InvoiceMapper.apiToDto(data)
+      : null;
   }
 
   // TODO: (gce) -> TO BE MOVE TO DetailRepository
@@ -108,6 +224,8 @@ export class InvoiceRepository implements IInvoiceRepository {
    */
   async create(invoice: InvoiceDto): Promise<InvoiceDto> {
     const invoiceApi = InvoiceMapper.dtoToApi(invoice);
+
+    console.log('Creating invoice with API model:', invoiceApi);
 
     const { data, error } = await this.clientProvider.getClient()
       .from('invoices')

@@ -16,7 +16,8 @@ export class ViewInvoiceUseCase {
   async execute(id: string): Promise<{ invoice: InvoiceDto | null; lines: LineItemDto[] }> {
     const invoice = await this.getInvoiceUseCase.execute(id);
     const lines = await this.GetInvoiceDetailsUseCase.execute(id) ?? [];
-    
+    console.log('ViewInvoiceUseCase -> execute -> invoice', invoice);
+    console.log('ViewInvoiceUseCase -> execute -> lines', lines);
     return { invoice, lines };
   }
 }

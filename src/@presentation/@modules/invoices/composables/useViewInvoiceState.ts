@@ -32,7 +32,7 @@ export function useViewInvoiceState() {
   const init = async (invoiceId: string) => {
     loading.value = true;
     try {
-      const userId = authState.user?.value?.id;
+      const userId = authState.userContext?.value?.user_id;
 
       const [{ invoice, lines }, company] = await Promise.all([
         viewInvoiceUseCase.execute(invoiceId),

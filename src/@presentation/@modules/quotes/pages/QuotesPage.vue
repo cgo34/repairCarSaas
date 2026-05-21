@@ -179,10 +179,10 @@
             </span>
           </template>
 
-          <template #item.actions="{ item }">
-            <div class="tw-flex tw-items-center tw-gap-1">
-              <!-- send -->
-              <v-tooltip text="Envoyer">
+          <!-- <template #item.actions="{ item }">
+            <div class="tw-flex tw-items-center tw-gap-1"> -->
+          <!-- send -->
+          <!-- <v-tooltip text="Envoyer">
                 <template #activator="{ props }">
                   <v-btn
                     v-bind="props"
@@ -190,6 +190,82 @@
                     variant="text"
                     size="small"
                     class="action-btn"
+                    @click="onSendBtnClick(item.id)"
+                  >
+                    <v-icon size="18">
+                      mdi-send
+                    </v-icon>
+                  </v-btn>
+                </template>
+              </v-tooltip> -->
+
+          <!-- PDF -->
+          <!-- <v-tooltip text="Voir">
+                <template #activator="{ props }">
+                  <v-btn
+                    v-bind="props"
+                    icon
+                    variant="text"
+                    size="small"
+                    class="action-btn"
+                    @click="onViewPdfBtnClick(item.id)"
+                  >
+                    <v-icon size="18">
+                      mdi-file-pdf-box
+                    </v-icon>
+                  </v-btn>
+                </template>
+              </v-tooltip> -->
+
+          <!-- EDIT -->
+          <!-- <v-tooltip text="Modifier">
+                <template #activator="{ props }">
+                  <v-btn
+                    v-bind="props"
+                    icon
+                    variant="text"
+                    size="small"
+                    class="action-btn"
+                    @click="onEditQuote(item.id)"
+                  >
+                    <v-icon size="18">
+                      mdi-pencil
+                    </v-icon>
+                  </v-btn>
+                </template>
+              </v-tooltip> -->
+
+          <!-- DELETE -->
+          <!-- <v-tooltip text="Supprimer">
+                <template #activator="{ props }">
+                  <v-btn
+                    v-bind="props"
+                    icon
+                    variant="text"
+                    size="small"
+                    class="action-btn action-btn-delete"
+                    @click="onDeleteBtnClick(item.id)"
+                  >
+                    <v-icon size="18">
+                      mdi-trash-can-outline
+                    </v-icon>
+                  </v-btn>
+                </template>
+              </v-tooltip> -->
+          <!-- </div>
+          </template> -->
+          
+          <template #item.actions="{ item }">
+            <div class="tw-flex tw-items-center tw-gap-1">
+              <!-- SEND -->
+              <v-tooltip text="Envoyer">
+                <template #activator="{ props }">
+                  <v-btn
+                    v-bind="props"
+                    icon
+                    variant="text"
+                    size="small"
+                    color="success"
                     @click="onSendBtnClick(item.id)"
                   >
                     <v-icon size="18">
@@ -207,7 +283,7 @@
                     icon
                     variant="text"
                     size="small"
-                    class="action-btn"
+                    color="primary"
                     @click="onViewPdfBtnClick(item.id)"
                   >
                     <v-icon size="18">
@@ -225,7 +301,7 @@
                     icon
                     variant="text"
                     size="small"
-                    class="action-btn"
+                    color="warning"
                     @click="onEditQuote(item.id)"
                   >
                     <v-icon size="18">
@@ -243,7 +319,7 @@
                     icon
                     variant="text"
                     size="small"
-                    class="action-btn action-btn-delete"
+                    color="error"
                     @click="onDeleteBtnClick(item.id)"
                   >
                     <v-icon size="18">
@@ -254,33 +330,6 @@
               </v-tooltip>
             </div>
           </template>
-          <!-- <template #item.actions="{ item }">
-            <div class="d-flex align-center">
-              <v-btn
-                icon
-                variant="text"
-                size="small"
-                title="Aperçu PDF"
-                @click="onViewPdfBtnClick(item.id)"
-              >
-                <v-icon>mdi-file-pdf-box</v-icon>
-              </v-btn>
-              <v-btn
-                icon="mdi-pencil"
-                size="x-small"
-                variant="text"
-                @click="onEditQuote(item.id)"
-              />
-              <v-btn
-                icon="mdi-delete"
-                size="x-small"
-                variant="text"
-                color="error"
-                :disabled="item.status.code === 'accepted' || item.status.code === 'invoiced' || item.status.code === 'cancelled'"
-                @click="onDeleteBtnClick(item.id)"
-              />
-            </div>
-          </template> -->
         </v-data-table>
       </v-card>
     </v-container>
@@ -468,8 +517,8 @@ const onConfirmDeleteQuote = () => {
   }
 };
 
-const statusColor = (s?: string) => ({ invoiced: 'red', processing: 'blue', pending: 'orange', validated: 'success', accepted: 'success', signed: 'success', sent: 'blue', draft: 'grey', cancel: 'error' } as Record<string,string>)[s ?? ''] ?? 'default';
-const statusLabel = (s?: string) => ({ invoiced: 'Facturé', processing: 'En cours', pending: 'En attente', validated: 'Payé', accepted: 'Accepté', signed: 'Signé', sent: 'Envoyé', draft: 'Brouillon', cancel: 'Annulé' } as Record<string,string>)[s ?? ''] ?? (s ?? '');
+const statusColor = (s?: string) => ({ invoiced: 'black', processing: 'blue', pending: 'orange', validated: 'success', accepted: 'success', refused: 'error', signed: 'success', sent: 'blue', draft: 'grey', cancel: 'error' } as Record<string,string>)[s ?? ''] ?? 'default';
+const statusLabel = (s?: string) => ({ invoiced: 'Facturé', processing: 'En cours', pending: 'En attente', validated: 'Payé', accepted: 'Accepté', refused: 'Refusé', signed: 'Signé', sent: 'Envoyé', draft: 'Brouillon', cancel: 'Annulé' } as Record<string,string>)[s ?? ''] ?? (s ?? '');
 
 onMounted(async () => {
   const userId = authState.user?.value?.id;

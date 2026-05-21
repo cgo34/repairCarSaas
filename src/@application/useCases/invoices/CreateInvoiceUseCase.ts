@@ -8,28 +8,28 @@ import { inject, injectable } from 'inversify';
 export class CreateInvoiceUseCase {
   constructor(@inject(SYMBOLS.Repositories.InvoiceRepository) private invoiceRepository: IInvoiceRepository) {}
 
-  async execute(invoiceDto: InvoiceDto, userId: string): Promise<InvoiceDto> {    
+  async execute(organizationId: string): Promise<InvoiceDto> {    
     // 🔹 1. Générer un numéro unique
-    const invoiceNumber = await this.invoiceRepository.generateInvoiceNumber(userId);
+    const invoiceNumber = await this.invoiceRepository.generateInvoiceNumber(organizationId);
     
     // 🔹 2. Convertir le DTO en Entité pour appliquer les règles métiers
-    const invoice = InvoiceMapper.dtoToDomain({
-      ...invoiceDto,
-      id: crypto.randomUUID(),
-      invoiceNumber: invoiceNumber,
-      endDate: '', // 🔹 La date de fin est calculée par le système
-      status: 'draft',
-      userId, // L’utilisateur qui crée le devis
-    });
+    // const invoice = InvoiceMapper.dtoToDomain({
+    //   ...invoiceDto,
+    //   id: crypto.randomUUID(),
+    //   invoiceNumber: invoiceNumber,
+    //   endDate: '', // 🔹 La date de fin est calculée par le système
+    //   status: 'draft',
+    //   userId, // L’utilisateur qui crée le devis
+    // });
   
     // 🔹 3. Appliquer d'éventuelles règles métier
-    if (invoice.isExpired())
-      throw new Error("Impossible de créer un devis expiré");
+    // if (invoice.isExpired())
+    //   throw new Error("Impossible de créer un devis expiré");
   
 
-    invoiceDto.invoiceNumber = invoiceNumber;
+    // invoiceDto.invoiceNumber = invoiceNumber;
     
-    return invoiceDto;
+    return invoiceNumber;
   }
   
 }

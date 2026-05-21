@@ -20,9 +20,15 @@ export function useInvoicesState() {
   // #region -> METHODS
   const init = async () => {
     try {
-      if (authState.isAuthenticated && authState.user.value) {
-        const invoicesDto = await getInvoicesUseCase.execute(authState.user.value?.id);
+      if (authState.isAuthenticated && authState.userContext.value) {
+        const invoicesDto = await getInvoicesUseCase.execute(
+          authState.userContext.value?.organization.id,
+          authState.userContext.value.user_id,
+          authState.userContext.value?.membership.role
+        );
         _invoices.value = invoicesDto.map(invoice => InvoiceMapper.dtoToView(invoice));
+        
+        console.log('Mapped Invoices:', _invoices.value);
       }
     } catch (e) {
       console.error('[Invoices] Erreur lors du chargement des factures:', e);

@@ -8,7 +8,7 @@ export class GetInvoicesUseCase {
   constructor(@inject(SYMBOLS.Repositories.InvoiceRepository) private invoiceRepository: IInvoiceRepository) {}
 
 
-  async execute(userId: string) {
-    return await this.invoiceRepository.getAllByUserId(userId);
+  async execute(organizationId: string, memberId: string, role: 'admin' | 'manager' | 'technician') {
+    return await this.invoiceRepository.getAllByOrganizationMemberId(organizationId, memberId, role);
   }
 }
