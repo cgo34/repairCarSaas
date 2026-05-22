@@ -5,184 +5,182 @@
     />
 
     <v-container fluid>
-      <v-row>
-        <v-data-table
-          :headers="headers"
-          :items="garages"
-          :sort-by="[
-            {
-              key: 'name',
-              order: 'asc',
-            },
-          ]"
-          class="text-subtitle-2"
-        >
-          <!-- ===================================================== -->
-          <!-- TOP BAR -->
-          <!-- ===================================================== -->
+      <v-data-table
+        :headers="headers"
+        :items="garages"
+        :sort-by="[
+          {
+            key: 'name',
+            order: 'asc',
+          },
+        ]"
+        class="text-subtitle-2"
+      >
+        <!-- ===================================================== -->
+        <!-- TOP BAR -->
+        <!-- ===================================================== -->
 
-          <template #top>
-            <v-toolbar flat>
-              <v-toolbar-title>
-                Gestion des Garages
-              </v-toolbar-title>
+        <template #top>
+          <v-toolbar flat>
+            <v-toolbar-title>
+              Gestion des Garages
+            </v-toolbar-title>
 
-              <v-divider
-                class="mx-4"
-                inset
-                vertical
-              />
+            <v-divider
+              class="mx-4"
+              inset
+              vertical
+            />
 
-              <v-spacer />
+            <v-spacer />
 
-              <!-- ===================================================== -->
-              <!-- DIALOG -->
-              <!-- ===================================================== -->
+            <!-- ===================================================== -->
+            <!-- DIALOG -->
+            <!-- ===================================================== -->
 
-              <v-dialog
-                v-model="dialog"
-                max-width="600px"
-              >
-                <template #activator="{ props }">
+            <v-dialog
+              v-model="dialog"
+              max-width="600px"
+            >
+              <template #activator="{ props }">
+                <v-btn
+                  class="mb-2"
+                  color="primary"
+                  v-bind="props"
+                >
+                  Ajouter un Garage
+                </v-btn>
+              </template>
+
+              <v-card>
+                <v-card-title>
+                  <span class="text-h5">
+                    {{ formTitle }}
+                  </span>
+                </v-card-title>
+
+                <v-card-text>
+                  <v-container>
+                    <v-row>
+                      <v-col cols="12">
+                        <v-text-field
+                          v-model="selectedGarageForm.name"
+                          label="Nom du garage"
+                        />
+                      </v-col>
+
+                      <v-col
+                        cols="12"
+                        md="6"
+                      >
+                        <v-text-field
+                          v-model="selectedGarageForm.phone"
+                          label="Téléphone"
+                        />
+                      </v-col>
+
+                      <v-col
+                        cols="12"
+                        md="6"
+                      >
+                        <v-text-field
+                          v-model="selectedGarageForm.email"
+                          label="Email"
+                        />
+                      </v-col>
+
+                      <v-col cols="12">
+                        <v-text-field
+                          v-model="selectedGarageForm.address"
+                          label="Adresse"
+                        />
+                      </v-col>
+
+                      <v-col
+                        cols="12"
+                        md="6"
+                      >
+                        <v-text-field
+                          v-model="selectedGarageForm.zip_code"
+                          label="Code Postal"
+                        />
+                      </v-col>
+
+                      <v-col
+                        cols="12"
+                        md="6"
+                      >
+                        <v-text-field
+                          v-model="selectedGarageForm.city"
+                          label="Ville"
+                        />
+                      </v-col>
+                    </v-row>
+                  </v-container>
+                </v-card-text>
+
+                <v-card-actions>
+                  <v-spacer />
+
                   <v-btn
-                    class="mb-2"
-                    color="primary"
-                    v-bind="props"
+                    color="blue-darken-1"
+                    variant="text"
+                    @click="
+                      onCloseEditDialogBtnClick
+                    "
                   >
-                    Ajouter un Garage
+                    Annuler
                   </v-btn>
-                </template>
 
-                <v-card>
-                  <v-card-title>
-                    <span class="text-h5">
-                      {{ formTitle }}
-                    </span>
-                  </v-card-title>
+                  <v-btn
+                    color="blue-darken-1"
+                    variant="text"
+                    @click="
+                      onSaveEditDialogBtnClick
+                    "
+                  >
+                    Sauvegarder
+                  </v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-dialog>
+          </v-toolbar>
+        </template>
 
-                  <v-card-text>
-                    <v-container>
-                      <v-row>
-                        <v-col cols="12">
-                          <v-text-field
-                            v-model="selectedGarageForm.name"
-                            label="Nom du garage"
-                          />
-                        </v-col>
+        <template #item.archived_at="{ item }">
+          <v-chip
+            :color="getStatusColor(getGarageStatus(item))"
+            size="small"
+            label
+          >
+            {{ getGarageStatus(item) }}
+          </v-chip>
+        </template>
+        <!-- ===================================================== -->
+        <!-- ACTIONS -->
+        <!-- ===================================================== -->
 
-                        <v-col
-                          cols="12"
-                          md="6"
-                        >
-                          <v-text-field
-                            v-model="selectedGarageForm.phone"
-                            label="Téléphone"
-                          />
-                        </v-col>
+        <template #item.actions="{ item }">
+          <v-icon
+            class="me-2"
+            size="default"
+            @click="
+              onEditBtnClick(item)
+            "
+          >
+            mdi-pencil
+          </v-icon>
 
-                        <v-col
-                          cols="12"
-                          md="6"
-                        >
-                          <v-text-field
-                            v-model="selectedGarageForm.email"
-                            label="Email"
-                          />
-                        </v-col>
-
-                        <v-col cols="12">
-                          <v-text-field
-                            v-model="selectedGarageForm.address"
-                            label="Adresse"
-                          />
-                        </v-col>
-
-                        <v-col
-                          cols="12"
-                          md="6"
-                        >
-                          <v-text-field
-                            v-model="selectedGarageForm.zip_code"
-                            label="Code Postal"
-                          />
-                        </v-col>
-
-                        <v-col
-                          cols="12"
-                          md="6"
-                        >
-                          <v-text-field
-                            v-model="selectedGarageForm.city"
-                            label="Ville"
-                          />
-                        </v-col>
-                      </v-row>
-                    </v-container>
-                  </v-card-text>
-
-                  <v-card-actions>
-                    <v-spacer />
-
-                    <v-btn
-                      color="blue-darken-1"
-                      variant="text"
-                      @click="
-                        onCloseEditDialogBtnClick
-                      "
-                    >
-                      Annuler
-                    </v-btn>
-
-                    <v-btn
-                      color="blue-darken-1"
-                      variant="text"
-                      @click="
-                        onSaveEditDialogBtnClick
-                      "
-                    >
-                      Sauvegarder
-                    </v-btn>
-                  </v-card-actions>
-                </v-card>
-              </v-dialog>
-            </v-toolbar>
-          </template>
-
-          <template #item.archived_at="{ item }">
-            <v-chip
-              :color="getStatusColor(getGarageStatus(item))"
-              size="small"
-              label
-            >
-              {{ getGarageStatus(item) }}
-            </v-chip>
-          </template>
-          <!-- ===================================================== -->
-          <!-- ACTIONS -->
-          <!-- ===================================================== -->
-
-          <template #item.actions="{ item }">
-            <v-icon
-              class="me-2"
-              size="default"
-              @click="
-                onEditBtnClick(item)
-              "
-            >
-              mdi-pencil
-            </v-icon>
-
-            <v-icon
-              size="default"
-              @click="
-                onDeleteBtnClick(item)
-              "
-            >
-              mdi-delete
-            </v-icon>
-          </template>
-        </v-data-table>
-      </v-row>
+          <v-icon
+            size="default"
+            @click="
+              onDeleteBtnClick(item)
+            "
+          >
+            mdi-delete
+          </v-icon>
+        </template>
+      </v-data-table>
     </v-container>
   </MainLayout>
 </template>

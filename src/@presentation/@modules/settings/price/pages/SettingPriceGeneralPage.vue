@@ -1,55 +1,53 @@
 <template>
   <MainLayout>
     <v-container fluid>
-      <v-row>
-        <v-card>
-          <v-alert
-            class="mb-2"
-            type="info"
-            icon="$info"
-            variant="tonal"
-            text="Le montant du taux horaire est appliqué aux calculs des éléments"
-          />
-          <v-form>
-            <v-container>
-              <v-row>
-                <v-col
-                  cols="6"
-                  md="6"
-                >
-                  <v-text-field
-                    v-model="settings.hourlyRate"
-                    label="Hourly rate"
-                    required
-                  />
-                </v-col>
+      <v-card>
+        <v-alert
+          class="mb-2"
+          type="info"
+          icon="$info"
+          variant="tonal"
+          text="Le montant du taux horaire est appliqué aux calculs des éléments"
+        />
+        <v-form>
+          <v-container>
+            <v-row>
+              <v-col
+                cols="6"
+                md="6"
+              >
+                <v-text-field
+                  v-model="settings.hourlyRate"
+                  label="Hourly rate"
+                  required
+                />
+              </v-col>
 
-                <v-col
-                  cols="6"
-                  md="6"
-                >
-                  <v-text-field
-                    v-model="settings.unitTime"
-                    label="Unit time"
-                    required
-                  />
-                </v-col>
-              </v-row>
-            </v-container>
-          </v-form>
-          <v-card-actions>
-            <v-spacer />
-            <v-btn
-              class="mb-2"
-              color="primary"
-              variant="flat"
-              @click="onSaveSettingPriceGeneralBtnClick"
-            >
-              Enregistrer
-            </v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-row>
+              <v-col
+                cols="6"
+                md="6"
+              >
+                <v-text-field
+                  v-model="settings.unitTime"
+                  label="Unit time"
+                  required
+                />
+              </v-col>
+            </v-row>
+          </v-container>
+        </v-form>
+        <v-card-actions>
+          <v-spacer />
+          <v-btn
+            class="mb-2"
+            color="primary"
+            variant="flat"
+            @click="onSaveSettingPriceGeneralBtnClick"
+          >
+            Enregistrer
+          </v-btn>
+        </v-card-actions>
+      </v-card>
     </v-container>
   </MainLayout>
 </template>

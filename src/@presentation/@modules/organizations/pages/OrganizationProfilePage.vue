@@ -3,7 +3,6 @@
     <v-container
       fluid
       class="pa-4"
-      style="max-width: 860px"
     >
       <!-- ===================================================== -->
       <!-- HEADER -->
@@ -72,7 +71,6 @@
             </div>
 
             <v-card
-              variant="outlined"
               class="pa-4"
             >
               <v-row dense>
@@ -208,7 +206,6 @@
             </div>
 
             <v-card
-              variant="outlined"
               class="pa-4"
             >
               <v-row dense>
@@ -333,7 +330,6 @@
             </div>
 
             <v-card
-              variant="outlined"
               class="pa-4"
             >
               <v-row dense>
@@ -396,7 +392,6 @@
             </div>
 
             <v-card
-              variant="outlined"
               class="pa-4"
             >
               <v-row dense>
