@@ -15,7 +15,7 @@ const props = defineProps({
 
 // ===============================|| Theme Breadcrumb ||=============================== //
 <template>
-  <v-row class="page-breadcrumb mb-1 mt-1">
+  <v-row class="page-breadcrumb mb-1">
     <v-col
       cols="12"
       md="12"

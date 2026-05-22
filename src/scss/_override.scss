@@ -4,6 +4,10 @@ html {
   }
 }
 
+.page-wrapper .v-container {
+  padding: 0px !important;
+}
+
 .v-row + .v-row {
   margin-top: 0px;
 }

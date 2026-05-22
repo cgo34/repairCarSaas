@@ -15,6 +15,7 @@
               order: 'asc',
             },
           ]"
+          class="text-subtitle-2"
         >
           <!-- ===================================================== -->
           <!-- TOP BAR -->
@@ -163,7 +164,7 @@
           <template #item.actions="{ item }">
             <v-icon
               class="me-2"
-              size="small"
+              size="default"
               @click="
                 onEditBtnClick(item)
               "
@@ -172,7 +173,7 @@
             </v-icon>
 
             <v-icon
-              size="small"
+              size="default"
               @click="
                 onDeleteBtnClick(item)
               "
