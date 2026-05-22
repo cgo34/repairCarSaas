@@ -427,8 +427,8 @@ const _company =
 
 const desktopHeaders = [
   { title: 'Numéro', align: 'start' as const, key: 'quoteNumber' },
-  { title: 'Date', align: 'start' as const, key: 'createdAt' },
-  { title: 'Statut', align: 'start' as const, key: 'status' },
+  { title: 'Date', key: 'createdAt' },
+  { title: 'Statut', key: 'status' },
   { title: 'Modèle', key: 'carBrand' },
   { title: 'Garage', key: 'garage.name' },
   { title: 'Technicien', key: 'technician' },

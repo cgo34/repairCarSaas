@@ -4,6 +4,7 @@
     <v-app
       :class="[fontTheme, miniSidebar ? 'mini-sidebar' : '', inputBg ? 'inputWithbg' : '']"
     >
+      <Customizer />
       <VerticalSidebarVue />
       <VerticalHeaderVue />
 
@@ -27,7 +28,7 @@
               icon
               variant="flat"
               color="primary"
-              @click.stop=""
+              @click.stop="setCustomizerDrawer(!customizerDrawer)"
             >
               <SettingsIcon class="icon" />
             </v-btn>
@@ -54,6 +55,7 @@ import BaseBreadcrumb from '@/shared/BaseBreadcrumb.vue';
 import { ref, computed } from 'vue';
 import { useRoute } from 'vue-router';
 import FooterPanel from './footer/FooterPanel.vue';
+import Customizer from './customizer/CustomizerPanel.vue';
 
 type Breadcrumb = {
   title: string;
@@ -73,9 +75,11 @@ const breadcrumbs = computed(() => {
 
 const {
   sidebarDrawer,
+  customizerDrawer,
   miniSidebar,
   fontTheme,
-  inputBg
+  inputBg,
+  setCustomizerDrawer
 } = useCustomizerState();
 </script>
   

@@ -2,30 +2,66 @@ import config from '@/config';
 import { computed, ref } from 'vue';
 import { useTheme } from 'vuetify';
 
- // État
+/**
+ * ============================================================
+ * GLOBAL STATE
+ * ============================================================
+ */
+
 const sidebarDrawer = ref(config.Sidebar_drawer);
+
 const customizerDrawer = ref(config.Customizer_drawer);
+
 const miniSidebar = ref(config.mini_sidebar);
+
 const fontTheme = ref(config.fontTheme);
+
 const inputBg = ref(config.inputBg);
-const currentTheme = ref('PurpleLightTheme');
+
+const currentTheme = ref<'PurpleLightTheme' | 'PurpleDarkTheme'>(
+  'PurpleLightTheme'
+);
+
+/**
+ * ============================================================
+ * COMPOSABLE
+ * ============================================================
+ */
 
 export function useCustomizerState() {
   const theme = useTheme();
 
-  // Bascule entre le thème clair et sombre
+  /**
+   * ============================================================
+   * COMPUTED
+   * ============================================================
+   */
+
+  const isDarkTheme = computed(
+    () => currentTheme.value === 'PurpleDarkTheme'
+  );
+
+  const themeLabel = computed(
+    () => (isDarkTheme.value ? 'Sombre' : 'Clair')
+  );
+
+  /**
+   * ============================================================
+   * ACTIONS
+   * ============================================================
+   */
+
   const toggleTheme = () => {
-    const isDark = currentTheme.value === 'PurpleDarkTheme';
-    const next = isDark ? 'PurpleLightTheme' : 'PurpleDarkTheme';
-    theme.global.name.value = next;
-    currentTheme.value = next;
+    const nextTheme =
+      currentTheme.value === 'PurpleDarkTheme'
+        ? 'PurpleLightTheme'
+        : 'PurpleDarkTheme';
+
+    currentTheme.value = nextTheme;
+
+    theme.global.name.value = nextTheme;
   };
 
-  const isDarkTheme = computed(() => currentTheme.value === 'PurpleDarkTheme');
-
-  const themeLabel = computed(() => isDarkTheme.value ? 'Sombre' : 'Clair');
-
-  // Actions
   const toggleSidebarDrawer = () => {
     sidebarDrawer.value = !sidebarDrawer.value;
   };
@@ -42,22 +78,48 @@ export function useCustomizerState() {
     fontTheme.value = value;
   };
 
+  const setInputBg = (value: boolean) => {
+    inputBg.value = value;
+  };
+
+  const resetCustomizer = () => {
+    fontTheme.value = 'Roboto';
+
+    inputBg.value = false;
+
+    miniSidebar.value = false;
+
+    currentTheme.value = 'PurpleLightTheme';
+
+    theme.global.name.value = 'PurpleLightTheme';
+  };
+
+  /**
+   * ============================================================
+   * EXPORT
+   * ============================================================
+   */
+
   return {
-    // État
+    // state
     sidebarDrawer,
     customizerDrawer,
     miniSidebar,
     fontTheme,
     inputBg,
     currentTheme,
+
+    // computed
     isDarkTheme,
     themeLabel,
 
-    // Actions
+    // actions
+    toggleTheme,
     toggleSidebarDrawer,
     setMiniSidebar,
     setCustomizerDrawer,
     setFont,
-    toggleTheme
+    setInputBg,
+    resetCustomizer,
   };
 }

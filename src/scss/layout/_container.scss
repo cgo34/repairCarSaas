@@ -59,6 +59,7 @@ $sizes: (
   top: 25%;
   right: 10px;
   border-radius: 50% 50% 4px;
+  z-index: 999;
   .icon {
     animation: progress-circular-rotate 1.4s linear infinite;
     transform-origin: center center;

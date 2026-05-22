@@ -410,7 +410,7 @@ export function useEditQuoteState() {
 
   const addLine = async (line: LineItemViewModel) => {
     line.quoteId = _quote.value?.id
-
+    console.log('price params, _priceParams.value')
     if (_priceParams.value)
       computePrice(line)
     else
