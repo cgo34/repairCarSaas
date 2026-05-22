@@ -33,7 +33,7 @@ const footerLink = shallowRef([
             href="#"
             class="text-darkText text-decoration-none"
             target="_blank"
-          >CGOnline</a>
+          >CGOnlin & Binardzone</a>
         </p>
       </v-col>
       <v-col
