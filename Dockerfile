@@ -1,25 +1,17 @@
-# dependencies
-FROM node:20-alpine AS dependencies
+FROM node:20-alpine AS build
+
 WORKDIR /app
 
 COPY package*.json ./
 RUN npm ci
 
 COPY . .
-
-# build
-FROM dependencies AS build
 RUN npm run build
 
-# production
-FROM node:20-alpine AS production
-WORKDIR /app
+FROM nginx:alpine
 
-COPY package*.json ./
-RUN npm ci --omit=dev
+COPY --from=build /app/dist /usr/share/nginx/html
 
-COPY --from=build /app/dist /app/dist
+EXPOSE 80
 
-EXPOSE 4173
-
-CMD ["npm", "run", "serve"]
+CMD ["nginx", "-g", "daemon off;"]
