@@ -1,75 +1,73 @@
 <template>
   <MainLayout>
     <v-container fluid>
-      <v-row>
-        <v-card>
-          <v-alert
-            class="mb-2"
-            type="info"
-            icon="$info"
-            variant="tonal"
-            text="Le nombre de bosses est traduit en Unités de temps (UT) paramétrables 1UT = 6 minutes"
-          />
-          <v-form>
-            <v-container>
-              <v-row>
-                <v-col
-                  cols="6"
-                  md="6"
-                >
-                  <div v-for="(line, idex) in settings.slice(0,13)">
-                    <span
-                      v-if="line.impactCountMin === line.impactCountMax"
-                    >
-                      {{ line.impactCountMin }} impacts
-                    </span>
-                    <span v-else>
-                      {{ line.impactCountMin }} - {{ line.impactCountMax }} impacts
-                    </span>
-                    <v-text-field
-                      v-model="line.unitTime"
-                      label="Unit time"
-                      required
-                    />
-                  </div>
-                </v-col>
+      <v-card>
+        <v-alert
+          class="mb-2"
+          type="info"
+          icon="$info"
+          variant="tonal"
+          text="Le nombre de bosses est traduit en Unités de temps (UT) paramétrables 1UT = 6 minutes"
+        />
+        <v-form>
+          <v-container>
+            <v-row>
+              <v-col
+                cols="6"
+                md="6"
+              >
+                <div v-for="(line, idex) in settings.slice(0,13)">
+                  <span
+                    v-if="line.impactCountMin === line.impactCountMax"
+                  >
+                    {{ line.impactCountMin }} impacts
+                  </span>
+                  <span v-else>
+                    {{ line.impactCountMin }} - {{ line.impactCountMax }} impacts
+                  </span>
+                  <v-text-field
+                    v-model="line.unitTime"
+                    label="Unit time"
+                    required
+                  />
+                </div>
+              </v-col>
 
-                <v-col
-                  cols="6"
-                  md="6"
-                >
-                  <div v-for="(line, idex) in settings.slice(13, -1)">
-                    <span
-                      v-if="line.impactCountMin === line.impactCountMax"
-                    >
-                      {{ line.impactCountMin }} impacts
-                    </span>
-                    <span v-else>
-                      {{ line.impactCountMin }} - {{ line.impactCountMax }} impacts
-                    </span>
-                    <v-text-field
-                      v-model="line.unitTime"
-                      label="Unit time"
-                      required
-                    />
-                  </div>
-                </v-col>
-              </v-row>
-            </v-container>
-          </v-form>
-          <v-card-actions>
-            <v-spacer />
-            <v-btn
-              class="mb-2"
-              color="primary"
-              variant="flat"
-              @click="onSaveSettingUnitTimeBtnClick"
-            >
-              Enregistrer
-            </v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-row>
+              <v-col
+                cols="6"
+                md="6"
+              >
+                <div v-for="(line, idex) in settings.slice(13, -1)">
+                  <span
+                    v-if="line.impactCountMin === line.impactCountMax"
+                  >
+                    {{ line.impactCountMin }} impacts
+                  </span>
+                  <span v-else>
+                    {{ line.impactCountMin }} - {{ line.impactCountMax }} impacts
+                  </span>
+                  <v-text-field
+                    v-model="line.unitTime"
+                    label="Unit time"
+                    required
+                  />
+                </div>
+              </v-col>
+            </v-row>
+          </v-container>
+        </v-form>
+        <v-card-actions>
+          <v-spacer />
+          <v-btn
+            class="mb-2"
+            color="primary"
+            variant="flat"
+            @click="onSaveSettingUnitTimeBtnClick"
+          >
+            Enregistrer
+          </v-btn>
+        </v-card-actions>
+      </v-card>
     </v-container>
   </MainLayout>
 </template>
