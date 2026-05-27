@@ -1,19 +1,6 @@
 html {
   overflow-y: auto;
 }
-@media (max-width: 1279px) {
-  .v-main {
-    padding: 0;
-  }
-}
-.spacer {
-  padding: 100px 0;
-}
-@media (max-width: 800px) {
-  .spacer {
-    padding: 40px 0;
-  }
-}
 
 .page-wrapper {
   min-height: calc(100vh - 60px);
@@ -107,5 +94,27 @@ body {
   }
   90% {
     transform: translate3d(0, -2px, 0);
+  }
+}
+
+
+@media (max-width: 1279px) {
+  .v-main {
+    padding: 0;
+  }
+}
+.spacer {
+  padding: 100px 0;
+}
+@media (max-width: 800px) {
+  .spacer {
+    padding: 40px 0;
+  }
+
+  .page-wrapper {
+    min-height: calc(100vh - 60px);
+    padding: 70px 15px 15px;
+    // border-radius: $border-radius-root;
+    background: rgb(var(--v-theme-containerBg));
   }
 }

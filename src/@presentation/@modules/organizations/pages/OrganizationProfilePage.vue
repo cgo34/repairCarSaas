@@ -34,10 +34,11 @@
           <!-- IDENTITE LEGALE -->
           <!-- ===================================================== -->
 
-          <v-col cols="12">
-            <div
-              class="section-header mb-3"
-            >
+          <v-col
+            cols="12"
+            md="6"
+          >
+            <div class="section-header mb-3">
               <v-icon
                 size="18"
                 color="primary"
@@ -45,17 +46,9 @@
               >
                 mdi-office-building
               </v-icon>
-
-              <span
-                class="text-subtitle-1 font-weight-semibold"
-              >
-                Identité légale
-              </span>
+              <span class="text-subtitle-1 font-weight-semibold">Identité légale</span>
             </div>
-
-            <v-card
-              class="pa-4"
-            >
+            <v-card class="pa-4">
               <v-row dense>
                 <v-col
                   cols="12"
@@ -169,10 +162,11 @@
           <!-- COORDONNEES -->
           <!-- ===================================================== -->
 
-          <v-col cols="12">
-            <div
-              class="section-header mb-3 mt-2"
-            >
+          <v-col
+            cols="12"
+            md="6"
+          >
+            <div class="section-header mb-3 mt-2">
               <v-icon
                 size="18"
                 color="primary"
@@ -180,17 +174,9 @@
               >
                 mdi-map-marker
               </v-icon>
-
-              <span
-                class="text-subtitle-1 font-weight-semibold"
-              >
-                Coordonnées
-              </span>
+              <span class="text-subtitle-1 font-weight-semibold">Coordonnées</span>
             </div>
-
-            <v-card
-              class="pa-4"
-            >
+            <v-card class="pa-4">
               <v-row dense>
                 <v-col cols="12">
                   <v-text-field
