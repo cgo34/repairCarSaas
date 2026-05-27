@@ -8,6 +8,7 @@
     app
     :rail="miniSidebar && !mobile"
     class="leftSidebar modern-sidebar"
+    expand-on-hover
   >
     <!-- LOGO -->
     <div class="px-5 py-3">
