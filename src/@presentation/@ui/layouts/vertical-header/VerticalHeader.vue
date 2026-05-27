@@ -130,11 +130,11 @@
 
             <div class="text-left">
               <div class="font-weight-semibold">
-                Thomas Martin
+                {{ userContext?.organization.name }}
               </div>
 
               <div class="text-caption text-medium-emphasis">
-                Garage du Centre
+                {{ userContext?.firstName }} {{ userContext?.lastName }}
               </div>
             </div>
           </v-btn>
@@ -165,11 +165,21 @@ import {
   onMounted,
   ref
 } from 'vue';
+import { IAuthState } from '@/@application/states/interfaces/IAuthState';
 
 import { useCustomizerState } from '@/@presentation/composables/useCustomizerState';
 
 import NotificationDD from './NotificationDD.vue';
 import ProfileDD from './ProfileDD.vue';
+
+import { container } from '@/@infrastructure/ioc/inversify.config';
+import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
+
+const authState = container.get<IAuthState>(
+  SYMBOLS.States.AuthState
+);
+
+const { userContext } = authState;
 
 const {
   miniSidebar,

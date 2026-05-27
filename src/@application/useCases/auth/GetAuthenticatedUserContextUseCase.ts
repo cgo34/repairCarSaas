@@ -37,6 +37,10 @@ export class GetAuthenticatedUserContextUseCase implements IAuthenticatedUserCon
       throw new Error('Authenticated user not found');
     }
 
+
+  const userProfile = await this.authRepository.getCurrentUser();
+
+
     // ───────────────────────────────────────────────────────
     // Get organization membership
     // ───────────────────────────────────────────────────────
@@ -77,6 +81,9 @@ export class GetAuthenticatedUserContextUseCase implements IAuthenticatedUserCon
     return {
       id: authUser.id,
       email: authUser.email ?? '',
+      fullName: authUser?.user_metadata?.fullName ?? '',
+      firstName: userProfile?.firstName ?? '',
+      lastName: userProfile?.lastName ?? '',
 
       organization: {
         id: organization.id,

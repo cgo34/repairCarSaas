@@ -20,7 +20,7 @@
       <v-main>
         <v-container
           fluid
-          class="page-wrapper"
+          class="page-wrapper px-6"
         >
           <!-- PAGE HEADER -->
           <BaseBreadcrumb
