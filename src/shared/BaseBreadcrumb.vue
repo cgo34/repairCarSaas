@@ -1,19 +1,8 @@
 <template>
   <div class="mb-4">
-    <h1 class="text-h4 font-weight-bold mb-1">
-      {{ title }}
-    </h1>
-
-    <div
-      v-if="subtitle"
-      class="text-body-1 text-medium-emphasis mb-4"
-    >
-      {{ subtitle }}
-    </div>
-
     <v-breadcrumbs
       :items="breadcrumbs"
-      class="pa-0"
+      class="mb-4 pa-0"
     >
       <template #prepend>
         <v-icon
@@ -23,6 +12,17 @@
         />
       </template>
     </v-breadcrumbs>
+
+    <h1 class="text-h4 font-weight-bold mb-1">
+      {{ title }}
+    </h1>
+
+    <div
+      v-if="subtitle"
+      class="text-body-1 text-medium-emphasis"
+    >
+      {{ subtitle }}
+    </div>
   </div>
 </template>
 

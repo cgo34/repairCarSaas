@@ -83,8 +83,7 @@ type Breadcrumb = {
 const route = useRoute();
 
 const pageTitle = computed(() => {
-  const breadcrumbs = route.meta.breadcrumb as Breadcrumb[] || [];
-  return breadcrumbs[breadcrumbs.length - 1]?.title || 'Default Page Title';
+  return route.meta.title || '';
 });
 
 const pageSubtitle = computed(() => {

@@ -8,6 +8,8 @@ export const organizationRoutes: RouteRecordRaw[] = [
     component: OrganizationProfilePage,
     meta: {
       requiresAuth: true,
+      title: 'Paramètres de l\'organisation',
+      subtitle: 'Ces informations apparaissent sur vos devis et factures.',
       breadcrumb: [
         { title: 'Paramètres', href: '/organization/settings' },
       ]
