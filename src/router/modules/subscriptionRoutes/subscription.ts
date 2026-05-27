@@ -3,7 +3,7 @@ import { RouteRecordRaw } from 'vue-router';
 export const subscriptionRoutes: RouteRecordRaw[] = [
   {
     path: '/subscription',
-    component: () => import('@/@presentation/layouts/MainLayout.vue'),
+    component: () => import('@/@presentation/@modules/subscription/pages/SubscriptionPage.vue'),
     meta: {
       requiresAuth: true,
     },
@@ -19,9 +19,10 @@ export const subscriptionRoutes: RouteRecordRaw[] = [
       {
         path: 'overview',
         name: 'subscription-overview',
-        component: () => import('@/pages/subscription/SubscriptionOverviewPage.vue'),
+        component: () => import('@/@presentation/@modules/subscription/pages/SubscriptionPage.vue'),
         meta: {
           title: 'Mon abonnement',
+          subtitle: 'Gérez votre abonnement, mettez à jour vos informations de paiement et consultez l\'historique de vos factures.',
           breadcrumb: [
             {
               title: 'Abonnement',
@@ -43,7 +44,7 @@ export const subscriptionRoutes: RouteRecordRaw[] = [
       {
         path: 'usage',
         name: 'subscription-usage',
-        component: () => import('@/pages/subscription/SubscriptionUsagePage.vue'),
+        component: () => import('@/@presentation/@modules/subscription/pages/SubscriptionPage.vue'),
         meta: {
           title: 'Utilisation',
           breadcrumb: [
@@ -67,7 +68,7 @@ export const subscriptionRoutes: RouteRecordRaw[] = [
       {
         path: 'invoices',
         name: 'subscription-invoices',
-        component: () => import('@/pages/subscription/SubscriptionInvoicesPage.vue'),
+        component: () => import('@/@presentation/@modules/subscription/pages/SubscriptionPage.vue'),
         meta: {
           title: 'Factures abonnement',
           breadcrumb: [

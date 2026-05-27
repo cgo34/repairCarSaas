@@ -54,135 +54,93 @@
       </div>
 
       <!-- TABLE -->
-      <v-card
-        flat
-        rounded="lg"
-        border
-      >
-        <v-data-table
-          v-model="selectedQuotes"
-          :headers="activeHeaders"
-          :items="filteredQuotes"
-          :sort-by="[{ key: 'createdAt', order: 'desc' }]"
-          show-select
-          item-value="id"
-          return-object
-          no-data-text="Aucun devis trouvé"
-          class="text-subtitle-2"
-        >
-          <!-- TOP TOOLBAR -->
-          <template #top>
-            <v-toolbar flat>
-              <v-toolbar-title>
-                <div class="d-flex align-center">
-                  <div class="quote-toolbar-icon">
-                    <v-icon
-                      icon="mdi-book-multiple"
-                      size="18"
-                    />
-                  </div>
-
-                  <div class="ml-3">
-                    <div class="text-subtitle-1 font-weight-bold">
-                      Gestion des devis
-                    </div>
-
-                    <div class="text-caption text-medium-emphasis">
-                      {{ filteredQuotes.length }} devis
-
-                      <span v-if="hasActiveFilter">
-                        · période sélectionnée
-                      </span>
-
-                      <span
-                        v-if="selectedQuotes.length > 0"
-                        class="ml-1"
-                      >
-                        · {{ selectedQuotes.length }} sélectionné(s)
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </v-toolbar-title>
-
-              <div>
-                <transition name="fade">
-                  <div
-                    v-if="!mobile"
-                    class="d-flex align-center gap-2"
-                  >
-                    <v-btn
-                      color="primary"
-                      variant="flat"
-                      prepend-icon="mdi-download-multiple"
-                      rounded="lg"
-                      :loading="downloading"
-                      :disabled="selectedQuotes.length === 0"
-                      @click="onBulkDownload"
-                    >
-                      Télécharger ZIP
-                    </v-btn>
-                  </div>
-                </transition>
-              </div>
-
+       
+      <div class="d-flex mb-2">
+        <div>
+          <transition name="fade">
+            <div
+              v-if="!mobile"
+              class="d-flex align-center gap-2"
+            >
               <v-btn
-                class="ml-2"
                 color="primary"
-                prepend-icon="mdi-plus"
-                rounded="lg"
                 variant="flat"
-                :size="mobile ? 'small' : 'default'"
-                @click="onAddQuote"
+                prepend-icon="mdi-download-multiple"
+                :loading="downloading"
+                :disabled="selectedQuotes.length === 0"
+                @click="onBulkDownload"
               >
-                <span class="d-none d-sm-inline">
-                  Ajouter un Devis
-                </span>
-
-                <span class="d-sm-none">
-                  Nouveau
-                </span>
+                Télécharger ZIP
               </v-btn>
-            </v-toolbar>
-          </template>
+            </div>
+          </transition>
+        </div>
+        <v-btn
+          class="ml-2"
+          color="primary"
+          prepend-icon="mdi-plus"
+          variant="flat"
+          :size="mobile ? 'small' : 'default'"
+          @click="onAddQuote"
+        >
+          <span class="d-none d-sm-inline">
+            Ajouter un Devis
+          </span>
 
-          <!-- NUMBER -->
-          <template #item.quoteNumber="{ value }">
-            <span class="font-weight-semibold text-primary">
-              #{{ value }}
-            </span>
-          </template>
+          <span class="d-sm-none">
+            Nouveau
+          </span>
+        </v-btn>
+      </div>
+      
+      <v-data-table
+        v-model="selectedQuotes"
+        :headers="activeHeaders"
+        :items="filteredQuotes"
+        :sort-by="[{ key: 'createdAt', order: 'desc' }]"
+        show-select
+        item-value="id"
+        return-object
+        no-data-text="Aucun devis trouvé"
+        class="text-subtitle-2"
+      >
+        <!-- NUMBER -->
+        <template #item.quoteNumber="{ value }">
+          <span class="font-weight-semibold text-primary">
+            #{{ value }}
+          </span>
+        </template>
 
-          <!-- DATE -->
-          <template #item.createdAt="{ value }">
-            <span class="text-no-wrap">
-              {{
-                value
-                  ? new Date(value).toLocaleDateString('fr-FR')
-                  : ''
-              }}
-            </span>
-          </template>
+        <!-- DATE -->
+        <template #item.createdAt="{ value }">
+          <span class="text-no-wrap">
+            {{
+              value
+                ? new Date(value).toLocaleDateString('fr-FR')
+                : ''
+            }}
+          </span>
+        </template>
 
-          <!-- GARAGE -->
-          <template #item.garage="{ value }">
-            {{ value?.name }}
-          </template>
+        <!-- GARAGE -->
+        <template #item.garage="{ value }">
+          {{ value?.name }}
+        </template>
 
-          <!-- STATUS -->
-          <template #item.status="{ value }">
-            <v-chip
-              :text="statusLabel(value.code)"
-              :color="statusColor(value.code)"
-              variant="tonal"
-              size="small"
-            />
-          </template>
+        <!-- STATUS -->
+        <template #item.status="{ value }">
+          <v-chip
+            :text="statusLabel(value.code)"
+            :color="statusColor(value.code)"
+            variant="tonal"
+            size="small"
+          />
+        </template>
 
-          <!-- TECHNICIAN -->
-          <template #item.technician="{ item }">
-            <div class="d-flex align-center ga-2 text-no-wrap">
-              <!-- <v-avatar
+        <!-- TECHNICIAN -->
+        <template #item.technician="{ item }">
+          <div class="d-flex align-center ga-2 text-no-wrap">
+            <!-- <v-avatar
                 size="28"
                 color="primary"
                 variant="tonal"
@@ -194,130 +152,129 @@
                 </span>
               </v-avatar> -->
 
-              <span>
-                {{
-                  `${item.assignedMember?.users?.first_name ?? ''} ${item.assignedMember?.users?.last_name ?? ''}`.trim()
-                }}
-              </span>
-            </div>
-          </template>
-
-          <!-- SENT -->
-          <template #item.sent="{ item }">
-            <div class="tw-flex tw-items-center tw-gap-2">
-              <v-chip
-                :color="item.isSent ? 'success' : 'error'"
-                variant="tonal"
-                size="small"
-              >
-                <v-icon start>
-                  {{
-                    item.isSent
-                      ? 'mdi-check-circle'
-                      : 'mdi-close-circle'
-                  }}
-                </v-icon>
-
-                {{
-                  item.isSent && item.sentAt
-                    ? new Date(item.sentAt).toLocaleDateString('fr-FR')
-                    : 'Non envoyé'
-                }}
-              </v-chip>
-            </div>
-          </template>
-
-          <!-- TOTAL -->
-          <template #item.total="{ item }">
-            <span class="text-no-wrap">
+            <span>
               {{
-                item.totalHt
-                  ? `${item.totalHt} €`
-                  : item.isForfait
-                    ? `${item.forfaitAmount ?? 0} €`
-                    : '0 €'
+                `${item.assignedMember?.users?.first_name ?? ''} ${item.assignedMember?.users?.last_name ?? ''}`.trim()
               }}
             </span>
-          </template>
+          </div>
+        </template>
 
-          <!-- ACTIONS -->
-          <template #item.actions="{ item }">
-            <div class="tw-flex tw-items-center tw-gap-1">
-              <!-- SEND -->
-              <v-tooltip text="Envoyer">
-                <template #activator="{ props }">
-                  <v-btn
-                    v-bind="props"
-                    icon
-                    variant="text"
-                    size="small"
-                    color="success"
-                    @click="onSendBtnClick(item.id)"
-                  >
-                    <v-icon size="18">
-                      mdi-send
-                    </v-icon>
-                  </v-btn>
-                </template>
-              </v-tooltip>
+        <!-- SENT -->
+        <template #item.sent="{ item }">
+          <div class="tw-flex tw-items-center tw-gap-2">
+            <v-chip
+              :color="item.isSent ? 'success' : 'error'"
+              variant="tonal"
+              size="small"
+            >
+              <v-icon start>
+                {{
+                  item.isSent
+                    ? 'mdi-check-circle'
+                    : 'mdi-close-circle'
+                }}
+              </v-icon>
 
-              <!-- PDF -->
-              <v-tooltip text="Voir">
-                <template #activator="{ props }">
-                  <v-btn
-                    v-bind="props"
-                    icon
-                    variant="text"
-                    size="small"
-                    color="primary"
-                    @click="onViewPdfBtnClick(item.id)"
-                  >
-                    <v-icon size="18">
-                      mdi-file-pdf-box
-                    </v-icon>
-                  </v-btn>
-                </template>
-              </v-tooltip>
+              {{
+                item.isSent && item.sentAt
+                  ? new Date(item.sentAt).toLocaleDateString('fr-FR')
+                  : 'Non envoyé'
+              }}
+            </v-chip>
+          </div>
+        </template>
 
-              <!-- EDIT -->
-              <v-tooltip text="Modifier">
-                <template #activator="{ props }">
-                  <v-btn
-                    v-bind="props"
-                    icon
-                    variant="text"
-                    size="small"
-                    color="warning"
-                    @click="onEditQuote(item.id)"
-                  >
-                    <v-icon size="18">
-                      mdi-pencil
-                    </v-icon>
-                  </v-btn>
-                </template>
-              </v-tooltip>
+        <!-- TOTAL -->
+        <template #item.total="{ item }">
+          <span class="text-no-wrap">
+            {{
+              item.totalHt
+                ? `${item.totalHt} €`
+                : item.isForfait
+                  ? `${item.forfaitAmount ?? 0} €`
+                  : '0 €'
+            }}
+          </span>
+        </template>
 
-              <!-- DELETE -->
-              <v-tooltip text="Supprimer">
-                <template #activator="{ props }">
-                  <v-btn
-                    v-bind="props"
-                    icon
-                    variant="text"
-                    size="small"
-                    color="error"
-                    @click="onDeleteBtnClick(item.id)"
-                  >
-                    <v-icon size="18">
-                      mdi-trash-can-outline
-                    </v-icon>
-                  </v-btn>
-                </template>
-              </v-tooltip>
-            </div>
-          </template>
-        </v-data-table>
-      </v-card>
+        <!-- ACTIONS -->
+        <template #item.actions="{ item }">
+          <div class="tw-flex tw-items-center tw-gap-1">
+            <!-- SEND -->
+            <v-tooltip text="Envoyer">
+              <template #activator="{ props }">
+                <v-btn
+                  v-bind="props"
+                  icon
+                  variant="text"
+                  size="small"
+                  color="success"
+                  @click="onSendBtnClick(item.id)"
+                >
+                  <v-icon size="18">
+                    mdi-send
+                  </v-icon>
+                </v-btn>
+              </template>
+            </v-tooltip>
+
+            <!-- PDF -->
+            <v-tooltip text="Voir">
+              <template #activator="{ props }">
+                <v-btn
+                  v-bind="props"
+                  icon
+                  variant="text"
+                  size="small"
+                  color="primary"
+                  @click="onViewPdfBtnClick(item.id)"
+                >
+                  <v-icon size="18">
+                    mdi-file-pdf-box
+                  </v-icon>
+                </v-btn>
+              </template>
+            </v-tooltip>
+
+            <!-- EDIT -->
+            <v-tooltip text="Modifier">
+              <template #activator="{ props }">
+                <v-btn
+                  v-bind="props"
+                  icon
+                  variant="text"
+                  size="small"
+                  color="warning"
+                  @click="onEditQuote(item.id)"
+                >
+                  <v-icon size="18">
+                    mdi-pencil
+                  </v-icon>
+                </v-btn>
+              </template>
+            </v-tooltip>
+
+            <!-- DELETE -->
+            <v-tooltip text="Supprimer">
+              <template #activator="{ props }">
+                <v-btn
+                  v-bind="props"
+                  icon
+                  variant="text"
+                  size="small"
+                  color="error"
+                  @click="onDeleteBtnClick(item.id)"
+                >
+                  <v-icon size="18">
+                    mdi-trash-can-outline
+                  </v-icon>
+                </v-btn>
+              </template>
+            </v-tooltip>
+          </div>
+        </template>
+      </v-data-table>
     </v-container>
   </MainLayout>
 

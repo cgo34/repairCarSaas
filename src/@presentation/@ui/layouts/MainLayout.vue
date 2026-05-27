@@ -35,7 +35,7 @@
           </RouterView>
 
           <!-- SETTINGS -->
-          <v-btn
+          <!-- <v-btn
             class="customizer-btn"
             size="large"
             icon
@@ -44,7 +44,7 @@
             @click.stop="setCustomizerDrawer(!customizerDrawer)"
           >
             <SettingsIcon class="icon" />
-          </v-btn>
+          </v-btn> -->
         </v-container>
 
         <!-- FOOTER -->
