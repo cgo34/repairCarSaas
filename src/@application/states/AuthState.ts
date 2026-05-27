@@ -144,7 +144,7 @@ export class AuthState implements IAuthState {
       // ───────────────────────────────────────────────────────
       // this.authenticatedUserContext.value = null;
 
-      this.isAuthenticated.value = false;
+      this.isAuthenticated.value = true;
 
       throw new AuthError(
         AuthErrorCode.LOGIN_FAILED,
@@ -261,27 +261,44 @@ export class AuthState implements IAuthState {
 
   async refreshAuthenticatedUser(): Promise<void> {
     try {
-      const authenticatedUserContext =
-        await this.getAuthenticatedUserContextUseCase.execute();
+      // Vérifie d'abord la session Supabase
+      const sessionResult = await this.getAuthenticatedUserContextUseCase.authRepository.getUserSession();
+      const supabaseSession = sessionResult?.data?.session;
+      if (!supabaseSession) {
+        console.warn('[AuthState] Pas de session Supabase, déconnexion.');
+        this.userContext.value = null;
+        this.isAuthenticated.value = false;
+        localStorage.removeItem(this.STORAGE_KEY);
+        return;
+      }
 
-      this.userContext.value = authenticatedUserContext;
-
-      this.isAuthenticated.value = true;
-
-      this.pushState();
-
+      try {
+        const authenticatedUserContext = await this.getAuthenticatedUserContextUseCase.execute();
+        this.userContext.value = authenticatedUserContext;
+        this.isAuthenticated.value = true;
+        this.pushState();
+      } catch (profileError) {
+        // Si le token Supabase est valide mais une requête de profil échoue, on reste connecté
+        console.error('[AuthState] Erreur lors de l’hydratation du profil, mais session Supabase OK:', profileError);
+        this.isAuthenticated.value = true;
+        // On ne touche pas au localStorage ni à userContext
+      }
     } catch (error) {
-      console.error('Failed to refresh authenticated user', error);
-
+      console.error('Failed to refresh authenticated user (unexpected error)', error);
       this.userContext.value = null;
-
       this.isAuthenticated.value = false;
-
       localStorage.removeItem(this.STORAGE_KEY);
     }
   }
 
   setAuthReady(value: boolean) {
     this._isAuthReady = value;
+  }
+  
+  /**
+   * Getter pratique pour obtenir le booléen d'authentification
+   */
+  get isAuthenticatedValue(): boolean {
+    return this.isAuthenticated.value;
   }
 }
