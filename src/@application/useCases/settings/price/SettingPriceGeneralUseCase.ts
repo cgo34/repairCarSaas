@@ -16,8 +16,8 @@ export class SettingPriceGeneralUseCase implements ISettingPriceGeneralUseCase {
     return this.repository.getAdmin();
   }
 
-  async getByUserId(userId: string): Promise<SettingPriceGeneralDto> {
-    return this.repository.getByUserId(userId);
+  async getByOrganizationId(organizationId: string): Promise<SettingPriceGeneralDto> {
+    return this.repository.getByOrganizationId(organizationId);
   }
 
   async save(dto: SettingPriceGeneralDto): Promise<SettingPriceGeneralDto> {

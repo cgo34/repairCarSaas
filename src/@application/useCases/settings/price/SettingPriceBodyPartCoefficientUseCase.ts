@@ -17,8 +17,8 @@ export class SettingPriceBodyPartCoefficientUseCase implements ISettingPriceBody
     return this.repository.getAdmin();
   }
 
-  async getByUserId(userId: string): Promise<SettingPriceBodyPartCoefficientDto[]> {
-    return this.repository.getByUserId(userId);
+  async getByOrganizationId(organizationId: string): Promise<SettingPriceBodyPartCoefficientDto[]> {
+    return this.repository.getByOrganizationId(organizationId);
   }
 
   async save(settings: SettingPriceBodyPartCoefficientDto[]): Promise<SettingPriceBodyPartCoefficientDto[]> {

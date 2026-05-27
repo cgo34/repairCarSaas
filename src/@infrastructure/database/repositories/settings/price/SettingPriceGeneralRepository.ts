@@ -25,7 +25,7 @@ export class SettingPriceGeneralRepository implements ISettingPriceGeneralReposi
     return SettingPriceGeneralMapper.apiToDto(data);
   }
 
-  async getByorganizationId(organizationId: string): Promise<SettingPriceGeneralDto | null> {
+  async getByOrganizationId(organizationId: string): Promise<SettingPriceGeneralDto | null> {
     const { data, error } = await this.clientProvider.getClient()
       .from('setting_price_general')
       .select('*')

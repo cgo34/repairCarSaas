@@ -12,7 +12,7 @@ import { inject, injectable } from 'inversify';
 export class SettingPriceBodyMaterialCoefficientRepository implements ISettingPriceBodyMaterialCoefficientRepository {
   constructor(@inject(SYMBOLS.Providers.ClientProvider) private clientProvider: IClientProvider<SupabaseClient>) {}
 
-  async getByUserId(userId: string): Promise<SettingPriceBodyMaterialCoefficientDto[]> {
+  async getByOrganizationId(userId: string): Promise<SettingPriceBodyMaterialCoefficientDto[]> {
     const { data, error } = await this.clientProvider.getClient()
       .from('setting_price_body_material_coefficient')
       .select('*, body_materials(*)')

@@ -15,8 +15,8 @@ export class SettingPriceImpactCountToUtUseCase implements ISettingPriceImpactCo
       return this.repository.getDefault();
     }
 
-    async getByUserId(userId: string): Promise<SettingPriceImpactCountToUtDto[]> {
-      return this.repository.getByUserId(userId);
+    async getByOrganizationId(organizationId: string): Promise<SettingPriceImpactCountToUtDto[]> {
+      return this.repository.getByOrganizationId(organizationId);
     }
 
     async save(settings: SettingPriceImpactCountToUtDto[]): Promise<SettingPriceImpactCountToUtDto[]> {

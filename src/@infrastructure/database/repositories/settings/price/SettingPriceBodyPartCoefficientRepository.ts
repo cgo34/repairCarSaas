@@ -24,7 +24,7 @@ export class SettingPriceBodyPartCoefficientRepository implements ISettingPriceB
     return data.map(SettingPriceBodyPartCoefficientMapper.apiToDto);
   }
 
-  async getByorganizationId(organizationId: string): Promise<SettingPriceBodyPartCoefficientDto[]> {
+  async getByOrganizationId(organizationId: string): Promise<SettingPriceBodyPartCoefficientDto[]> {
     const { data, error } = await this.clientProvider.getClient()
       .from('setting_price_body_part_coefficient')
       .select('*, body_parts(*)')

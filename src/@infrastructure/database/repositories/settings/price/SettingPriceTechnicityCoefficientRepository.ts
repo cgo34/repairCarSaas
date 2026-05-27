@@ -25,7 +25,7 @@ export class SettingPriceTechnicityCoefficientRepository implements ISettingPric
     return SettingPriceTechnicityCoefficientMapper.apiToDto(data);
   }
 
-  async getByorganizationId(organizationId: string): Promise<SettingPriceTechnicityCoefficientDto | null> {
+  async getByOrganizationId(organizationId: string): Promise<SettingPriceTechnicityCoefficientDto | null> {
     const { data, error } = await this.clientProvider.getClient()
       .from('setting_price_technicity_coefficient')
       .select('*')

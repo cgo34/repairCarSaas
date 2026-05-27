@@ -24,8 +24,8 @@ export class SettingPriceRepository implements ISettingPriceRepository {
     private settingPriceImpactCountToUtRepository: ISettingPriceImpactCountToUtRepository,
   ) {}
 
-  async getByorganizationId(organizationId: string): Promise<SettingPriceDto | null> {
-    const general = await this.settingPriceGeneralRepository.getByorganizationId(organizationId);
+  async getByOrganizationId(organizationId: string): Promise<SettingPriceDto | null> {
+    const general = await this.settingPriceGeneralRepository.getByOrganizationId(organizationId);
 
     // Si l'utilisateur n'a pas encore configuré ses paramètres, on retourne les paramètres par défaut
     if (!general) {

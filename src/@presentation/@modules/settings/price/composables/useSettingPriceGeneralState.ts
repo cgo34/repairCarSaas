@@ -36,7 +36,7 @@ export function useSettingPriceGeneralState(): IUseSettingPriceGeneralState {
       if (!authState.userContext.value?.id)
         throw new Error('User does not exist');
 
-      return settingPriceGeneralUseCase.getByUserId(authState.userContext.value?.organization.id).then((data) => {        
+      return settingPriceGeneralUseCase.getByOrganizationId(authState.userContext.value?.organization.id).then((data) => {        
         if (!data) {
           settingPriceGeneralUseCase.getAdmin().then((adminData) => {            
             _settings.value.hourlyRate = adminData.hourlyRate;
