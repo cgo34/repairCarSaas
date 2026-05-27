@@ -9,7 +9,7 @@
       <VerticalHeaderVue />
 
 
-      <v-main style="padding-top: 45px !important;">
+      <v-main style="padding-top: 25px !important;">
         <v-container
           fluid
           class="page-wrapper"

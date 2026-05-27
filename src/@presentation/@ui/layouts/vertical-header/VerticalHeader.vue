@@ -27,7 +27,7 @@ function searchbox() {
 <template>
   <v-app-bar
     elevation="0"
-    height="80"
+    height="60"
   >
     <v-btn
       class="hidden-md-and-down text-primary"

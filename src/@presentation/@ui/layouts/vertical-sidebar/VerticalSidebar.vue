@@ -72,7 +72,7 @@ const sidebarMenu = computed(() => {
   >
     <!---Logo part -->
 
-    <div class="pa-5">
+    <div class="px-5 py-2">
       <Logo />
     </div>
     <!-- ---------------------------------------------- -->
