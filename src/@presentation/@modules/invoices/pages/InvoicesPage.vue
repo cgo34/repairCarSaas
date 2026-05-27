@@ -4,93 +4,106 @@
       fluid
       class="pa-3 pa-sm-4"
     >
-      <!-- FILTER BAR -->
-      <div class="v-row invoice-page-filters">
-        <PeriodFilterBar
-          v-model:date-from="dateFrom"
-          v-model:date-to="dateTo"
-          v-model:active-preset="activePreset"
-          :date-presets="datePresets"
-          :has-active-filter="hasActiveFilter"
-          @preset-change="applyPreset"
-          @clear="clearFilter"
+      <div class="d-flex mb-3 pb-1 align-center justify-space-between gap-2">
+        <v-btn
+          icon
+          variant="text"
+          :class="['mr-2', { 'bg-primary text-white': showFilters }, { 'bg-transparent text-primary': !showFilters }]"
+          @click="showFilters = !showFilters"
         >
-          <template #bottom-bar>
-            <transition name="slide-up">
+          <v-icon>mdi-filter-cog-outline</v-icon>
+        </v-btn>
+        <div class="d-flex gap-2">
+          <div>
+            <transition name="fade">
               <div
-                v-if="selectedInvoices.length > 0 && mobile"
-                class="selection-bar-mobile px-3 py-2 d-flex align-center gap-2"
+                v-if="!mobile"
+                class="d-flex align-center gap-2"
               >
-                <span class="text-body-2 font-weight-medium">
-                  {{ selectedInvoices.length }} sélectionné(s)
-                </span>
-
-                <v-spacer />
-
-                <v-btn
-                  variant="text"
-                  size="small"
-                  @click="selectedInvoices = []"
-                >
-                  Annuler
-                </v-btn>
-
                 <v-btn
                   color="primary"
                   variant="flat"
-                  size="small"
                   prepend-icon="mdi-download-multiple"
                   :loading="downloading"
-                  rounded="lg"
+                  :disabled="selectedInvoices.length === 0"
                   @click="onBulkDownload"
                 >
-                  ZIP
+                  Télécharger ZIP
                 </v-btn>
               </div>
             </transition>
-          </template>
-        </PeriodFilterBar>
-      </div>
+          </div>
+          <v-btn
+            class="ml-2"
+            color="primary"
+            prepend-icon="mdi-plus"
+            variant="flat"
+            :size="mobile ? 'small' : 'default'"
+            @click="onAddInvoice"
+          >
+            <span class="d-none d-sm-inline">
+              Ajouter une Facture
+            </span>
 
-
-      <!-- ACTIONS BAR -->
-      <div class="d-flex mb-2">
-        <div>
-          <transition name="fade">
-            <div
-              v-if="!mobile"
-              class="d-flex align-center gap-2"
-            >
-              <v-btn
-                color="primary"
-                variant="flat"
-                prepend-icon="mdi-download-multiple"
-                :loading="downloading"
-                :disabled="selectedInvoices.length === 0"
-                @click="onBulkDownload"
-              >
-                Télécharger ZIP
-              </v-btn>
-            </div>
-          </transition>
+            <span class="d-sm-none">
+              Nouvelle
+            </span>
+          </v-btn>
         </div>
-        <v-btn
-          class="ml-2"
-          color="primary"
-          prepend-icon="mdi-plus"
-          variant="flat"
-          :size="mobile ? 'small' : 'default'"
-          @click="onAddInvoice"
-        >
-          <span class="d-none d-sm-inline">
-            Ajouter une Facture
-          </span>
-
-          <span class="d-sm-none">
-            Nouvelle
-          </span>
-        </v-btn>
       </div>
+
+      <!-- FILTER BAR (toggle) -->
+      <transition name="fade">
+        <div
+          v-if="showFilters"
+          class="v-row invoice-page-filters"
+        >
+          <PeriodFilterBar
+            v-model:date-from="dateFrom"
+            v-model:date-to="dateTo"
+            v-model:active-preset="activePreset"
+            :date-presets="datePresets"
+            :has-active-filter="hasActiveFilter"
+            @preset-change="applyPreset"
+            @clear="clearFilter"
+          >
+            <template #bottom-bar>
+              <transition name="slide-up">
+                <div
+                  v-if="selectedInvoices.length > 0 && mobile"
+                  class="selection-bar-mobile px-3 py-2 d-flex align-center gap-2"
+                >
+                  <span class="text-body-2 font-weight-medium">
+                    {{ selectedInvoices.length }} sélectionné(s)
+                  </span>
+
+                  <v-spacer />
+
+                  <v-btn
+                    variant="text"
+                    size="small"
+                    @click="selectedInvoices = []"
+                  >
+                    Annuler
+                  </v-btn>
+
+                  <v-btn
+                    color="primary"
+                    variant="flat"
+                    size="small"
+                    prepend-icon="mdi-download-multiple"
+                    :loading="downloading"
+                    rounded="lg"
+                    @click="onBulkDownload"
+                  >
+                    ZIP
+                  </v-btn>
+                </div>
+              </transition>
+            </template>
+          </PeriodFilterBar>
+        </div>
+      </transition>
 
       <v-data-table
         v-model="selectedInvoices"
@@ -286,6 +299,7 @@
 </template>
 
 <script setup lang="ts">
+const showFilters = ref(false);
 import { IAuthState } from '@/@application/states/interfaces/IAuthState';
 import { CompanySettingsDto } from '@/@application/dtos/CompanySettingsDto';
 import { ICompanySettingsUseCase } from '@/@domain/useCases/ICompanySettingsUseCase';
