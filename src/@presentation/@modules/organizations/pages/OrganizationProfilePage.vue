@@ -34,7 +34,7 @@
           <!-- IDENTITE LEGALE -->
           <!-- ===================================================== -->
 
-          <v-col cols="12">
+          <v-col cols="6">
             <div
               class="section-header mb-3"
             >
@@ -169,7 +169,7 @@
           <!-- COORDONNEES -->
           <!-- ===================================================== -->
 
-          <v-col cols="12">
+          <v-col cols="6">
             <div
               class="section-header mb-3 mt-2"
             >
