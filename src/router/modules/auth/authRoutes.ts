@@ -7,12 +7,13 @@ import ForgotPasswordPage from '@/@presentation/@modules/auth/pages/ForgotPasswo
 import LoginPage from '@/@presentation/@modules/auth/pages/LoginPage.vue';
 import RegisterPage from '@/@presentation/@modules/auth/pages/RegisterPage.vue';
 import ResetPasswordPage from '@/@presentation/@modules/auth/pages/ResetPasswordPage.vue';
+import RedirectHome from '@/@presentation/@modules/auth/pages/RedirectHome.vue';
 import { RouteRecordRaw } from 'vue-router';
 
 export const authRoutes: RouteRecordRaw[] = [
   {
     path: '/',
-    redirect: '/login',
+    component: RedirectHome,
   },
   {
     path: '/login',

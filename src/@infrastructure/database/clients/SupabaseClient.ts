@@ -75,6 +75,11 @@ export class SupabaseClient implements IClient {
       {
         db: {
           schema: 'public'
+        },
+        auth: {
+          persistSession: true,
+          detectSessionInUrl: true,
+          storage: localStorage
         }
       }
     );
