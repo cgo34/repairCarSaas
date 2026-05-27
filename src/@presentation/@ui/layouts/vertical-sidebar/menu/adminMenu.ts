@@ -34,9 +34,9 @@ export const adminMenu = [
     to: '/dashboard',
   },
 
-  {
-    divider: true,
-  },
+  // {
+  //   divider: true,
+  // },
 
   // ─────────────────────────────────────────────────────────
   // Activité
@@ -86,9 +86,9 @@ export const adminMenu = [
     ],
   },
 
-  {
-    divider: true,
-  },
+  // {
+  //   divider: true,
+  // },
 
   // ─────────────────────────────────────────────────────────
   // Organisation
@@ -113,9 +113,9 @@ export const adminMenu = [
     roles: ['admin'],
   },
 
-  {
-    divider: true,
-  },
+  // {
+  //   divider: true,
+  // },
 
   // ─────────────────────────────────────────────────────────
   // Paramètres
@@ -184,10 +184,10 @@ export const adminMenu = [
     ],
   },
 
-  {
-    divider: true,
-    roles: ['admin'],
-  },
+  // {
+  //   divider: true,
+  //   roles: ['admin'],
+  // },
 
   // ─────────────────────────────────────────────────────────
   // Abonnement
