@@ -2,7 +2,7 @@ import { SettingPriceImpactCountToUtDto } from '@/@application/dtos/settings/pri
 
 export interface ISettingPriceImpactCountToUtRepository {
   getDefault(): Promise<SettingPriceImpactCountToUtDto[]>;
-  getByUserId(userId: string): Promise<SettingPriceImpactCountToUtDto[]>;
+  getByOrganizationId(userId: string): Promise<SettingPriceImpactCountToUtDto[]>;
   save(settings: SettingPriceImpactCountToUtDto[]): Promise<SettingPriceImpactCountToUtDto[]>;
   create(setting: SettingPriceImpactCountToUtDto): Promise<SettingPriceImpactCountToUtDto>;
   update(setting: SettingPriceImpactCountToUtDto): Promise<SettingPriceImpactCountToUtDto>;

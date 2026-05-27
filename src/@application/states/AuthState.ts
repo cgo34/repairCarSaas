@@ -259,6 +259,28 @@ export class AuthState implements IAuthState {
     return this.subscription.value?.subscriptionPlan.name === 'free'
   }
 
+  async refreshAuthenticatedUser(): Promise<void> {
+    try {
+      const authenticatedUserContext =
+        await this.getAuthenticatedUserContextUseCase.execute();
+
+      this.userContext.value = authenticatedUserContext;
+
+      this.isAuthenticated.value = true;
+
+      this.pushState();
+
+    } catch (error) {
+      console.error('Failed to refresh authenticated user', error);
+
+      this.userContext.value = null;
+
+      this.isAuthenticated.value = false;
+
+      localStorage.removeItem(this.STORAGE_KEY);
+    }
+  }
+
   setAuthReady(value: boolean) {
     this._isAuthReady = value;
   }

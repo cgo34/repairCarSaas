@@ -1,46 +1,58 @@
 <template>
   <v-locale-provider>
-    <!-- Add theme="PurpleTheme" to manage theme switch witch themeMode setting var -->
     <v-app
-      :class="[fontTheme, miniSidebar ? 'mini-sidebar' : '', inputBg ? 'inputWithbg' : '']"
+      :class="[
+        fontTheme,
+        miniSidebar ? 'mini-sidebar' : '',
+        inputBg ? 'inputWithbg' : ''
+      ]"
     >
-      <Customizer />
+      <!-- SIDEBAR -->
       <VerticalSidebarVue />
+
+      <!-- HEADER -->
       <VerticalHeaderVue />
 
+      <!-- CUSTOMIZER -->
+      <Customizer />
 
-      <v-main style="padding-top: 45px !important;">
+      <!-- MAIN -->
+      <v-main>
         <v-container
           fluid
-          class="page-wrapper"
+          class="page-wrapper px-6"
         >
-          <div>
-            <BaseBreadcrumb
-              :title="pageTitle"
-              :breadcrumbs="breadcrumbs"
-            />
-            <RouterView>
-              <slot />
-            </RouterView>
-            <v-btn
-              class="customizer-btn"
-              size="large"
-              icon
-              variant="flat"
-              color="primary"
-              @click.stop="setCustomizerDrawer(!customizerDrawer)"
-            >
-              <SettingsIcon class="icon" />
-            </v-btn>
-          </div>
+          <!-- PAGE HEADER -->
+          <BaseBreadcrumb
+            :title="pageTitle"
+            :subtitle="pageSubtitle"
+            :breadcrumbs="breadcrumbs"
+          />
+
+          <!-- PAGE CONTENT -->
+          <RouterView>
+            <slot />
+          </RouterView>
+
+          <!-- SETTINGS -->
+          <v-btn
+            class="customizer-btn"
+            size="large"
+            icon
+            variant="flat"
+            color="primary"
+            @click.stop="setCustomizerDrawer(!customizerDrawer)"
+          >
+            <SettingsIcon class="icon" />
+          </v-btn>
         </v-container>
+
+        <!-- FOOTER -->
         <v-container
           fluid
           class="pt-0"
         >
-          <div>
-            <FooterPanel />
-          </div>
+          <FooterPanel />
         </v-container>
       </v-main>
     </v-app>
@@ -48,12 +60,18 @@
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue';
+import { useRoute } from 'vue-router';
+
+import { SettingsIcon } from 'vue-tabler-icons';
+
 import { useCustomizerState } from '@/@presentation/composables/useCustomizerState';
+
+import BaseBreadcrumb from '@/shared/BaseBreadcrumb.vue';
+
 import VerticalHeaderVue from '@ui/layouts/vertical-header/VerticalHeader.vue';
 import VerticalSidebarVue from '@ui/layouts/vertical-sidebar/VerticalSidebar.vue';
-import BaseBreadcrumb from '@/shared/BaseBreadcrumb.vue';
-import { ref, computed } from 'vue';
-import { useRoute } from 'vue-router';
+
 import FooterPanel from './footer/FooterPanel.vue';
 import Customizer from './customizer/CustomizerPanel.vue';
 
@@ -65,8 +83,11 @@ type Breadcrumb = {
 const route = useRoute();
 
 const pageTitle = computed(() => {
-  const breadcrumbs = route.meta.breadcrumb as Breadcrumb[] || [];
-  return breadcrumbs[breadcrumbs.length - 1]?.title || 'Default Page Title';
+  return route.meta.title || '';
+});
+
+const pageSubtitle = computed(() => {
+  return route.meta.subtitle || '';
 });
 
 const breadcrumbs = computed(() => {
@@ -74,13 +95,10 @@ const breadcrumbs = computed(() => {
 });
 
 const {
-  sidebarDrawer,
-  customizerDrawer,
   miniSidebar,
   fontTheme,
   inputBg,
+  customizerDrawer,
   setCustomizerDrawer
 } = useCustomizerState();
 </script>
-  
-  

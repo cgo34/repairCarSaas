@@ -2,7 +2,7 @@ import { SettingPriceGeneralDto } from '@/@application/dtos/settings/price/Setti
 
 export interface ISettingPriceGeneralRepository {
   getDefault(): Promise<SettingPriceGeneralDto>;
-  getByUserId(userId: string): Promise<SettingPriceGeneralDto>;
+  getByOrganizationId(userId: string): Promise<SettingPriceGeneralDto>;
   save(setting: SettingPriceGeneralDto): Promise<SettingPriceGeneralDto>;
   create(setting: SettingPriceGeneralDto): Promise<SettingPriceGeneralDto>;
   update(setting: SettingPriceGeneralDto): Promise<SettingPriceGeneralDto>;

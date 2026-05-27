@@ -2,7 +2,7 @@ import { SettingPriceTechnicityCoefficientDto } from '@/@application/dtos/settin
 
 export interface ISettingPriceTechnicityCoefficientRepository {
   getDefault(): Promise<SettingPriceTechnicityCoefficientDto>;
-  getByUserId(userId: string): Promise<SettingPriceTechnicityCoefficientDto>;
+  getByOrganizationId(userId: string): Promise<SettingPriceTechnicityCoefficientDto>;
   save(setting: SettingPriceTechnicityCoefficientDto): Promise<SettingPriceTechnicityCoefficientDto>;
   create(setting: SettingPriceTechnicityCoefficientDto): Promise<SettingPriceTechnicityCoefficientDto>;
   update(setting: SettingPriceTechnicityCoefficientDto): Promise<SettingPriceTechnicityCoefficientDto>;

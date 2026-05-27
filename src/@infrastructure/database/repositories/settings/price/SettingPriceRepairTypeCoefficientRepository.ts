@@ -12,7 +12,7 @@ import { inject, injectable } from 'inversify';
 export class SettingPriceRepairTypeCoefficientRepository implements ISettingPriceRepairTypeCoefficientRepository {
   constructor(@inject(SYMBOLS.Providers.ClientProvider) private clientProvider: IClientProvider<SupabaseClient>) {}
 
-  async getByorganizationId(organizationId: string): Promise<SettingPriceRepairTypeCoefficientDto[]> {
+  async getByOrganizationId(organizationId: string): Promise<SettingPriceRepairTypeCoefficientDto[]> {
     const { data, error } = await this.clientProvider.getClient()
       .from('setting_price_repair_type_coefficient')
       .select('*, repair_types(*)')

@@ -1,6 +1,6 @@
 <template>
   <MainLayout>
-    <v-container>
+    <v-container fluid>
       <!-- Row 1 : Devis KPIs -->
       <v-row>
         <v-col

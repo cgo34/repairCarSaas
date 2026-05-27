@@ -1,185 +1,214 @@
-<script setup lang="ts">
-import { useCustomizerState } from '@/@presentation/composables/useCustomizerState';
-import { ref } from 'vue';
-// Icon Imports
-import { BellIcon, Menu2Icon, MoonIcon, SearchIcon, SettingsIcon, SunIcon } from 'vue-tabler-icons';
-
-// dropdown imports
-import { VSwitch } from 'vuetify/lib/components/index.mjs';
-import NotificationDD from './NotificationDD.vue';
-import ProfileDD from './ProfileDD.vue';
-// import Searchbar from './SearchBarPanel.vue';
-
-const {
-    miniSidebar,
-    toggleSidebarDrawer,
-    setMiniSidebar,
-    toggleTheme,
-    isDarkTheme,
-  } = useCustomizerState();
-
-const showSearch = ref(false);
-function searchbox() {
-  showSearch.value = !showSearch.value;
-}
-</script>
-
 <template>
   <v-app-bar
-    elevation="0"
-    height="80"
+    flat
+    color="rgb(var(--v-theme-containerBg))"
+    height="70"
+    scroll-threshold="70"
+    scroll-behavior="hide"
+    class="px-6"
+    style="--v-toolbar-background: transparent;"
   >
-    <v-btn
-      class="hidden-md-and-down text-primary"
-      color="lightprimary"
-      icon
-      rounded="sm"
-      variant="flat"
-      size="small"
-      @click.stop="setMiniSidebar(!miniSidebar)"
-    >
-      <Menu2Icon
-        size="20"
-        stroke-width="1.5"
-      />
-    </v-btn>
-    <v-btn
-      class="hidden-lg-and-up text-primary ms-3"
-      color="lightprimary"
-      icon
-      rounded="sm"
-      variant="flat"
-      size="small"
-      @click.stop="toggleSidebarDrawer"
-    >
-      <Menu2Icon
-        size="20"
-        stroke-width="1.5"
-      />
-    </v-btn>
+    <!-- LEFT -->
+    <div class="d-flex align-center">
+      <!-- DESKTOP -->
+      <v-btn
+        class="hidden-md-and-down text-primary"
+        color="lightprimary"
+        icon
+        rounded="sm"
+        variant="flat"
+        size="small"
+        @click.stop="setMiniSidebar(!miniSidebar)"
+      >
+        <Menu2Icon
+          size="20"
+          stroke-width="1.5"
+        />
+      </v-btn>
 
-    <!-- search mobile -->
-    <v-btn
-      class="hidden-lg-and-up text-primary ml-3"
-      color="lightprimary"
-      icon
-      rounded="sm"
-      variant="flat"
-      size="small"
-      @click="searchbox"
-    >
-      <SearchIcon
-        size="17"
-        stroke-width="1.5"
-      />
-    </v-btn>
-
-    <v-sheet
-      v-if="showSearch"
-      class="search-sheet v-col-12"
-    >
-      <Searchbar :closesearch="searchbox" />
-    </v-sheet>
-
-    <!-- ---------------------------------------------- -->
-    <!-- Search part -->
-    <!-- ---------------------------------------------- -->
-    <v-sheet class="mx-3 v-col-3 v-col-xl-2 v-col-lg-4 d-none d-lg-block">
-      <Searchbar />
-    </v-sheet>
-
-    <!---/Search part -->
+      <!-- MOBILE -->
+      <v-btn
+        class="hidden-lg-and-up text-primary"
+        color="lightprimary"
+        icon
+        rounded="sm"
+        variant="flat"
+        size="small"
+        @click.stop="toggleSidebarDrawer"
+      >
+        <Menu2Icon
+          size="20"
+          stroke-width="1.5"
+        />
+      </v-btn>
+    </div>
 
     <v-spacer />
-    <!-- ---------------------------------------------- -->
-    <!---right part -->
-    <!-- ---------------------------------------------- -->
 
-    
-
-    <!-- Theme Switch -->
-    <v-btn
-      icon
-      class="text-primary mx-2"
-      color="lightprimary"
-      rounded="sm"
-      size="small"
-      variant="flat"
-      :title="isDarkTheme ? 'Passer en mode clair' : 'Passer en mode sombre'"
-      @click="toggleTheme"
-    >
-      <MoonIcon
-        v-if="!isDarkTheme"
-        size="20"
-        stroke-width="1.5"
-      />
-      <SunIcon
-        v-else
-        size="20"
-        stroke-width="1.5"
-      />
-    </v-btn>
-
-    <!-- ---------------------------------------------- -->
-    <!-- Notification -->
-    <!-- ---------------------------------------------- -->
-    <v-menu :close-on-content-click="false">
-      <template #activator="{ props }">
-        <v-btn
-          icon
-          class="text-primary mx-3"
-          color="lightprimary"
-          rounded="sm"
-          size="small"
-          variant="flat"
-          v-bind="props"
-        >
-          <BellIcon
-            stroke-width="1.5"
-            size="22"
-          />
-        </v-btn>
-      </template>
-      <v-sheet
-        rounded="md"
-        width="330"
-        elevation="12"
+    <!-- RIGHT -->
+    <div class="d-flex align-center ga-3">
+      <!-- HELP -->
+      <v-btn
+        class="text-primary"
+        color="lightprimary"
+        rounded="lg"
+        variant="tonal"
       >
-        <NotificationDD />
-      </v-sheet>
-    </v-menu>
+        Besoin d'aide ?
+      </v-btn>
 
-    <!-- ---------------------------------------------- -->
-    <!-- User Profile -->
-    <!-- ---------------------------------------------- -->
-    <v-menu :close-on-content-click="false">
-      <template #activator="{ props }">
-        <v-btn
-          class="profileBtn text-primary"
-          color="lightprimary"
-          variant="flat"
-          rounded="pill"
-          v-bind="props"
-        >
-          <v-avatar
-            size="30"
-            class="mr-2 py-2"
+      <!-- THEME -->
+      <v-btn
+        icon
+        class="text-primary"
+        color="lightprimary"
+        rounded="sm"
+        size="small"
+        variant="flat"
+        :title="isDarkTheme ? 'Passer en mode clair' : 'Passer en mode sombre'"
+        @click="toggleTheme"
+      >
+        <MoonIcon
+          v-if="!isDarkTheme"
+          size="20"
+          stroke-width="1.5"
+        />
+
+        <SunIcon
+          v-else
+          size="20"
+          stroke-width="1.5"
+        />
+      </v-btn>
+
+      <!-- NOTIFICATIONS -->
+      <v-menu :close-on-content-click="false">
+        <template #activator="{ props }">
+          <v-btn
+            icon
+            class="text-primary"
+            color="lightprimary"
+            rounded="sm"
+            size="small"
+            variant="flat"
+            v-bind="props"
           >
-            <img
-              src="@/assets/images/profile/user-round.svg"
-              alt="Julia"
+            <BellIcon
+              stroke-width="1.5"
+              size="22"
+            />
+          </v-btn>
+        </template>
+
+        <v-sheet
+          rounded="xl"
+          width="330"
+          elevation="12"
+        >
+          <NotificationDD />
+        </v-sheet>
+      </v-menu>
+
+      <!-- PROFILE -->
+      <v-menu :close-on-content-click="false">
+        <template #activator="{ props }">
+          <v-btn
+            variant="text"
+            rounded="pill"
+            height="54"
+            v-bind="props"
+          >
+            <v-avatar
+              size="36"
+              class="mr-3"
             >
-          </v-avatar>
-          <SettingsIcon stroke-width="1.5" />
-        </v-btn>
-      </template>
-      <v-sheet
-        rounded="md"
-        width="330"
-        elevation="12"
-      >
-        <ProfileDD />
-      </v-sheet>
-    </v-menu>
+              <img
+                src="@/assets/images/profile/user-round.svg"
+                alt="User"
+              >
+            </v-avatar>
+
+            <div class="text-left">
+              <div class="font-weight-semibold">
+                {{ userContext?.organization.name }}
+              </div>
+
+              <div class="text-caption text-medium-emphasis">
+                {{ userContext?.firstName }} {{ userContext?.lastName }}
+              </div>
+            </div>
+          </v-btn>
+        </template>
+
+        <v-sheet
+          rounded="xl"
+          width="330"
+          elevation="12"
+        >
+          <ProfileDD />
+        </v-sheet>
+      </v-menu>
+    </div>
   </v-app-bar>
 </template>
+
+<script setup lang="ts">
+import {
+  BellIcon,
+  Menu2Icon,
+  MoonIcon,
+  SunIcon
+} from 'vue-tabler-icons';
+
+import {
+  onBeforeUnmount,
+  onMounted,
+  ref
+} from 'vue';
+import { IAuthState } from '@/@application/states/interfaces/IAuthState';
+
+import { useCustomizerState } from '@/@presentation/composables/useCustomizerState';
+
+import NotificationDD from './NotificationDD.vue';
+import ProfileDD from './ProfileDD.vue';
+
+import { container } from '@/@infrastructure/ioc/inversify.config';
+import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
+
+const authState = container.get<IAuthState>(
+  SYMBOLS.States.AuthState
+);
+
+const { userContext } = authState;
+
+const {
+  miniSidebar,
+  toggleSidebarDrawer,
+  setMiniSidebar,
+  toggleTheme,
+  isDarkTheme
+} = useCustomizerState();
+
+const isScrolled = ref(false);
+
+const handleScroll = () => {
+  isScrolled.value = window.scrollY > 8;
+};
+
+onMounted(() => {
+  handleScroll();
+
+  window.addEventListener(
+    'scroll',
+    handleScroll,
+    { passive: true }
+  );
+});
+
+onBeforeUnmount(() => {
+  window.removeEventListener(
+    'scroll',
+    handleScroll
+  );
+});
+</script>

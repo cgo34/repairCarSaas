@@ -6,8 +6,4 @@ export interface UserApiModel {
   full_name: string;
   first_name?: string;
   last_name?: string;
-  role: 'technician' | 'garage' | 'admin' | 'independant_technician' | 'user';
-  subscription?: SubscriptionApiModel;
-  percentage_commission?: number;
-  is_blocked?: boolean;
 }

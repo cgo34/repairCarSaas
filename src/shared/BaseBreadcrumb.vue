@@ -1,3 +1,31 @@
+<template>
+  <div class="mb-4">
+    <v-breadcrumbs
+      :items="breadcrumbs"
+      class="mb-4 pa-0"
+    >
+      <template #prepend>
+        <v-icon
+          icon="mdi-home"
+          size="small"
+          class="mr-2 text-primary"
+        />
+      </template>
+    </v-breadcrumbs>
+
+    <h1 class="text-h4 font-weight-bold mb-1">
+      {{ title }}
+    </h1>
+
+    <div
+      v-if="subtitle"
+      class="text-body-1 text-medium-emphasis"
+    >
+      {{ subtitle }}
+    </div>
+  </div>
+</template>
+
 <script setup lang="ts">
 import { ChevronRightIcon } from 'vue-tabler-icons';
 
@@ -6,85 +34,10 @@ type Breadcrumb = {
   disabled: boolean;
   href: string;
 };
+
 const props = defineProps({
   title: String,
+  subtitle: String,
   breadcrumbs: Array as () => Breadcrumb[],
-  icon: String
 });
 </script>
-
-// ===============================|| Theme Breadcrumb ||=============================== //
-<template>
-  <v-row class="page-breadcrumb mb-1">
-    <v-col
-      cols="12"
-      md="12"
-    >
-      <!-- <v-card
-        variant="flat"
-        class="px-4 py-3"
-      > -->
-      <v-row
-        no-gutters
-        class="align-center"
-      >
-        <v-col md="5">
-          <h3 class="text-h3">
-            {{ props.title }}
-          </h3>
-        </v-col>
-
-        <v-col
-          md="7"
-          sm="12"
-          cols="12"
-        >
-          <v-breadcrumbs
-            :items="props.breadcrumbs"
-            class="text-h5 justify-md-end pa-1"
-          >
-            <template #divider>
-              <div class="d-flex align-center">
-                <ChevronRightIcon size="17" />
-              </div>
-            </template>
-            <template #prepend>
-              <v-icon
-                size="small"
-                icon="mdi-home"
-                class="text-primary mr-2"
-              />
-              <div class="d-flex align-center">
-                <ChevronRightIcon size="17" />
-              </div>
-            </template>
-          </v-breadcrumbs>
-        </v-col>
-      </v-row>
-      <!-- </v-card> -->
-    </v-col>
-    <!-- <v-col
-      cols="12"
-      md="12"
-    >
-      <v-row
-        no-gutters
-        class="align-start"
-      >
-        <v-col md="5">
-          <h3 class="text-h3">
-            {{ props.title }}
-          </h3>
-        </v-col>
-      </v-row>
-    </v-col> -->
-  </v-row>
-</template>
-
-<style lang="scss">
-.page-breadcrumb {
-  .v-toolbar {
-    background: transparent;
-  }
-}
-</style>

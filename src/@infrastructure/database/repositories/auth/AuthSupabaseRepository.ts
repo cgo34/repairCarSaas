@@ -11,7 +11,7 @@ import { SupabaseClient } from '../../clients/SupabaseClient';
 import { UserApiModel } from '../../api/UserApiModel';
 import { CreateOrganizationTechnicianDto } from '@/@application/dtos/organizations/CreateOrganizationTechnicianDto';
 
-const USER_PROFILE_SELECT = 'id, email, full_name, first_name, last_name, role, percentage_commission';
+const USER_PROFILE_SELECT = 'id, email, full_name, first_name, last_name';
 
 @injectable()
 export class AuthSupabaseRepository implements IAuthRepository {
@@ -42,8 +42,6 @@ export class AuthSupabaseRepository implements IAuthRepository {
         full_name: userProfile?.full_name ?? (data.user.user_metadata as any)?.fullName ?? '',
         first_name: userProfile?.first_name,
         last_name: userProfile?.last_name,
-        role: (userProfile?.role as UserRole) ?? 'technician',
-        percentage_commission: userProfile?.percentage_commission,
       });
     } catch (error) {
       console.error('[AuthRepository] login error:', error);
@@ -71,8 +69,6 @@ export class AuthSupabaseRepository implements IAuthRepository {
       full_name: userProfile?.full_name ?? (data.user.user_metadata as any)?.fullName ?? '',
       first_name: userProfile?.first_name,
       last_name: userProfile?.last_name,
-      role: (userProfile?.role as UserRole) ?? 'technician',
-      percentage_commission: userProfile?.percentage_commission,
     });
 
     return { user: userDto, error };
@@ -106,17 +102,22 @@ export class AuthSupabaseRepository implements IAuthRepository {
   }
 
   async getCurrentUser(): Promise<UserDto | null> {
-    const { data: authData } = await this.clientProvider.getClient().auth.user();
-    if (!authData?.user) {
-      return null;
-    }
+    const { data: authData } = await this.clientProvider.getClient().auth.getUser()
+    // if (!authData?.user) return null
 
-    const { data: userProfile } = await this.clientProvider
-      .getClient()
+    console.log('auth data', authData);
+
+    const { data: userProfile, error } = await this.clientProvider.getClient()
       .from('users')
       .select(USER_PROFILE_SELECT)
       .eq('id', authData.user.id)
-      .maybeSingle<UserApiModel>();
+      .returns<UserApiModel[]>()
+      .single()
+
+    if (error) {
+      console.warn('[AuthRepository] Could not fetch user profile:', error)
+      return null
+    }
 
     return UserMapper.apiToDto({
       id: authData.user.id,
@@ -124,9 +125,7 @@ export class AuthSupabaseRepository implements IAuthRepository {
       full_name: userProfile?.full_name ?? (authData.user.user_metadata as any)?.fullName ?? '',
       first_name: userProfile?.first_name,
       last_name: userProfile?.last_name,
-      role: (userProfile?.role as UserRole) ?? 'technician',
-      percentage_commission: userProfile?.percentage_commission,
-    });
+    })
   }
 
   async updateEmail(newEmail: string): Promise<void> {

@@ -53,7 +53,7 @@ export function useSettingPriceBodyPartCoefficientState(): IUseSettingPriceBodyP
     try {
       if (!authState.userContext.value?.organization.id) throw new Error('User does not exist');
 
-      return useCase.getByUserId(authState.userContext.value?.organization.id).then((dtos) => {    
+      return useCase.getByOrganizationId(authState.userContext.value?.organization.id).then((dtos) => {    
             
         if (!dtos.length) {
           useCase.getAdmin().then((adminDtos) => {         

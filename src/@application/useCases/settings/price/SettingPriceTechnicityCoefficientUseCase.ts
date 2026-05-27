@@ -16,8 +16,8 @@ export class SettingPriceTechnicityCoefficientUseCase implements ISettingPriceTe
     return this.repository.getAdmin();
   }
 
-  async getByUserId(userId: string): Promise<SettingPriceTechnicityCoefficientDto> {
-    return this.repository.getByUserId(userId);
+  async getByOrganizationId(organizationId: string): Promise<SettingPriceTechnicityCoefficientDto> {
+    return this.repository.getByOrganizationId(organizationId);
   }
 
   async save(dto: SettingPriceTechnicityCoefficientDto): Promise<SettingPriceTechnicityCoefficientDto> {
