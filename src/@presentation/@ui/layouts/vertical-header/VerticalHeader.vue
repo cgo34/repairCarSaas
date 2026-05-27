@@ -49,8 +49,7 @@
     <div class="d-flex align-center ga-3">
       <!-- HELP -->
       <v-btn
-        class="text-primary"
-        color="lightprimary"
+        class="text-primary hidden-sm-and-down"
         rounded="lg"
         variant="tonal"
       >
