@@ -52,130 +52,89 @@
         </PeriodFilterBar>
       </div>
 
-      <!-- TABLE -->
-      <v-card
-        flat
-        rounded="lg"
-        border
-      >
-        <v-data-table
-          v-model="selectedInvoices"
-          :headers="activeHeaders"
-          :items="filteredInvoices"
-          :sort-by="[{ key: 'createdAt', order: 'desc' }]"
-          show-select
-          item-value="id"
-          return-object
-          no-data-text="Aucune facture trouvée"
-          class="text-subtitle-2"
-        >
-          <template #top>
-            <v-toolbar flat>
-              <v-toolbar-title>
-                <div class="d-flex align-center">
-                  <div class="invoice-toolbar-icon">
-                    <v-icon
-                      icon="mdi-file-document-multiple-outline"
-                      size="18"
-                    />
-                  </div>
 
-                  <div class="ml-3">
-                    <div class="text-subtitle-1 font-weight-bold">
-                      Gestion des factures
-                    </div>
-
-                    <div class="text-caption text-medium-emphasis">
-                      {{ filteredInvoices.length }} facture(s)
-
-                      <span v-if="hasActiveFilter">
-                        · période sélectionnée
-                      </span>
-
-                      <span
-                        v-if="selectedInvoices.length > 0"
-                        class="ml-1"
-                      >
-                        · {{ selectedInvoices.length }} sélectionné(s)
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </v-toolbar-title>
-
-              <div>
-                <transition name="fade">
-                  <div
-                    v-if="!mobile"
-                    class="d-flex align-center gap-2"
-                  >
-                    <v-btn
-                      color="primary"
-                      variant="flat"
-                      prepend-icon="mdi-download-multiple"
-                      rounded="lg"
-                      :loading="downloading"
-                      :disabled="selectedInvoices.length === 0"
-                      @click="onBulkDownload"
-                    >
-                      Télécharger ZIP
-                    </v-btn>
-                  </div>
-                </transition>
-              </div>
-
+      <!-- ACTIONS BAR -->
+      <div class="d-flex mb-2">
+        <div>
+          <transition name="fade">
+            <div
+              v-if="!mobile"
+              class="d-flex align-center gap-2"
+            >
               <v-btn
-                class="ml-2"
                 color="primary"
-                prepend-icon="mdi-plus"
-                rounded="lg"
                 variant="flat"
-                :size="mobile ? 'small' : 'default'"
-                @click="onAddInvoice"
+                prepend-icon="mdi-download-multiple"
+                :loading="downloading"
+                :disabled="selectedInvoices.length === 0"
+                @click="onBulkDownload"
               >
-                <span class="d-none d-sm-inline">
-                  Ajouter une Facture
-                </span>
-
-                <span class="d-sm-none">
-                  Nouvelle
-                </span>
+                Télécharger ZIP
               </v-btn>
-            </v-toolbar>
-          </template>
+            </div>
+          </transition>
+        </div>
+        <v-btn
+          class="ml-2"
+          color="primary"
+          prepend-icon="mdi-plus"
+          variant="flat"
+          :size="mobile ? 'small' : 'default'"
+          @click="onAddInvoice"
+        >
+          <span class="d-none d-sm-inline">
+            Ajouter une Facture
+          </span>
 
-          <template #item.invoiceNumber="{ value }">
-            <span class="font-weight-semibold text-primary">
-              #{{ value }}
-            </span>
-          </template>
+          <span class="d-sm-none">
+            Nouvelle
+          </span>
+        </v-btn>
+      </div>
 
-          <template #item.createdAt="{ value }">
-            <span class="text-no-wrap">
-              {{
-                value
-                  ? new Date(value).toLocaleDateString('fr-FR')
-                  : ''
-              }}
-            </span>
-          </template>
+      <v-data-table
+        v-model="selectedInvoices"
+        :headers="activeHeaders"
+        :items="filteredInvoices"
+        :sort-by="[{ key: 'createdAt', order: 'desc' }]"
+        show-select
+        item-value="id"
+        return-object
+        no-data-text="Aucune facture trouvée"
+        class="text-subtitle-2"
+      >
+        <template #item.invoiceNumber="{ value }">
+          <span class="font-weight-semibold text-primary">
+            #{{ value }}
+          </span>
+        </template>
 
-          <template #item.garage="{ value }">
-            {{ value?.name }}
-          </template>
+        <template #item.createdAt="{ value }">
+          <span class="text-no-wrap">
+            {{
+              value
+                ? new Date(value).toLocaleDateString('fr-FR')
+                : ''
+            }}
+          </span>
+        </template>
 
-          <template #item.status="{ value }">
-            <v-chip
-              :text="statusLabel(getStatusCode(value))"
-              :color="statusColor(getStatusCode(value))"
-              variant="tonal"
-              size="small"
-            />
-          </template>
+        <template #item.garage="{ value }">
+          {{ value?.name }}
+        </template>
 
-          <template #item.technician="{ item }">
-            <div class="d-flex align-center ga-2 text-no-wrap">
-              <!-- <v-avatar
+        <template #item.status="{ value }">
+          <v-chip
+            :text="statusLabel(getStatusCode(value))"
+            :color="statusColor(getStatusCode(value))"
+            variant="tonal"
+            size="small"
+          />
+        </template>
+
+        <template #item.technician="{ item }">
+          <div class="d-flex align-center ga-2 text-no-wrap">
+            <!-- <v-avatar
                 size="28"
                 color="primary"
                 variant="tonal"
@@ -187,123 +146,122 @@
                 </span>
               </v-avatar> -->
 
-              <span>
-                {{
-                  `${item.assignedMember?.users?.first_name ?? ''} ${item.assignedMember?.users?.last_name ?? ''}`.trim()
-                }}
-              </span>
-            </div>
-          </template>
-
-          <template #item.sent="{ item }">
-            <div class="tw-flex tw-items-center tw-gap-2">
-              <v-chip
-                :color="item.isSent ? 'success' : 'error'"
-                variant="tonal"
-                size="small"
-              >
-                <v-icon start>
-                  {{
-                    item.isSent
-                      ? 'mdi-check-circle'
-                      : 'mdi-close-circle'
-                  }}
-                </v-icon>
-
-                {{
-                  item.isSent && item.sentAt
-                    ? new Date(item.sentAt).toLocaleDateString('fr-FR')
-                    : 'Non envoyé'
-                }}
-              </v-chip>
-            </div>
-          </template>
-
-          <template #item.total="{ item }">
-            <span class="text-no-wrap">
+            <span>
               {{
-                item.totalHt
-                  ? `${item.totalHt} €`
-                  : item.isForfait
-                    ? `${item.forfaitAmount ?? 0} €`
-                    : '0 €'
+                `${item.assignedMember?.users?.first_name ?? ''} ${item.assignedMember?.users?.last_name ?? ''}`.trim()
               }}
             </span>
-          </template>
+          </div>
+        </template>
 
-          <template #item.actions="{ item }">
-            <div class="tw-flex tw-items-center tw-gap-1">
-              <v-tooltip text="Envoyer">
-                <template #activator="{ props }">
-                  <v-btn
-                    v-bind="props"
-                    icon
-                    variant="text"
-                    size="small"
-                    color="success"
-                    @click="onSendBtnClick(item.id)"
-                  >
-                    <v-icon size="18">
-                      mdi-send
-                    </v-icon>
-                  </v-btn>
-                </template>
-              </v-tooltip>
+        <template #item.sent="{ item }">
+          <div class="tw-flex tw-items-center tw-gap-2">
+            <v-chip
+              :color="item.isSent ? 'success' : 'error'"
+              variant="tonal"
+              size="small"
+            >
+              <v-icon start>
+                {{
+                  item.isSent
+                    ? 'mdi-check-circle'
+                    : 'mdi-close-circle'
+                }}
+              </v-icon>
 
-              <v-tooltip text="Voir">
-                <template #activator="{ props }">
-                  <v-btn
-                    v-bind="props"
-                    icon
-                    variant="text"
-                    size="small"
-                    color="primary"
-                    @click="onViewPdfBtnClick(item.id)"
-                  >
-                    <v-icon size="18">
-                      mdi-file-pdf-box
-                    </v-icon>
-                  </v-btn>
-                </template>
-              </v-tooltip>
+              {{
+                item.isSent && item.sentAt
+                  ? new Date(item.sentAt).toLocaleDateString('fr-FR')
+                  : 'Non envoyé'
+              }}
+            </v-chip>
+          </div>
+        </template>
 
-              <v-tooltip text="Modifier">
-                <template #activator="{ props }">
-                  <v-btn
-                    v-bind="props"
-                    icon
-                    variant="text"
-                    size="small"
-                    color="warning"
-                    @click="onEditInvoice(item.id)"
-                  >
-                    <v-icon size="18">
-                      mdi-pencil
-                    </v-icon>
-                  </v-btn>
-                </template>
-              </v-tooltip>
+        <template #item.total="{ item }">
+          <span class="text-no-wrap">
+            {{
+              item.totalHt
+                ? `${item.totalHt} €`
+                : item.isForfait
+                  ? `${item.forfaitAmount ?? 0} €`
+                  : '0 €'
+            }}
+          </span>
+        </template>
 
-              <v-tooltip text="Supprimer">
-                <template #activator="{ props }">
-                  <v-btn
-                    v-bind="props"
-                    icon
-                    variant="text"
-                    size="small"
-                    color="error"
-                    @click="onDeleteBtnClick(item.id)"
-                  >
-                    <v-icon size="18">
-                      mdi-trash-can-outline
-                    </v-icon>
-                  </v-btn>
-                </template>
-              </v-tooltip>
-            </div>
-          </template>
-        </v-data-table>
-      </v-card>
+        <template #item.actions="{ item }">
+          <div class="tw-flex tw-items-center tw-gap-1">
+            <v-tooltip text="Envoyer">
+              <template #activator="{ props }">
+                <v-btn
+                  v-bind="props"
+                  icon
+                  variant="text"
+                  size="small"
+                  color="success"
+                  @click="onSendBtnClick(item.id)"
+                >
+                  <v-icon size="18">
+                    mdi-send
+                  </v-icon>
+                </v-btn>
+              </template>
+            </v-tooltip>
+
+            <v-tooltip text="Voir">
+              <template #activator="{ props }">
+                <v-btn
+                  v-bind="props"
+                  icon
+                  variant="text"
+                  size="small"
+                  color="primary"
+                  @click="onViewPdfBtnClick(item.id)"
+                >
+                  <v-icon size="18">
+                    mdi-file-pdf-box
+                  </v-icon>
+                </v-btn>
+              </template>
+            </v-tooltip>
+
+            <v-tooltip text="Modifier">
+              <template #activator="{ props }">
+                <v-btn
+                  v-bind="props"
+                  icon
+                  variant="text"
+                  size="small"
+                  color="warning"
+                  @click="onEditInvoice(item.id)"
+                >
+                  <v-icon size="18">
+                    mdi-pencil
+                  </v-icon>
+                </v-btn>
+              </template>
+            </v-tooltip>
+
+            <v-tooltip text="Supprimer">
+              <template #activator="{ props }">
+                <v-btn
+                  v-bind="props"
+                  icon
+                  variant="text"
+                  size="small"
+                  color="error"
+                  @click="onDeleteBtnClick(item.id)"
+                >
+                  <v-icon size="18">
+                    mdi-trash-can-outline
+                  </v-icon>
+                </v-btn>
+              </template>
+            </v-tooltip>
+          </div>
+        </template>
+      </v-data-table>
     </v-container>
   </MainLayout>
 
