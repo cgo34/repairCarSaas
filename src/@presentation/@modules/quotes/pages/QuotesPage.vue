@@ -8,14 +8,37 @@
        
 
       <div class="d-flex mb-3 pb-1 align-center justify-space-between gap-2">
-        <v-btn
-          icon
-          variant="text"
-          :class="['mr-2', { 'bg-primary text-white': showFilters }, { 'bg-transparent text-primary': !showFilters }]"
-          @click="showFilters = !showFilters"
-        >
-          <v-icon>mdi-filter-cog-outline</v-icon>
-        </v-btn>
+        <div class="d-flex align-center gap-2">
+          <v-btn
+            icon
+            variant="text"
+            :class="[{ 'bg-primary text-white': showFilters }, { 'bg-transparent text-primary': !showFilters }]"
+            @click="showFilters = !showFilters"
+          >
+            <v-icon>mdi-filter-cog-outline</v-icon>
+          </v-btn>
+          <span
+            v-if="filterCount > 0"
+            class="text-caption font-weight-medium"
+            style="margin-left: 8px;"
+          >
+            {{ filterCount === 1 ? '1 filtre sélectionné' : filterCount + ' filtres sélectionnés' }}
+          </span>
+          <v-btn
+            v-if="filterCount > 0"
+            icon
+            size="small"
+            variant="text"
+            color="grey-darken-2"
+            style="margin-left: 2px; display: flex; align-items: center; justify-content: center; height: 24px; width: 24px;"
+            title="Réinitialiser les filtres"
+            @click="clearFilter"
+          >
+            <v-icon size="18">
+              mdi-close-circle
+            </v-icon>
+          </v-btn>
+        </div>
         <div class="d-flex gap-2">
           <div>
             <transition name="fade">
@@ -317,6 +340,11 @@
 </template>
 
 <script setup lang="ts">
+// Calcule le nombre de filtres actifs (dateFrom/dateTo)
+const filterCount = computed(() => {
+  // Considère la période comme un seul filtre si au moins une date est renseignée
+  return (dateFrom.value || dateTo.value) ? 1 : 0;
+});
 const showFilters = ref(false);
 import { IRegionManager } from '@/@core/managers/interfaces/IRegionManager';
 import { IAuthState } from '@/@application/states/interfaces/IAuthState';
