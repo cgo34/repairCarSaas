@@ -37,24 +37,18 @@
           </v-btn>
         </div>
         <div class="d-flex gap-2">
-          <div>
-            <transition name="fade">
-              <div
-                v-if="!mobile"
-                class="d-flex align-center gap-2"
-              >
-                <v-btn
-                  color="primary"
-                  variant="flat"
-                  prepend-icon="mdi-download-multiple"
-                  :loading="downloading"
-                  :disabled="selectedInvoices.length === 0"
-                  @click="onBulkDownload"
-                >
-                  Télécharger ZIP
-                </v-btn>
-              </div>
-            </transition>
+          <div class="d-flex align-center gap-2">
+            <v-btn
+              color="primary"
+              variant="flat"
+              prepend-icon="mdi-download-multiple"
+              :loading="downloading"
+              :size="mobile ? 'small' : 'default'"
+              :disabled="selectedInvoices.length === 0"
+              @click="onBulkDownload"
+            >
+              Télécharger ZIP
+            </v-btn>
           </div>
           <v-btn
             class="ml-2"
