@@ -4,18 +4,18 @@ import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
 
 import {
   BuildingCommunityIcon,
-// BuildingWarehouseIcon,
-SettingsDollarIcon,
-CircleIcon,
-DashboardIcon,
-FileInvoiceIcon,
-FileEuroIcon,
-ListIcon,
-ToolIcon,
-UserIcon,
-SettingsIcon,
-CreditCardIcon,
-// ClockDollarIcon,
+  // BuildingWarehouseIcon,
+  SettingsDollarIcon,
+  CircleIcon,
+  DashboardIcon,
+  FileInvoiceIcon,
+  FileEuroIcon,
+  ListIcon,
+  ToolIcon,
+  UserIcon,
+  SettingsIcon,
+  CreditCardIcon,
+  // ClockDollarIcon,
 } from 'vue-tabler-icons';
 
 const authState = container.get<IAuthState>(SYMBOLS.States.AuthState);
@@ -25,153 +25,202 @@ const { subscription } = authState;
 const isFreePlan = subscription.value?.subscriptionPlan.name === 'free';
 
 export const adminMenu = [
-// ─────────────────────────────────────────────────────────
-// Dashboard
-// ─────────────────────────────────────────────────────────
-{
-title: 'Tableau de bord',
-icon: DashboardIcon,
-to: '/dashboard',
-},
+  // ─────────────────────────────────────────────────────────
+  // Dashboard
+  // ─────────────────────────────────────────────────────────
+  {
+    title: 'Tableau de bord',
+    icon: DashboardIcon,
+    to: '/dashboard',
+  },
 
-{ divider: true },
+  {
+    divider: true,
+  },
 
-// ─────────────────────────────────────────────────────────
-// Devis
-// ─────────────────────────────────────────────────────────
-{
-title: 'Devis',
-icon: FileInvoiceIcon,
-children: [
-{
-title: 'Nouveau devis',
-icon: FileInvoiceIcon,
-to: '/quotes/add',
-},
-{
-title: 'Tous les devis',
-icon: ListIcon,
-to: '/quotes',
-},
-],
-},
+  // ─────────────────────────────────────────────────────────
+  // Activité
+  // ─────────────────────────────────────────────────────────
+  {
+    header: 'Activité',
+    roles: ['admin'],
+  },
 
-// ─────────────────────────────────────────────────────────
-// Factures
-// ─────────────────────────────────────────────────────────
-{
-title: 'Factures',
-icon: FileEuroIcon,
-children: [
-{
-title: 'Nouvelle facture',
-icon: FileInvoiceIcon,
-to: '/invoices/new',
-},
-{
-title: 'Toutes les factures',
-icon: ListIcon,
-to: '/invoices',
-},
-],
-},
+  // ─────────────────────────────────────────────────────────
+  // Devis
+  // ─────────────────────────────────────────────────────────
+  {
+    title: 'Devis',
+    icon: FileInvoiceIcon,
+    children: [
+      {
+        title: 'Nouveau devis',
+        icon: FileInvoiceIcon,
+        to: '/quotes/add',
+      },
+      {
+        title: 'Tous les devis',
+        icon: ListIcon,
+        to: '/quotes',
+      },
+    ],
+  },
 
-{ divider: true },
+  // ─────────────────────────────────────────────────────────
+  // Factures
+  // ─────────────────────────────────────────────────────────
+  {
+    title: 'Factures',
+    icon: FileEuroIcon,
+    children: [
+      {
+        title: 'Nouvelle facture',
+        icon: FileInvoiceIcon,
+        to: '/invoices/new',
+      },
+      {
+        title: 'Toutes les factures',
+        icon: ListIcon,
+        to: '/invoices',
+      },
+    ],
+  },
 
-// ─────────────────────────────────────────────────────────
-// Organisation
-// ─────────────────────────────────────────────────────────
-{ header: 'Organisation',
-  roles: ['admin']
-},
+  {
+    divider: true,
+  },
 
-{
-title: 'Garages',
-icon: BuildingCommunityIcon,
-to: '/organization/garages',
-chip: isFreePlan ? 'Premium' : '',
-},
+  // ─────────────────────────────────────────────────────────
+  // Organisation
+  // ─────────────────────────────────────────────────────────
+  {
+    header: 'Organisation',
+    roles: ['admin'],
+  },
 
-{
-title: 'Utilisateurs',
-icon: UserIcon,
-to: '/organization/members',
-chip: isFreePlan ? 'Premium' : '',
-roles: ['admin'],
-},
+  {
+    title: 'Garages',
+    icon: BuildingCommunityIcon,
+    to: '/organization/garages',
+    chip: isFreePlan ? 'Premium' : '',
+  },
 
-{
-title: 'Paramètres entreprise',
-icon: SettingsIcon,
-to: '/organization/settings',
-roles: ['admin'],
-},
+  {
+    title: 'Utilisateurs',
+    icon: UserIcon,
+    to: '/organization/members',
+    chip: isFreePlan ? 'Premium' : '',
+    roles: ['admin'],
+  },
 
-{
-title: 'Tarification',
-icon: SettingsDollarIcon,
-roles: ['admin'],
-children: [
-{
-title: 'Pièces carrosserie',
-icon: CircleIcon,
-to: '/organization/pricing/body-parts',
-roles: ['superadmin']
-},
-{
-title: 'Matériaux carrosserie',
-icon: CircleIcon,
-to: '/organization/pricing/body-materials',
-roles: ['superadmin'],
-},
-{
-title: 'Types de réparation',
-icon: ToolIcon,
-to: '/organization/pricing/repair-types',
-roles: ['superadmin'],
-},
-{
-title: 'Paramètres généraux',
-icon: CircleIcon,
-to: '/organization/pricing/general',
-},
-{
-title: 'Prix unitaire impact',
-icon: CircleIcon,
-to: '/organization/pricing/impact-unit-time',
-},
-{
-title: 'Coeff. technicité',
-icon: CircleIcon,
-to: '/organization/pricing/technicity-coefficients',
-},
-{
-title: 'Coeff. variation',
-icon: CircleIcon,
-to: '/organization/pricing/variation-coefficients',
-},
-],
-},
+  {
+    divider: true,
+  },
 
-{ 
-  divider: true,
-  roles: ['admin']
-},
+  // ─────────────────────────────────────────────────────────
+  // Paramètres
+  // ─────────────────────────────────────────────────────────
+  {
+    header: 'Paramètres',
+    roles: ['admin'],
+  },
 
-// ─────────────────────────────────────────────────────────
-// Abonnement
-// ─────────────────────────────────────────────────────────
-{ 
-  header: 'Abonnement',
-  roles: ['admin']
-},
+  {
+    title: 'Entreprise',
+    icon: SettingsIcon,
+    to: '/organization/settings',
+    roles: ['admin'],
+  },
 
-{
-title: 'Mon abonnement',
-icon: CreditCardIcon,
-to: '/subscription',
-roles: ['admin']
-},
+  {
+    title: 'Tarification',
+    icon: SettingsDollarIcon,
+    roles: ['admin'],
+    children: [
+      {
+        title: 'Pièces carrosserie',
+        icon: CircleIcon,
+        to: '/organization/pricing/body-parts',
+        roles: ['superadmin'],
+      },
+
+      {
+        title: 'Matériaux carrosserie',
+        icon: CircleIcon,
+        to: '/organization/pricing/body-materials',
+        roles: ['superadmin'],
+      },
+
+      {
+        title: 'Types de réparation',
+        icon: ToolIcon,
+        to: '/organization/pricing/repair-types',
+        roles: ['superadmin'],
+      },
+
+      {
+        title: 'Général',
+        icon: CircleIcon,
+        to: '/organization/pricing/general',
+      },
+
+      {
+        title: 'Impact',
+        icon: CircleIcon,
+        to: '/organization/pricing/impact-unit-time',
+      },
+
+      {
+        title: 'Technicité',
+        icon: CircleIcon,
+        to: '/organization/pricing/technicity-coefficients',
+      },
+
+      {
+        title: 'Variations',
+        icon: CircleIcon,
+        to: '/organization/pricing/variation-coefficients',
+      },
+    ],
+  },
+
+  {
+    divider: true,
+    roles: ['admin'],
+  },
+
+  // ─────────────────────────────────────────────────────────
+  // Abonnement
+  // ─────────────────────────────────────────────────────────
+  {
+    header: 'Abonnement',
+    roles: ['admin'],
+  },
+
+  {
+    title: 'Abonnement',
+    icon: CreditCardIcon,
+    roles: ['admin'],
+    children: [
+      {
+        title: 'Mon abonnement',
+        icon: CircleIcon,
+        to: '/subscription/overview',
+      },
+
+      {
+        title: 'Utilisation',
+        icon: CircleIcon,
+        to: '/subscription/usage',
+      },
+
+      {
+        title: 'Factures abonnement',
+        icon: CircleIcon,
+        to: '/subscription/invoices',
+      },
+    ],
+  },
 ];
 
 export const menu = adminMenu;

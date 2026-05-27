@@ -5,6 +5,7 @@ import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
 import { useCustomizerState } from '@/@presentation/composables/useCustomizerState';
 import { computed } from 'vue';
 import ExtraBox from './extrabox/ExtraBox.vue';
+import UpgradePlanCard from './extrabox/UpgradePlanCard.vue';
 import { menu } from './menu/adminMenu';
 import NavCollapse from './NavCollapse/NavCollapse.vue';
 import NavGroup from './NavGroup/NavGroup.vue';
@@ -17,6 +18,7 @@ import { filterMenuByRole } from '@/@presentation/helpers/menu/filterMenuByRole'
 
 const authState = container.get<IAuthState>(SYMBOLS.States.AuthState);
 const { userContext, subscription } = authState
+console.log('User Context:', userContext.value.subscription);
 
 const {
     setMiniSidebar,
@@ -111,10 +113,10 @@ const sidebarMenu = computed(() => {
         </template>
       </v-list>
       <div
-        v-if="subscription?.subscriptionPlan?.name === 'free'"
+        v-if="userContext?.subscription?.plan === 'free'"
         class="pa-4"
       >
-        <ExtraBox />
+        <UpgradePlanCard />
       </div>
       <div class="pa-4 text-center">
         <v-chip

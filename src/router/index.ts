@@ -5,20 +5,24 @@ import { authRoutes } from './modules/auth/authRoutes';
 // import { logoutRoute } from './modules/auth/logoutRoute';
 import { authGuard } from './modules/auth/navigationGuards';
 import { carSettingsRoutes } from './modules/carSettings/carSettingsRoutes';
+import { settingPriceRoutes } from './modules/settingPrice/settingPriceRoutes';
 import { dashboardRoutes } from './modules/dashboard/dashboardRoutes';
 import { garageRoutes } from './modules/garage/garageRoutes';
 import { invoiceRoutes } from './modules/invoice/invoiceRoutes';
 import { quoteRoutes } from './modules/quote/quoteRoutes';
 import { usersRoutes } from './modules/user/userRoutes';
+import { organizationRoutes } from './modules/organization/organizationRoutes';
 
 const routes: RouteRecordRaw[] = [
   ...authRoutes,
-  ...dashboardRoutes,
   ...carSettingsRoutes,
-  ...usersRoutes,
-  ...garageRoutes,
+  ...dashboardRoutes,
   ...quoteRoutes,
   ...invoiceRoutes,
+  ...garageRoutes,
+  ...usersRoutes,
+  ...organizationRoutes,
+  ...settingPriceRoutes,
   ...accountRoutes,
   // logoutRoute,
 ];
