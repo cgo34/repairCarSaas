@@ -159,8 +159,6 @@ export function useCreateInvoiceState() {
           )
           .catch(() => []),
       ]);
-
-      console.log('technicianResult', technicianResult);
       
       const status =
         DocumentStatuseMapper.dtoToView(

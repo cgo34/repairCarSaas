@@ -222,73 +222,38 @@
 
         <template #item.actions="{ item }">
           <div class="tw-flex tw-items-center tw-gap-1">
-            <v-tooltip text="Envoyer">
+            <v-menu>
               <template #activator="{ props }">
                 <v-btn
-                  v-bind="props"
-                  icon
-                  variant="text"
                   size="small"
-                  color="success"
-                  @click="onSendBtnClick(item.id)"
-                >
-                  <v-icon size="18">
-                    mdi-send
-                  </v-icon>
-                </v-btn>
+                  flat
+                  icon="mdi-dots-vertical"
+                  v-bind="props"
+                />
               </template>
-            </v-tooltip>
 
-            <v-tooltip text="Voir">
-              <template #activator="{ props }">
-                <v-btn
-                  v-bind="props"
-                  icon
-                  variant="text"
-                  size="small"
-                  color="primary"
-                  @click="onViewPdfBtnClick(item.id)"
+              <v-list>
+                <v-list-item
+                  v-for="(menuItem, index) in items"
+                  :key="index"
                 >
-                  <v-icon size="18">
-                    mdi-file-pdf-box
-                  </v-icon>
-                </v-btn>
-              </template>
-            </v-tooltip>
+                  <v-list-item-title
+                    class="d-flex align-center gap-2"
+                    @click="menuItem.action(item.id)"
+                  >
+                    <v-icon
+                      :color="menuItem.color"
+                      class="mr-3"
+                      size="18"
+                    >
+                      {{ menuItem.icon }}
+                    </v-icon>
 
-            <v-tooltip text="Modifier">
-              <template #activator="{ props }">
-                <v-btn
-                  v-bind="props"
-                  icon
-                  variant="text"
-                  size="small"
-                  color="warning"
-                  @click="onEditInvoice(item.id)"
-                >
-                  <v-icon size="18">
-                    mdi-pencil
-                  </v-icon>
-                </v-btn>
-              </template>
-            </v-tooltip>
-
-            <v-tooltip text="Supprimer">
-              <template #activator="{ props }">
-                <v-btn
-                  v-bind="props"
-                  icon
-                  variant="text"
-                  size="small"
-                  color="error"
-                  @click="onDeleteBtnClick(item.id)"
-                >
-                  <v-icon size="18">
-                    mdi-trash-can-outline
-                  </v-icon>
-                </v-btn>
-              </template>
-            </v-tooltip>
+                    {{ menuItem.title }}
+                  </v-list-item-title>
+                </v-list-item>
+              </v-list>
+            </v-menu>
           </div>
         </template>
       </v-data-table>
@@ -385,15 +350,15 @@ const desktopHeaders = [
   { title: 'Garage', key: 'garage.name' },
   { title: 'Technicien', key: 'technician' },
   { title: 'Envoyé', key: 'sent' },
-  { title: 'Total', align: 'end' as const, key: 'total', minWidth: 140 },
-  { title: 'Actions', sortable: false, key: 'actions', minWidth: 200 },
+  { title: 'Total', align: 'end' as const, key: 'total' },
+  { title: 'Actions', sortable: false, key: 'actions' },
 ];
 
 const mobileHeaders = [
   { title: 'N°', align: 'start' as const, key: 'invoiceNumber' },
   { title: 'Date', key: 'createdAt' },
   { title: 'Statut', key: 'status' },
-  { title: 'Total', align: 'end' as const, key: 'total', minWidth: 120 },
+  { title: 'Total', align: 'end' as const, key: 'total' },
   { title: '', sortable: false, key: 'actions' },
 ];
 
@@ -555,6 +520,33 @@ const onDeleteBtnClick = (
     .value
     ?.open();
 };
+
+const items = [
+  {
+    title: 'Envoyer',
+    icon: 'mdi-send',
+    color: 'success',
+    action: onSendBtnClick
+  },
+  {
+    title: 'PDF',
+    icon: 'mdi-file-pdf-box',
+    color: 'primary',
+    action: onViewPdfBtnClick
+  },
+  {
+    title: 'Editer',
+    icon: 'mdi-pencil',
+    color: 'warning',
+    action: onEditInvoice
+  },
+  {
+    title: 'Supprimer',
+    icon: 'mdi-delete',
+    color: 'error',
+    action: onDeleteBtnClick
+  }
+];
 
 const onConfirmDeleteInvoice = () => {
   if (_invoiceToDelete.value) {

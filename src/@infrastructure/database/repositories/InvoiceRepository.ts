@@ -225,8 +225,6 @@ export class InvoiceRepository implements IInvoiceRepository {
   async create(invoice: InvoiceDto): Promise<InvoiceDto> {
     const invoiceApi = InvoiceMapper.dtoToApi(invoice);
 
-    console.log('Creating invoice with API model:', invoiceApi);
-
     const { data, error } = await this.clientProvider.getClient()
       .from('invoices')
       .insert(invoiceApi)

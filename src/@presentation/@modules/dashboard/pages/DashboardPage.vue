@@ -288,7 +288,6 @@ import { onMounted } from 'vue';
 import { useAuthState } from '../../auth/composables/useAuthState';
 
 const { userContext } = useAuthState();
-console.log('DashboardPage - userContext:', userContext.value);
 
 const {
   totalUsers,

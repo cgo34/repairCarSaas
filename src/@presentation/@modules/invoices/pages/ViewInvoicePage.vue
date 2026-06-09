@@ -87,10 +87,8 @@ const onDownloadBtnClick = () => {
 
 const onSendBtnClick = async () => {
   // TODO: TO DELETE (verify)
-  console.log('onSendBtnClick - Sending invoice...');
   try {
     await sendInvoice();
-    console.log('Invoice sent successfully!');
     alert('Facture envoyée avec succès!');
   } catch (error) {
     console.error('Error sending invoice:', error);

@@ -11,8 +11,16 @@
         <div class="d-flex align-center justify-space-between">
           <!-- Gauche : retour + titre -->
           <div class="d-flex flex-column align-center gap-2 min-w-0">
-            <div class="min-w-0">
-              <div class="d-flex flex-column  align-left gap-2 flex-wrap">
+            <div class="d-flex min-w-0">
+              <v-btn
+                icon
+                variant="text"
+                size="small"
+                @click="$router.back()"
+              >
+                <v-icon>mdi-arrow-left</v-icon>
+              </v-btn>
+              <div class="d-flex flex-column  align-left gap-2 flex-wrap ml-5">
                 <div>
                   <span class="text-subtitle-1 font-weight-bold text-truncate my-2">
                     Facture numéro :
