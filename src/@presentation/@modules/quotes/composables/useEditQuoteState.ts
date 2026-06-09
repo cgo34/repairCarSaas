@@ -108,7 +108,7 @@ export function useEditQuoteState() {
           bodyPartUseCase.executeGetAll().catch(() => []),
           bodyMaterialUseCase.executeGetAll().catch(() => []),
           repairTypeUseCase.executeGetAll().catch(() => []),
-          priceParamsUseCase.getByorganizationId(authState.userContext.value.organization.id).catch(() => undefined),
+          priceParamsUseCase.getByOrganizationId(authState.userContext.value.organization.id).catch(() => undefined),
         ]);
 
       // Mapping des données principales
@@ -118,6 +118,7 @@ export function useEditQuoteState() {
         throw new Error('Quote not found');
 
       _quote.value = QuoteMapper.dtoToView(quoteDto);
+
       _quoteLines.value = quoteDetailDto?.map((line, idx) => ({
         ...LineItemMapper.dtoToView(line),
         lineId: idx + 1,
@@ -139,11 +140,11 @@ export function useEditQuoteState() {
       if (priceParamsResult) {
         _priceParams.value = SettingPriceMapper.dtoToView(priceParamsResult);
         // Recalculer les lignes existantes dont le prix est 0
-        _quoteLines.value.forEach(line => {
-          if ((!line.price || line.price === 0) && line.bodyPart && line.bodyMaterial && line.repairType) {
-            computePrice(line);
-          }
-        });
+        // _quoteLines.value.forEach(line => {
+        //   if ((!line.price || line.price === 0) && line.bodyPart && line.bodyMaterial && line.repairType) {
+        //     computePrice(line);
+        //   }
+        // });
       }
       // Charger les véhicules du garage si présent
       // if (_quote.value.garage?.id) {
@@ -393,11 +394,10 @@ export function useEditQuoteState() {
   });
 
   const computePrice = (line: LineItemViewModel) => {
-    // if (!_priceParams.value) {
-    //   console.warn('[Quote] computePrice: _priceParams non chargé, prix = 0');
-    //   line.price = 0;
-    //   return;
-    // }
+    if (!_priceParams.value) {
+      return;
+    }
+
     try {
       const lineItemViewDto = LineItemMapper.viewToDto(line);
       const priceDto = SettingPriceMapper.viewToDto(_priceParams.value);
@@ -410,7 +410,7 @@ export function useEditQuoteState() {
 
   const addLine = async (line: LineItemViewModel) => {
     line.quoteId = _quote.value?.id
-    console.log('price params, _priceParams.value')
+    
     if (_priceParams.value)
       computePrice(line)
     else

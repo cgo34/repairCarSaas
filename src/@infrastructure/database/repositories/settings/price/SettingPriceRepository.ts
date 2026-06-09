@@ -34,9 +34,9 @@ export class SettingPriceRepository implements ISettingPriceRepository {
 
     const [bodyParts, technicity, impactsCount] = await Promise.all([
       // this.settingPriceDiameterCoefficientRepository.getByorganizationId(organizationId),
-      this.settingPriceBodyPartCoefficientRepository.getByorganizationId(organizationId),
-      this.settingPriceTechnicityCoefficientRepository.getByorganizationId(organizationId),
-      this.settingPriceImpactCountToUtRepository.getByorganizationId(organizationId),
+      this.settingPriceBodyPartCoefficientRepository.getByOrganizationId(organizationId),
+      this.settingPriceTechnicityCoefficientRepository.getByOrganizationId(organizationId),
+      this.settingPriceImpactCountToUtRepository.getByOrganizationId(organizationId),
     ]);
 
     // Fallback sur les defaults si certains sous-paramètres manquent
@@ -59,10 +59,9 @@ export class SettingPriceRepository implements ISettingPriceRepository {
 
   async createForUser(organizationId: string): Promise<void> {
     // Vérifier si les settings existent déjà pour éviter les doublons
-    const existingSettings = await this.getByorganizationId(organizationId);
+    const existingSettings = await this.getByOrganizationId(organizationId);
 
     if (existingSettings !== null) {
-      console.log('[SettingPriceRepo] Settings already exist for user:', organizationId);
       return;
     }
 

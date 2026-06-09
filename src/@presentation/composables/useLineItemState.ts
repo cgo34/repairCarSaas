@@ -52,7 +52,7 @@ export function useLineItemState() {
         await Promise.allSettled([
           bodyMaterialUseCase.executeGetAll(),
           repairTypeUseCase.executeGetAll(),
-          priceParamsUseCase.getByorganizationId(authState.userContext.value?.organization.id),
+          priceParamsUseCase.getByOrganizationId(authState.userContext.value?.organization.id),
         ]);
 
       if (bodyMaterialResult.status === 'fulfilled')

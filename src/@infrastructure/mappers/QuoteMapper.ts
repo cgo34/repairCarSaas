@@ -92,7 +92,7 @@ export class QuoteMapper {
         api.car_immatriculation,
 
       carYear:
-        api.car_year.toString(),
+        api.car_year?.toString(),
 
       /**
        * ============================================================
