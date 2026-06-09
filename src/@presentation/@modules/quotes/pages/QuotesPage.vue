@@ -234,8 +234,40 @@
         <!-- ACTIONS -->
         <template #item.actions="{ item }">
           <div class="tw-flex tw-items-center tw-gap-1">
+            <v-menu>
+              <template #activator="{ props }">
+                <v-btn
+                  size="small"
+                  flat
+                  v-bind="props"
+                  icon="mdi-dots-vertical"
+                />
+              </template>
+              <v-list>
+                <v-list-item
+                  v-for="(menuItem, index) in items"
+                  :key="index"
+                  :value="index"
+                >
+                  <v-list-item-title
+                    class="d-flex align-center gap-2"
+                    @click="menuItem.action(item.id)"
+                  >
+                    <v-icon
+                      :color="menuItem.color"
+                      class="mr-3"
+                      size="18"
+                    >
+                      {{ menuItem.icon }}
+                    </v-icon>
+                    {{ menuItem.title }}
+                  </v-list-item-title>
+                </v-list-item>
+              </v-list>
+            </v-menu>
+    
             <!-- SEND -->
-            <v-tooltip text="Envoyer">
+            <!-- <v-tooltip text="Envoyer">
               <template #activator="{ props }">
                 <v-btn
                   v-bind="props"
@@ -250,10 +282,10 @@
                   </v-icon>
                 </v-btn>
               </template>
-            </v-tooltip>
+            </v-tooltip> -->
 
             <!-- PDF -->
-            <v-tooltip text="Voir">
+            <!-- <v-tooltip text="Voir">
               <template #activator="{ props }">
                 <v-btn
                   v-bind="props"
@@ -268,10 +300,10 @@
                   </v-icon>
                 </v-btn>
               </template>
-            </v-tooltip>
+            </v-tooltip> -->
 
             <!-- EDIT -->
-            <v-tooltip text="Modifier">
+            <!-- <v-tooltip text="Modifier">
               <template #activator="{ props }">
                 <v-btn
                   v-bind="props"
@@ -286,10 +318,10 @@
                   </v-icon>
                 </v-btn>
               </template>
-            </v-tooltip>
+            </v-tooltip> -->
 
             <!-- DELETE -->
-            <v-tooltip text="Supprimer">
+            <!-- <v-tooltip text="Supprimer">
               <template #activator="{ props }">
                 <v-btn
                   v-bind="props"
@@ -304,7 +336,7 @@
                   </v-icon>
                 </v-btn>
               </template>
-            </v-tooltip>
+            </v-tooltip> -->
           </div>
         </template>
       </v-data-table>
@@ -429,8 +461,8 @@ const desktopHeaders = [
   { title: 'Garage', key: 'garage.name' },
   { title: 'Technicien', key: 'technician' },
   { title: 'Envoyé', key: 'sent' },
-  { title: 'Total', align: 'end' as const, key: 'total', minWidth: 140 },
-  { title: 'Actions', sortable: false, key: 'actions', minWidth: 200 },
+  { title: 'Total', align: 'end' as const, key: 'total' },
+  { title: 'Actions', sortable: false, align: 'end', key: 'actions' },
 ];
 
 const mobileHeaders = [
@@ -549,6 +581,7 @@ const onBulkDownload = async () => {
   }
 };
 
+
 const onAddQuote = () => {
   router.push('/quotes/add');
 };
@@ -594,6 +627,14 @@ const onDeleteBtnClick = (
     .value
     ?.open();
 };
+
+
+const items = [
+        { title: 'Envoyer', icon: 'mdi-send', color: 'success', action:  onSendBtnClick },
+        { title: 'PDF', icon: 'mdi-file-pdf-box', color: 'primary', action: onViewPdfBtnClick },
+        { title: 'Editer', icon: 'mdi-pencil', color: 'yellow', action: onEditQuote },
+        { title: 'Supprimer', icon: 'mdi-delete', color: 'error', action: onDeleteBtnClick },
+      ];
 
 const onConfirmDeleteQuote = () => {
   if (_quoteIdToDelete.value) {

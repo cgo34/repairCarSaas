@@ -15,7 +15,7 @@
           >
             <v-icon>mdi-arrow-left</v-icon>
           </v-btn>
-          <div>
+          <div class="ml-5">
             <div class="text-h6 font-weight-bold">
               Nouveau devis
             </div>
