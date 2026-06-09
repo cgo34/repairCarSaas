@@ -154,7 +154,7 @@ export function useCreateQuoteState() {
   const carInformations = computed(() => ({
     immatriculation: _quote.value?.carImmatriculation ?? '',
     brand: _quote.value?.carBrand ?? '',
-    year: _quote.value?.carYear ?? '',
+    dateEntryCirculation: _quote.value?.carYear ?? '',
   }));
   
 
@@ -236,7 +236,9 @@ export function useCreateQuoteState() {
 
   const setCarDateEntryCirculation = (dateEntryCirculation: string) => {
     if (_quote.value) {
+      console.log('Setting car year to', dateEntryCirculation);
       _quote.value.carYear = dateEntryCirculation;
+      carInformations.value.dateEntryCirculation = dateEntryCirculation;
     }
   }
 
