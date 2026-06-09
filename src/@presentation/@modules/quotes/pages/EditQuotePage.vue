@@ -905,7 +905,7 @@
   // ── Handlers actions ──────────────────────────────────────────────────────────
   const onAcceptedBtnClick = () => updateQuoteStatus({ code: 'accepted'});
   const onRefusedBtnClick = () => updateQuoteStatus({ code: 'refused'});
-  const onSendBtnClick = () => console.log('send quote');
+  const onSendBtnClick = () => console.log('send quote to be implemented');
   const onDuplicateQuoteToInvoiceBtnClick = () => duplicateQuoteToInvoice();
   const onViewPdfBtnClick = () => router.push(`/quotes/${route.params.id}/view`);
   const onDeleteBtnClick = () => deleteQuoteConfirmDialogRef.value?.open();

@@ -27,8 +27,6 @@ export function useInvoicesState() {
           authState.userContext.value?.membership.role
         );
         _invoices.value = invoicesDto.map(invoice => InvoiceMapper.dtoToView(invoice));
-        
-        console.log('Mapped Invoices:', _invoices.value);
       }
     } catch (e) {
       console.error('[Invoices] Erreur lors du chargement des factures:', e);

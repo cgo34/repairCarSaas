@@ -249,7 +249,7 @@ const onEditBtnClick = (item: OrganizationMemberViewModel) => {
 };
 
 const onAddGarageBtnClick = (item: OrganizationMemberViewModel) => {
-  console.log('add garage for user with id:', item);
+  console.log('add garage to be implemented');
 }
 
 const onCloseEditDialogBtnClick = () => {

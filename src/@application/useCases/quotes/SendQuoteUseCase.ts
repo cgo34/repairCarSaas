@@ -77,7 +77,6 @@ export class SendQuoteUseCase implements ISendQuoteUseCase {
   private extractBase64FromDataUrl(dataUrl: string): string {
     const base64Marker = ';base64,';
     const base64Index = dataUrl.indexOf(base64Marker);
-    console.log('Data URL:', dataUrl, base64Index);
     if (base64Index === -1) {
       throw new Error('Invalid data URL format');
     }

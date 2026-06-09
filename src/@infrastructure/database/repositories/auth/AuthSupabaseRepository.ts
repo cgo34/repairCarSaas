@@ -105,8 +105,6 @@ export class AuthSupabaseRepository implements IAuthRepository {
     const { data: authData } = await this.clientProvider.getClient().auth.getUser()
     // if (!authData?.user) return null
 
-    console.log('auth data', authData);
-
     const { data: userProfile, error } = await this.clientProvider.getClient()
       .from('users')
       .select(USER_PROFILE_SELECT)

@@ -10,7 +10,6 @@ export async function initAuth() {
 
     // Configurer l'écouteur d'état d'authentification
     authProvider.onAuthStateChange((event, session) => {
-      console.log('Auth state changed:', event, session);
       if (event === 'SIGNED_IN' && session?.user) {
         authState.user.value = session.user;
         authState.isAuthenticated.value = true;
