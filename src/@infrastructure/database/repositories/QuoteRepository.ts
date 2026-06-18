@@ -290,6 +290,14 @@ export class QuoteRepository implements IQuoteRepository {
   }
 
   async getByTechnicianId(technicianId: string): Promise<QuoteDto[]> {
+    const { data: memberData } = await this.clientProvider.getClient()
+      .from('organization_members')
+      .select('id')
+      .eq('user_id', technicianId)
+      .maybeSingle<{ id: string }>();
+
+    if (!memberData?.id) return [];
+
     const { data, error } = await this.clientProvider.getClient()
       .from('quotes')
       .select(`
@@ -297,7 +305,7 @@ export class QuoteRepository implements IQuoteRepository {
         status:document_statuses(*),
         quote_details(price, dent_removal_price)
       `)
-      .eq('technician_id', technicianId)
+      .or(`assigned_member_id.eq.${memberData.id},created_by_member_id.eq.${memberData.id}`)
       .returns<QuoteApiModel[]>();
 
     if (error) throw new Error('Error fetching quotes by technician');

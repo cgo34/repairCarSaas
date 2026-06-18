@@ -23,7 +23,7 @@ export function useInvoicesState() {
       if (authState.isAuthenticated && authState.userContext.value) {
         const invoicesDto = await getInvoicesUseCase.execute(
           authState.userContext.value?.organization.id,
-          authState.userContext.value.user_id,
+          authState.userContext.value.membership.id,
           authState.userContext.value?.membership.role
         );
         _invoices.value = invoicesDto.map(invoice => InvoiceMapper.dtoToView(invoice));

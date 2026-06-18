@@ -15,11 +15,25 @@ export class GetTechnicianStatsUseCase implements IGetTechnicianStatsUseCase {
   async execute(technicianId: string): Promise<TechnicianStatsDto> {
     const client = this.clientProvider.getClient();
 
+    // Résoudre le member UUID depuis le user_id
+    const { data: memberData, error: memberError } = await client
+      .from('organization_members')
+      .select('id, percentage_commission')
+      .eq('user_id', technicianId)
+      .maybeSingle<{ id: string; percentage_commission: number | string }>();
+
+    if (memberError) console.error('[Stats] member error:', memberError.message);
+
+    const memberId = memberData?.id;
+    if (!memberId) {
+      return { technicianId, quotesInProgress: 0, invoicesCount: 0, commissionDue: 0 };
+    }
+
     // Requête 1 : devis du technicien
     const { data: quotesData, error: quotesError } = await client
       .from('quotes')
       .select('id')
-      .eq('technician_id', technicianId)
+      .or(`assigned_member_id.eq.${memberId},created_by_member_id.eq.${memberId}`)
       .returns<{ id: string }[]>();
 
     if (quotesError) console.error('[Stats] quotes error:', quotesError.message);
@@ -28,7 +42,7 @@ export class GetTechnicianStatsUseCase implements IGetTechnicianStatsUseCase {
     const { data: invoicesData, error: invoicesError } = await client
       .from('invoices')
       .select('id, total_ht')
-      .eq('technician_id', technicianId)
+      .or(`assigned_member_id.eq.${memberId},created_by_member_id.eq.${memberId}`)
       .returns<{ id: string; total_ht: number }[]>();
 
     if (invoicesError) console.error('[Stats] invoices error:', invoicesError.message);
@@ -37,16 +51,7 @@ export class GetTechnicianStatsUseCase implements IGetTechnicianStatsUseCase {
     const invoices = invoicesData ?? [];
     const totalHt = invoices.reduce((sum, inv) => sum + (inv.total_ht ?? 0), 0);
 
-    // Requête 3 : commission du technicien
-    const { data: userData, error: userError } = await client
-      .from('users')
-      .select('percentage_commission')
-      .eq('id', technicianId)
-      .maybeSingle<{ percentage_commission: number | string }>();
-
-    if (userError) console.error('[Stats] commission error:', userError.message);
-
-    const pct = parseFloat(String(userData?.percentage_commission ?? 0));
+    const pct = parseFloat(String(memberData?.percentage_commission ?? 0));
 
     return {
       technicianId,

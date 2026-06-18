@@ -282,6 +282,7 @@ import MainLayout from '@/@presentation/@ui/layouts/MainLayout.vue';
 import AssignGarageDialog from '@/@presentation/@modules/technicians/components/AssignGarageDialog.vue';
 import { IUseTechnicianDetailState } from '@/@presentation/types/composables/IUseTechnicianDetailState';
 import { IGarageUseCase } from '@/@domain/useCases/IGarageUseCase';
+import { IAuthState } from '@/@application/states/interfaces/IAuthState';
 import { GarageDto } from '@/@application/dtos/GarageDto';
 import { QuoteDto } from '@/@application/dtos/QuoteDto';
 import { container } from '@/@infrastructure/ioc/inversify.config';
@@ -290,6 +291,7 @@ import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
 const route = useRoute();
 const state = container.get<IUseTechnicianDetailState>(SYMBOLS.States.TechnicianDetailState);
 const garageUseCase = container.get<IGarageUseCase>(SYMBOLS.UseCases.Garage);
+const authState = container.get<IAuthState>(SYMBOLS.States.AuthState);
 
 const garageDialog = ref(false);
 const allGarages = ref<GarageDto[]>([]);
@@ -360,9 +362,10 @@ async function toggleBlock() {
 
 onMounted(async () => {
   const id = route.params.id as string;
+  const organizationId = authState.userContext.value?.organization.id ?? '';
   const [, garages] = await Promise.all([
     state.init(id),
-    garageUseCase.getGarages(),
+    garageUseCase.getGaragesByOrganizationId(organizationId),
   ]);
   allGarages.value = garages;
 });

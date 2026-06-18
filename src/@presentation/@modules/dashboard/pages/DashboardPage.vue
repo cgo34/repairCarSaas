@@ -84,7 +84,7 @@
           sm="3"
         >
           <DashboardStatCard
-            title="Factures validées"
+            title="Factures payées"
             :value="loading ? '...' : invoicesValidated"
             :amount="loading ? '' : invoicesValidatedHt"
             icon="BadgeCheckIcon"
