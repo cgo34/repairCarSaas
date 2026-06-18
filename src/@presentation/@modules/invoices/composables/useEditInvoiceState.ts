@@ -88,7 +88,7 @@ export function useEditInvoiceState() {
   );
 
   const deleteLineItemUseCase = container.get<IDeleteLineItemUseCase>(
-    SYMBOLS.UseCases.Invoice.DeleteLineItemUseCase,
+    SYMBOLS.UseCases.Quote.DeleteLineItemUseCase,
   );
   // #endregion
 

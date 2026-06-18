@@ -396,7 +396,7 @@ container.bind<IGetInvoiceUseCase>(SYMBOLS.UseCases.Invoice.GetInvoiceUseCase).t
 container.bind<IGetInvoiceDetailUseCase>(SYMBOLS.UseCases.Invoice.GetInvoiceDetailsUseCase).to(GetInvoiceDetailUseCase).inSingletonScope();
 // container.bind<ISaveInvoiceUseCase>(SYMBOLS.UseCases.Invoice.SaveInvoiceUseCase).to(SaveInvoiceUseCase).inSingletonScope();
 container.bind<IAddInvoiceLineItemUseCase>(SYMBOLS.UseCases.Invoice.AddLineItemUseCase).to(AddInvoiceLineItemUseCase).inSingletonScope();
-container.bind<IDeleteLineItemUseCase>(SYMBOLS.UseCases.Invoice.DeleteLineItemUseCase).to(DeleteLineItemUseCase).inSingletonScope();
+// container.bind<IDeleteLineItemUseCase>(SYMBOLS.UseCases.Invoice.DeleteLineItemUseCase).to(DeleteLineItemUseCase).inSingletonScope();
 container.bind<IGenerateInvoicePdfUseCase>(SYMBOLS.UseCases.Invoice.GenerateInvoicePdfUseCase).to(GenerateInvoicePdfUseCase).inSingletonScope();
 container.bind<ISendInvoiceUseCase>(SYMBOLS.UseCases.Invoice.SendInvoiceUseCase).to(SendInvoiceUseCase);
 
