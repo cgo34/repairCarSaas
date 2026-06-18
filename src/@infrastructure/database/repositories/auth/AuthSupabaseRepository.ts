@@ -11,7 +11,7 @@ import { SupabaseClient } from '../../clients/SupabaseClient';
 import { UserApiModel } from '../../api/UserApiModel';
 import { CreateOrganizationTechnicianDto } from '@/@application/dtos/organizations/CreateOrganizationTechnicianDto';
 
-const USER_PROFILE_SELECT = 'id, email, full_name, first_name, last_name';
+const USER_PROFILE_SELECT = 'id, email, full_name, first_name, last_name, is_blocked';
 
 @injectable()
 export class AuthSupabaseRepository implements IAuthRepository {
@@ -123,6 +123,7 @@ export class AuthSupabaseRepository implements IAuthRepository {
       full_name: userProfile?.full_name ?? (authData.user.user_metadata as any)?.fullName ?? '',
       first_name: userProfile?.first_name,
       last_name: userProfile?.last_name,
+      is_blocked: userProfile?.is_blocked,
     })
   }
 

@@ -6,4 +6,6 @@ export interface UserApiModel {
   full_name: string;
   first_name?: string;
   last_name?: string;
+  is_blocked?: boolean;
+  percentage_commission?: number;
 }

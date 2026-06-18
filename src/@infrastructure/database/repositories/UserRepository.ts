@@ -60,7 +60,8 @@ export class UserRepository implements IUserRepository {
 
     const { error } = await this.clientProvider.getClient()
       .from('users')
-      .upsert({ id, ...apiModel }, { onConflict: 'id' });
+      .update(apiModel)
+      .eq('id', id);
 
     if (error) throw new Error(`Error updating user: ${error.message}`);
   }

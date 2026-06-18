@@ -31,6 +31,51 @@
         @submit.prevent="onSave"
       >
         <v-row>
+          <!-- ─── Logo ──────────────────────────────────────────── -->
+          <v-col cols="12">
+            <div class="section-header mb-3">
+              <v-icon
+                size="18"
+                color="primary"
+                class="mr-2"
+              >
+                mdi-image
+              </v-icon>
+              <span class="text-subtitle-1 font-weight-semibold">Logo de l'entreprise</span>
+            </div>
+            <v-card
+              variant="outlined"
+              class="pa-4"
+            >
+              <v-row dense>
+                <v-col cols="12">
+                  <v-text-field
+                    v-model="form.logoUrl"
+                    label="URL du logo"
+                    variant="outlined"
+                    density="comfortable"
+                    placeholder="https://example.com/logo.png"
+                    hint="URL publique d'une image (PNG, JPG). Apparaîtra sur vos devis et factures."
+                    persistent-hint
+                    prepend-inner-icon="mdi-link"
+                  />
+                </v-col>
+                <v-col
+                  v-if="form.logoUrl"
+                  cols="12"
+                  class="mt-2"
+                >
+                  <div class="text-caption text-medium-emphasis mb-1">Aperçu :</div>
+                  <img
+                    :src="form.logoUrl"
+                    alt="Logo entreprise"
+                    style="max-height: 80px; max-width: 280px; object-fit: contain; border: 1px solid #eee; border-radius: 4px; padding: 8px;"
+                  />
+                </v-col>
+              </v-row>
+            </v-card>
+          </v-col>
+
           <!-- ─── Identité légale ─────────────────────────────── -->
           <v-col cols="12">
             <div class="section-header mb-3">
@@ -399,7 +444,7 @@ const saved = ref(false);
 const snackbar = reactive({ show: false, message: '', color: 'success' });
 
 const emptyForm = (): CompanySettingsViewModel => ({
-  userId: authState.user?.value?.id ?? '',
+  userId: authState.userContext?.value?.id ?? '',
   companyName: '',
   legalForm: '',
   siren: '',
@@ -483,7 +528,7 @@ const onReset = () => {
 // #endregion
 
 onMounted(async () => {
-  const userId = authState.user?.value?.id;
+  const userId = authState.userContext?.value?.id;
   if (!userId) return;
   await init(userId);
   if (settings.value) {

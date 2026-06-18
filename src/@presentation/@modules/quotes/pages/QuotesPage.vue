@@ -422,7 +422,9 @@ const { mobile } = useDisplay();
 const {
   init,
   quotes,
-  deleteQuote
+  deleteQuote,
+  sendQuote,
+  convertToInvoice,
 } = useQuoteState;
 
 const {
@@ -586,11 +588,15 @@ const onAddQuote = () => {
   router.push('/quotes/add');
 };
 
-const onSendBtnClick = (
+const onSendBtnClick = async (
   quoteId: string | undefined
 ) => {
-  if (!quoteId) {
-    return;
+  if (!quoteId) return;
+  try {
+    await sendQuote(quoteId);
+    showSnack('Devis envoyé avec succès !', 'success');
+  } catch {
+    showSnack("Erreur lors de l'envoi du devis.", 'error');
   }
 };
 
@@ -628,11 +634,22 @@ const onDeleteBtnClick = (
     ?.open();
 };
 
+const onConvertToInvoice = async (quoteId: string | undefined) => {
+  if (!quoteId) return;
+  try {
+    const invoiceId = await convertToInvoice(quoteId);
+    showSnack('Devis converti en facture !', 'success');
+    router.push(`/invoices/edit/${invoiceId}`);
+  } catch {
+    showSnack('Erreur lors de la conversion en facture.', 'error');
+  }
+};
 
 const items = [
         { title: 'Envoyer', icon: 'mdi-send', color: 'success', action:  onSendBtnClick },
         { title: 'PDF', icon: 'mdi-file-pdf-box', color: 'primary', action: onViewPdfBtnClick },
         { title: 'Editer', icon: 'mdi-pencil', color: 'yellow', action: onEditQuote },
+        { title: 'Facturer', icon: 'mdi-receipt-text-check', color: 'info', action: onConvertToInvoice },
         { title: 'Supprimer', icon: 'mdi-delete', color: 'error', action: onDeleteBtnClick },
       ];
 

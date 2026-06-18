@@ -19,4 +19,5 @@ export interface CompanySettingsDto {
   paymentDelay?: number;
   latePaymentPenalty?: string;
   recoveryFee?: string;
+  logoUrl?: string;
 }

@@ -4,4 +4,6 @@ export type UserViewModel = {
   full_name: string;
   first_name?: string;
   last_name?: string;
+  isBlocked?: boolean;
+  percentageCommission?: number;
 }

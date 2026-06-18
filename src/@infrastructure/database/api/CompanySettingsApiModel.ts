@@ -19,6 +19,7 @@ export interface CompanySettingsApiModel {
   payment_delay?: number;
   late_payment_penalty?: string;
   recovery_fee?: string;
+  logo_url?: string;
   created_at?: string;
   updated_at?: string;
 }

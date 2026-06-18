@@ -19,4 +19,5 @@ export interface CompanySettingsViewModel {
   paymentDelay: number;
   latePaymentPenalty: string;
   recoveryFee: string;
+  logoUrl: string;
 }

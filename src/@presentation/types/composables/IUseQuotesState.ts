@@ -8,4 +8,6 @@ export interface IUseQuotesState {
   init(): Promise<void>;
   quotes: ComputedRef<QuoteViewModel[]>;
   deleteQuote(quoteId: string): Promise<void>;
+  sendQuote(quoteId: string): Promise<void>;
+  convertToInvoice(quoteId: string): Promise<string>;
 }

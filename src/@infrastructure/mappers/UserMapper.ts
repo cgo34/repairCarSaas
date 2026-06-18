@@ -26,7 +26,8 @@ export class UserMapper {
       ...(dto.fullName !== undefined && { full_name: dto.fullName }),
       ...(dto.firstName !== undefined && { first_name: dto.firstName }),
       ...(dto.lastName !== undefined && { last_name: dto.lastName }),
-      // ...(dto.percentageCommission !== undefined && { percentage_commission: dto.percentageCommission }),
+      ...(dto.percentageCommission !== undefined && { percentage_commission: dto.percentageCommission }),
+      ...(dto.isBlocked !== undefined && { is_blocked: dto.isBlocked }),
     };
   }
 

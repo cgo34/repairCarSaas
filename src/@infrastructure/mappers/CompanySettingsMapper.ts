@@ -24,6 +24,7 @@ export class CompanySettingsMapper {
       paymentDelay: api.payment_delay,
       latePaymentPenalty: api.late_payment_penalty,
       recoveryFee: api.recovery_fee,
+      logoUrl: api.logo_url,
     };
   }
 
@@ -49,6 +50,7 @@ export class CompanySettingsMapper {
       payment_delay: dto.paymentDelay,
       late_payment_penalty: dto.latePaymentPenalty,
       recovery_fee: dto.recoveryFee,
+      logo_url: dto.logoUrl,
     };
   }
 }

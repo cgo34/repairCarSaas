@@ -40,6 +40,10 @@ export class GetAuthenticatedUserContextUseCase implements IAuthenticatedUserCon
 
   const userProfile = await this.authRepository.getCurrentUser();
 
+    if (userProfile?.isBlocked) {
+      await this.authRepository.logout();
+      throw new Error("ACCOUNT_BLOCKED");
+    }
 
     // ───────────────────────────────────────────────────────
     // Get organization membership
@@ -88,6 +92,7 @@ export class GetAuthenticatedUserContextUseCase implements IAuthenticatedUserCon
       organization: {
         id: organization.id,
         name: organization.name,
+        ownerUserId: organization.owner_user_id,
       },
 
       membership: membership[0],

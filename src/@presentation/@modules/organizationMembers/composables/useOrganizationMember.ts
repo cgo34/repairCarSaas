@@ -6,11 +6,15 @@ import { IAuthState } from '@/@application/states/interfaces/IAuthState';
 import { IOrganizationMemberUseCase } from '@/@domain/useCases/organizationMember/IOrganizationMemberUseCase';
 import { ICreateOrganizationTechnicianUseCase } from '@/@domain/useCases/organizationMember/ICreateOrganizationTechnicianUseCase';
 import { IUseOrganizationMember } from '@/@presentation/types/composables/IUseOrganizationMember';
+import { ITechnicianGarageAccessRepository } from '@/@domain/repositories/ITechnicianGarageAccessRepository';
+import { IGarageUseCase } from '@/@domain/useCases/IGarageUseCase';
 
 import { OrganizationMemberFormFactory } from '@/@presentation/factories/OrganizationMemberFormFactory';
 import { OrganizationMemberForm } from '@/@presentation/types/forms/OrganizationMemberForm';
 import { OrganizationMemberViewModel } from '@/@presentation/types/models/organizations/OrganizationMemberViewmodel';
 import { OrganizationMemberMapper } from '@/@presentation/mappers/organizations/OrganizationMemberMapper';
+import { GarageMapper } from '@/@presentation/mappers/GarageMapper';
+import { GarageViewModel } from '@/@presentation/types/models/GarageViewModel';
 
 export function useOrganizationMember(): IUseOrganizationMember {
   const authState = container.get<IAuthState>(
@@ -27,6 +31,14 @@ export function useOrganizationMember(): IUseOrganizationMember {
       SYMBOLS.UseCases.CreateOrganizationTechnicianUseCase
     );
 
+  const garageAccessRepo =
+    container.get<ITechnicianGarageAccessRepository>(
+      SYMBOLS.Repositories.TechnicianGarageAccessRepository
+    );
+
+  const garageUseCase =
+    container.get<IGarageUseCase>(SYMBOLS.UseCases.Garage);
+
   /**
    * ============================================================
    * STATE
@@ -34,6 +46,8 @@ export function useOrganizationMember(): IUseOrganizationMember {
    */
 
   const _members = ref<OrganizationMemberViewModel[]>([]);
+  const _garages = ref<GarageViewModel[]>([]);
+  const _assignedGarageIds = ref<string[]>([]);
 
   const _selectedMemberForm = ref<OrganizationMemberForm>(
     OrganizationMemberFormFactory.createEmpty()
@@ -50,7 +64,12 @@ export function useOrganizationMember(): IUseOrganizationMember {
    */
 
   const init = async (): Promise<void> => {
-    await getMembers();
+    const organizationId = authState.userContext.value?.organization.id ?? '';
+    const [, garagesDto] = await Promise.all([
+      getMembers(),
+      garageUseCase.getGaragesByOrganizationId(organizationId).catch(() => []),
+    ]);
+    _garages.value = (garagesDto ?? []).map(GarageMapper.dtoToView);
   };
 
   /**
@@ -116,30 +135,56 @@ export function useOrganizationMember(): IUseOrganizationMember {
     loading.value = true;
 
     try {
-
       const organizationId = authState.userContext.value?.organization.id ?? '';
 
       const createdMember = await createOrganizationTechnicianUseCase.execute({
         organization_id: organizationId,
-
         first_name: form.first_name,
         last_name: form.last_name,
         email: form.email,
-
         role: form.role,
-
         percentage_commission: form.percentage_commission,
       });
 
       _members.value.push(createdMember);
 
+      if (form.garageIds?.length) {
+        await Promise.all(
+          form.garageIds.map(garageId =>
+            garageAccessRepo.assignGarage(createdMember.user_id, garageId)
+          )
+        );
+      }
+
       resetSelectedMemberForm();
     } catch (e) {
       error.value = e;
-
       throw e;
     } finally {
       loading.value = false;
+    }
+  };
+
+  /**
+   * ============================================================
+   * GARAGE ACCESS
+   * ============================================================
+   */
+
+  const loadAssignedGarages = async (userId: string): Promise<void> => {
+    const garages = await garageAccessRepo.getGaragesByTechnicianId(userId);
+    _assignedGarageIds.value = garages.map(g => g.id ?? '').filter(Boolean);
+  };
+
+  const toggleGarageAccess = async (userId: string, garageId: string, assign: boolean): Promise<void> => {
+    if (assign) {
+      await garageAccessRepo.assignGarage(userId, garageId);
+      if (!_assignedGarageIds.value.includes(garageId)) {
+        _assignedGarageIds.value = [..._assignedGarageIds.value, garageId];
+      }
+    } else {
+      await garageAccessRepo.removeGarage(userId, garageId);
+      _assignedGarageIds.value = _assignedGarageIds.value.filter(id => id !== garageId);
     }
   };
 
@@ -168,7 +213,7 @@ export function useOrganizationMember(): IUseOrganizationMember {
           form.percentage_commission,
       };
 
-      await organizationMemberUseCase.updateUser(
+      await organizationMemberUseCase.updateMember(
         form.id,
         dto
       );
@@ -247,27 +292,22 @@ export function useOrganizationMember(): IUseOrganizationMember {
 
   return {
     members: computed(() => _members.value),
+    garages: computed(() => _garages.value),
+    assignedGarageIds: computed(() => _assignedGarageIds.value),
 
-    selectedMemberForm: computed(
-      () => _selectedMemberForm.value
-    ),
+    selectedMemberForm: computed(() => _selectedMemberForm.value),
 
     loading,
-
     error,
 
     init,
-
     getMembers,
-
     selectMember,
-
     addMember,
-
     updateMember,
-
     archiveMember,
-
     resetSelectedMemberForm,
+    loadAssignedGarages,
+    toggleGarageAccess,
   };
 }

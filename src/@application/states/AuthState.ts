@@ -136,13 +136,15 @@ export class AuthState implements IAuthState {
 
       return this.userContext.value;
 
-    } catch (error) {
+    } catch (error: any) {
       console.error('AuthState login error:', error);
 
-      // ───────────────────────────────────────────────────────
-      // Reset auth state
-      // ───────────────────────────────────────────────────────
-      // this.authenticatedUserContext.value = null;
+      if (error?.message === "ACCOUNT_BLOCKED") {
+        this.userContext.value = null;
+        this.isAuthenticated.value = false;
+        localStorage.removeItem(this.STORAGE_KEY);
+        throw new AuthError(AuthErrorCode.LOGIN_FAILED, "Votre compte a ete bloque par un administrateur.", error);
+      }
 
       this.isAuthenticated.value = true;
 
@@ -277,11 +279,15 @@ export class AuthState implements IAuthState {
         this.userContext.value = authenticatedUserContext;
         this.isAuthenticated.value = true;
         this.pushState();
-      } catch (profileError) {
-        // Si le token Supabase est valide mais une requête de profil échoue, on reste connecté
-        console.error('[AuthState] Erreur lors de l’hydratation du profil, mais session Supabase OK:', profileError);
+      } catch (profileError: any) {
+        if (profileError?.message === "ACCOUNT_BLOCKED") {
+          this.userContext.value = null;
+          this.isAuthenticated.value = false;
+          localStorage.removeItem(this.STORAGE_KEY);
+          return;
+        }
+        console.error("[AuthState] Erreur hydratation profil, session Supabase OK:", profileError);
         this.isAuthenticated.value = true;
-        // On ne touche pas au localStorage ni à userContext
       }
     } catch (error) {
       console.error('Failed to refresh authenticated user (unexpected error)', error);

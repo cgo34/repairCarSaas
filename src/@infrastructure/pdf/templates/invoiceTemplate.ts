@@ -7,16 +7,25 @@ export const buildInvoiceHtmlTemplate = (invoice: InvoiceDto, lines: LineItemDto
 
   const totalHT = lines.reduce((sum, l) => sum + l.price, 0);
   const totalStripping = lines.reduce((sum, l) => sum + (l.dentRemovalPrice ?? 0), 0);
+  const totalBase = totalHT + totalStripping;
+  const garageCommissionRate = (invoice.garagePercentageCommission ?? 0) / 100;
+  const commissionAmount = garageCommissionRate > 0 ? Math.round(totalBase * garageCommissionRate * 100) / 100 : 0;
+  const totalAfterCommission = totalBase - commissionAmount;
   const taxRate = invoice.country === 'CH' ? 0.08 : 0;
-  const tva = (totalHT + totalStripping) * taxRate;
-  const totalTTC = totalHT + totalStripping + tva;
-  const currencySymbol = invoice.currency === 'EUR' ? '€' : invoice.currency;
+  const tva = totalAfterCommission * taxRate;
+  const totalTTC = totalAfterCommission + tva;
+  const currency = invoice.currency ?? 'EUR';
+  const currencySymbol = currency === 'EUR' ? '€' : currency;
 
-  const garageName   = invoice.garage?.name    ?? invoice.garageName    ?? '';
-  const garageAddr   = invoice.garage?.address ?? invoice.garageAddress ?? '';
-  const garageZip    = invoice.garage?.zipCode ?? invoice.garageZipCode ?? '';
-  const garageCity   = invoice.garage?.city    ?? invoice.garageCity    ?? '';
+  const displayTotal = invoice.isForfait
+    ? (() => {
+        const raw = invoice.forfaitAmount ?? 0;
+        const comm = garageCommissionRate > 0 ? Math.round(raw * garageCommissionRate * 100) / 100 : 0;
+        return raw - comm;
+      })()
+    : totalTTC;
 
+  const invoiceDate = new Date(invoice.startDate).toLocaleDateString('fr-FR');
   const dueDate = (() => {
     const d = new Date(invoice.startDate);
     d.setDate(d.getDate() + (c.paymentDelay ?? 30));
@@ -24,38 +33,22 @@ export const buildInvoiceHtmlTemplate = (invoice: InvoiceDto, lines: LineItemDto
   })();
 
   const companyDisplay = c.companyName || 'Votre entreprise';
+  const garageName = invoice.garage?.name    ?? invoice.garageName    ?? '';
+  const garageAddr = invoice.garage?.address ?? invoice.garageAddress ?? '';
+  const garageZip  = invoice.garage?.zipCode ?? invoice.garageZipCode ?? '';
+  const garageCity = invoice.garage?.city    ?? invoice.garageCity    ?? '';
 
-  const linesHtml = invoice.isForfait
-    ? `<tr><td colspan="4" style="padding:10px 12px;font-style:italic;">Réparation forfaitaire</td></tr>`
-    : lines.map(line => `
-        <tr>
-          <td>${line.bodyPart?.name || '-'}</td>
-          <td style="text-align:center;">${(line.impactCount25 ?? 0) + (line.impactCount35 ?? 0)}</td>
-          <td>${line.repairType?.name || '-'}</td>
-          <td class="amount">${line.price.toFixed(2)} ${currencySymbol}</td>
-        </tr>
-      `).join('');
+  const vehicleDesc = `Réparation du véhicule (${invoice.carBrand ?? ''} / ${invoice.carYear ?? ''} / ${invoice.carImmatriculation ?? ''})`;
 
-  const totalsHtml = invoice.isForfait
-    ? `<tr class="total-final"><td class="label">Total TTC</td><td class="amount">${invoice.forfaitAmount.toFixed(2)} ${currencySymbol}</td></tr>`
-    : `
-      <tr><td class="label">Total H.T.</td><td class="amount">${totalHT.toFixed(2)} ${currencySymbol}</td></tr>
-      <tr><td class="label">Dégarnissage</td><td class="amount">${totalStripping.toFixed(2)} ${currencySymbol}</td></tr>
-      <tr><td class="label">Base H.T.</td><td class="amount">${(totalHT + totalStripping).toFixed(2)} ${currencySymbol}</td></tr>
-      <tr><td class="label">TVA (${taxRate * 100}%)</td><td class="amount">${tva.toFixed(2)} ${currencySymbol}</td></tr>
-      <tr class="total-final"><td class="label">Total TTC</td><td class="amount">${totalTTC.toFixed(2)} ${currencySymbol}</td></tr>
-    `;
-
-  const ibanLine  = c.iban ? `<span>IBAN : ${c.iban}${c.bic ? ' — BIC : ' + c.bic : ''}</span>` : '';
-  const siretLine = c.siret ? `<span>SIRET : ${c.siret}</span>` : '';
-  const tvaLine   = c.tvaNumber ? `<span>TVA : ${c.tvaNumber}</span>` : '';
-  const penaltyLine = `<span>Pénalités de retard : ${c.latePaymentPenalty || '3 fois le taux légal'}. Indemnité forfaitaire de recouvrement : ${c.recoveryFee || '40 €'}.</span>`;
+  const tvaNote = taxRate > 0
+    ? `TVA ${taxRate * 100}% — Assujetti à la TVA en Suisse.`
+    : `TVA non applicable — Autoliquidation de la TVA par le client (Article 196 de la directive 2006/112/CE)`;
 
   return `<!DOCTYPE html>
 <html lang="fr">
 <head>
   <meta charset="UTF-8"/>
-  <title>Facture ${invoice.invoiceNumber}</title>
+  <title>Facture ${invoice.invoiceNumber ?? ''}</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; }
     html, body { margin: 0; padding: 0; background: #fff; }
@@ -71,108 +64,164 @@ export const buildInvoiceHtmlTemplate = (invoice: InvoiceDto, lines: LineItemDto
       color: #1a1a2e;
     }
 
-    /* ── Header ── */
     .header {
       background: #1a1a2e;
       color: #fff;
-      padding: 28px 40px;
+      padding: 22px 40px;
       display: flex;
       justify-content: space-between;
-      align-items: flex-start;
+      align-items: center;
     }
-    .header-company { max-width: 55%; }
-    .header-company .name { font-size: 22px; font-weight: 700; letter-spacing: 0.5px; margin: 0 0 4px; }
-    .header-company .tagline { font-size: 11px; opacity: 0.7; margin: 0; }
-    .header-company .coords { font-size: 11px; opacity: 0.85; margin-top: 10px; line-height: 1.6; }
+    .header-logo {
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      color: #fff;
+    }
     .header-doc { text-align: right; }
     .header-doc .doc-type {
-      font-size: 26px; font-weight: 800; letter-spacing: 1px;
-      color: #7c5cbf; margin: 0 0 8px;
+      font-size: 26px;
+      font-weight: 800;
+      letter-spacing: 2px;
+      color: #fff;
+      margin: 0 0 4px;
     }
-    .header-doc .meta { font-size: 12px; opacity: 0.85; line-height: 1.8; }
-    .header-doc .meta strong { color: #fff; }
-
-    /* ── Infos ── */
-    .info-section {
-      display: flex;
-      gap: 16px;
-      padding: 20px 40px;
-      border-bottom: 2px solid #f0f0f5;
-    }
-    .info-box {
-      flex: 1;
-      background: #f7f7fb;
-      border-radius: 8px;
-      padding: 14px 16px;
-    }
-    .info-box .box-title {
-      font-size: 10px; font-weight: 700; text-transform: uppercase;
-      letter-spacing: 0.8px; color: #7c5cbf; margin-bottom: 8px;
-    }
-    .info-box p { margin: 2px 0; font-size: 12px; color: #333; line-height: 1.5; }
-    .info-box p strong { color: #1a1a2e; }
-
-    /* ── Tableau lignes ── */
-    .content { flex: 1; padding: 24px 40px; }
-    .section-title {
-      font-size: 11px; font-weight: 700; text-transform: uppercase;
-      letter-spacing: 0.8px; color: #7c5cbf;
-      margin-bottom: 10px; padding-bottom: 6px;
-      border-bottom: 2px solid #7c5cbf;
+    .header-doc .meta {
+      font-size: 12px;
+      opacity: 0.85;
+      line-height: 1.8;
     }
 
-    .lines-table { width: 100%; border-collapse: collapse; }
+    .content { flex: 1; padding: 28px 40px; }
+
+    /* SOCIÉTÉ | CLIENT */
+    .parties-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 28px;
+    }
+    .parties-table .th-cell {
+      background: #1a1a2e;
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      padding: 8px 14px;
+      width: 50%;
+    }
+    .parties-table .td-cell {
+      padding: 14px;
+      vertical-align: top;
+      border: 1px solid #ddd;
+      border-top: none;
+      font-size: 12px;
+      line-height: 1.7;
+      width: 50%;
+    }
+    .parties-table .td-cell .party-name {
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .parties-table .td-cell .party-line {
+      color: #444;
+    }
+    .parties-table .td-cell .party-legal {
+      margin-top: 8px;
+      color: #666;
+      font-size: 11px;
+    }
+
+    /* Lignes */
+    .lines-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+    }
     .lines-table thead tr { background: #1a1a2e; }
     .lines-table thead th {
-      color: #fff; font-size: 11px; font-weight: 600;
-      text-transform: uppercase; letter-spacing: 0.5px;
-      padding: 10px 12px; text-align: left;
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 9px 14px;
+      text-align: left;
     }
-    .lines-table thead th.right { text-align: right; }
-    .lines-table tbody tr { border-bottom: 1px solid #f0f0f5; }
+    .lines-table thead th.center { text-align: center; }
+    .lines-table thead th.right  { text-align: right; }
+    .lines-table tbody tr { border-bottom: 1px solid #eee; }
     .lines-table tbody tr:nth-child(even) { background: #f9f9fc; }
-    .lines-table tbody td { padding: 9px 12px; font-size: 12px; vertical-align: middle; }
-    .lines-table .amount { text-align: right; font-weight: 500; }
+    .lines-table tbody td { padding: 10px 14px; font-size: 12px; }
+    .lines-table td.center { text-align: center; }
+    .lines-table td.right  { text-align: right; font-weight: 500; }
 
-    /* ── Totaux ── */
-    .totals-wrapper { display: flex; justify-content: flex-end; margin-top: 20px; }
-    .totals-table { width: 300px; border-collapse: collapse; }
-    .totals-table td { padding: 6px 12px; font-size: 12px; }
-    .totals-table td.label { color: #555; }
-    .totals-table td.amount { text-align: right; font-weight: 500; color: #1a1a2e; }
-    .totals-table tr.total-final { border-top: 2px solid #1a1a2e; }
-    .totals-table tr.total-final td { font-size: 14px; font-weight: 700; padding-top: 10px; }
-    .totals-table tr.total-final td.amount { color: #7c5cbf; }
+    /* Totaux */
+    .totals-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 16px;
+    }
+    .totals-table .th-row td {
+      background: #1a1a2e;
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 9px 14px;
+    }
+    .totals-table .th-row td.right { text-align: right; }
+    .totals-table .sub-row td {
+      padding: 7px 14px;
+      font-size: 12px;
+      border-bottom: 1px solid #eee;
+      color: #555;
+    }
+    .totals-table .sub-row td.right { text-align: right; font-weight: 500; color: #1a1a2e; }
+    .totals-table .final-row td {
+      padding: 10px 14px;
+      font-size: 14px;
+      font-weight: 700;
+      border-top: 2px solid #1a1a2e;
+    }
+    .totals-table .final-row td.right { text-align: right; }
 
-    /* ── Note TVA ── */
     .tva-note {
-      margin-top: 16px; font-size: 10px; color: #888;
-      font-style: italic; border-top: 1px dashed #ddd; padding-top: 10px;
+      font-size: 10px;
+      color: #888;
+      font-style: italic;
+      margin-top: 4px;
+      margin-bottom: 0;
     }
 
-    /* ── Pied de page ── */
+    /* Footer */
     .footer {
       background: #f7f7fb;
       border-top: 2px solid #1a1a2e;
-      padding: 16px 40px;
+      padding: 20px 40px;
       display: flex;
-      justify-content: space-between;
-      gap: 20px;
+      gap: 40px;
     }
     .footer-block { flex: 1; }
     .footer-block .footer-title {
-      font-size: 10px; font-weight: 700; text-transform: uppercase;
-      letter-spacing: 0.6px; color: #7c5cbf; margin-bottom: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: #1a1a2e;
+      margin-bottom: 8px;
     }
-    .footer-block p { margin: 2px 0; font-size: 10px; color: #444; line-height: 1.5; }
-    .footer-signature {
-      margin-top: 6px; font-size: 10px; color: #888;
-      border-top: 1px solid #ccc; padding-top: 6px;
-    }
-    .legal-mentions {
-      padding: 10px 40px;
-      font-size: 9.5px; color: #aaa; line-height: 1.6;
-      display: flex; flex-direction: column; gap: 2px;
+    .footer-block p { margin: 2px 0; font-size: 11px; color: #444; line-height: 1.6; }
+
+    .merci {
+      text-align: right;
+      padding: 10px 40px 16px;
+      font-size: 16px;
+      font-weight: 800;
+      letter-spacing: 2px;
+      color: #1a1a2e;
     }
   </style>
 </head>
@@ -181,106 +230,101 @@ export const buildInvoiceHtmlTemplate = (invoice: InvoiceDto, lines: LineItemDto
 
   <!-- Header -->
   <div class="header">
-    <div class="header-company">
-      <p class="name">${companyDisplay}</p>
-      <p class="tagline">Débosselage sans peinture</p>
-      <div class="coords">
-        <div>${c.address || ''}</div>
-        <div>${c.zipCode || ''} ${c.city || ''}</div>
-        ${c.phone ? `<div>${c.phone}</div>` : ''}
-        ${c.email ? `<div>${c.email}</div>` : ''}
-      </div>
+    <div class="header-logo">
+      ${c.logoUrl ? `<img src="${c.logoUrl}" alt="Logo" style="max-height:50px;max-width:180px;object-fit:contain;vertical-align:middle;margin-right:10px;">` : ''}
+      ${companyDisplay}
     </div>
     <div class="header-doc">
       <p class="doc-type">FACTURE</p>
       <div class="meta">
-        <div><strong>N°</strong> ${invoice.invoiceNumber}</div>
-        <div><strong>Date</strong> ${new Date(invoice.startDate).toLocaleDateString('fr-FR')}</div>
-        <div><strong>Échéance</strong> ${dueDate}</div>
+        <div>N° : ${invoice.invoiceNumber ?? ''}</div>
+        <div>DATE : ${invoiceDate}</div>
+        <div>ÉCHÉANCE : ${dueDate}</div>
       </div>
     </div>
   </div>
 
-  <!-- Blocs véhicule + client -->
-  <div class="info-section">
-    <div class="info-box">
-      <div class="box-title">🚗 Véhicule</div>
-      <p><strong>Marque / Modèle</strong> ${invoice.carBrand || '-'}</p>
-      <p><strong>Immatriculation</strong> ${invoice.carImmatriculation || '-'}</p>
-      <p><strong>Année</strong> ${invoice.carDate || '-'}</p>
-    </div>
-    <div class="info-box">
-      <div class="box-title">🏢 Client</div>
-      <p><strong>${garageName}</strong></p>
-      <p>${garageAddr}</p>
-      <p>${garageZip} ${garageCity}</p>
-    </div>
-    <div class="info-box">
-      <div class="box-title">👤 Technicien</div>
-      <p><strong>${invoice.technician?.fullName || ''}</strong></p>
-      <p>${invoice.technician?.address || ''}</p>
-      <p>${invoice.technician?.zipCode || ''} ${invoice.technician?.city || ''}</p>
-    </div>
-  </div>
-
-  <!-- Lignes -->
   <div class="content">
-    <div class="section-title">Détail des interventions</div>
+
+    <!-- SOCIÉTÉ | CLIENT -->
+    <table class="parties-table">
+      <tr>
+        <td class="th-cell">SOCIÉTÉ</td>
+        <td class="th-cell">CLIENT</td>
+      </tr>
+      <tr>
+        <td class="td-cell">
+          <div class="party-name">${companyDisplay}</div>
+          ${c.address ? `<div class="party-line">${c.address}</div>` : ''}
+          ${(c.zipCode || c.city) ? `<div class="party-line">${c.zipCode ?? ''} ${c.city ?? ''}</div>` : ''}
+          ${c.phone ? `<div class="party-line">${c.phone}</div>` : ''}
+          ${c.email ? `<div class="party-line">${c.email}</div>` : ''}
+          ${(c.siret || c.tvaNumber || c.legalForm) ? `<div class="party-legal">
+            ${c.siret ? `SIRET : ${c.siret}` : ''}
+            ${c.tvaNumber ? `<br>N° TVA : ${c.tvaNumber}` : ''}
+            ${c.legalForm ? `<br>${c.legalForm}${c.capital ? ' — Capital : ' + c.capital : ''}` : ''}
+          </div>` : ''}
+        </td>
+        <td class="td-cell">
+          <div class="party-name">${garageName}</div>
+          ${garageAddr ? `<div class="party-line">${garageAddr}</div>` : ''}
+          ${(garageZip || garageCity) ? `<div class="party-line">${garageZip} ${garageCity}</div>` : ''}
+        </td>
+      </tr>
+    </table>
+
+    <!-- Lignes -->
     <table class="lines-table">
       <thead>
         <tr>
-          <th>Élément</th>
-          <th style="text-align:center;">Impacts</th>
-          <th>Type de réparation</th>
-          <th class="right">Prix H.T.</th>
+          <th>DESCRIPTION</th>
+          <th class="center">QUANTITÉ</th>
+          <th class="right">TOTAL</th>
         </tr>
       </thead>
-      <tbody>${linesHtml}</tbody>
+      <tbody>
+        <tr>
+          <td>${vehicleDesc}</td>
+          <td class="center">1</td>
+          <td class="right">${displayTotal.toFixed(2)} ${currencySymbol}</td>
+        </tr>
+      </tbody>
     </table>
 
-    <div class="totals-wrapper">
-      <table class="totals-table">
-        <tbody>${totalsHtml}</tbody>
-      </table>
-    </div>
+    <!-- Totaux -->
+    <table class="totals-table">
+      <tr class="th-row">
+        <td>DÉTAILS DES TOTAUX</td>
+        <td class="right">MONTANT</td>
+      </tr>
+      <tr class="final-row">
+        <td>Total</td>
+        <td class="right">${displayTotal.toFixed(2)} ${currencySymbol}</td>
+      </tr>
+    </table>
 
-    <p class="tva-note">
-      TVA ${taxRate > 0 ? taxRate * 100 + '%' : 'non applicable'} —
-      ${taxRate === 0
-        ? 'Autoliquidation de la TVA par le client (Art. 196 directive 2006/112/CE).'
-        : 'Assujetti à la TVA en Suisse.'}
-    </p>
+    <p class="tva-note">${tvaNote}</p>
+
   </div>
 
   <!-- Footer -->
   <div class="footer">
     <div class="footer-block">
-      <div class="footer-title">Émetteur</div>
-      <p>${invoice.technician?.fullName || ''}</p>
-      ${invoice.technician?.taxNumber ? `<p>N° fiscal : ${invoice.technician.taxNumber}</p>` : ''}
-      ${ibanLine ? `<p>${c.iban}</p>${c.bic ? `<p>BIC : ${c.bic}</p>` : ''}` : ''}
+      <div class="footer-title">Informations de paiement</div>
+      ${c.companyName ? `<p>Nom : ${c.companyName}</p>` : ''}
+      ${c.iban ? `<p>IBAN : ${c.iban}</p>` : ''}
+      ${c.bic  ? `<p>Swift/BIC : ${c.bic}</p>` : ''}
+      ${!c.iban ? `<p style="color:#aaa;font-style:italic;">À compléter dans les paramètres</p>` : ''}
     </div>
     <div class="footer-block">
-      <div class="footer-title">Conditions</div>
-      <p>Paiement sous ${c.paymentDelay ?? 30} jours</p>
-      <p>Pénalités : ${c.latePaymentPenalty || '3× taux légal'}</p>
-      <p>Indemnité recouvrement : ${c.recoveryFee || '40 €'}</p>
-    </div>
-    <div class="footer-block" style="text-align:right;">
-      <div class="footer-title">Signature client</div>
-      <div class="footer-signature">
-        <p>Bon pour accord</p>
-        <p style="margin-top:30px;color:#ccc;">Cachet &amp; Signature</p>
-      </div>
+      <div class="footer-title">Terme et conditions</div>
+      <p>Le paiement devra être effectué dans un délai de ${c.paymentDelay ?? 30} jours maximum après réception de la facture.</p>
+      ${c.latePaymentPenalty ? `<p>Pénalités de retard : ${c.latePaymentPenalty}.</p>` : ''}
+      ${c.recoveryFee ? `<p>Indemnité de recouvrement : ${c.recoveryFee}.</p>` : ''}
     </div>
   </div>
 
-  <!-- Mentions légales -->
-  <div class="legal-mentions">
-    ${siretLine}${siretLine && tvaLine ? ' — ' : ''}${tvaLine}
-    ${c.legalForm && c.capital ? `<span>${c.legalForm} au capital de ${c.capital} — RCS ${c.city} ${c.siren}</span>` : ''}
-    ${penaltyLine}
-  </div>
+  <div class="merci">MERCI</div>
 
 </div>
 </body>

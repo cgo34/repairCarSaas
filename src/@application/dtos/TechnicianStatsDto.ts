@@ -3,4 +3,5 @@ export interface TechnicianStatsDto {
   quotesInProgress: number;
   invoicesCount: number;
   commissionDue: number;
+  commissionRate: number;
 }
