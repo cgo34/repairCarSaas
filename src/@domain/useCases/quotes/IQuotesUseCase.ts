@@ -1,5 +1,5 @@
 import { QuoteDto } from '@/@application/dtos/QuoteDto';
 
 export interface IQuotesUseCase {
-  execute(userId: string): Promise<QuoteDto[]>;
+  execute(organizationId: string, memberId: string, role: 'admin' | 'manager' | 'technician'): Promise<QuoteDto[]>;
 }

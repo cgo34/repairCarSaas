@@ -329,4 +329,13 @@ export class InvoiceRepository implements IInvoiceRepository {
 
     if (error) throw new Error('Error updating invoice status');
   }
+
+  async markAsSent(invoiceId: string): Promise<void> {
+    const { error } = await this.clientProvider.getClient()
+      .from('invoices')
+      .update({ is_sent: true, sent_at: new Date().toISOString() })
+      .eq('id', invoiceId);
+
+    if (error) throw new Error(`Error marking invoice as sent: ${error.message}`);
+  }
 }

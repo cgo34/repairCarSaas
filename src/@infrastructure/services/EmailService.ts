@@ -22,9 +22,6 @@ export class EmailService implements IEmailService {
       textContent: params.textContent,
       attachments: params.attachments,
     },
-    headers: {
-      Authorization: `Bearer ${anonKey}`,
-    },
   });
 
   if (error) {

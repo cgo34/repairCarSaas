@@ -1,10 +1,10 @@
 import { IAuthState } from '@/@application/states/interfaces/IAuthState';
 import { ISubscriptionState } from '@/@application/states/interfaces/ISubscriptionState';
 import { IGarageUseCase } from '@/@domain/useCases/IGarageUseCase';
-import { IUserUseCase } from '@/@domain/useCases/IUserUseCase';
 import { IInvoicesUseCase } from '@/@domain/useCases/invoices/IInvoicesUseCase';
 import { IOrganizationMemberUseCase } from '@/@domain/useCases/organizationMember/IOrganizationMemberUseCase';
 import { IQuotesUseCase } from '@/@domain/useCases/quotes/IQuotesUseCase';
+import { ITechnicianGarageAccessRepository } from '@/@domain/repositories/ITechnicianGarageAccessRepository';
 import { container } from '@/@infrastructure/ioc/inversify.config';
 import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
 import { InvoiceMapper } from '@/@presentation/mappers/InvoiceMapper';
@@ -18,9 +18,10 @@ export function useAdminDashboardState() {
   const subscriptionState = container.get<ISubscriptionState>(SYMBOLS.States.SubscriptionState);
 
   const garageUseCase = container.get<IGarageUseCase>(SYMBOLS.UseCases.Garage);
-  const userUseCase = container.get<IOrganizationMemberUseCase>(SYMBOLS.UseCases.OrganizationMemberUseCase);
+  const memberUseCase = container.get<IOrganizationMemberUseCase>(SYMBOLS.UseCases.OrganizationMemberUseCase);
   const quotesUseCase = container.get<IQuotesUseCase>(SYMBOLS.UseCases.Quote.GetQuotesUseCase);
   const invoicesUseCase = container.get<IInvoicesUseCase>(SYMBOLS.UseCases.Invoice.GetInvoicesUseCase);
+  const garageAccessRepo = container.get<ITechnicianGarageAccessRepository>(SYMBOLS.Repositories.TechnicianGarageAccessRepository);
 
   const totalUsers = ref<number>(0);
   const totalGarages = ref<number>(0);
@@ -75,11 +76,18 @@ export function useAdminDashboardState() {
     try {
       if (!authState.userContext.value) throw new Error('User not found');
 
+      const ctx = authState.userContext.value;
+      const isTechnician = ctx.membership.role === 'technician';
+
       const [garagesResult, usersResult, quotesResult, invoicesResult] = await Promise.allSettled([
-        garageUseCase.getGaragesByOrganizationId(authState.userContext.value.organization.id),
-        userUseCase.getMembersByOrganizationId(authState.userContext.value.organization.id),
-        quotesUseCase.execute(authState.userContext.value.id),
-        invoicesUseCase.execute(authState.userContext.value.id),
+        isTechnician
+          ? garageAccessRepo.getGaragesByTechnicianId(ctx.id)
+          : garageUseCase.getGaragesByOrganizationId(ctx.organization.id),
+        isTechnician
+          ? Promise.resolve([])
+          : memberUseCase.getMembersByOrganizationId(ctx.organization.id),
+        quotesUseCase.execute(ctx.organization.id, ctx.membership.id, ctx.membership.role),
+        invoicesUseCase.execute(ctx.organization.id, ctx.membership.id, ctx.membership.role),
       ]);
 
       if (garagesResult.status === 'fulfilled') totalGarages.value = garagesResult.value.length;

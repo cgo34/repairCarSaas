@@ -9,4 +9,5 @@ export interface GarageApiModel {
   phone: string;
   email: string;
   archived_at?: string | null;
+  percentage_commission?: number | null;
 }

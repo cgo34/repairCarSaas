@@ -1,8 +1,8 @@
 import { computed, ref } from 'vue';
 
 import { IAuthState } from '@/@application/states/interfaces/IAuthState';
-
 import { IGarageUseCase } from '@/@domain/useCases/IGarageUseCase';
+import { ITechnicianGarageAccessRepository } from '@/@domain/repositories/ITechnicianGarageAccessRepository';
 
 import { container } from '@/@infrastructure/ioc/inversify.config';
 import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
@@ -24,6 +24,10 @@ export function useGarageState(): IUseGarageState {
 
   const garageUseCase = container.get<IGarageUseCase>(
     SYMBOLS.UseCases.Garage
+  );
+
+  const garageAccessRepo = container.get<ITechnicianGarageAccessRepository>(
+    SYMBOLS.Repositories.TechnicianGarageAccessRepository
   );
 
   /**
@@ -71,10 +75,12 @@ export function useGarageState(): IUseGarageState {
         throw new Error('Organization id is required');
       }
 
-      const data =
-        await garageUseCase.getGaragesByOrganizationId(
-          organizationId
-        );
+      const isTechnician = authState.userContext.value?.membership.role === 'technician';
+      const userId = authState.userContext.value?.id ?? '';
+
+      const data = isTechnician
+        ? await garageAccessRepo.getGaragesByTechnicianId(userId)
+        : await garageUseCase.getGaragesByOrganizationId(organizationId);
 
       const garages =
         data.map(GarageMapper.dtoToView);
@@ -183,6 +189,8 @@ export function useGarageState(): IUseGarageState {
 
           phone: form.phone,
           email: form.email,
+
+          percentageCommission: form.percentageCommission,
         });
 
       const garageViewModel =

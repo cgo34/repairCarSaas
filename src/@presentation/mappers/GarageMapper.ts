@@ -14,6 +14,7 @@ export class GarageMapper {
       phone: viewModel.phone,
       email: viewModel.email,
       archived_at: viewModel.archived_at ?? null,
+      percentageCommission: viewModel.percentageCommission,
     };
   }
 
@@ -29,6 +30,7 @@ export class GarageMapper {
       phone: dto.phone,
       email: dto.email,
       archived_at: dto.archived_at ?? null,
+      percentageCommission: dto.percentageCommission,
     };
   }
 }

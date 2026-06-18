@@ -86,6 +86,17 @@
                     label="Ville"
                   />
                 </v-col>
+
+                <v-col cols="12">
+                  <v-text-field
+                    v-model.number="selectedGarageForm.percentageCommission"
+                    label="Commission (%)"
+                    type="number"
+                    :min="0"
+                    :max="100"
+                    suffix="%"
+                  />
+                </v-col>
               </v-row>
             </v-container>
           </v-card-text>

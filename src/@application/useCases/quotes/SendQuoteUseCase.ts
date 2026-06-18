@@ -4,6 +4,7 @@ import { IGenerateQuotePdfUseCase } from '@/@domain/useCases/quotes/IGenerateQuo
 import { ISendQuoteUseCase } from '@/@domain/useCases/quotes/ISendQuoteUseCase';
 import { IViewQuoteUseCase } from '@/@domain/useCases/quotes/IViewQuoteUseCase';
 import { IEmailService } from '@/@domain/services/IEmailService';
+import { IQuoteRepository } from '@/@domain/repositories/IQuoteRepository';
 import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
 import { inject, injectable } from 'inversify';
 
@@ -18,6 +19,9 @@ export class SendQuoteUseCase implements ISendQuoteUseCase {
 
     @inject(SYMBOLS.Services.EmailService)
     private readonly emailService: IEmailService,
+
+    @inject(SYMBOLS.Repositories.QuoteRepository)
+    private readonly quoteRepository: IQuoteRepository,
   ) {}
 
   async execute(quoteId: string): Promise<void> {
@@ -26,21 +30,20 @@ export class SendQuoteUseCase implements ISendQuoteUseCase {
     if (!quote || !lines) {
       throw new Error('Quote or quote details not found');
     }
-    
-    // Generate the PDF (returns a data URL string)
+
     const pdfDataUrl = await this.generatePdfUseCase.execute(quote, lines);
     if (!pdfDataUrl) {
       throw new Error('Failed to generate PDF');
     }
 
-    if (!quote.garage?.email) {
+    const recipientEmail = quote.garage?.email ?? quote.garageEmail;
+    if (!recipientEmail) {
       throw new Error('Garage email not found');
     }
 
-
-    // Extract base64 from data URL (format: "data:application/pdf;base64,...")
     const pdfBase64 = await this.urlToBase64(pdfDataUrl);
-    await this.emailService.sendQuoteEmail(quote.garage.email, quote.quoteNumber, pdfBase64);
+    await this.emailService.sendQuoteEmail(recipientEmail, quote.quoteNumber, pdfBase64);
+    await this.quoteRepository.markAsSent(quoteId);
   }
 
   private async urlToBase64(url: string): Promise<string> {

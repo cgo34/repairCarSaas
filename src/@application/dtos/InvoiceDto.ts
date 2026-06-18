@@ -7,7 +7,8 @@ export interface InvoiceDto {
   id?: string;
   invoiceNumber?: string;
   quoteNumber: string;
-  
+  organization_id?: string;
+
   statusId: string;
   status: any;
   

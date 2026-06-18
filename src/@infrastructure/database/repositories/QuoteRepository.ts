@@ -320,4 +320,13 @@ export class QuoteRepository implements IQuoteRepository {
 
     if (error) throw new Error('Error updating commission');
   }
+
+  async markAsSent(quoteId: string): Promise<void> {
+    const { error } = await this.clientProvider.getClient()
+      .from('quotes')
+      .update({ is_sent: true, sent_at: new Date().toISOString() })
+      .eq('id', quoteId);
+
+    if (error) throw new Error(`Error marking quote as sent: ${error.message}`);
+  }
 }

@@ -5,6 +5,7 @@ export type AuthenticatedUserDto = {
   organization: {
     id: string;
     name: string;
+    ownerUserId?: string;
   };
 
   membership: {

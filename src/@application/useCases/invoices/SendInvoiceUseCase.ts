@@ -4,6 +4,7 @@ import { IGenerateInvoicePdfUseCase } from '@/@domain/useCases/invoices/IGenerat
 import { ISendInvoiceUseCase } from '@/@domain/useCases/invoices/ISendInvoiceUseCase';
 import { IViewInvoiceUseCase } from '@/@domain/useCases/invoices/IViewInvoiceUseCase';
 import { IEmailService } from '@/@domain/services/IEmailService';
+import { IInvoiceRepository } from '@/@domain/repositories/IInvoiceRepository';
 import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
 import { inject, injectable } from 'inversify';
 
@@ -18,6 +19,9 @@ export class SendInvoiceUseCase implements ISendInvoiceUseCase {
 
     @inject(SYMBOLS.Services.EmailService)
     private readonly emailService: IEmailService,
+
+    @inject(SYMBOLS.Repositories.InvoiceRepository)
+    private readonly invoiceRepository: IInvoiceRepository,
   ) {}
 
   async execute(invoiceId: string): Promise<void> {
@@ -26,14 +30,12 @@ export class SendInvoiceUseCase implements ISendInvoiceUseCase {
     if (!invoice || !lines) {
       throw new Error('Invoice or invoice details not found');
     }
-    
-    // Generate the PDF (returns a blob URL or data URL)
+
     const pdfUrl = await this.generatePdfUseCase.execute(invoice, lines);
     if (!pdfUrl) {
       throw new Error('Failed to generate PDF');
     }
 
-    // Get recipient email (from garage object or fallback to garageEmail field)
     const recipientEmail = invoice.garage?.email || invoice.garageEmail;
     if (!recipientEmail) {
       throw new Error('Aucune adresse email de destination trouvée');
@@ -43,10 +45,9 @@ export class SendInvoiceUseCase implements ISendInvoiceUseCase {
       throw new Error('Invoice number not found');
     }
 
-    // Convert URL to base64 (handles both blob URLs and data URLs)
     const pdfBase64 = await this.urlToBase64(pdfUrl);
-
     await this.emailService.sendInvoiceEmail(recipientEmail, invoice.invoiceNumber, pdfBase64);
+    await this.invoiceRepository.markAsSent(invoiceId);
   }
 
   private async urlToBase64(url: string): Promise<string> {

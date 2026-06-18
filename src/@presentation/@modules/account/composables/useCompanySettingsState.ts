@@ -33,7 +33,7 @@ export function useCompanySettingsState(): IUseCompanySettingsState {
   const save = async (vm: CompanySettingsViewModel): Promise<CompanySettingsViewModel> => {
     loading.value = true;
     try {
-      const userId = authState.user?.value?.id ?? '';
+      const userId = authState.userContext?.value?.id ?? '';
       const dto = CompanySettingsMapper.viewToDto({ ...vm, userId });
 
       let result;

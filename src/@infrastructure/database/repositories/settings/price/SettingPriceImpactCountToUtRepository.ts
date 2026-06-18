@@ -29,6 +29,7 @@ export class SettingPriceImpactCountToUtRepository implements ISettingPriceImpac
       .from('setting_price_impact_count_to_ut')
       .select('*')
       .eq('organization_id', organizationId)
+      .order('impact_count_min', { ascending: true })
       .returns<SettingPriceImpactCountToUtApiModel[]>();
 
     if (error)

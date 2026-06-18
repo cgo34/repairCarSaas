@@ -27,6 +27,7 @@ export class GarageRepository implements IGarageRepository {
       .from('garages')
       .select('*')
       .eq('organization_id', organizationId)
+      .is('archived_at', null)
       .returns<GarageApiModel[]>();
 
     if (error) throw new Error('Error fetching garages');

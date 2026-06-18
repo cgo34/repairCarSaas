@@ -14,6 +14,7 @@ export class GarageMapper {
       phone: apiModel.phone,
       email: apiModel.email,
       archived_at: apiModel.archived_at,
+      percentageCommission: apiModel.percentage_commission,
     };
   }
 
@@ -29,6 +30,7 @@ export class GarageMapper {
       phone: dto.phone,
       email: dto.email,
       archived_at: dto.archived_at,
+      percentage_commission: dto.percentageCommission,
     };
   }
 }

@@ -12,4 +12,5 @@ export type GarageForm = {
 
   phone: string;
   email: string;
+  percentageCommission?: number | null;
 };

@@ -14,4 +14,5 @@ export interface IInvoiceRepository {
   // addLineItem(quoteId: string, lineItem: InvoiceLineItemDto): Promise<void>;
   // updateLineItem(quoteId: string, lineItem: InvoiceLineItemDto): Promise<void>;
   updateStatus(quoteId: string, status: InvoiceStatusDto): Promise<void>;
+  markAsSent(invoiceId: string): Promise<void>;
 }

@@ -9,4 +9,5 @@ export interface GarageDto {
   phone: string;
   email: string;
   archived_at?: string | null;
+  percentageCommission?: number | null;
 }
