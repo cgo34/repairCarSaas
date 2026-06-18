@@ -16,7 +16,7 @@
                 cols="6"
                 md="6"
               >
-                <div v-for="(elm, idex) in settings.slice(0,7)">
+                <div v-for="(elm, index) in settings.slice(0,7)" :key="index">
                   <span>
                     {{ elm.bodyParts.name }}
                   </span>
@@ -32,7 +32,7 @@
                 cols="6"
                 md="6"
               >
-                <div v-for="(elm, idex) in settings.slice(7, -1)">
+                <div v-for="(elm, index) in settings.slice(7, -1)" :key="index">
                   <span>
                     {{ elm.bodyParts.name }}
                   </span>

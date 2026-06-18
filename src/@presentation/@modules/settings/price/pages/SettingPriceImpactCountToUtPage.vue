@@ -16,7 +16,7 @@
                 cols="6"
                 md="6"
               >
-                <div v-for="(line, idex) in settings.slice(0,13)">
+                <div v-for="(line, index) in settings.slice(0,13)" :key="index">
                   <span
                     v-if="line.impactCountMin === line.impactCountMax"
                   >
@@ -37,7 +37,7 @@
                 cols="6"
                 md="6"
               >
-                <div v-for="(line, idex) in settings.slice(13, -1)">
+                <div v-for="(line, index) in settings.slice(13, -1)" :key="index">
                   <span
                     v-if="line.impactCountMin === line.impactCountMax"
                   >
