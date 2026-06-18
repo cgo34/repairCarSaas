@@ -1,5 +1,6 @@
 // 📁 application/useCases/invoices/SendInvoiceUseCase.ts
 
+import { CompanySettingsDto } from '@/@application/dtos/CompanySettingsDto';
 import { IGenerateInvoicePdfUseCase } from '@/@domain/useCases/invoices/IGenerateInvoicePdfUseCase';
 import { ISendInvoiceUseCase } from '@/@domain/useCases/invoices/ISendInvoiceUseCase';
 import { IViewInvoiceUseCase } from '@/@domain/useCases/invoices/IViewInvoiceUseCase';
@@ -24,14 +25,14 @@ export class SendInvoiceUseCase implements ISendInvoiceUseCase {
     private readonly invoiceRepository: IInvoiceRepository,
   ) {}
 
-  async execute(invoiceId: string): Promise<void> {
+  async execute(invoiceId: string, company?: CompanySettingsDto | null): Promise<void> {
     const { invoice, lines } = await this.viewInvoiceUseCase.execute(invoiceId);
 
     if (!invoice || !lines) {
       throw new Error('Invoice or invoice details not found');
     }
 
-    const pdfUrl = await this.generatePdfUseCase.execute(invoice, lines);
+    const pdfUrl = await this.generatePdfUseCase.execute(invoice, lines, company ?? null);
     if (!pdfUrl) {
       throw new Error('Failed to generate PDF');
     }

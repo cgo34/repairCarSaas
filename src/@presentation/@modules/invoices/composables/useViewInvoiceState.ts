@@ -26,18 +26,21 @@ export function useViewInvoiceState() {
   const error = ref<Error | null>(null);
   const _invoice = ref<InvoiceViewModel | undefined>(undefined);
   const _pdfUrl = ref<string>('');
+  const _company = ref<import('@/@application/dtos/CompanySettingsDto').CompanySettingsDto | null>(null);
   // #endregion
 
   // #region -> INIT
   const init = async (invoiceId: string) => {
     loading.value = true;
     try {
-      const userId = authState.userContext?.value?.user_id;
+      const userId = authState.userContext?.value?.organization?.ownerUserId
+        ?? authState.userContext?.value?.id;
 
       const [{ invoice, lines }, company] = await Promise.all([
         viewInvoiceUseCase.execute(invoiceId),
         userId ? companySettingsUseCase.getByUserId(userId) : Promise.resolve(null),
       ]);
+      _company.value = company;
 
       if (!invoice || !lines) {
         throw new Error('Invoice or invoice details not found');
@@ -75,7 +78,7 @@ export function useViewInvoiceState() {
     if (!_invoice.value) return;
     loading.value = true;
     try {
-      await sendInvoiceUseCase.execute(_invoice.value.id);
+      await sendInvoiceUseCase.execute(_invoice.value.id, _company.value);
     } catch (e) {
       error.value = e as Error;
     } finally {

@@ -1,3 +1,5 @@
+import { CompanySettingsDto } from '@/@application/dtos/CompanySettingsDto';
+
 export interface ISendInvoiceUseCase {
-  execute(invoiceId: string): Promise<void>;
+  execute(invoiceId: string, company?: CompanySettingsDto | null): Promise<void>;
 }

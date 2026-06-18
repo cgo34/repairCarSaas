@@ -1,5 +1,6 @@
 // 📁 application/useCases/quotes/SendQuoteUseCase.ts
 
+import { CompanySettingsDto } from '@/@application/dtos/CompanySettingsDto';
 import { IGenerateQuotePdfUseCase } from '@/@domain/useCases/quotes/IGenerateQuotePdfUseCase';
 import { ISendQuoteUseCase } from '@/@domain/useCases/quotes/ISendQuoteUseCase';
 import { IViewQuoteUseCase } from '@/@domain/useCases/quotes/IViewQuoteUseCase';
@@ -24,14 +25,14 @@ export class SendQuoteUseCase implements ISendQuoteUseCase {
     private readonly quoteRepository: IQuoteRepository,
   ) {}
 
-  async execute(quoteId: string): Promise<void> {
+  async execute(quoteId: string, company?: CompanySettingsDto | null): Promise<void> {
     const { quote, lines } = await this.viewQuoteUseCase.execute(quoteId);
 
     if (!quote || !lines) {
       throw new Error('Quote or quote details not found');
     }
 
-    const pdfDataUrl = await this.generatePdfUseCase.execute(quote, lines);
+    const pdfDataUrl = await this.generatePdfUseCase.execute(quote, lines, company ?? null);
     if (!pdfDataUrl) {
       throw new Error('Failed to generate PDF');
     }

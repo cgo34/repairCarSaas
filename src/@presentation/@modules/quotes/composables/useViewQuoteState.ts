@@ -26,18 +26,21 @@ export function useViewQuoteState() {
   const error = ref<Error | null>(null);
   const _quote = ref<QuoteViewModel | undefined>(undefined);
   const _pdfUrl = ref<string>('');
+  const _company = ref<import('@/@application/dtos/CompanySettingsDto').CompanySettingsDto | null>(null);
   // #endregion
 
   // #region -> INIT
   const init = async (quoteId: string) => {
     loading.value = true;
     try {
-      const userId = authState.user?.value?.id;
+      const userId = authState.userContext?.value?.organization?.ownerUserId
+        ?? authState.userContext?.value?.id;
 
       const [{ quote, lines }, company] = await Promise.all([
         viewQuoteUseCase.execute(quoteId),
         userId ? companySettingsUseCase.getByUserId(userId) : Promise.resolve(null),
       ]);
+      _company.value = company;
 
       if (!quote || !lines) {
         throw new Error('Quote or quote details not found');
@@ -75,7 +78,7 @@ export function useViewQuoteState() {
     if (!_quote.value) return;
     loading.value = true;
     try {
-      await sendQuoteUseCase.execute(_quote.value.id);
+      await sendQuoteUseCase.execute(_quote.value.id, _company.value);
     } catch (e) {
       error.value = e as Error;
     } finally {
