@@ -150,7 +150,7 @@ export function useEditInvoiceState() {
         bodyPartUseCase.executeGetAll().catch(() => []),
         bodyMaterialUseCase.executeGetAll().catch(() => []),
         repairTypeUseCase.executeGetAll().catch(() => []),
-        priceParamsUseCase.getByorganizationId(organizationId).catch(() => undefined),
+        priceParamsUseCase.getByOrganizationId(organizationId).catch(() => undefined),
       ]);
 
       if (!invoiceDto) {
