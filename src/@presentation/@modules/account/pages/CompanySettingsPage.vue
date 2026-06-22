@@ -124,8 +124,8 @@
                 >
                   <v-text-field
                     v-model="form.siren"
-                    label="SIREN *"
-                    :rules="[required, sirenRule]"
+                    label="SIREN"
+                    :rules="[sirenRule]"
                     variant="outlined"
                     density="comfortable"
                     placeholder="123456789"
@@ -139,8 +139,8 @@
                 >
                   <v-text-field
                     v-model="form.siret"
-                    label="SIRET *"
-                    :rules="[required, siretRule]"
+                    label="SIRET"
+                    :rules="[siretRule]"
                     variant="outlined"
                     density="comfortable"
                     placeholder="12345678900012"
@@ -483,8 +483,8 @@ const paymentDelays = [
 // #region -> VALIDATION RULES
 const required = (v: unknown) =>
   (v !== '' && v !== null && v !== undefined) || 'Champ obligatoire';
-const sirenRule = (v: string) => /^\d{9}$/.test(v) || 'Le SIREN doit contenir 9 chiffres';
-const siretRule = (v: string) => /^\d{14}$/.test(v) || 'Le SIRET doit contenir 14 chiffres';
+const sirenRule = (v: string) => !v || /^\d{9}$/.test(v) || 'Le SIREN doit contenir 9 chiffres';
+const siretRule = (v: string) => !v || /^\d{14}$/.test(v) || 'Le SIRET doit contenir 14 chiffres';
 const emailRule = (v: string) =>
   !v || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) || 'Email invalide';
 // #endregion
@@ -503,8 +503,11 @@ const applySettings = (s: CompanySettingsViewModel) => {
 
 // #region -> HANDLERS
 const onSave = async () => {
-  const { valid } = await formRef.value?.validate();
-  if (!valid) return;
+  const result = await formRef.value?.validate();
+  if (!result?.valid) {
+    showSnack('Veuillez corriger les erreurs dans le formulaire.', 'error');
+    return;
+  }
 
   try {
     const result = await save({ ...form });
