@@ -1,11 +1,12 @@
 // 📁 application/useCases/quotes/SendQuoteUseCase.ts
 
-import { CompanySettingsDto } from '@/@application/dtos/CompanySettingsDto';
+import { OrganizationProfileDto } from '@/@application/dtos/organizations/OrganizationProfileDto';
 import { IGenerateQuotePdfUseCase } from '@/@domain/useCases/quotes/IGenerateQuotePdfUseCase';
 import { ISendQuoteUseCase } from '@/@domain/useCases/quotes/ISendQuoteUseCase';
 import { IViewQuoteUseCase } from '@/@domain/useCases/quotes/IViewQuoteUseCase';
 import { IEmailService } from '@/@domain/services/IEmailService';
 import { IQuoteRepository } from '@/@domain/repositories/IQuoteRepository';
+import { IOrganizationProfileUseCase } from '@/@domain/useCases/organizations/IOrganizationProfileUseCase';
 import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
 import { inject, injectable } from 'inversify';
 
@@ -23,16 +24,23 @@ export class SendQuoteUseCase implements ISendQuoteUseCase {
 
     @inject(SYMBOLS.Repositories.QuoteRepository)
     private readonly quoteRepository: IQuoteRepository,
+
+    @inject(SYMBOLS.UseCases.OrganizationProfileUseCase)
+    private readonly organizationProfileUseCase: IOrganizationProfileUseCase,
   ) {}
 
-  async execute(quoteId: string, company?: CompanySettingsDto | null): Promise<void> {
+  async execute(quoteId: string, _company?: OrganizationProfileDto | null): Promise<void> {
     const { quote, lines } = await this.viewQuoteUseCase.execute(quoteId);
 
     if (!quote || !lines) {
       throw new Error('Quote or quote details not found');
     }
 
-    const pdfDataUrl = await this.generatePdfUseCase.execute(quote, lines, company ?? null);
+    const company = quote.organization_id
+      ? await this.organizationProfileUseCase.getProfile(quote.organization_id)
+      : null;
+
+    const pdfDataUrl = await this.generatePdfUseCase.execute(quote, lines, company);
     if (!pdfDataUrl) {
       throw new Error('Failed to generate PDF');
     }

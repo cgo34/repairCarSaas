@@ -1,5 +1,5 @@
-import { CompanySettingsDto } from '@/@application/dtos/CompanySettingsDto';
+import { OrganizationProfileDto } from '@/@application/dtos/organizations/OrganizationProfileDto';
 
 export interface ISendQuoteUseCase {
-  execute(quoteId: string, company?: CompanySettingsDto | null): Promise<void>;
+  execute(quoteId: string, company?: OrganizationProfileDto | null): Promise<void>;
 }

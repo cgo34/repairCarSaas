@@ -1,4 +1,4 @@
-import { CompanySettingsDto } from '@/@application/dtos/CompanySettingsDto'
+import { OrganizationProfileDto } from '@/@application/dtos/organizations/OrganizationProfileDto'
 import { InvoiceDto } from '@/@application/dtos/InvoiceDto'
 import { LineItemDto } from '@/@application/dtos/LineItemDto'
 import { QuoteDto } from '@/@application/dtos/QuoteDto'
@@ -10,7 +10,7 @@ import { buildQuoteHtmlTemplate } from './templates/quoteTemplate'
 
 @injectable()
 export class Html2PdfGenerator implements IPdfGenerator {
-  async generate(quote: QuoteDto, lines: LineItemDto[], company: CompanySettingsDto | null): Promise<string> {
+  async generate(quote: QuoteDto, lines: LineItemDto[], company: OrganizationProfileDto | null): Promise<string> {
     const html = buildQuoteHtmlTemplate(quote, lines, company)
 
     const blob = await html2pdf()
@@ -21,7 +21,7 @@ export class Html2PdfGenerator implements IPdfGenerator {
     return URL.createObjectURL(blob)
   }
 
-  async generateInvoice(invoice: InvoiceDto, lines: LineItemDto[], company: CompanySettingsDto | null): Promise<string> {
+  async generateInvoice(invoice: InvoiceDto, lines: LineItemDto[], company: OrganizationProfileDto | null): Promise<string> {
     const html = buildInvoiceHtmlTemplate(invoice, lines, company)
 
     const blob = await html2pdf()

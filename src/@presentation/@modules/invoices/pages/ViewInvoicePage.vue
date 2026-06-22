@@ -23,13 +23,14 @@
             color="primary"
             prepend-icon="mdi-send"
             variant="flat"
+            :loading="sending"
             @click="onSendBtnClick"
           >
-            Send
+            Envoyer
           </GenericButton>
         </template>
       </v-toolbar>
-      
+
       <v-card
         class="rounded-lg"
         outlined
@@ -56,6 +57,15 @@
       </v-card>
     </v-container>
   </MainLayout>
+
+  <v-snackbar
+    v-model="snackbar.show"
+    :color="snackbar.color"
+    timeout="4000"
+    location="bottom right"
+  >
+    {{ snackbar.message }}
+  </v-snackbar>
 </template>
 
 <script setup lang="ts">
@@ -66,33 +76,32 @@ import DownloadButton from '@/@presentation/@ui/components/buttons/DownloadButto
 import GenericButton from '@/@presentation/@ui/components/buttons/GenericButton.vue';
 import MainLayout from '@/@presentation/@ui/layouts/MainLayout.vue';
 import { IUseViewInvoiceState } from '@/@presentation/types/composables/IUseViewInvoiceState';
-import { onMounted } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
+import { onMounted, reactive, ref } from 'vue';
+import { useRoute } from 'vue-router';
 
-
-const router = useRouter();
 const route = useRoute();
 
-
 const useViewInvoiceState = container.get<IUseViewInvoiceState>(SYMBOLS.States.Invoice.ViewInvoiceState);
-const { init, downloadPdf, sendInvoice, invoice, pdfUrl, filename  } = useViewInvoiceState;
+const { init, downloadPdf, sendInvoice, invoice, pdfUrl, filename } = useViewInvoiceState;
 
-const onBackBtnClick = () => {
-  router.back();
-};
+const sending = ref(false);
+const snackbar = reactive({ show: false, message: '', color: 'success' });
 
-const onDownloadBtnClick = () => {
-  downloadPdf();
+const showSnack = (message: string, color = 'success') => {
+  snackbar.message = message;
+  snackbar.color = color;
+  snackbar.show = true;
 };
 
 const onSendBtnClick = async () => {
-  // TODO: TO DELETE (verify)
+  sending.value = true;
   try {
     await sendInvoice();
-    alert('Facture envoyée avec succès!');
-  } catch (error) {
-    console.error('Error sending invoice:', error);
-    alert('Erreur lors de l\'envoi de la facture');
+    showSnack('Facture envoyée avec succès.');
+  } catch {
+    showSnack("Erreur lors de l'envoi de la facture.", 'error');
+  } finally {
+    sending.value = false;
   }
 };
 
@@ -100,5 +109,4 @@ onMounted(async () => {
   const invoiceId = route.params.id as string;
   init(invoiceId);
 });
-
 </script>

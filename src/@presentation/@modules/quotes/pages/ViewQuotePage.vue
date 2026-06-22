@@ -24,13 +24,14 @@
             color="primary"
             prepend-icon="mdi-send"
             variant="flat"
+            :loading="sending"
             @click="onSendBtnClick"
           >
-            Send
+            Envoyer
           </GenericButton>
         </template>
       </v-toolbar>
-      
+
       <v-card
         class="rounded-lg"
         outlined
@@ -57,6 +58,15 @@
       </v-card>
     </v-container>
   </MainLayout>
+
+  <v-snackbar
+    v-model="snackbar.show"
+    :color="snackbar.color"
+    timeout="4000"
+    location="bottom right"
+  >
+    {{ snackbar.message }}
+  </v-snackbar>
 </template>
 
 <script setup lang="ts">
@@ -68,28 +78,39 @@ import DownloadButton from '@/@presentation/@ui/components/buttons/DownloadButto
 import GenericButton from '@/@presentation/@ui/components/buttons/GenericButton.vue';
 import MainLayout from '@/@presentation/@ui/layouts/MainLayout.vue';
 import { IUseViewQuoteState } from '@/@presentation/types/composables/IUseViewQuoteState';
-import { onMounted } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
+import { onMounted, reactive, ref } from 'vue';
+import { useRoute } from 'vue-router';
 
-
-const router = useRouter();
 const route = useRoute();
-
 
 const useViewQuoteState = container.get<IUseViewQuoteState>(SYMBOLS.States.Quote.ViewQuoteState);
 const authState = container.get<IAuthState>(SYMBOLS.States.AuthState);
-const { isFreePlan } = authState
-const { init, downloadPdf, sendQuote, quote, pdfUrl, filename  } = useViewQuoteState;
+const { isFreePlan } = authState;
+const { init, sendQuote, quote, pdfUrl, filename } = useViewQuoteState;
 
-const onSendBtnClick = () => {
-  console.log('onSendBtnClick');
-  // router.push(`/quotes/send/${route.params.id}`);
-  sendQuote();
+const sending = ref(false);
+const snackbar = reactive({ show: false, message: '', color: 'success' });
+
+const showSnack = (message: string, color = 'success') => {
+  snackbar.message = message;
+  snackbar.color = color;
+  snackbar.show = true;
+};
+
+const onSendBtnClick = async () => {
+  sending.value = true;
+  try {
+    await sendQuote();
+    showSnack('Devis envoyé avec succès.');
+  } catch {
+    showSnack("Erreur lors de l'envoi du devis.", 'error');
+  } finally {
+    sending.value = false;
+  }
 };
 
 onMounted(async () => {
   const quoteId = route.params.id as string;
   init(quoteId);
 });
-
 </script>

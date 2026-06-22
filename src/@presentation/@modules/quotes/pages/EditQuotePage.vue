@@ -906,14 +906,24 @@
   const onAcceptedBtnClick = () => updateQuoteStatus({ code: 'accepted'});
   const onRefusedBtnClick = () => updateQuoteStatus({ code: 'refused'});
   const onSendBtnClick = () => console.log('send quote to be implemented');
-  const onDuplicateQuoteToInvoiceBtnClick = () => duplicateQuoteToInvoice();
+  const onDuplicateQuoteToInvoiceBtnClick = async () => {
+    const invoiceId = await duplicateQuoteToInvoice();
+    if (invoiceId) router.push(`/invoices/edit/${invoiceId}`);
+  };
   const onViewPdfBtnClick = () => router.push(`/quotes/${route.params.id}/view`);
   const onDeleteBtnClick = () => deleteQuoteConfirmDialogRef.value?.open();
   const onConfirmDeleteQuote = () => {
     deleteQuote();
     router.push('/quotes/');
   };
-  const onUpdateBtnClick = () => updateQuote();
+  const onUpdateBtnClick = async () => {
+    try {
+      await updateQuote();
+      router.push('/quotes/');
+    } catch {
+      // validation errors — stay on page
+    }
+  };
 
   onMounted(async () => {
     await init(route.params.id);

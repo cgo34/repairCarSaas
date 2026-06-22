@@ -767,6 +767,15 @@
     type="warning"
     @confirm="onConfirmDeleteInvoice"
   />
+
+  <v-snackbar
+    v-model="snackbar.show"
+    :color="snackbar.color"
+    timeout="4000"
+    location="bottom right"
+  >
+    {{ snackbar.message }}
+  </v-snackbar>
 </template>
 
 <script setup lang="ts">
@@ -789,7 +798,7 @@ import { GarageViewModel } from '@/@presentation/types/models/GarageViewModel';
 import { LineItemViewModel } from '@/@presentation/types/models/LineItemViewModel';
 import { UserViewModel } from '@/@presentation/types/models/UserViewModel';
 import { VehicleViewModel } from '@/@presentation/types/models/VehicleViewModel';
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted, reactive, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 // ── Services ──────────────────────────────────────────────────────────────────
@@ -852,6 +861,8 @@ const router = useRouter();
 const route = useRoute();
 const vehiclesList = computed(() => vehicles.value);
 const statusLoading = ref(false);
+const snackbar = reactive({ show: false, message: '', color: 'success' });
+const showSnack = (message: string, color = 'success') => { snackbar.message = message; snackbar.color = color; snackbar.show = true; };
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 const initials = (name: string) => {
@@ -916,8 +927,9 @@ const onFinalizeBtnClick = () => console.log('finalize invoice');
 const onSendBtnClick = async () => {
   try {
     await sendInvoice();
-  } catch (e) {
-    console.error('Error sending invoice:', e);
+    showSnack('Facture envoyée avec succès.');
+  } catch {
+    showSnack("Erreur lors de l'envoi de la facture.", 'error');
   }
 };
 const onViewPdfBtnClick = () => router.push(`/invoices/view/${route.params.id}`);
@@ -927,8 +939,12 @@ const onConfirmDeleteInvoice = () => {
   router.push('/invoices/');
 };
 const onUpdateBtnClick = async () => {
-  await updateInvoice();
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  try {
+    await updateInvoice();
+    router.push('/invoices/');
+  } catch {
+    // validation errors — stay on page
+  }
 };
 
 onMounted(async () => {

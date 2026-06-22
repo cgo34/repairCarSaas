@@ -1,7 +1,7 @@
 // region -> IMPORTS
 import { IAuthState } from '@/@application/states/interfaces/IAuthState';
 import { IDownloadService } from '@/@domain/services/IDownloadService';
-import { ICompanySettingsUseCase } from '@/@domain/useCases/ICompanySettingsUseCase';
+import { IOrganizationProfileUseCase } from '@/@domain/useCases/organizations/IOrganizationProfileUseCase';
 import { IGenerateInvoicePdfUseCase } from '@/@domain/useCases/invoices/IGenerateInvoicePdfUseCase';
 import { ISendInvoiceUseCase } from '@/@domain/useCases/invoices/ISendInvoiceUseCase';
 import { IViewInvoiceUseCase } from '@/@domain/useCases/invoices/IViewInvoiceUseCase';
@@ -16,7 +16,7 @@ export function useViewInvoiceState() {
   const authState = container.get<IAuthState>(SYMBOLS.States.AuthState);
   const viewInvoiceUseCase = container.get<IViewInvoiceUseCase>(SYMBOLS.UseCases.Invoice.ViewInvoiceUseCase);
   const generatePdfUseCase = container.get<IGenerateInvoicePdfUseCase>(SYMBOLS.UseCases.Invoice.GenerateInvoicePdfUseCase);
-  const companySettingsUseCase = container.get<ICompanySettingsUseCase>(SYMBOLS.UseCases.CompanySettings);
+  const organizationProfileUseCase = container.get<IOrganizationProfileUseCase>(SYMBOLS.UseCases.OrganizationProfileUseCase);
   const downloadService = container.get<IDownloadService>(SYMBOLS.Services.DownloadService);
   const sendInvoiceUseCase = container.get<ISendInvoiceUseCase>(SYMBOLS.UseCases.Invoice.SendInvoiceUseCase);
   // #endregion
@@ -26,19 +26,18 @@ export function useViewInvoiceState() {
   const error = ref<Error | null>(null);
   const _invoice = ref<InvoiceViewModel | undefined>(undefined);
   const _pdfUrl = ref<string>('');
-  const _company = ref<import('@/@application/dtos/CompanySettingsDto').CompanySettingsDto | null>(null);
+  const _company = ref<import('@/@application/dtos/organizations/OrganizationProfileDto').OrganizationProfileDto | null>(null);
   // #endregion
 
   // #region -> INIT
   const init = async (invoiceId: string) => {
     loading.value = true;
     try {
-      const userId = authState.userContext?.value?.organization?.ownerUserId
-        ?? authState.userContext?.value?.id;
+      const organizationId = authState.userContext?.value?.organization?.id;
 
       const [{ invoice, lines }, company] = await Promise.all([
         viewInvoiceUseCase.execute(invoiceId),
-        userId ? companySettingsUseCase.getByUserId(userId) : Promise.resolve(null),
+        organizationId ? organizationProfileUseCase.getProfile(organizationId) : Promise.resolve(null),
       ]);
       _company.value = company;
 
@@ -81,6 +80,7 @@ export function useViewInvoiceState() {
       await sendInvoiceUseCase.execute(_invoice.value.id, _company.value);
     } catch (e) {
       error.value = e as Error;
+      throw e;
     } finally {
       loading.value = false;
     }

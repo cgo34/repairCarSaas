@@ -5,10 +5,11 @@ export interface IUseViewInvoiceState {
   loading: Ref<boolean>;
   error: Ref<Error | null>;
   
-  init: (quoteId: string) => void;
+  init: (invoiceId: string) => void;
   downloadPdf: () => void;
-  
+  sendInvoice: () => Promise<void>;
+
   pdfUrl: ComputedRef<string>;
   filename: ComputedRef<string>;
-  quote: ComputedRef<InvoiceViewModel | undefined>;
+  invoice: ComputedRef<InvoiceViewModel | undefined>;
 }

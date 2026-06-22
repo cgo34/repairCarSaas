@@ -1,5 +1,5 @@
-import { CompanySettingsDto } from '@/@application/dtos/CompanySettingsDto';
+import { OrganizationProfileDto } from '@/@application/dtos/organizations/OrganizationProfileDto';
 
 export interface ISendInvoiceUseCase {
-  execute(invoiceId: string, company?: CompanySettingsDto | null): Promise<void>;
+  execute(invoiceId: string, company?: OrganizationProfileDto | null): Promise<void>;
 }

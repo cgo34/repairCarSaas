@@ -7,7 +7,8 @@ export interface IUseViewQuoteState {
   
   init: (quoteId: string) => void;
   downloadPdf: () => void;
-  
+  sendQuote: () => Promise<void>;
+
   pdfUrl: ComputedRef<string>;
   filename: ComputedRef<string>;
   quote: ComputedRef<QuoteViewModel | undefined>;

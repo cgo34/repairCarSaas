@@ -1,4 +1,4 @@
-import { CompanySettingsDto } from "@/@application/dtos/CompanySettingsDto";
+import { OrganizationProfileDto } from "@/@application/dtos/organizations/OrganizationProfileDto";
 import { LineItemDto } from "@/@application/dtos/LineItemDto";
 import { QuoteDto } from "@/@application/dtos/QuoteDto";
 import { IPdfGenerator } from "@/@domain/services/IPdfGenerator";
@@ -13,7 +13,7 @@ export class GenerateQuotePdfUseCase implements IGenerateQuotePdfUseCase {
     private pdfGenerator: IPdfGenerator
   ) {}
 
-  async execute(quote: QuoteDto, lines: LineItemDto[], company: CompanySettingsDto | null): Promise<string> {
+  async execute(quote: QuoteDto, lines: LineItemDto[], company: OrganizationProfileDto | null): Promise<string> {
     return await this.pdfGenerator.generate(quote, lines, company);
   }
 }

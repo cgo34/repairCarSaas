@@ -1,4 +1,4 @@
-import { CompanySettingsDto } from "@/@application/dtos/CompanySettingsDto";
+import { OrganizationProfileDto } from "@/@application/dtos/organizations/OrganizationProfileDto";
 import { LineItemDto } from "@/@application/dtos/LineItemDto";
 import { InvoiceDto } from "@/@application/dtos/InvoiceDto";
 import { IPdfGenerator } from "@/@domain/services/IPdfGenerator";
@@ -13,7 +13,7 @@ export class GenerateInvoicePdfUseCase implements IGenerateInvoicePdfUseCase {
     private pdfGenerator: IPdfGenerator
   ) {}
 
-  async execute(invoice: InvoiceDto, lines: LineItemDto[], company: CompanySettingsDto | null): Promise<string> {
+  async execute(invoice: InvoiceDto, lines: LineItemDto[], company: OrganizationProfileDto | null): Promise<string> {
     return await this.pdfGenerator.generateInvoice(invoice, lines, company);
   }
 }

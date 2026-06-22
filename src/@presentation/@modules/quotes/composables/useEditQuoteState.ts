@@ -362,15 +362,17 @@ export function useEditQuoteState() {
       return 0
     };
 
+    const taxRate = typeof selectedCountry.value === 'object' ? (selectedCountry.value?.taxRate ?? 0) : 0;
+
     if (!isForfait.value) {
-      return subTotalWithDegarnissage.value * (selectedCountry.value.taxRate / 100);
+      return subTotalWithDegarnissage.value * (taxRate / 100);
     }
 
     if (!forfaitAmount.value) {
       return 0
     };
 
-    return forfaitAmount.value * (selectedCountry.value.taxRate / 100);
+    return forfaitAmount.value * (taxRate / 100);
   });
 
   const totalCommission = computed(() => {
@@ -475,11 +477,12 @@ export function useEditQuoteState() {
     await updateQuoteUseCase.execute(QuoteMapper.viewToDto(_quote.value));
   }
 
-  const duplicateQuoteToInvoice = () => {
+  const duplicateQuoteToInvoice = async (): Promise<string | undefined> => {
     if (!_quote.value)
-      return
-    
-    duplicateQuoteToInvoiceUseCase.execute(QuoteMapper.viewToDto(_quote.value), _quoteLines.value.map(LineItemMapper.viewToDto))
+      return undefined
+
+    const invoice = await duplicateQuoteToInvoiceUseCase.execute(QuoteMapper.viewToDto(_quote.value), _quoteLines.value.map(LineItemMapper.viewToDto))
+    return invoice?.id
   }
 
   const deleteQuote = () => {

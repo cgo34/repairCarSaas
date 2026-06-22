@@ -291,6 +291,7 @@ import { IAuthState } from '@/@application/states/interfaces/IAuthState';
 import { CompanySettingsDto } from '@/@application/dtos/CompanySettingsDto';
 import { ICompanySettingsUseCase } from '@/@domain/useCases/ICompanySettingsUseCase';
 import { IGenerateInvoicePdfUseCase } from '@/@domain/useCases/invoices/IGenerateInvoicePdfUseCase';
+import { ISendInvoiceUseCase } from '@/@domain/useCases/invoices/ISendInvoiceUseCase';
 import { container } from '@/@infrastructure/ioc/inversify.config';
 import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
 import MainLayout from '@/@presentation/@ui/layouts/MainLayout.vue';
@@ -311,6 +312,7 @@ const authState = container.get<IAuthState>(SYMBOLS.States.AuthState);
 const useInvoiceState = container.get<IUseInvoicesState>(SYMBOLS.States.Invoice.GetInvoicesUseCase);
 const generatePdfUseCase = container.get<IGenerateInvoicePdfUseCase>(SYMBOLS.UseCases.Invoice.GenerateInvoicePdfUseCase);
 const companySettingsUseCase = container.get<ICompanySettingsUseCase>(SYMBOLS.UseCases.CompanySettings);
+const sendInvoiceUseCase = container.get<ISendInvoiceUseCase>(SYMBOLS.UseCases.Invoice.SendInvoiceUseCase);
 
 const router = useRouter();
 const { mobile } = useDisplay();
@@ -477,14 +479,16 @@ const onAddInvoice = () => {
   router.push('/invoices/new');
 };
 
-const onSendBtnClick = (
+const onSendBtnClick = async (
   invoiceId: string | undefined
 ) => {
-  if (!invoiceId) {
-    return;
+  if (!invoiceId) return;
+  try {
+    await sendInvoiceUseCase.execute(invoiceId);
+    showSnack('Facture envoyée avec succès.');
+  } catch {
+    showSnack("Erreur lors de l'envoi de la facture.", 'error');
   }
-
-  // router.push(`/invoices/${invoiceId}/send/`);
 };
 
 const onViewPdfBtnClick = (

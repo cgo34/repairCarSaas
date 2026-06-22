@@ -1,7 +1,7 @@
 // region -> IMPORTS
 import { IAuthState } from '@/@application/states/interfaces/IAuthState';
 import { IDownloadService } from '@/@domain/services/IDownloadService';
-import { ICompanySettingsUseCase } from '@/@domain/useCases/ICompanySettingsUseCase';
+import { IOrganizationProfileUseCase } from '@/@domain/useCases/organizations/IOrganizationProfileUseCase';
 import { IGenerateQuotePdfUseCase } from '@/@domain/useCases/quotes/IGenerateQuotePdfUseCase';
 import { IViewQuoteUseCase } from '@/@domain/useCases/quotes/IViewQuoteUseCase';
 import { ISendQuoteUseCase } from '@/@domain/useCases/quotes/ISendQuoteUseCase';
@@ -16,7 +16,7 @@ export function useViewQuoteState() {
   const authState = container.get<IAuthState>(SYMBOLS.States.AuthState);
   const viewQuoteUseCase = container.get<IViewQuoteUseCase>(SYMBOLS.UseCases.Quote.ViewQuoteUseCase);
   const generatePdfUseCase = container.get<IGenerateQuotePdfUseCase>(SYMBOLS.UseCases.Quote.GenerateQuotePdfUseCase);
-  const companySettingsUseCase = container.get<ICompanySettingsUseCase>(SYMBOLS.UseCases.CompanySettings);
+  const organizationProfileUseCase = container.get<IOrganizationProfileUseCase>(SYMBOLS.UseCases.OrganizationProfileUseCase);
   const downloadService = container.get<IDownloadService>(SYMBOLS.Services.DownloadService);
   const sendQuoteUseCase = container.get<ISendQuoteUseCase>(SYMBOLS.UseCases.Quote.SendQuoteUseCase);
   // #endregion
@@ -26,19 +26,18 @@ export function useViewQuoteState() {
   const error = ref<Error | null>(null);
   const _quote = ref<QuoteViewModel | undefined>(undefined);
   const _pdfUrl = ref<string>('');
-  const _company = ref<import('@/@application/dtos/CompanySettingsDto').CompanySettingsDto | null>(null);
+  const _company = ref<import('@/@application/dtos/organizations/OrganizationProfileDto').OrganizationProfileDto | null>(null);
   // #endregion
 
   // #region -> INIT
   const init = async (quoteId: string) => {
     loading.value = true;
     try {
-      const userId = authState.userContext?.value?.organization?.ownerUserId
-        ?? authState.userContext?.value?.id;
+      const organizationId = authState.userContext?.value?.organization?.id;
 
       const [{ quote, lines }, company] = await Promise.all([
         viewQuoteUseCase.execute(quoteId),
-        userId ? companySettingsUseCase.getByUserId(userId) : Promise.resolve(null),
+        organizationId ? organizationProfileUseCase.getProfile(organizationId) : Promise.resolve(null),
       ]);
       _company.value = company;
 
@@ -81,6 +80,7 @@ export function useViewQuoteState() {
       await sendQuoteUseCase.execute(_quote.value.id, _company.value);
     } catch (e) {
       error.value = e as Error;
+      throw e;
     } finally {
       loading.value = false;
     }

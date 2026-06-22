@@ -1,9 +1,9 @@
-import { CompanySettingsDto } from '@/@application/dtos/CompanySettingsDto';
+import { OrganizationProfileDto } from '@/@application/dtos/organizations/OrganizationProfileDto';
 import { InvoiceDto } from '@/@application/dtos/InvoiceDto';
 import { LineItemDto } from '@/@application/dtos/LineItemDto';
 
-export const buildInvoiceHtmlTemplate = (invoice: InvoiceDto, lines: LineItemDto[], company: CompanySettingsDto | null): string => {
-  const c = company ?? {} as Partial<CompanySettingsDto>;
+export const buildInvoiceHtmlTemplate = (invoice: InvoiceDto, lines: LineItemDto[], company: OrganizationProfileDto | null): string => {
+  const c = company ?? {} as Partial<OrganizationProfileDto>;
 
   const totalHT = lines.reduce((sum, l) => sum + l.price, 0);
   const totalStripping = lines.reduce((sum, l) => sum + (l.dentRemovalPrice ?? 0), 0);
@@ -28,11 +28,11 @@ export const buildInvoiceHtmlTemplate = (invoice: InvoiceDto, lines: LineItemDto
   const invoiceDate = new Date(invoice.startDate).toLocaleDateString('fr-FR');
   const dueDate = (() => {
     const d = new Date(invoice.startDate);
-    d.setDate(d.getDate() + (c.paymentDelay ?? 30));
+    d.setDate(d.getDate() + (c.payment_delay ?? 30));
     return d.toLocaleDateString('fr-FR');
   })();
 
-  const companyDisplay = c.companyName || 'Votre entreprise';
+  const companyDisplay = c.company_name || 'Votre entreprise';
   const garageName = invoice.garage?.name    ?? invoice.garageName    ?? '';
   const garageAddr = invoice.garage?.address ?? invoice.garageAddress ?? '';
   const garageZip  = invoice.garage?.zipCode ?? invoice.garageZipCode ?? '';
@@ -256,13 +256,13 @@ export const buildInvoiceHtmlTemplate = (invoice: InvoiceDto, lines: LineItemDto
         <td class="td-cell">
           <div class="party-name">${companyDisplay}</div>
           ${c.address ? `<div class="party-line">${c.address}</div>` : ''}
-          ${(c.zipCode || c.city) ? `<div class="party-line">${c.zipCode ?? ''} ${c.city ?? ''}</div>` : ''}
+          ${(c.zip_code || c.city) ? `<div class="party-line">${c.zip_code ?? ''} ${c.city ?? ''}</div>` : ''}
           ${c.phone ? `<div class="party-line">${c.phone}</div>` : ''}
           ${c.email ? `<div class="party-line">${c.email}</div>` : ''}
-          ${(c.siret || c.tvaNumber || c.legalForm) ? `<div class="party-legal">
+          ${(c.siret || c.tva_number || c.legal_form) ? `<div class="party-legal">
             ${c.siret ? `SIRET : ${c.siret}` : ''}
-            ${c.tvaNumber ? `<br>N° TVA : ${c.tvaNumber}` : ''}
-            ${c.legalForm ? `<br>${c.legalForm}${c.capital ? ' — Capital : ' + c.capital : ''}` : ''}
+            ${c.tva_number ? `<br>N° TVA : ${c.tva_number}` : ''}
+            ${c.legal_form ? `<br>${c.legal_form}${c.capital ? ' — Capital : ' + c.capital : ''}` : ''}
           </div>` : ''}
         </td>
         <td class="td-cell">
@@ -311,16 +311,16 @@ export const buildInvoiceHtmlTemplate = (invoice: InvoiceDto, lines: LineItemDto
   <div class="footer">
     <div class="footer-block">
       <div class="footer-title">Informations de paiement</div>
-      ${c.companyName ? `<p>Nom : ${c.companyName}</p>` : ''}
+      ${c.company_name ? `<p>Nom : ${c.company_name}</p>` : ''}
       ${c.iban ? `<p>IBAN : ${c.iban}</p>` : ''}
       ${c.bic  ? `<p>Swift/BIC : ${c.bic}</p>` : ''}
       ${!c.iban ? `<p style="color:#aaa;font-style:italic;">À compléter dans les paramètres</p>` : ''}
     </div>
     <div class="footer-block">
       <div class="footer-title">Terme et conditions</div>
-      <p>Le paiement devra être effectué dans un délai de ${c.paymentDelay ?? 30} jours maximum après réception de la facture.</p>
-      ${c.latePaymentPenalty ? `<p>Pénalités de retard : ${c.latePaymentPenalty}.</p>` : ''}
-      ${c.recoveryFee ? `<p>Indemnité de recouvrement : ${c.recoveryFee}.</p>` : ''}
+      <p>Le paiement devra être effectué dans un délai de ${c.payment_delay ?? 30} jours maximum après réception de la facture.</p>
+      ${c.late_payment_penalty ? `<p>Pénalités de retard : ${c.late_payment_penalty}.</p>` : ''}
+      ${c.recovery_fee ? `<p>Indemnité de recouvrement : ${c.recovery_fee}.</p>` : ''}
     </div>
   </div>
 

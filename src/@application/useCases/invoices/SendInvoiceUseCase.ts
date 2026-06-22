@@ -1,11 +1,12 @@
 // 📁 application/useCases/invoices/SendInvoiceUseCase.ts
 
-import { CompanySettingsDto } from '@/@application/dtos/CompanySettingsDto';
+import { OrganizationProfileDto } from '@/@application/dtos/organizations/OrganizationProfileDto';
 import { IGenerateInvoicePdfUseCase } from '@/@domain/useCases/invoices/IGenerateInvoicePdfUseCase';
 import { ISendInvoiceUseCase } from '@/@domain/useCases/invoices/ISendInvoiceUseCase';
 import { IViewInvoiceUseCase } from '@/@domain/useCases/invoices/IViewInvoiceUseCase';
 import { IEmailService } from '@/@domain/services/IEmailService';
 import { IInvoiceRepository } from '@/@domain/repositories/IInvoiceRepository';
+import { IOrganizationProfileUseCase } from '@/@domain/useCases/organizations/IOrganizationProfileUseCase';
 import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
 import { inject, injectable } from 'inversify';
 
@@ -23,16 +24,23 @@ export class SendInvoiceUseCase implements ISendInvoiceUseCase {
 
     @inject(SYMBOLS.Repositories.InvoiceRepository)
     private readonly invoiceRepository: IInvoiceRepository,
+
+    @inject(SYMBOLS.UseCases.OrganizationProfileUseCase)
+    private readonly organizationProfileUseCase: IOrganizationProfileUseCase,
   ) {}
 
-  async execute(invoiceId: string, company?: CompanySettingsDto | null): Promise<void> {
+  async execute(invoiceId: string, _company?: OrganizationProfileDto | null): Promise<void> {
     const { invoice, lines } = await this.viewInvoiceUseCase.execute(invoiceId);
 
     if (!invoice || !lines) {
       throw new Error('Invoice or invoice details not found');
     }
 
-    const pdfUrl = await this.generatePdfUseCase.execute(invoice, lines, company ?? null);
+    const company = invoice.organization_id
+      ? await this.organizationProfileUseCase.getProfile(invoice.organization_id)
+      : null;
+
+    const pdfUrl = await this.generatePdfUseCase.execute(invoice, lines, company);
     if (!pdfUrl) {
       throw new Error('Failed to generate PDF');
     }
