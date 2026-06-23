@@ -1,15 +1,14 @@
-// Import des styles de Vuetify
 @import 'vuetify/styles';
 
-// Variables personnalisées pour Berry
-$primary-color: #536dfe;
-$secondary-color: #ff4081;
+$primary-color: #2B54E0;
+$secondary-color: #9AA2B1;
 
 body {
-  font-family: 'Roboto', sans-serif;
+  font-family: 'Manrope', 'Roboto', sans-serif;
+  color: #0F1626;
 }
 
 .v-card {
   border-radius: 12px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 4px rgba(15, 22, 38, 0.08);
 }

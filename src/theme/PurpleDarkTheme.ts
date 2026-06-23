@@ -4,39 +4,45 @@ const PurpleDarkTheme: ThemeTypes = {
   name: 'dark',
   dark: true,
   variables: {
-    'border-color': '#1e88e5',
+    'border-color': '#2B54E0',
     'carousel-control-size': 10
   },
   colors: {
-    primary: '#1e88e5',
-    secondary: '#7C4DFF',
-    info: '#03c9d7',
-    success: '#00c853',
-    accent: '#FFAB91',
-    warning: '#ffc107',
-    error: '#f44336',
-    lightprimary: '#292F4F',
-    lightsecondary: '#292F4F',
-    lightsuccess: '#143C33',
-    lighterror: '#F9D8D8',
-    lightwarning: '#FFF8E1',
-    darkText: '#D7DCEC',
-    lightText: '#BDC8F0',
-    darkprimary: '#1565c0',
-    darksecondary: '#4527a0',
-    borderLight: '#404968',
-    inputBorder: '#5F698D',
-    containerBg: '#1A223F',
-    surface: '#111936',
-    'on-surface-variant': '#111936',
-    facebook: '#4267b2',
-    twitter: '#1da1f2',
-    linkedin: '#0e76a8',
-    gray100: '#191E3C',
-    primary200: '#90CAF9',
-    secondary200: '#B39DDB'
+    primary:         '#2B54E0',  // Bleu précision
+    secondary:       '#9AA2B1',  // Neutre
+    info:            '#2B54E0',
+    success:         '#15915F',
+    accent:          '#F5871F',
+    warning:         '#F5871F',
+    error:           '#D8443A',
+
+    lightprimary:    '#1D2E50',
+    lightsecondary:  '#1A2236',
+    lightsuccess:    '#0E2E22',
+    lighterror:      '#2A1A1A',
+    lightwarning:    '#2A1F0E',
+
+    darkprimary:     '#1D3DB5',
+    darksecondary:   '#3D4F6E',
+
+    darkText:        '#D7DCEC',
+    lightText:       '#8B96A8',
+    borderLight:     '#2A3550',
+    inputBorder:     '#3D4F6E',
+    containerBg:     '#1A2236',
+    surface:         '#0F1626',
+    'on-surface-variant': '#0F1626',
+
+    gray100:         '#131D30',
+    primary200:      '#A8BFEF',
+    secondary200:    '#5A6478',
+
+    navBg:           '#080E1C',  // Sidebar encore plus sombre
+
+    facebook:        '#4267b2',
+    twitter:         '#1da1f2',
+    linkedin:        '#0e76a8',
   }
 };
 
 export { PurpleDarkTheme };
-

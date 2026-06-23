@@ -129,8 +129,27 @@ const sidebarMenu = computed(() => {
 
 <style scoped lang="scss">
 .modern-sidebar {
-  border-right: 1px solid rgba(var(--v-theme-borderColor), 0.7) !important;
+  border-right: none !important;
+  background: rgb(var(--v-theme-navBg)) !important;
 
-  background: rgb(var(--v-theme-surface)) !important;
+  :deep(.v-list) {
+    color: rgba(255, 255, 255, 0.75) !important;
+  }
+
+  :deep(.v-list-item--active),
+  :deep(.v-list-item--active .v-list-item-title) {
+    color: #ffffff !important;
+  }
+
+  :deep(.v-list-item:hover) {
+    color: #ffffff !important;
+  }
+
+  :deep(.smallCap) {
+    color: rgba(255, 255, 255, 0.4) !important;
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
 }
 </style>

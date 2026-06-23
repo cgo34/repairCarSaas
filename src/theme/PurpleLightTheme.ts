@@ -4,39 +4,45 @@ const PurpleLightTheme: ThemeTypes = {
   name: 'light',
   dark: false,
   variables: {
-    'border-color': '#1e88e5',
+    'border-color': '#2B54E0',
     'carousel-control-size': 10
   },
   colors: {
-    primary: '#1e88e5',
-    secondary: '#5e35b1',
-    info: '#03c9d7',
-    success: '#00c853',
-    accent: '#FFAB91',
-    warning: '#ffc107',
-    error: '#f44336',
-    lightprimary: '#eef2f6',
-    lightsecondary: '#ede7f6',
-    lightsuccess: '#b9f6ca',
-    lighterror: '#f9d8d8',
-    lightwarning: '#fff8e1',
-    darkText: '#212121',
-    lightText: '#616161',
-    darkprimary: '#1565c0',
-    darksecondary: '#4527a0',
-    borderLight: '#d0d0d0',
-    inputBorder: '#787878',
-    containerBg: '#eef2f6',
-    surface: '#fff',
-    'on-surface-variant': '#fff',
-    facebook: '#4267b2',
-    twitter: '#1da1f2',
-    linkedin: '#0e76a8',
-    gray100: '#fafafa',
-    primary200: '#90caf9',
-    secondary200: '#b39ddb'
+    primary:         '#2B54E0',  // Bleu précision
+    secondary:       '#9AA2B1',  // Brouillon / neutre
+    info:            '#2B54E0',  // Envoyée (même bleu)
+    success:         '#15915F',  // Payée
+    accent:          '#F5871F',  // Ambre carrosserie
+    warning:         '#F5871F',  // Ambre carrosserie
+    error:           '#D8443A',  // En retard
+
+    lightprimary:    '#EBF0FB',
+    lightsecondary:  '#F0F2F5',
+    lightsuccess:    '#E6F4EF',
+    lighterror:      '#FAEAEA',
+    lightwarning:    '#FEF3E8',
+
+    darkprimary:     '#1D3DB5',
+    darksecondary:   '#6B7A90',
+
+    darkText:        '#0F1626',  // Bleu nuit atelier
+    lightText:       '#5A6478',
+    borderLight:     '#D8DEEB',
+    inputBorder:     '#9AA2B1',
+    containerBg:     '#F4F6FB',
+    surface:         '#FFFFFF',
+    'on-surface-variant': '#FFFFFF',
+
+    gray100:         '#F8F9FC',
+    primary200:      '#A8BFEF',
+    secondary200:    '#CBD0D9',
+
+    navBg:           '#0F1626',  // Sidebar dark
+
+    facebook:        '#4267b2',
+    twitter:         '#1da1f2',
+    linkedin:        '#0e76a8',
   }
 };
 
 export { PurpleLightTheme };
-
