@@ -251,13 +251,14 @@ export class InvoiceRepository implements IInvoiceRepository {
       .eq('id', invoiceApi.id)
       .select(`
         *,
-        technician:users!invoices_technician_id_fkey(*),
         garage:garages(*)
       `)
       .returns<any[]>();
 
-    if (error)
+    if (error) {
+      console.error('[InvoiceRepository.update] Supabase error:', error.message, error.details, error.hint);
       throw new Error('Error updating invoice');
+    }
 
     return InvoiceMapper.apiToDto(data?.[0] ?? {});
   }

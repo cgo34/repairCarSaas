@@ -486,6 +486,7 @@ const onSendBtnClick = async (
   try {
     await sendInvoiceUseCase.execute(invoiceId);
     showSnack('Facture envoyée avec succès.');
+    await init();
   } catch {
     showSnack("Erreur lors de l'envoi de la facture.", 'error');
   }
