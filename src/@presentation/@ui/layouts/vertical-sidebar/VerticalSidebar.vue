@@ -52,13 +52,13 @@
         </template>
       </v-list>
 
-      <!-- UPGRADE -->
-      <div
+      <!-- UPGRADE (masqué) -->
+      <!-- <div
         v-if="userContext?.subscription?.plan === 'free'"
         class="pa-4"
       >
         <UpgradePlanCard />
-      </div>
+      </div> -->
 
       <!-- VERSION -->
       <div class="pa-4 text-center">

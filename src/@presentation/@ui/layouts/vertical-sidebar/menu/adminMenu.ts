@@ -190,37 +190,22 @@ export const adminMenu = [
   // },
 
   // ─────────────────────────────────────────────────────────
-  // Abonnement
+  // Abonnement (masqué — page non finalisée)
   // ─────────────────────────────────────────────────────────
-  {
-    header: 'Abonnement',
-    roles: ['admin'],
-  },
-
-  {
-    title: 'Abonnement',
-    icon: CreditCardIcon,
-    roles: ['admin'],
-    children: [
-      {
-        title: 'Mon abonnement',
-        icon: CircleIcon,
-        to: '/subscription/overview',
-      },
-
-      {
-        title: 'Utilisation',
-        icon: CircleIcon,
-        to: '/subscription/usage',
-      },
-
-      {
-        title: 'Factures abonnement',
-        icon: CircleIcon,
-        to: '/subscription/invoices',
-      },
-    ],
-  },
+  // {
+  //   header: 'Abonnement',
+  //   roles: ['admin'],
+  // },
+  // {
+  //   title: 'Abonnement',
+  //   icon: CreditCardIcon,
+  //   roles: ['admin'],
+  //   children: [
+  //     { title: 'Mon abonnement', icon: CircleIcon, to: '/subscription/overview' },
+  //     { title: 'Utilisation',    icon: CircleIcon, to: '/subscription/usage'    },
+  //     { title: 'Factures abonnement', icon: CircleIcon, to: '/subscription/invoices' },
+  //   ],
+  // },
 ];
 
 export const menu = adminMenu;
