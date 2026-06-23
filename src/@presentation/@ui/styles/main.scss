@@ -4,8 +4,32 @@ $primary-color: #2B54E0;
 $secondary-color: #9AA2B1;
 
 body {
-  font-family: 'Manrope', 'Roboto', sans-serif;
+  font-family: 'Manrope', sans-serif;
   color: #0F1626;
+}
+
+h1, h2, h3, h4, h5, h6,
+.text-h1, .text-h2, .text-h3, .text-h4, .text-h5, .text-h6,
+.text-subtitle-1, .text-subtitle-2,
+.v-data-table .v-data-table__td,
+.font-weight-bold,
+.text-h4.font-weight-bold {
+  font-family: 'Space Grotesk', sans-serif;
+}
+
+.v-btn {
+  font-family: 'Manrope', sans-serif;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+.v-data-table {
+  font-family: 'Manrope', sans-serif;
+}
+
+.v-chip {
+  font-family: 'Manrope', sans-serif;
+  font-weight: 600;
 }
 
 .v-card {
