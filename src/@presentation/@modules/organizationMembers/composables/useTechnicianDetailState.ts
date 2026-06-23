@@ -71,14 +71,24 @@ export function useTechnicianDetailState(): IUseTechnicianDetailState {
 
   const blockTechnician = async (): Promise<void> => {
     if (!_technician.value?.id) return;
-    await userUseCase.updateUser(_technician.value.id, { isBlocked: true } as any);
-    _technician.value = { ..._technician.value, isBlocked: true };
+    try {
+      await userUseCase.updateUser(_technician.value.id, { isBlocked: true } as any);
+      _technician.value = { ..._technician.value, isBlocked: true };
+    } catch (e) {
+      console.error('[useTechnicianDetailState] blockTechnician error:', e);
+      throw e;
+    }
   };
 
   const unblockTechnician = async (): Promise<void> => {
     if (!_technician.value?.id) return;
-    await userUseCase.updateUser(_technician.value.id, { isBlocked: false } as any);
-    _technician.value = { ..._technician.value, isBlocked: false };
+    try {
+      await userUseCase.updateUser(_technician.value.id, { isBlocked: false } as any);
+      _technician.value = { ..._technician.value, isBlocked: false };
+    } catch (e) {
+      console.error('[useTechnicianDetailState] unblockTechnician error:', e);
+      throw e;
+    }
   };
 
   const updateCommission = async (quoteId: string, rate: number | null, paid: boolean): Promise<void> => {

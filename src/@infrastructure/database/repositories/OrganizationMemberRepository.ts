@@ -34,7 +34,7 @@ export class OrganizationMemberRepository {
   async getMembersByOrganizationId(organizationId: string): Promise<OrganizationMemberDto[]> {
     const { data, error } = await this.clientProvider.getClient()
       .from('organization_members')
-      .select(`*, users!organization_members_user_id_fkey(id, email, full_name, first_name, last_name)`)
+      .select(`*, users!organization_members_user_id_fkey(id, email, full_name, first_name, last_name, is_blocked)`)
       .eq('organization_id', organizationId)
       .returns<OrganizationMemberApiModel[]>();
 
@@ -87,7 +87,7 @@ export class OrganizationMemberRepository {
       .from('organization_members')
       .update(memberFields)
       .eq('id', memberId)
-      .select(`*, users!organization_members_user_id_fkey(id, email, full_name, first_name, last_name)`)
+      .select(`*, users!organization_members_user_id_fkey(id, email, full_name, first_name, last_name, is_blocked)`)
       .single<OrganizationMemberApiModel>();
 
     if (error) throw error;

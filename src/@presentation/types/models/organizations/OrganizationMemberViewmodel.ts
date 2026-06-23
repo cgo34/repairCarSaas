@@ -6,6 +6,7 @@ export type OrganizationMemberUserViewModel = {
   first_name: string;
   last_name: string;
   email: string;
+  isBlocked?: boolean;
 };
 
 export type OrganizationMemberViewModel = {

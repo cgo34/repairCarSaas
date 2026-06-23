@@ -92,6 +92,8 @@ export class OrganizationMemberMapper {
       last_name: user.last_name ?? '',
 
       email: user.email,
+
+      isBlocked: user.isBlocked ?? (user as any).is_blocked,
     };
   }
 }

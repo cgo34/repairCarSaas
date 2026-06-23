@@ -24,15 +24,16 @@
             color="primary"
             size="56"
           >
-            <span class="text-h6 font-weight-bold text-white">
-              {{ initials(state.technician.value.fullName) }}
+            <span v-if="displayName(state.technician.value)" class="text-h6 font-weight-bold text-white">
+              {{ initials(displayName(state.technician.value)) }}
             </span>
+            <v-icon v-else color="white" size="28">mdi-account</v-icon>
           </v-avatar>
           <div>
             <h1 class="text-h5 font-weight-bold mb-0">
-              {{ state.technician.value.fullName }}
+              {{ displayName(state.technician.value) || state.technician.value.email }}
             </h1>
-            <p class="text-body-2 text-medium-emphasis mb-0">
+            <p v-if="displayName(state.technician.value)" class="text-body-2 text-medium-emphasis mb-0">
               {{ state.technician.value.email }}
             </p>
           </div>
@@ -262,10 +263,15 @@
         </v-card>
       </template>
 
+      <!-- Snackbar feedback -->
+      <v-snackbar v-model="snackbar.show" :color="snackbar.color" timeout="3000" location="bottom right">
+        {{ snackbar.message }}
+      </v-snackbar>
+
       <!-- Dialog assignation garage -->
       <AssignGarageDialog
         v-model="garageDialog"
-        :technician-name="state.technician.value?.fullName ?? ''"
+        :technician-name="displayName(state.technician.value) || (state.technician.value?.email ?? '')"
         :all-garages="allGarages"
         :assigned-garages="state.assignedGarages.value"
         @assign-garage="state.assignGarage($event)"
@@ -276,7 +282,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { onMounted, reactive, ref } from 'vue';
 import { useRoute } from 'vue-router';
 import MainLayout from '@/@presentation/@ui/layouts/MainLayout.vue';
 import AssignGarageDialog from '@/@presentation/@modules/technicians/components/AssignGarageDialog.vue';
@@ -294,6 +300,8 @@ const garageUseCase = container.get<IGarageUseCase>(SYMBOLS.UseCases.Garage);
 const authState = container.get<IAuthState>(SYMBOLS.States.AuthState);
 
 const garageDialog = ref(false);
+const snackbar = reactive({ show: false, message: '', color: 'success' });
+const showSnack = (message: string, color = 'success') => { snackbar.message = message; snackbar.color = color; snackbar.show = true; };
 const allGarages = ref<GarageDto[]>([]);
 
 // Taux locaux (avant sauvegarde)
@@ -310,8 +318,14 @@ const quoteHeaders = [
   { title: 'Actions', key: 'actions', sortable: false, align: 'end' },
 ];
 
+function displayName(t: { full_name?: string; first_name?: string; last_name?: string } | null): string {
+  if (!t) return '';
+  if (t.full_name) return t.full_name;
+  return [t.first_name, t.last_name].filter(Boolean).join(' ');
+}
+
 function initials(name: string) {
-  return name?.split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase() ?? '?';
+  return name?.split(' ').map(w => w[0]).filter(Boolean).slice(0, 2).join('').toUpperCase() ?? '';
 }
 
 function formatCurrency(val?: number) {
@@ -353,10 +367,16 @@ async function markPaid(quote: QuoteDto) {
 }
 
 async function toggleBlock() {
-  if (state.technician.value?.isBlocked) {
-    await state.unblockTechnician();
-  } else {
-    await state.blockTechnician();
+  try {
+    if (state.technician.value?.isBlocked) {
+      await state.unblockTechnician();
+      showSnack('Technicien débloqué avec succès.');
+    } else {
+      await state.blockTechnician();
+      showSnack('Technicien bloqué avec succès.');
+    }
+  } catch {
+    showSnack('Erreur lors de la modification du statut.', 'error');
   }
 }
 

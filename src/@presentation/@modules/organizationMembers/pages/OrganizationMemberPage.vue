@@ -118,11 +118,11 @@
         <!-- #REGION -> STATUS -->
         <template #item.status="{ item }">
           <v-chip
-            :color="getStatusColor(item.status)"
+            :color="item.users?.isBlocked ? 'error' : getStatusColor(item.status)"
             size="small"
             label
           >
-            {{ item.status }}
+            {{ item.users?.isBlocked ? 'bloqué' : item.status }}
           </v-chip>
         </template>
         <!-- #ENDREGION -->
