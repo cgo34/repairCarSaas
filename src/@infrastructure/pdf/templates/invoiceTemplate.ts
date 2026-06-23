@@ -8,7 +8,7 @@ export const buildInvoiceHtmlTemplate = (invoice: InvoiceDto, lines: LineItemDto
   const totalHT = lines.reduce((sum, l) => sum + l.price, 0);
   const totalStripping = lines.reduce((sum, l) => sum + (l.dentRemovalPrice ?? 0), 0);
   const totalBase = totalHT + totalStripping;
-  const garageCommissionRate = (invoice.garagePercentageCommission ?? 0) / 100;
+  const garageCommissionRate = ((invoice.garagePercentageCommission ?? invoice.garage?.percentageCommission ?? 0)) / 100;
   const commissionAmount = garageCommissionRate > 0 ? Math.round(totalBase * garageCommissionRate * 100) / 100 : 0;
   const totalAfterCommission = totalBase - commissionAmount;
   const taxRate = invoice.country === 'CH' ? 0.08 : 0;

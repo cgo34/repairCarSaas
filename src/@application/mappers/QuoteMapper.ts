@@ -132,6 +132,9 @@ export class QuoteMapper {
       commissionPaid:
         quoteDto.commissionPaid ?? false,
 
+      garagePercentageCommission:
+        quoteDto.garagePercentageCommission,
+
       /**
        * ============================================================
        * COUNTRY / CURRENCY

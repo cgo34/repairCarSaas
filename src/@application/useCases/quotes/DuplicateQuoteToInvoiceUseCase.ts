@@ -32,13 +32,9 @@ export class DuplicateQuoteToInvoiceUseCase {
     
     let invoice = QuoteMapper.quoteToInvoice(quote)
 
-    const garageCommissionRate = (quote.garagePercentageCommission ?? 0) / 100;
-    const totalHtAfterDeduction = Math.round((quote.totalHt ?? 0) * (1 - garageCommissionRate) * 100) / 100;
-
     invoice = {
       ...invoice,
       invoiceNumber: invoiceNumber,
-      totalHt: totalHtAfterDeduction,
       // Set new status for invoice
       status_id: pendingStatus?.id,
       status: pendingStatus
