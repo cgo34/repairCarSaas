@@ -47,14 +47,14 @@
 
     <!-- RIGHT -->
     <div class="d-flex align-center ga-3">
-      <!-- HELP -->
-      <v-btn
+      <!-- HELP (masqué) -->
+      <!-- <v-btn
         class="text-primary hidden-sm-and-down"
         rounded="lg"
         variant="tonal"
       >
         Besoin d'aide ?
-      </v-btn>
+      </v-btn> -->
 
       <!-- THEME -->
       <v-btn
@@ -80,8 +80,8 @@
         />
       </v-btn>
 
-      <!-- NOTIFICATIONS -->
-      <v-menu :close-on-content-click="false">
+      <!-- NOTIFICATIONS (masqué) -->
+      <!-- <v-menu :close-on-content-click="false">
         <template #activator="{ props }">
           <v-btn
             icon
@@ -106,7 +106,7 @@
         >
           <NotificationDD />
         </v-sheet>
-      </v-menu>
+      </v-menu> -->
 
       <!-- PROFILE -->
       <v-menu :close-on-content-click="false">
