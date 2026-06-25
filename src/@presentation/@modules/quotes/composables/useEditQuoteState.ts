@@ -139,12 +139,11 @@ export function useEditQuoteState() {
 
       if (priceParamsResult) {
         _priceParams.value = SettingPriceMapper.dtoToView(priceParamsResult);
-        // Recalculer les lignes existantes dont le prix est 0
-        // _quoteLines.value.forEach(line => {
-        //   if ((!line.price || line.price === 0) && line.bodyPart && line.bodyMaterial && line.repairType) {
-        //     computePrice(line);
-        //   }
-        // });
+        _quoteLines.value.forEach(line => {
+          if (line.bodyPartId && line.bodyMaterialId && line.repairTypeId) {
+            computePrice(line);
+          }
+        });
       }
       // Charger les véhicules du garage si présent
       // if (_quote.value.garage?.id) {

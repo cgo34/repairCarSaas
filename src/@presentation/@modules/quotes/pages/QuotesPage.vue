@@ -1,6 +1,6 @@
 ﻿<template>
   <MainLayout>
-    <v-container fluid class="pa-4 pa-sm-6">
+    <v-container fluid class="pa-0">
 
       <!-- HEADER -->
       <div class="d-flex align-start justify-space-between mb-5">
@@ -10,25 +10,14 @@
             {{ monthLabel }} · {{ quotes.length }} devis
           </p>
         </div>
-        <div class="d-flex gap-2">
-          <v-btn
-            variant="outlined"
-            prepend-icon="mdi-download-outline"
-            :disabled="selectedQuotes.length === 0"
-            :loading="downloading"
-            @click="onBulkDownload"
-          >
-            Exporter
-          </v-btn>
-          <v-btn color="primary" variant="flat" prepend-icon="mdi-plus" @click="onAddQuote">
-            Nouveau devis
-          </v-btn>
-        </div>
+        <v-btn color="primary" variant="flat" prepend-icon="mdi-plus" @click="onAddQuote">
+          Nouveau devis
+        </v-btn>
       </div>
 
       <!-- KPI CARDS -->
       <v-row dense class="mb-5">
-        <v-col cols="12" sm="6" md="3">
+        <v-col cols="6" sm="6" md="3">
           <v-card flat border class="pa-4">
             <p class="text-caption text-medium-emphasis mb-1">Montant accepté · {{ currentMonthShort }}</p>
             <div class="text-h5 font-weight-bold mb-1" style="font-family:'Space Grotesk',sans-serif">
@@ -40,7 +29,7 @@
           </v-card>
         </v-col>
 
-        <v-col cols="12" sm="6" md="3">
+        <v-col cols="6" sm="6" md="3">
           <v-card flat border class="pa-4">
             <p class="text-caption text-medium-emphasis mb-1">En attente de réponse</p>
             <div class="text-h5 font-weight-bold mb-1" style="font-family:'Space Grotesk',sans-serif">
@@ -52,7 +41,7 @@
           </v-card>
         </v-col>
 
-        <v-col cols="12" sm="6" md="3">
+        <v-col cols="6" sm="6" md="3">
           <v-card flat border class="pa-4">
             <p class="text-caption text-medium-emphasis mb-1">Acceptés ce mois</p>
             <div class="text-h5 font-weight-bold mb-1" style="font-family:'Space Grotesk',sans-serif">
@@ -62,7 +51,7 @@
           </v-card>
         </v-col>
 
-        <v-col cols="12" sm="6" md="3">
+        <v-col cols="6" sm="6" md="3">
           <v-card flat border class="pa-4" :style="kpiRefuseCount > 0 ? 'border-color: #D8443A !important;' : ''">
             <p class="text-caption text-medium-emphasis mb-1">Refusés</p>
             <div
@@ -81,7 +70,7 @@
       </v-row>
 
       <!-- TABS + FILTRE -->
-      <div class="d-flex align-center justify-space-between mb-2">
+      <div class="d-flex flex-column-reverse flex-sm-row align-sm-center justify-sm-space-between mb-2 ga-3">
         <div class="d-flex align-center gap-1 flex-wrap">
           <v-btn
             v-for="tab in tabs"
@@ -97,9 +86,21 @@
             <span class="ml-1 text-caption">· {{ tab.count }}</span>
           </v-btn>
         </div>
-        <v-btn variant="outlined" size="small" prepend-icon="mdi-tune" @click="showFilters = !showFilters">
-          Filtrer
-        </v-btn>
+        <div class="d-flex ga-2 justify-end">
+          <v-btn
+            variant="outlined"
+            size="small"
+            prepend-icon="mdi-download-outline"
+            :disabled="selectedQuotes.length === 0"
+            :loading="downloading"
+            @click="onBulkDownload"
+          >
+            Exporter
+          </v-btn>
+          <v-btn variant="outlined" size="small" prepend-icon="mdi-tune" @click="showFilters = !showFilters">
+            Filtrer
+          </v-btn>
+        </div>
       </div>
 
       <!-- FILTRE PÉRIODE (collapse) -->

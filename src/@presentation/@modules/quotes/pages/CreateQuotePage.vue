@@ -583,8 +583,7 @@ onMounted(async () => {
   border-top: 1px solid rgba(var(--v-border-color), 0.12);
 }
 
-/* Spacing below form to not be hidden by sticky bar */
 .pb-28 {
-  padding-bottom: 80px;
+  padding-bottom: 16px;
 }
 </style>

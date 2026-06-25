@@ -1,6 +1,6 @@
 <template>
   <MainLayout>
-    <v-container fluid class="pa-4 pa-sm-6">
+    <v-container fluid class="pa-0">
 
       <!-- HEADER -->
       <div class="d-flex align-start justify-space-between mb-5">

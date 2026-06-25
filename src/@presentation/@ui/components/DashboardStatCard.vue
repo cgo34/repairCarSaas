@@ -13,7 +13,7 @@ defineProps<{
 <template>
   <v-card
     elevation="0"
-    class="overflow-hidden bubble-shape-sm mb-6"
+    class="overflow-hidden bubble-shape-sm mb-3"
     :class="`bubble-${color}`"
   >
     <v-card-text class="pa-5">

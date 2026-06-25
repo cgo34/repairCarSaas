@@ -7,9 +7,9 @@ export type OrganizationProfileDto = {
 
   legal_form: string;
 
-  siren: string;
+  siren: string | null;
 
-  siret: string;
+  siret: string | null;
 
   tva_number: string;
 

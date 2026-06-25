@@ -41,6 +41,13 @@ export class CostCalculatorService implements ICostCalculatorService {
     
     const finalCost = basePriceDiameter25 + basePriceDiameter35
 
+    console.log(`[PRICE CALC] ${lineItem.bodyPart?.name ?? lineItem.bodyPartId} | ${lineItem.bodyMaterial?.code} ${lineItem.repairType?.code}
+  hourlyRate=${hourlyRate} unitTimeValue=${unitTimeValue}min
+  impacts: Ø25=${lineItem.impactCount25}→UT=${unitTime.diameter25}  Ø35=${lineItem.impactCount35}→UT=${unitTime.diameter35}
+  bodyPartCoeff=${bodyPartCoefficient}  materialCoeff=${materialCoefficient}  repairTypeCoeff=${repairTypeCoefficient}
+  diam25Coeff=${diameter25Coefficient}  diam35Coeff=${diameter35Coefficient}
+  price25=${basePriceDiameter25.toFixed(2)}  price35=${basePriceDiameter35.toFixed(2)}  TOTAL=${finalCost.toFixed(2)}`);
+
     return Math.round(finalCost * 100) / 100;
   }
 
@@ -50,8 +57,8 @@ export class CostCalculatorService implements ICostCalculatorService {
     const unitTimeImpact35 = impactsCountPrice.find(ic => ic.impactCountMin <= lineItem.impactCount35 && ic.impactCountMax >= lineItem.impactCount35);
     
     return {
-      diameter25: unitTimeImpact25?.unitTime ?? 1,
-      diameter35: unitTimeImpact35?.unitTime ?? 1
+      diameter25: lineItem.impactCount25 === 0 ? 0 : (unitTimeImpact25?.unitTime ?? 1),
+      diameter35: lineItem.impactCount35 === 0 ? 0 : (unitTimeImpact35?.unitTime ?? 1)
     }
   }
 

@@ -191,7 +191,7 @@ export function useEditInvoiceState() {
         _priceParams.value = SettingPriceMapper.dtoToView(priceParamsResult);
 
         _invoiceLines.value.forEach((line) => {
-          if ((!line.price || line.price === 0) && line.bodyPart && line.bodyMaterial && line.repairType) {
+          if (line.bodyPart && line.bodyMaterial && line.repairType) {
             computePrice(line);
           }
         });

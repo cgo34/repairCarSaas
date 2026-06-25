@@ -58,19 +58,25 @@ export class SettingPriceRepository implements ISettingPriceRepository {
   }
 
   async createForUser(organizationId: string): Promise<void> {
-    // Vérifier si les settings existent déjà pour éviter les doublons
-    const existingSettings = await this.getByOrganizationId(organizationId);
+    // Vérifier si les settings propres à cette org existent déjà (sans tomber sur les defaults)
+    const existingGeneral = await this.settingPriceGeneralRepository.getByOrganizationId(organizationId);
 
-    if (existingSettings !== null) {
+    if (existingGeneral !== null) {
       return;
     }
 
-    const defaultSettings = await this.getDefault();
+    let defaultSettings: SettingPriceDto;
+    try {
+      defaultSettings = await this.getDefault();
+    } catch (e) {
+      console.error('[SettingPriceRepo] Unable to load defaults, skipping settings creation', e);
+      return;
+    }
 
     // Créer les settings généraux
     try {
       await this.settingPriceGeneralRepository.create({
-        organizationId,
+        userId: organizationId,
         hourlyRate: defaultSettings.general.hourlyRate,
         unitTime: defaultSettings.general.unitTime,
       });
@@ -78,12 +84,10 @@ export class SettingPriceRepository implements ISettingPriceRepository {
       console.warn('[SettingPriceRepo] General settings already exist, skipping');
     }
 
-    
-
-    // Créer les coefficients de diametre
+    // Créer les coefficients de technicité
     try {
       await this.settingPriceTechnicityCoefficientRepository.create({
-        organizationId,
+        userId: organizationId,
         dapCoefficient: defaultSettings.technicity.dapCoefficient,
         dspCoefficient: defaultSettings.technicity.dspCoefficient,
         aluminiumCoefficient: defaultSettings.technicity.aluminiumCoefficient,
@@ -98,7 +102,7 @@ export class SettingPriceRepository implements ISettingPriceRepository {
     for (const bodyPart of defaultSettings.bodyParts) {
       try {
         await this.settingPriceBodyPartCoefficientRepository.create({
-          organizationId,
+          userId: organizationId,
           bodyPartId: bodyPart.bodyPartId,
           coefficient: bodyPart.coefficient,
         });
@@ -111,7 +115,7 @@ export class SettingPriceRepository implements ISettingPriceRepository {
     for (const impactCount of defaultSettings.impactsCount) {
       try {
         await this.settingPriceImpactCountToUtRepository.create({
-          organizationId,
+          userId: organizationId,
           impactCountMin: impactCount.impactCountMin,
           impactCountMax: impactCount.impactCountMax,
           unitTime: impactCount.unitTime,

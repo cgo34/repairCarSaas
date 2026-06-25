@@ -1,6 +1,6 @@
 <template>
   <MainLayout>
-    <v-container fluid>
+    <v-container fluid class="pa-0">
       <v-card>
         <v-alert
           class="mb-2"

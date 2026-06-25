@@ -25,10 +25,10 @@ export class OrganizationProfileMapper {
         api.legal_form,
 
       siren:
-        api.siren,
+        api.siren ?? null,
 
       siret:
-        api.siret,
+        api.siret ?? null,
 
       tva_number:
         api.tva_number,
@@ -102,10 +102,10 @@ export class OrganizationProfileMapper {
         dto.legal_form,
 
       siren:
-        dto.siren,
+        dto.siren || null,
 
       siret:
-        dto.siret,
+        dto.siret || null,
 
       tva_number:
         dto.tva_number,

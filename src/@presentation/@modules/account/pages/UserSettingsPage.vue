@@ -2,7 +2,7 @@
   <MainLayout>
     <v-container
       fluid
-      class="pa-4"
+      class="pa-0"
       style="max-width: 600px;"
     >
       <!-- Header -->

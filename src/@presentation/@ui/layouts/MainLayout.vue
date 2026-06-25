@@ -20,10 +20,11 @@
       <v-main>
         <v-container
           fluid
-          class="page-wrapper px-6"
+          class="page-wrapper"
         >
           <!-- PAGE HEADER -->
           <BaseBreadcrumb
+            v-if="!mobile"
             :title="pageTitle"
             :subtitle="pageSubtitle"
             :breadcrumbs="breadcrumbs"
@@ -48,7 +49,7 @@
         </v-container>
 
         <!-- FOOTER -->
-        <v-container fluid class="pa-0">
+        <v-container v-if="!mobile" fluid class="pa-0">
           <FooterPanel />
         </v-container>
 
@@ -150,13 +151,13 @@ const activeBottomNav = ref(route.name);
 .mobile-bottom-nav .fab-btn .v-btn__content {
   background: rgb(var(--v-theme-primary));
   border-radius: 50%;
-  width: 48px;
-  height: 48px;
+  width: 40px;
+  height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
   color: white;
-  margin-bottom: 12px;
+  margin-bottom: 4px;
   box-shadow: 0 4px 12px rgba(var(--v-theme-primary), 0.4);
 }
 </style>

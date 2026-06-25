@@ -1,6 +1,6 @@
 <template>
   <MainLayout>
-    <v-container fluid>
+    <v-container fluid class="pa-0">
       <!-- Row 0 : Surveillance Grêle -->
       <v-row class="mb-2">
         <v-col cols="12">

@@ -2,7 +2,7 @@
   <MainLayout>
     <v-container
       fluid
-      class="pa-4"
+      class="pa-0"
     >
       <!-- Header -->
       <div class="d-flex align-center gap-3 mb-6">

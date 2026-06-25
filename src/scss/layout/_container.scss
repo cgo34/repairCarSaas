@@ -3,9 +3,8 @@ html {
 }
 
 .page-wrapper {
-  min-height: calc(100vh - 60px);
-  padding: 10px 15px 15px;
-  // border-radius: $border-radius-root;
+  min-height: calc(100vh - 70px);
+  padding: 10px 24px 20px;
   background: rgb(var(--v-theme-containerBg));
 }
 $sizes: (
@@ -112,9 +111,18 @@ body {
   }
 
   .page-wrapper {
-    min-height: calc(100vh - 60px);
-    padding: 70px 15px 15px;
-    // border-radius: $border-radius-root;
+    min-height: calc(100dvh - 70px);
+    padding: 70px 16px calc(64px + env(safe-area-inset-bottom));
     background: rgb(var(--v-theme-containerBg));
+  }
+
+  .create-quote-container,
+  .edit-quote-container,
+  .create-invoice-container,
+  .edit-invoice-container {
+    margin-left: -16px !important;
+    margin-right: -16px !important;
+    width: calc(100% + 32px) !important;
+    max-width: calc(100% + 32px) !important;
   }
 }

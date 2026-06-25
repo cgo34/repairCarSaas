@@ -2,7 +2,7 @@
   <MainLayout>
     <v-container
       fluid
-      class="pa-4"
+      class="pa-0"
       style="max-width: 860px;"
     >
       <!-- Header -->
@@ -124,13 +124,9 @@
                 >
                   <v-text-field
                     v-model="form.siren"
-                    label="SIREN"
-                    :rules="[sirenRule]"
+                    label="N° d'identification (SIREN, IDE...)"
                     variant="outlined"
                     density="comfortable"
-                    placeholder="123456789"
-                    counter="9"
-                    maxlength="9"
                   />
                 </v-col>
                 <v-col
@@ -139,13 +135,9 @@
                 >
                   <v-text-field
                     v-model="form.siret"
-                    label="SIRET"
-                    :rules="[siretRule]"
+                    label="N° établissement (SIRET, UID...)"
                     variant="outlined"
                     density="comfortable"
-                    placeholder="12345678900012"
-                    counter="14"
-                    maxlength="14"
                   />
                 </v-col>
                 <v-col
@@ -204,7 +196,7 @@
                     density="comfortable"
                   />
                 </v-col>
-                <v-col cols="4">
+                <v-col cols="5">
                   <v-text-field
                     v-model="form.zipCode"
                     label="Code postal *"
@@ -213,7 +205,7 @@
                     density="comfortable"
                   />
                 </v-col>
-                <v-col cols="5">
+                <v-col cols="7">
                   <v-text-field
                     v-model="form.city"
                     label="Ville *"
@@ -222,7 +214,7 @@
                     density="comfortable"
                   />
                 </v-col>
-                <v-col cols="3">
+                <v-col cols="12">
                   <v-text-field
                     v-model="form.country"
                     label="Pays"
@@ -483,8 +475,6 @@ const paymentDelays = [
 // #region -> VALIDATION RULES
 const required = (v: unknown) =>
   (v !== '' && v !== null && v !== undefined) || 'Champ obligatoire';
-const sirenRule = (v: string) => !v || /^\d{9}$/.test(v) || 'Le SIREN doit contenir 9 chiffres';
-const siretRule = (v: string) => !v || /^\d{14}$/.test(v) || 'Le SIRET doit contenir 14 chiffres';
 const emailRule = (v: string) =>
   !v || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) || 'Email invalide';
 // #endregion

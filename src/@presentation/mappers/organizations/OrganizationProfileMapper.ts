@@ -21,9 +21,9 @@ export class OrganizationProfileMapper {
 
       legal_form: dto.legal_form,
 
-      siren: dto.siren,
+      siren: dto.siren ?? '',
 
-      siret: dto.siret,
+      siret: dto.siret ?? '',
 
       tva_number: dto.tva_number,
 

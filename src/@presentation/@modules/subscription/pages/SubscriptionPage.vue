@@ -2,7 +2,7 @@
   <MainLayout>
     <v-container
       fluid
-      class="pa-4 pa-sm-6"
+      class="pa-0"
     >
       <!-- KPI CARDS -->
       <v-row

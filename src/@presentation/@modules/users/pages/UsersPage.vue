@@ -2,7 +2,7 @@
   <MainLayout>
     <!-- Superposition si l'utilisateur est en plan 'free' -->
     <SubscriptionOverlay v-if="isFreePlan" />
-    <v-container fluid>
+    <v-container fluid class="pa-0">
       <v-row>
         {{ selectedUser }}
         <v-data-table

@@ -2,7 +2,7 @@
   <MainLayout>
     <v-container
       fluid
-      class="pa-4"
+      class="pa-0"
     >
       <!-- ===================================================== -->
       <!-- HEADER -->
@@ -86,19 +86,10 @@
                   md="4"
                 >
                   <v-text-field
-                    v-model="
-                      profile.siren
-                    "
-                    label="SIREN *"
-                    :rules="[
-                      required,
-                      sirenRule,
-                    ]"
+                    v-model="profile.siren"
+                    label="N° d'identification (SIREN, IDE...)"
                     variant="outlined"
                     density="comfortable"
-                    placeholder="123456789"
-                    counter="9"
-                    maxlength="9"
                   />
                 </v-col>
 
@@ -107,19 +98,10 @@
                   md="4"
                 >
                   <v-text-field
-                    v-model="
-                      profile.siret
-                    "
-                    label="SIRET *"
-                    :rules="[
-                      required,
-                      siretRule,
-                    ]"
+                    v-model="profile.siret"
+                    label="N° établissement (SIRET, UID...)"
                     variant="outlined"
                     density="comfortable"
-                    placeholder="12345678900012"
-                    counter="14"
-                    maxlength="14"
                   />
                 </v-col>
 
@@ -190,7 +172,7 @@
                   />
                 </v-col>
 
-                <v-col cols="4">
+                <v-col cols="5">
                   <v-text-field
                     v-model="
                       profile.zip_code
@@ -202,7 +184,7 @@
                   />
                 </v-col>
 
-                <v-col cols="5">
+                <v-col cols="7">
                   <v-text-field
                     v-model="
                       profile.city
@@ -214,7 +196,7 @@
                   />
                 </v-col>
 
-                <v-col cols="3">
+                <v-col cols="12">
                   <v-text-field
                     v-model="
                       profile.country
@@ -583,17 +565,6 @@ const required = (
     v !== undefined) ||
   'Champ obligatoire';
 
-const sirenRule = (
-  v: string
-) =>
-  /^\d{9}$/.test(v) ||
-  'Le SIREN doit contenir 9 chiffres';
-
-const siretRule = (
-  v: string
-) =>
-  /^\d{14}$/.test(v) ||
-  'Le SIRET doit contenir 14 chiffres';
 
 const emailRule = (
   v: string

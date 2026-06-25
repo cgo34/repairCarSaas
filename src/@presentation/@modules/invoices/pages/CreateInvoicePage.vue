@@ -569,6 +569,6 @@ onMounted(async () => {
 }
 
 .pb-28 {
-  padding-bottom: 80px;
+  padding-bottom: 16px;
 }
 </style>
