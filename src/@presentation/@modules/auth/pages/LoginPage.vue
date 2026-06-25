@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <AuthLayout>
     <AuthForm
       v-model:form-data="form"
@@ -17,13 +17,13 @@ import AuthLayout from '@modules/auth/layouts/AuthLayout.vue';
 const { login, form } = useAuthState();
 
 const emailRules = [
-  (v: string) => !!v || 'E-mail is required',
-  (v: string) => /.+@.+\..+/.test(v) || 'E-mail must be valid'
+  (v: string) => !!v || "L'e-mail est requis",
+  (v: string) => /.+@.+\..+/.test(v) || "L'e-mail n'est pas valide"
 ];
 
 const passwordRules = [
-  (v: string) => !!v || 'Password is required',
-  (v: string) => (v && v.length >= 8) || 'Password must be at least 8 characters'
+  (v: string) => !!v || 'Le mot de passe est requis',
+  (v: string) => (v && v.length >= 8) || 'Le mot de passe doit contenir au moins 8 caractères'
 ];
 
 const handleLogin = async () => {
@@ -31,7 +31,7 @@ const handleLogin = async () => {
     await login();
     window.location.href = '/dashboard';
   } catch (error: unknown) {
-    alert(error.message);
+    alert((error as Error).message);
   }
 };
 </script>

@@ -1,48 +1,37 @@
-<template>
+﻿<template>
   <AuthLayout>
     <RegisterForm
-      v-model:form-data="user"
+      v-model:form-data="form"
       :email-rules="emailRules"
       :password-rules="passwordRules"
       @submit="handleRegister"
     />
   </AuthLayout>
 </template>
-  
-  <script setup lang="ts">
-//   import Logo from '@/@ui/components/Logo.vue';
-  import { useAuthState } from '@/@presentation/@modules/auth/composables/useAuthState';
+
+<script setup lang="ts">
+import { useAuthState } from '@/@presentation/@modules/auth/composables/useAuthState';
 import RegisterForm from '@modules/auth/components/RegisterForm.vue';
 import AuthLayout from '@modules/auth/layouts/AuthLayout.vue';
 
-const { register, user } = useAuthState();
+const { register, form } = useAuthState();
 
 const emailRules = [
-  (v: string) => !!v || 'E-mail is required',
-  (v: string) => /.+@.+\..+/.test(v) || 'E-mail must be valid'
+  (v: string) => !!v || "L'e-mail est requis",
+  (v: string) => /.+@.+\..+/.test(v) || "L'e-mail n'est pas valide"
 ];
 
 const passwordRules = [
-  (v: string) => !!v || 'Password is required',
-  (v: string) => (v && v.length >= 8) || 'Password must be at least 8 characters'
+  (v: string) => !!v || 'Le mot de passe est requis',
+  (v: string) => (v && v.length >= 8) || 'Le mot de passe doit contenir au moins 8 caractères'
 ];
 
 const handleRegister = async () => {
   try {
-    await register().then(() => {
-
-      window.location.href = '/dashboard';
-    });
+    await register();
+    window.location.href = '/dashboard';
   } catch (error: unknown) {
-    console.log(error);
+    console.error(error);
   }
 };
-  </script>
-  
-<style lang="scss">
-  .registerBox {
-    max-width: 475px;
-    margin: 0 auto;
-  }
-</style>
-  
+</script>

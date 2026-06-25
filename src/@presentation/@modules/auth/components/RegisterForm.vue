@@ -1,78 +1,77 @@
-<template>
-  <v-form
-    class="mt-7 registerForm"
-    @submit.prevent="$emit('submit')"
-  >
+﻿<template>
+  <v-form @submit.prevent="$emit('submit')">
     <v-text-field
       v-model="formData.fullName"
-      label="Full Name"
-      :rules="fullNameRules"
+      label="Nom complet"
+      :rules="[(v) => !!v || 'Le nom est requis']"
       required
       density="comfortable"
       hide-details="auto"
       variant="outlined"
       color="primary"
+      prepend-inner-icon="mdi-account-outline"
+      class="mb-4"
     />
-  
+
     <v-text-field
       v-model="formData.email"
-      label="Email"
+      label="Adresse e-mail"
       :rules="emailRules"
       required
       density="comfortable"
       hide-details="auto"
       variant="outlined"
       color="primary"
+      prepend-inner-icon="mdi-email-outline"
+      class="mb-4"
     />
-  
+
     <v-text-field
       v-model="formData.password"
-      label="Password"
-      type="password"
+      label="Mot de passe"
       :rules="passwordRules"
       required
       density="comfortable"
       hide-details="auto"
       variant="outlined"
       color="primary"
+      prepend-inner-icon="mdi-lock-outline"
+      :append-inner-icon="showPassword ? 'mdi-eye-outline' : 'mdi-eye-off-outline'"
+      :type="showPassword ? 'text' : 'password'"
+      class="mb-5"
+      @click:append-inner="showPassword = !showPassword"
     />
-  
+
     <v-btn
-      color="secondary"
-      :loading="loading"
+      color="primary"
       block
-      class="mt-2"
       variant="flat"
       size="large"
       type="submit"
+      rounded="lg"
+      style="font-family:'Manrope',sans-serif; font-weight:600; letter-spacing:0.01em;"
     >
-      Sign Up
+      Créer mon compte
     </v-btn>
-  
-    <!-- <div
-      v-if="errorMessage"
-      class="mt-2"
-    >
-      <v-alert color="error">
-        {{ errorMessage }}
-      </v-alert>
-    </div> -->
   </v-form>
-  
-  <div class="mt-5 text-right">
-    <v-divider />
-    <v-btn
-      variant="plain"
-      to="/login"
-      class="mt-2 text-capitalize mr-n2"
-    >
-      Already have an account?
-    </v-btn>
+
+  <div class="mt-5">
+    <v-divider class="mb-4" />
+    <div class="text-center">
+      <v-btn
+        variant="text"
+        color="primary"
+        size="small"
+        to="/login"
+      >
+        Déjà un compte ? Se connecter
+      </v-btn>
+    </div>
   </div>
 </template>
-  
-  <script setup lang="ts">
- import { defineEmits, defineModel, defineProps } from 'vue';
+
+<script setup lang="ts">
+import { defineEmits, defineModel, defineProps, ref } from 'vue';
 
 defineProps({
   emailRules: Array,
@@ -83,14 +82,5 @@ defineEmits(['submit']);
 
 const formData = defineModel('formData', { required: true });
 
-// const showPassword = ref(false);
-  </script>
-  
-  <style lang="scss">
-  .registerForm {
-    .v-text-field .v-field--active input {
-      font-weight: 500;
-    }
-  }
-  </style>
-  
+const showPassword = ref(false);
+</script>
