@@ -44,6 +44,15 @@ export class OrganizationMemberRepository {
     return data.map(OrganizationMemberMapper.apiToDto);
   }
   
+  async create(data: { user_id: string; organization_id: string; role: string; created_at: string }): Promise<void> {
+    const { error } = await this.clientProvider
+      .getClient()
+      .from('organization_members')
+      .insert(data);
+
+    if (error) throw error;
+  }
+
   async createOrganizationTechnician(dto: CreateOrganizationTechnicianDto): Promise<OrganizationMemberApiModel> {
     const { data, error } =
       await this.clientProvider

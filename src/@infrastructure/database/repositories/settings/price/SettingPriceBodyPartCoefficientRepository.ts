@@ -41,8 +41,8 @@ export class SettingPriceBodyPartCoefficientRepository implements ISettingPriceB
     
     const { data, error } = await this.clientProvider.getClient()
       .from('setting_price_body_part_coefficient')
-      .upsert(settingsApi, { onConflict: ['organization_id, body_part_id'], defaultToNull: false })
-      .select('*')
+      .upsert(settingsApi, { onConflict: 'organization_id, body_part_id' })
+      .select('*, body_parts(*)')
       .returns<SettingPriceBodyPartCoefficientApiModel[]>();
 
     if (error) throw new Error('Error saving general setting');
@@ -58,7 +58,7 @@ export class SettingPriceBodyPartCoefficientRepository implements ISettingPriceB
       .insert({
         difficulty_coefficient: settingApi.difficulty_coefficient,
         body_part_id: settingApi.body_part_id,
-        user_id: settingApi.user_id
+        organization_id: settingApi.organization_id
       })
       .select('*, body_parts(*)')
       .single<SettingPriceBodyPartCoefficientApiModel>();
@@ -81,10 +81,10 @@ export class SettingPriceBodyPartCoefficientRepository implements ISettingPriceB
       .update({
         difficulty_coefficient: settingApi.difficulty_coefficient,
         body_part_id: settingApi.body_parts?.id,
-        user_id: settingApi.user_id
+        organization_id: settingApi.organization_id
       })
       .eq('body_part_id', settingApi.body_part_id)
-      .eq('user_id', settingApi.user_id)
+      .eq('organization_id', settingApi.organization_id)
       .select('*, body_parts(*)')
       .single<SettingPriceBodyPartCoefficientApiModel>();
 

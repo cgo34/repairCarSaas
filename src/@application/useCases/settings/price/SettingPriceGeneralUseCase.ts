@@ -13,7 +13,7 @@ export class SettingPriceGeneralUseCase implements ISettingPriceGeneralUseCase {
   
 
   async getAdmin(): Promise<SettingPriceGeneralDto> {
-    return this.repository.getAdmin();
+    return this.repository.getDefault();
   }
 
   async getByOrganizationId(organizationId: string): Promise<SettingPriceGeneralDto> {

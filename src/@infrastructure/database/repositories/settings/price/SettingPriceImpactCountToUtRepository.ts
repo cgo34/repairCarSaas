@@ -80,7 +80,7 @@ export class SettingPriceImpactCountToUtRepository implements ISettingPriceImpac
       .from('setting_price_impact_count_to_ut')
       .update(apiModel)
       .eq('id', apiModel.id)
-      .eq('user_id', apiModel.user_id)
+      .eq('organization_id', apiModel.organization_id)
       .select('*')
       .single<SettingPriceImpactCountToUtApiModel>();
 

@@ -5,7 +5,7 @@ export class SettingPriceTechnicityCoefficientMapper {
   static apiToDto(apiModel: SettingPriceTechnicityCoefficientApiModel): SettingPriceTechnicityCoefficientDto {
     return {
       id: apiModel.id,
-      userId: apiModel.user_id,
+      userId: apiModel.organization_id,
       diameter25Coefficient: apiModel.diameter_25_coefficient,
       diameter35Coefficient: apiModel.diameter_35_coefficient,
       aluminiumCoefficient: apiModel.aluminium_coefficient,
@@ -17,7 +17,7 @@ export class SettingPriceTechnicityCoefficientMapper {
   static dtoToApi(dto: SettingPriceTechnicityCoefficientDto): SettingPriceTechnicityCoefficientApiModel {
     return {
       id: dto.id,
-      user_id: dto.userId,
+      organization_id: dto.userId,
       diameter_25_coefficient: dto.diameter25Coefficient,
       diameter_35_coefficient: dto.diameter35Coefficient,
       aluminium_coefficient: dto.aluminiumCoefficient,

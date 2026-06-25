@@ -54,6 +54,8 @@ export class RegisterUserWithOrganizationUseCase implements IRegisterUserWithOrg
 
       if (!organization.id) throw new Error('Organization id is undefined');
 
+      await this.userRepository.createUser(user);
+
       await this.organizationMemberRepository.create({
         user_id: session.data.session.user.id,
         organization_id: organization.id,
@@ -61,10 +63,8 @@ export class RegisterUserWithOrganizationUseCase implements IRegisterUserWithOrg
         created_at: new Date().toISOString()
       });
 
-      await this.userRepository.createUser(user);
-
       // recupère les paramètres de prix par default :
-      await this.settingPriceRepository.createForUser(user.id);
+      await this.settingPriceRepository.createForUser(organization.id);
 
 
       await this.subscriptionService.activateFreePlanForOrganization(
@@ -74,9 +74,7 @@ export class RegisterUserWithOrganizationUseCase implements IRegisterUserWithOrg
       return user;
 
     } catch (error) {
-      // - logger
-      // - mapper une erreur métier
-      // - rollback si nécessaire
+      console.error('[RegisterUserWithOrganization] ERREUR:', error);
 
       if (user) {
         await this.authRepository.deleteUser(user.id);

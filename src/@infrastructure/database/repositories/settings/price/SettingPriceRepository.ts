@@ -94,20 +94,6 @@ export class SettingPriceRepository implements ISettingPriceRepository {
       console.warn('[SettingPriceRepo] Technicity settings already exist, skipping');
     }
 
-    // Créer les coefficients de technicité
-    try {
-      await this.settingPriceTechnicityCoefficientRepository.create({
-        organizationId,
-        dapCoefficient: defaultSettings.technicity.dapCoefficient,
-        dspCoefficient: defaultSettings.technicity.dspCoefficient,
-        aluminiumCoefficient: defaultSettings.technicity.aluminiumCoefficient,
-        diameter25Coefficient: defaultSettings.technicity.diameter25Coefficient,
-        diameter35Coefficient: defaultSettings.technicity.diameter35Coefficient,
-      });
-    } catch (e) {
-      console.warn('[SettingPriceRepo] Technicity settings already exist, skipping');
-    }
-
     // Créer les coefficients par partie de carrosserie
     for (const bodyPart of defaultSettings.bodyParts) {
       try {

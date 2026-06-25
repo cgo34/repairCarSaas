@@ -74,7 +74,7 @@ export class SettingPriceTechnicityCoefficientRepository implements ISettingPric
       .from('setting_price_technicity_coefficient')
       .update(settingApi)
       .eq('id', settingApi.id)
-      .eq('user_id', settingApi.user_id)
+      .eq('organization_id', settingApi.organization_id)
       .select('*')
       .single<SettingPriceTechnicityCoefficientApiModel>();
 

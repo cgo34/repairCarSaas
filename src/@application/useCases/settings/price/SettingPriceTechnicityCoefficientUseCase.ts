@@ -13,7 +13,7 @@ export class SettingPriceTechnicityCoefficientUseCase implements ISettingPriceTe
 
 
   async getAdmin(): Promise<SettingPriceTechnicityCoefficientDto> {
-    return this.repository.getAdmin();
+    return this.repository.getDefault();
   }
 
   async getByOrganizationId(organizationId: string): Promise<SettingPriceTechnicityCoefficientDto> {

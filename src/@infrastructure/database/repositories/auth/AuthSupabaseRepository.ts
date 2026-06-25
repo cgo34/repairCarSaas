@@ -50,7 +50,11 @@ export class AuthSupabaseRepository implements IAuthRepository {
   }
 
   async register(email: string, password: string, fullName: string): Promise<{ user: UserDto | null, error: any }> {
-    const { data, error } = await this.clientProvider.getClient().auth.signUp(email, password, fullName) as SupabaseAuthResponse;
+    const { data, error } = await this.clientProvider.getClient().auth.signUp({
+      email,
+      password,
+      options: { data: { fullName } }
+    }) as SupabaseAuthResponse;
 
     if (!data?.user) {
       return { user: null, error };

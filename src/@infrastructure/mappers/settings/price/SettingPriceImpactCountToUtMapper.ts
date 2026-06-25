@@ -8,7 +8,7 @@ export class SettingPriceImpactCountToUtMapper {
       impactCountMin: apiModel.impact_count_min,
       impactCountMax: apiModel.impact_count_max,
       unitTime: apiModel.unit_time,
-      userId: apiModel.user_id,
+      userId: apiModel.organization_id,
     };
   }
 
@@ -17,7 +17,7 @@ export class SettingPriceImpactCountToUtMapper {
       impact_count_min: dto.impactCountMin,
       impact_count_max: dto.impactCountMax,
       unit_time: dto.unitTime,
-      user_id: dto.userId,
+      organization_id: dto.userId,
     };
     if (dto.id) {
       result.id = dto.id;

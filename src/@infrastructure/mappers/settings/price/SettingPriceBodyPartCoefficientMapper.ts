@@ -4,7 +4,7 @@ import { SettingPriceBodyPartCoefficientDto } from '@/@application/dtos/settings
 export class SettingPriceBodyPartCoefficientMapper {
   static apiToDto(apiModel: SettingPriceBodyPartCoefficientApiModel): SettingPriceBodyPartCoefficientDto {
     return {
-      userId: apiModel.user_id,
+      userId: apiModel.organization_id,
       bodyPartId: apiModel.body_part_id,
       coefficient: apiModel.difficulty_coefficient,
       bodyParts: apiModel.body_parts,
@@ -13,7 +13,7 @@ export class SettingPriceBodyPartCoefficientMapper {
 
   static dtoToApi(dto: SettingPriceBodyPartCoefficientDto): SettingPriceBodyPartCoefficientApiModel {
     return {
-      user_id: dto.userId,
+      organization_id: dto.userId,
       body_part_id: dto.bodyPartId,
       difficulty_coefficient: dto.coefficient,
       // body_parts: dto.bodyParts
