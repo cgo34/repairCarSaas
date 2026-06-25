@@ -250,6 +250,13 @@ import { ISettingPriceDiameterCoefficientRepository } from '@/@domain/repositori
 import { SettingPriceDiameterCoefficientRepository } from '../database/repositories/settings/price/SettingPriceDiameterCoefficientRepository';
 import { ISettingPriceDiameterCoefficientUseCase } from '@/@domain/useCases/settings/price/ISettingPriceDiameterCoefficientUseCase';
 import { SettingPriceDiameterCoefficientUseCase } from '@/@application/useCases/settings/price/SettingPriceDiameterCoefficientUseCase';
+// -- Hail Monitoring
+import { IHailAlertRepository } from '@/@domain/repositories/hail/IHailAlertRepository';
+import { HailAlertRepository } from '@/@infrastructure/database/repositories/hail/HailAlertRepository';
+import { IMonitoredLocationRepository } from '@/@domain/repositories/hail/IMonitoredLocationRepository';
+import { MonitoredLocationRepository } from '@/@infrastructure/database/repositories/hail/MonitoredLocationRepository';
+import { useHailMonitoringState } from '@/@presentation/@modules/weather/composables/useHailMonitoringState';
+import { IUseHailMonitoringState } from '@/@presentation/types/composables/IUseHailMonitoringState';
 
 const container = new Container({ defaultScope: 'Singleton' });
 
@@ -295,6 +302,9 @@ container.bind<IInvoiceDetailRepository>(SYMBOLS.Repositories.InvoiceDetailRepos
 container.bind<ICompanySettingsRepository>(SYMBOLS.Repositories.CompanySettingsRepository).to(CompanySettingsRepository).inSingletonScope();
 /** 3.10. -- Technician Garage Access Repository */
 container.bind<ITechnicianGarageAccessRepository>(SYMBOLS.Repositories.TechnicianGarageAccessRepository).to(TechnicianGarageAccessRepository).inSingletonScope();
+/** 3.11. -- Hail Monitoring Repositories */
+container.bind<IHailAlertRepository>(SYMBOLS.Repositories.HailAlertRepository).to(HailAlertRepository).inSingletonScope();
+container.bind<IMonitoredLocationRepository>(SYMBOLS.Repositories.MonitoredLocationRepository).to(MonitoredLocationRepository).inSingletonScope();
 
 /** 3.10. -- Organization Repository */
 container.bind<IOrganizationProfileRepository>(SYMBOLS.Repositories.OrganizationProfileRepository).to(OrganizationProfileRepository).inSingletonScope
@@ -419,6 +429,10 @@ container.bind<IUseTechniciansState>(SYMBOLS.States.TechniciansState).toDynamicV
 });
 container.bind<IUseTechnicianDetailState>(SYMBOLS.States.TechnicianDetailState).toDynamicValue(() => {
   return useTechnicianDetailState();
+});
+/** 6.0. -- Hail Monitoring State */
+container.bind<IUseHailMonitoringState>(SYMBOLS.States.HailMonitoringState).toDynamicValue(() => {
+  return useHailMonitoringState();
 });
 /** 6.1. -- Garage CarRepair States */
 container.bind<IUseGarageState>(SYMBOLS.States.GarageState).toDynamicValue(() => {

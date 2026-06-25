@@ -87,6 +87,7 @@ import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
 
 import { useCustomizerState } from '@/@presentation/composables/useCustomizerState';
 import { filterMenuByRole } from '@/@presentation/helpers/menu/filterMenuByRole';
+import { hailActiveCount } from '@/@presentation/@modules/weather/composables/useHailMonitoringState';
 
 import { menu } from './menu/adminMenu';
 
@@ -114,16 +115,21 @@ const {
 } = useCustomizerState();
 
 const sidebarMenu = computed(() => {
-  const role =
-    userContext
-      .value
-      ?.membership
-      .role ?? '';
+  const role = userContext.value?.membership.role ?? '';
+  const filtered = filterMenuByRole(menu, role);
 
-  return filterMenuByRole(
-    menu,
-    role
-  );
+  // Injecter le badge dynamique sur l'entrée Météo grêle
+  return filtered.map(item => {
+    if (item.to === '/weather') {
+      return {
+        ...item,
+        chip: hailActiveCount.value > 0 ? String(hailActiveCount.value) : undefined,
+        chipColor: 'error',
+        chipVariant: 'flat',
+      };
+    }
+    return item;
+  });
 });
 </script>
 

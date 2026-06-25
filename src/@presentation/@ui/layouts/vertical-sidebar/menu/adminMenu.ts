@@ -15,6 +15,7 @@ import {
   UserIcon,
   SettingsIcon,
   CreditCardIcon,
+  CloudStormIcon,
   // ClockDollarIcon,
 } from 'vue-tabler-icons';
 
@@ -32,6 +33,15 @@ export const adminMenu = [
     title: 'Tableau de bord',
     icon: DashboardIcon,
     to: '/dashboard',
+  },
+
+  // ─────────────────────────────────────────────────────────
+  // Surveillance grêle
+  // ─────────────────────────────────────────────────────────
+  {
+    title: 'Météo grêle',
+    icon: CloudStormIcon,
+    to: '/weather',
   },
 
   // {

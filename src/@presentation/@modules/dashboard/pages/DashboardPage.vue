@@ -1,12 +1,16 @@
 <template>
   <MainLayout>
     <v-container fluid>
+      <!-- Row 0 : Surveillance Grêle -->
+      <v-row class="mb-2">
+        <v-col cols="12">
+          <HailAlertWidget />
+        </v-col>
+      </v-row>
+
       <!-- Row 1 : Devis KPIs -->
       <v-row>
-        <v-col
-          cols="12"
-          sm="3"
-        >
+        <v-col cols="6" sm="3">
           <DashboardStatCard
             title="Total Devis"
             :value="loading ? '...' : totalQuotes"
@@ -15,10 +19,7 @@
             color="primary"
           />
         </v-col>
-        <v-col
-          cols="12"
-          sm="3"
-        >
+        <v-col cols="6" sm="3">
           <DashboardStatCard
             title="Devis en cours"
             :value="loading ? '...' : quotesProcessing"
@@ -27,10 +28,7 @@
             color="warning"
           />
         </v-col>
-        <v-col
-          cols="12"
-          sm="3"
-        >
+        <v-col cols="6" sm="3">
           <DashboardStatCard
             title="Devis finalisés"
             :value="loading ? '...' : quotesFinalized"
@@ -39,10 +37,7 @@
             color="success"
           />
         </v-col>
-        <v-col
-          cols="12"
-          sm="3"
-        >
+        <v-col cols="6" sm="3">
           <DashboardStatCard
             title="Devis acceptés"
             :value="loading ? '...' : quotesAccepted"
@@ -55,10 +50,7 @@
 
       <!-- Row 2 : Factures KPIs -->
       <v-row>
-        <v-col
-          cols="12"
-          sm="3"
-        >
+        <v-col cols="6" sm="3">
           <DashboardStatCard
             title="Total Factures"
             :value="loading ? '...' : totalInvoices"
@@ -67,10 +59,7 @@
             color="primary"
           />
         </v-col>
-        <v-col
-          cols="12"
-          sm="3"
-        >
+        <v-col cols="6" sm="3">
           <DashboardStatCard
             title="Factures en attente"
             :value="loading ? '...' : invoicesPending"
@@ -79,10 +68,7 @@
             color="warning"
           />
         </v-col>
-        <v-col
-          cols="12"
-          sm="3"
-        >
+        <v-col cols="6" sm="3">
           <DashboardStatCard
             title="Factures payées"
             :value="loading ? '...' : invoicesValidated"
@@ -91,10 +77,7 @@
             color="success"
           />
         </v-col>
-        <v-col
-          cols="12"
-          sm="3"
-        >
+        <v-col cols="6" sm="3">
           <DashboardStatCard
             title="Factures envoyées"
             :value="loading ? '...' : invoicesSent"
@@ -107,10 +90,7 @@
 
       <!-- Row 3 : Garages / Utilisateurs -->
       <v-row>
-        <v-col
-          cols="12"
-          sm="6"
-        >
+        <v-col cols="6" sm="6">
           <DashboardStatCard
             title="Total Garages"
             :value="loading ? '...' : totalGarages"
@@ -118,10 +98,7 @@
             color="warning"
           />
         </v-col>
-        <v-col
-          cols="12"
-          sm="6"
-        >
+        <v-col cols="6" sm="6">
           <DashboardStatCard
             title="Total Utilisateurs"
             :value="loading ? '...' : totalUsers"
@@ -276,6 +253,7 @@
           </v-card>
         </v-col>
       </v-row>
+
     </v-container>
   </MainLayout>
 </template>
@@ -283,6 +261,7 @@
 <script setup lang="ts">
 import { useAdminDashboardState } from '@/@presentation/@modules/dashboard/composables/useAdminDashboardState';
 import DashboardStatCard from '@/@presentation/@ui/components/DashboardStatCard.vue';
+import HailAlertWidget from '@/@presentation/@modules/dashboard/components/HailAlertWidget.vue';
 import MainLayout from '@/@presentation/@ui/layouts/MainLayout.vue';
 import { onMounted } from 'vue';
 import { useAuthState } from '../../auth/composables/useAuthState';

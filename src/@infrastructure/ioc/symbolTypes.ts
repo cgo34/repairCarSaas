@@ -190,6 +190,10 @@ export enum SYMBOL_NAMES {
     TECHNICIAN_STATS_USE_CASE = 'TechnicianStatsUseCase',
     TECHNICIANS_STATE = 'TechniciansState',
     TECHNICIAN_DETAIL_STATE = 'TechnicianDetailState',
+    // -- Hail Monitoring
+    HAIL_ALERT_REPOSITORY = 'HailAlertRepository',
+    MONITORED_LOCATION_REPOSITORY = 'MonitoredLocationRepository',
+    HAIL_MONITORING_STATE = 'HailMonitoringState',
     // #endregion
   }
   

@@ -13,6 +13,7 @@ import { quoteRoutes } from './modules/quote/quoteRoutes';
 import { usersRoutes } from './modules/user/userRoutes';
 import { organizationRoutes } from './modules/organization/organizationRoutes';
 import { subscriptionRoutes } from './modules/subscriptionRoutes/subscription';
+import { weatherRoutes } from './modules/weather/weatherRoutes';
 
 const routes: RouteRecordRaw[] = [
   ...authRoutes,
@@ -25,7 +26,8 @@ const routes: RouteRecordRaw[] = [
   ...organizationRoutes,
   ...settingPriceRoutes,
   ...accountRoutes,
-  ...subscriptionRoutes
+  ...subscriptionRoutes,
+  ...weatherRoutes
   // logoutRoute,
 ];
 

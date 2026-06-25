@@ -31,6 +31,9 @@ const SYMBOLS = {
     QuoteDetailRepository: Symbol.for(SYMBOL_NAMES.QUOTE_DETAIL_REPOSITORY),
     CompanySettingsRepository: Symbol.for(SYMBOL_NAMES.COMPANY_SETTINGS_REPOSITORY),
     TechnicianGarageAccessRepository: Symbol.for(SYMBOL_NAMES.TECHNICIAN_GARAGE_ACCESS_REPOSITORY),
+    // -- Hail Monitoring Repositories
+    HailAlertRepository: Symbol.for(SYMBOL_NAMES.HAIL_ALERT_REPOSITORY),
+    MonitoredLocationRepository: Symbol.for(SYMBOL_NAMES.MONITORED_LOCATION_REPOSITORY),
     // -- Settings CarRepair Repositories
     BodyPartRepository: Symbol.for(SYMBOL_NAMES.BODY_PART_REPOSITORY),
     BodyMaterialRepository: Symbol.for(SYMBOL_NAMES.BODY_MATERIAL_REPOSITORY),
@@ -202,6 +205,8 @@ const SYMBOLS = {
     // -- Technician States
     TechniciansState: Symbol.for(SYMBOL_NAMES.TECHNICIANS_STATE),
     TechnicianDetailState: Symbol.for(SYMBOL_NAMES.TECHNICIAN_DETAIL_STATE),
+    // -- Hail Monitoring State
+    HailMonitoringState: Symbol.for(SYMBOL_NAMES.HAIL_MONITORING_STATE),
     // -- Invoices States
     Invoice: {
       InvoiceState: Symbol.for(SYMBOL_NAMES.INVOICE_STATE),
