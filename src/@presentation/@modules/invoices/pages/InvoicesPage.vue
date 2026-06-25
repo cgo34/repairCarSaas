@@ -244,8 +244,8 @@
 
 <script setup lang="ts">
 import { IAuthState } from '@/@application/states/interfaces/IAuthState';
-import { CompanySettingsDto } from '@/@application/dtos/CompanySettingsDto';
-import { ICompanySettingsUseCase } from '@/@domain/useCases/ICompanySettingsUseCase';
+import { OrganizationProfileDto } from '@/@application/dtos/OrganizationProfileDto';
+import { IOrganizationProfileUseCase } from '@/@domain/useCases/organizations/IOrganizationProfileUseCase';
 import { IGenerateInvoicePdfUseCase } from '@/@domain/useCases/invoices/IGenerateInvoicePdfUseCase';
 import { ISendInvoiceUseCase } from '@/@domain/useCases/invoices/ISendInvoiceUseCase';
 import { container } from '@/@infrastructure/ioc/inversify.config';
@@ -266,7 +266,7 @@ import { useRouter } from 'vue-router';
 const authState = container.get<IAuthState>(SYMBOLS.States.AuthState);
 const useInvoiceState = container.get<IUseInvoicesState>(SYMBOLS.States.Invoice.GetInvoicesUseCase);
 const generatePdfUseCase = container.get<IGenerateInvoicePdfUseCase>(SYMBOLS.UseCases.Invoice.GenerateInvoicePdfUseCase);
-const companySettingsUseCase = container.get<ICompanySettingsUseCase>(SYMBOLS.UseCases.CompanySettings);
+const organizationProfileUseCase = container.get<IOrganizationProfileUseCase>(SYMBOLS.UseCases.OrganizationProfileUseCase);
 const sendInvoiceUseCase = container.get<ISendInvoiceUseCase>(SYMBOLS.UseCases.Invoice.SendInvoiceUseCase);
 
 const router = useRouter();
@@ -282,7 +282,7 @@ const selectedInvoices = ref<InvoiceViewModel[]>([]);
 const downloading = ref(false);
 const showFilters = ref(false);
 const activeTab = ref<'all' | 'draft' | 'sent' | 'paid' | 'late'>('all');
-const _company = ref<CompanySettingsDto | null>(null);
+const _company = ref<OrganizationProfileDto | null>(null);
 const deleteInvoiceConfirmDialogRef = ref<ConfirmDialogExposed>();
 const _invoiceToDelete = ref<string | undefined>();
 
@@ -451,10 +451,10 @@ const onBulkDownload = async () => {
 };
 
 onMounted(async () => {
-  const userId = authState.user?.value?.id;
+  const organizationId = authState.userContext?.value?.organization?.id;
   await Promise.all([
     init(),
-    userId ? companySettingsUseCase.getByUserId(userId).then(c => { _company.value = c; }) : Promise.resolve(),
+    organizationId ? organizationProfileUseCase.getProfile(organizationId).then(c => { _company.value = c; }) : Promise.resolve(),
   ]);
 });
 </script>

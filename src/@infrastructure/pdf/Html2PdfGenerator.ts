@@ -14,7 +14,12 @@ export class Html2PdfGenerator implements IPdfGenerator {
     const html = buildQuoteHtmlTemplate(quote, lines, company)
 
     const blob = await html2pdf()
-      .set({ margin: 0, filename: `quote-${quote.quoteNumber}.pdf`, html2canvas: {}, jsPDF: {} })
+      .set({
+        margin: 0,
+        filename: `quote-${quote.quoteNumber}.pdf`,
+        html2canvas: { scale: 2, useCORS: true, logging: false },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+      })
       .from(html)
       .outputPdf('blob')
 
@@ -25,7 +30,12 @@ export class Html2PdfGenerator implements IPdfGenerator {
     const html = buildInvoiceHtmlTemplate(invoice, lines, company)
 
     const blob = await html2pdf()
-      .set({ margin: 0, filename: `invoice-${invoice.invoiceNumber}.pdf`, html2canvas: {}, jsPDF: {} })
+      .set({
+        margin: 0,
+        filename: `invoice-${invoice.invoiceNumber}.pdf`,
+        html2canvas: { scale: 2, useCORS: true, logging: false },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+      })
       .from(html)
       .outputPdf('blob')
 

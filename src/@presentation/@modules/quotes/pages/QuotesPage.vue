@@ -245,8 +245,8 @@
 
 <script setup lang="ts">
 import { IAuthState } from '@/@application/states/interfaces/IAuthState';
-import { CompanySettingsDto } from '@/@application/dtos/CompanySettingsDto';
-import { ICompanySettingsUseCase } from '@/@domain/useCases/ICompanySettingsUseCase';
+import { OrganizationProfileDto } from '@/@application/dtos/OrganizationProfileDto';
+import { IOrganizationProfileUseCase } from '@/@domain/useCases/organizations/IOrganizationProfileUseCase';
 import { IGenerateQuotePdfUseCase } from '@/@domain/useCases/quotes/IGenerateQuotePdfUseCase';
 import { container } from '@/@infrastructure/ioc/inversify.config';
 import { SYMBOLS } from '@/@infrastructure/ioc/symbols';
@@ -266,7 +266,7 @@ import { useRouter } from 'vue-router';
 const authState = container.get<IAuthState>(SYMBOLS.States.AuthState);
 const useQuoteState = container.get<IUseQuotesState>(SYMBOLS.States.Quote.GetQuotesUseCase);
 const generatePdfUseCase = container.get<IGenerateQuotePdfUseCase>(SYMBOLS.UseCases.Quote.GenerateQuotePdfUseCase);
-const companySettingsUseCase = container.get<ICompanySettingsUseCase>(SYMBOLS.UseCases.CompanySettings);
+const organizationProfileUseCase = container.get<IOrganizationProfileUseCase>(SYMBOLS.UseCases.OrganizationProfileUseCase);
 
 const router = useRouter();
 const { init, quotes, deleteQuote, sendQuote, convertToInvoice } = useQuoteState;
@@ -281,7 +281,7 @@ const selectedQuotes = ref<QuoteViewModel[]>([]);
 const downloading = ref(false);
 const showFilters = ref(false);
 const activeTab = ref<'all' | 'draft' | 'sent' | 'accepted' | 'refused'>('all');
-const _company = ref<CompanySettingsDto | null>(null);
+const _company = ref<OrganizationProfileDto | null>(null);
 const deleteQuoteConfirmDialogRef = ref<ConfirmDialogExposed>();
 const _quoteIdToDelete = ref<string | undefined>();
 
@@ -452,10 +452,10 @@ const onBulkDownload = async () => {
 };
 
 onMounted(async () => {
-  const userId = authState.user?.value?.id;
+  const organizationId = authState.userContext?.value?.organization?.id;
   await Promise.all([
     init(),
-    userId ? companySettingsUseCase.getByUserId(userId).then(c => { _company.value = c; }) : Promise.resolve(),
+    organizationId ? organizationProfileUseCase.getProfile(organizationId).then(c => { _company.value = c; }) : Promise.resolve(),
   ]);
 });
 </script>

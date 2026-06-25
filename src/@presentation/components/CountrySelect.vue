@@ -9,19 +9,17 @@
     @select="onSelectCountry"
     @clear="onClearCountry"
   />
-  <v-alert
-    title="Information TVA"
-    type="info"
-    icon="$info"
-    variant="tonal"
-    :text="countrySelectionInformation"
-  />
+  <div v-if="taxSummary" class="tax-summary mt-2">
+    <v-icon size="14" color="primary" class="mr-1">mdi-information-outline</v-icon>
+    <span>{{ taxSummary }}</span>
+  </div>
 </template>
 
 <script setup lang="ts">
 import GenericSelect from '@/@presentation/components/GenericSelect.vue';
 import { CountryViewModel } from '@/@presentation/types/models/CountryViewModel';
 import { computed, onUpdated, ref } from 'vue';
+
 
 const props = withDefaults(defineProps<{
   modelValue?: CountryViewModel | string;
@@ -54,7 +52,15 @@ const countries = ref<CountryViewModel[]>([
   },
 ]);
 const model = ref<CountryViewModel | undefined>(countries.value.find(c => c.code === props.modelValue));
-const countrySelectionInformation = ref<string>(`Si le pays sélectionné est France : La devise est EUR et il n'y a pas de TVA. Mention sur le devis : TVA non applicable - Autoliquidation de la TVA par le client (Article 196 de la directive 2006/112/CE) et Suisse : La devise est CHF et la TVA est de 8%.`);
+
+const taxSummary = computed(() => {
+  if (!model.value) return '';
+  const flag = model.value.code === 'FR' ? '🇫🇷' : model.value.code === 'CH' ? '🇨🇭' : '🌍';
+  const tva = model.value.taxRate === 0
+    ? 'TVA non applicable (autoliquidation)'
+    : `TVA ${model.value.taxRate}%`;
+  return `${flag} ${model.value.name} — ${model.value.currencySymbol} · ${tva}`;
+});
 
 const defaultCountrySelected = computed(() => {
   return countries.value.find(c => c.code === props.modelValue);
@@ -67,26 +73,27 @@ const emit = defineEmits<{
 
 const onClearCountry = () => {
   model.value = undefined;
-  countrySelectionInformation.value = `Si le pays sélectionné est France : La devise est EUR et il n'y a pas de TVA. Mention sur le devis : TVA non applicable - Autoliquidation de la TVA par le client (Article 196 de la directive 2006/112/CE) et Suisse : La devise est CHF et la TVA est de 8%.`;
   emit('update:modelValue', undefined);
 };
 
 const onSelectCountry = (selected: CountryViewModel | undefined) => {
-  if (!selected) {
-    return '';
-  }
-
+  if (!selected) return;
   model.value = selected;
-
-  countrySelectionInformation.value = selected?.name === 'France'
-  ? `La devise est ${selected.currency} et il n'y a pas de TVA. Mention sur le devis : TVA non applicable - Autoliquidation de la TVA par le client (Article 196 de la directive 2006/112/CE)`
-  : `La devise est ${selected.currency} et la TVA est de 8%.`;
-
   emit('update:modelValue', selected);
   emit('select', selected);
 };
 
 onUpdated(() => {
-      emit('update:modelValue', defaultCountrySelected.value);
+  emit('update:modelValue', defaultCountrySelected.value);
 });
 </script>
+
+<style scoped>
+.tax-summary {
+  display: flex;
+  align-items: center;
+  font-size: 0.8rem;
+  color: rgb(var(--v-theme-lightText));
+  font-family: 'Manrope', sans-serif;
+}
+</style>
