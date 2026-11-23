@@ -6,7 +6,7 @@
 
 import fs from 'fs'
 
-const path = 'src/@infrastructure/database/database.types.ts' // adapte au besoin
+const path = 'src/shared/infrastructure/supabase/database.types.ts' // adapte au besoin
 
 const PATCH = `        Relationships: [
           {

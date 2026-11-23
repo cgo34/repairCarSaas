@@ -1,0 +1,43 @@
+import 'reflect-metadata';
+import { Container } from 'inversify';
+import { registerAccountBindings } from '@/app/di/bindings/account.bindings';
+import { registerAuthBindings } from '@/app/di/bindings/auth.bindings';
+import { registerCarRepairSettingsBindings } from '@/app/di/bindings/carRepairSettings.bindings';
+import { registerCostCalculationBindings } from '@/app/di/bindings/costCalculation.bindings';
+import { registerDocumentStatusesBindings } from '@/app/di/bindings/documentStatuses.bindings';
+import { registerGaragesBindings } from '@/app/di/bindings/garages.bindings';
+import { registerInvoicesBindings } from '@/app/di/bindings/invoices.bindings';
+import { registerLineItemsBindings } from '@/app/di/bindings/lineItems.bindings';
+import { registerMiscBindings } from '@/app/di/bindings/misc.bindings';
+import { registerOrganizationsBindings } from '@/app/di/bindings/organizations.bindings';
+import { registerPriceSettingsBindings } from '@/app/di/bindings/priceSettings.bindings';
+import { registerQuotesBindings } from '@/app/di/bindings/quotes.bindings';
+import { registerSharedBindings } from '@/app/di/bindings/shared.bindings';
+import { registerSubscriptionBindings } from '@/app/di/bindings/subscription.bindings';
+import { registerTechniciansBindings } from '@/app/di/bindings/technicians.bindings';
+import { registerUsersBindings } from '@/app/di/bindings/users.bindings';
+import { registerVehiclesBindings } from '@/app/di/bindings/vehicles.bindings';
+import { registerWeatherBindings } from '@/app/di/bindings/weather.bindings';
+
+const container = new Container({ defaultScope: 'Singleton' });
+
+registerAccountBindings(container);
+registerAuthBindings(container);
+registerCarRepairSettingsBindings(container);
+registerCostCalculationBindings(container);
+registerDocumentStatusesBindings(container);
+registerGaragesBindings(container);
+registerInvoicesBindings(container);
+registerLineItemsBindings(container);
+registerMiscBindings(container);
+registerOrganizationsBindings(container);
+registerPriceSettingsBindings(container);
+registerQuotesBindings(container);
+registerSharedBindings(container);
+registerSubscriptionBindings(container);
+registerTechniciansBindings(container);
+registerUsersBindings(container);
+registerVehiclesBindings(container);
+registerWeatherBindings(container);
+
+export { container };
