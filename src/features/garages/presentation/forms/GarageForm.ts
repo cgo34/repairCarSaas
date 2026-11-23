@@ -1,0 +1,16 @@
+export type GarageForm = {
+  id?: string;
+
+  organization_id: string;
+
+  name: string;
+  code: string;
+
+  address: string;
+  zip_code: string;
+  city: string;
+
+  phone: string;
+  email: string;
+  percentageCommission?: number | null;
+};

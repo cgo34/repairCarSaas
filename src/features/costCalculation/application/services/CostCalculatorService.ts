@@ -1,0 +1,86 @@
+import { ICostCalculatorService } from '@/features/costCalculation/application/ports/services/ICostCalculatorService';
+import { SettingPriceTechnicityCoefficientDto } from '@/features/priceSettings/application/dtos/SettingPriceTechnicityCoefficientDto';
+import { LineItemDto } from '@/features/lineItems/application/dtos/LineItemDto';
+import { SettingPriceBodyMaterialCoefficientDto } from '@/features/priceSettings/application/dtos/SettingPriceBodyMaterialCoefficientDto';
+import { SettingPriceBodyPartCoefficientDto } from '@/features/priceSettings/application/dtos/SettingPriceBodyPartCoefficientDto';
+import { SettingPriceImpactCountToUtDto } from '@/features/priceSettings/application/dtos/SettingPriceImpactCountToUtDto';
+import { SettingPriceDto } from '@/features/priceSettings/application/dtos/SettingPriceDto';
+
+export class CostCalculatorService implements ICostCalculatorService {
+  calculateLinePrice(lineItem: LineItemDto, priceParams: SettingPriceDto): number {
+    if (!lineItem.bodyPartId || !lineItem.bodyMaterialId || !lineItem.repairTypeId) {
+      throw new Error("Missing required attributes to calculate cost.");
+    }
+
+    const bodyPartCoefficient = this.getBodyPartCoefficient(lineItem.bodyPartId, priceParams.bodyParts);
+    const isAluminium = lineItem.bodyMaterial?.code === 'aluminium';
+    const materialCoefficient = isAluminium ? priceParams.technicity.aluminiumCoefficient : 1;
+    const repairTypeCoefficient = this.getRepairTypeCoefficient(lineItem.repairType?.code ?? '', priceParams.technicity);
+    const diameter25Coefficient = priceParams.technicity.diameter25Coefficient;
+    const diameter35Coefficient = priceParams.technicity.diameter35Coefficient;
+    
+    const hourlyRate = priceParams.general.hourlyRate ?? 180;
+    const unitTimeValue = priceParams.general.unitTime ?? 6;
+
+    const unitTime = this.getUnitTimeImpact(lineItem, priceParams.impactsCount);
+
+    // compute price for each diameter
+    const basePriceDiameter25 = (((unitTime.diameter25 * unitTimeValue) * hourlyRate) / 60)
+      * bodyPartCoefficient 
+      * materialCoefficient 
+      * repairTypeCoefficient
+      * diameter25Coefficient 
+    
+    const basePriceDiameter35 = (((unitTime.diameter35 * unitTimeValue) * hourlyRate) / 60)
+      * bodyPartCoefficient 
+      * materialCoefficient 
+      * repairTypeCoefficient
+      * diameter35Coefficient 
+    
+    const finalCost = basePriceDiameter25 + basePriceDiameter35
+
+    console.log(`[PRICE CALC] ${lineItem.bodyPart?.name ?? lineItem.bodyPartId} | ${lineItem.bodyMaterial?.code} ${lineItem.repairType?.code}
+  hourlyRate=${hourlyRate} unitTimeValue=${unitTimeValue}min
+  impacts: Ø25=${lineItem.impactCount25}→UT=${unitTime.diameter25}  Ø35=${lineItem.impactCount35}→UT=${unitTime.diameter35}
+  bodyPartCoeff=${bodyPartCoefficient}  materialCoeff=${materialCoefficient}  repairTypeCoeff=${repairTypeCoefficient}
+  diam25Coeff=${diameter25Coefficient}  diam35Coeff=${diameter35Coefficient}
+  price25=${basePriceDiameter25.toFixed(2)}  price35=${basePriceDiameter35.toFixed(2)}  TOTAL=${finalCost.toFixed(2)}`);
+
+    return Math.round(finalCost * 100) / 100;
+  }
+
+  private getUnitTimeImpact(lineItem: LineItemDto, impactsCountPrice: SettingPriceImpactCountToUtDto[]): { diameter25: number, diameter35: number } {
+    
+    const unitTimeImpact25 = impactsCountPrice.find(ic => ic.impactCountMin <= lineItem.impactCount25 && ic.impactCountMax >= lineItem.impactCount25);
+    const unitTimeImpact35 = impactsCountPrice.find(ic => ic.impactCountMin <= lineItem.impactCount35 && ic.impactCountMax >= lineItem.impactCount35);
+    
+    return {
+      diameter25: lineItem.impactCount25 === 0 ? 0 : (unitTimeImpact25?.unitTime ?? 1),
+      diameter35: lineItem.impactCount35 === 0 ? 0 : (unitTimeImpact35?.unitTime ?? 1)
+    }
+  }
+
+  private getBodyPartCoefficient(bodyPartId: string, bodyPartsPrice: SettingPriceBodyPartCoefficientDto[]): number {
+    const setting = bodyPartsPrice.find(sp => sp.bodyPartId === bodyPartId);
+    return setting?.coefficient ?? 1;
+  }
+
+  private getMaterialCoefficient(materialId: string, bodyMaterialsPrice: SettingPriceBodyMaterialCoefficientDto[]): number {
+    const setting = bodyMaterialsPrice.find(sp => sp.bodyMaterialId === materialId);
+    return setting?.coefficient ?? 1;
+  }
+
+  private getRepairTypeCoefficient(repairTypeCode: string, technicitySetting: SettingPriceTechnicityCoefficientDto): number {
+
+    if (repairTypeCode === 'DAP') {
+      return technicitySetting.dapCoefficient ?? 1;
+    }
+     
+    if (repairTypeCode === 'DSP') {
+      return technicitySetting.dspCoefficient ?? 1;
+    }
+
+    return 1;
+  }
+
+}

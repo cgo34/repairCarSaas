@@ -1,9 +1,0 @@
-import { UserDto } from "@/@infrastructure/dtos/UserDto";
-
-export interface IUserRepository {
-  getUsers(): Promise<UserDto[]>;
-  // getById(id: string): Promise<User | null>;
-  createUser(user: UserDto): Promise<UserDto>;
-  // update(user: UserDto): Promise<UserDto>;
-  // delete(id: string): Promise<void>;
-}

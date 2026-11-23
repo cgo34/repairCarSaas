@@ -1,0 +1,24 @@
+import { BodyMaterialViewModel } from "@/features/carRepairSettings/presentation/models/BodyMaterialViewModel";
+import { BodyPartViewModel } from "@/features/carRepairSettings/presentation/models/BodyPartViewModel";
+import { DentRepairTypeViewModel } from "@/features/carRepairSettings/presentation/models/DentRepairTypeViewModel";
+
+type LineItemType = 'quote' | 'invoice';
+
+export interface LineItemViewModel {
+  id?: string;
+  lineId?: number;
+  invoiceId?: string;
+  quoteId?: string;
+  quoteDetailId?: string;
+  bodyPartId?: string;
+  bodyPart?: BodyPartViewModel;
+  impactCount25?: number;
+  impactCount35?: number;
+  bodyMaterialId?: string;
+  bodyMaterial?: BodyMaterialViewModel;
+  repairTypeId?: string;
+  repairType?: DentRepairTypeViewModel;
+  dentRemovalPrice?: number;
+  lineItemType?: LineItemType;
+  price: number;
+};

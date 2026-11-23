@@ -3,44 +3,23 @@
 ## 1. Architecture
 ```
 src/
-│-- @domain/                   # Business rules and interfaces
-│   ├── entities/              # Domain entities
-│   ├── repositories/          # Repository interfaces
-│   ├── services/              # Service interfaces
-│   ├── providers/             # Provider interfaces
-│   ├── useCases/              # Use case interfaces
-│   └── events/                # (Optional) Event management
-│
-│-- @application/              # Use case and service implementations
-│   ├── useCases/              # Use case implementations
-│   │   ├── auth/              # Authentication use cases
-│   │   └── ...
-│   ├── services/              # Service implementations
-│   ├── states/                # Application state management
-│   └── dtos/                  # (Optional) Data Transfer Objects
-│
-│-- @infrastructure/           # Repository and provider implementations
-│   ├── database/              # Database clients and repositories
-│   │   ├── clients/           # Database client implementations
-│   │   ├── repositories/      # Repository implementations
-│   │   ├── providers/         # Database provider implementations
-│   │   └── dtos/              # Data Transfer Objects for database
-│   ├── providers/             # General provider implementations
-│   ├── ioc/                   # Inversion of Control configuration
-│   └── config/                # Configuration files
-│
-│-- @presentation/             # Presentation layer
-│   ├── modules/               # Business modules (e.g., Vue.js)
-│   │   ├── auth/              # Authentication module
-│   │   ├── quotes/            # Quotes module
-│   │   ├── invoices/          # Invoices module
-│   │   └── ...
-│   └── ui/                    # Shared UI components
-│       ├── components/        # UI components
-│       ├── layouts/           # Layout components
-│       └── styles/            # Stylesheets
+|-- app/                  # Composition root: bootstrap (main.ts), router, plugins, theme, layouts
+|   `-- di/               # Unique InversifyJS container (container.ts) + tokens
+|-- features/<feature>/   # auth, quotes, invoices, garages, ...
+|   |-- domain/           # Entities, value objects, pure rules
+|   |-- application/      # Use cases (interface + classe dans le meme fichier), ports (repositories/services), no DI decorators
+|   |-- infrastructure/   # Repository / service implementations (Supabase, ...)
+|   |-- presentation/     # views, components, composables (createUseX(deps)), state
+|   `-- composition/      # useX() / use<View>Dependencies(): the only place resolving the container
+|-- shared/               # Cross-feature code (domain, application, infrastructure, presentation)
+`-- assets/
 ```
 
+Regles : le domaine n'importe rien ; la presentation ne contient ni `container.get()` ni import d'inversify
+(resolution dans `composition/` ou dans `app/`) ; `shared/` ne depend ni de `app/` ni de `features/`.
+Alias : `@/*` -> `src/*`, `@assets/*` -> `src/assets/*`.
+
+Arbre detaille, regles de dependance, changements du refactor et guide d'ajout d'une feature : [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 ## 2. Nomenclature des branches
 ```
 feature/nom-feature     # Pour les nouvelles fonctionnalités

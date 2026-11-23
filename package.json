@@ -10,7 +10,7 @@
     "lint:fix": "eslint \"src/**/*.{ts,tsx,vue,js,jsx}\" --fix",
     "type-check": "vue-tsc --noEmit",
     "test": "echo \"No tests specified\" && exit 0",
-    "supabase:gen:types": "supabase gen types typescript --project-id ombgvakpwmgtkimvrhzh --schema public > src/@infrastructure/database/database.types.ts"
+    "supabase:gen:types": "supabase gen types typescript --project-id afeqjyfntwujsyqpuimi --schema public > src/shared/infrastructure/supabase/database.types.ts"
   },
   "dependencies": {
     "@mdi/font": "^7.4.47",
@@ -21,7 +21,9 @@
     "dotenv": "^16.4.7",
     "html2pdf.js": "^0.10.3",
     "inversify": "^6.2.1",
+    "jszip": "^3.10.1",
     "reflect-metadata": "^0.2.2",
+    "supabase": "^2.92.1",
     "vee-validate": "^4.15.0",
     "vue": "^3.4.0",
     "vue-router": "^4.2.0",
@@ -31,6 +33,7 @@
     "vuetify": "^3.3.0"
   },
   "devDependencies": {
+    "@types/jszip": "^3.4.0",
     "@types/reflect-metadata": "^0.0.5",
     "@typescript-eslint/eslint-plugin": "^6.13.0",
     "@typescript-eslint/parser": "^6.13.0",
@@ -47,6 +50,7 @@
     "stylelint-config-standard": "^34.0.0",
     "stylelint-config-standard-scss": "^11.1.0",
     "typescript": "^5.7.3",
-    "vite": "^5.0.0"
+    "vite": "^5.0.0",
+    "vue-tsc": "^3.3.1"
   }
 }

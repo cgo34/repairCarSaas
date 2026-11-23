@@ -1,23 +1,21 @@
-# Stage de base
-FROM node:18-alpine AS base
+FROM node:20-alpine AS build
+
 WORKDIR /app
+
 COPY package*.json ./
-
-# Stage de dépendances
-FROM base AS dependencies
 RUN npm ci
-COPY . . 
 
-# Stage de build
-FROM dependencies AS build
+RUN echo "SUPABASE_URL=$VITE_SUPABASE_URL"
+RUN echo "SUPABASE_KEY=$VITE_SUPABASE_KEY"
+
+COPY . .
 RUN npm run build
 
-# ✅ Stage de lint/type-check (facultatif si pas de test)
-FROM build AS lint
-RUN npm run lint && npm run type-check
+FROM nginx:alpine
 
-# ✅ Stage final (production)
-FROM node:18-alpine AS production
-WORKDIR /app
-COPY --from=build /app/dist /app
-CMD ["npm", "run", "serve"]
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY --from=build /app/dist /usr/share/nginx/html
+
+EXPOSE 80
+
+CMD ["nginx", "-g", "daemon off;"]
