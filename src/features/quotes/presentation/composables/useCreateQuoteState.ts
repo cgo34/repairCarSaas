@@ -70,7 +70,7 @@ export function createUseCreateQuoteState(deps: UseCreateQuoteStateDependencies)
       // Orchestration des appels aux UseCases
       const [quoteNumber, statusDto, garageResult, technicianResult] = await Promise.all([
         createQuoteUseCase.execute(userContext.organization.id),
-        getDocumentStatusUseCase.getByCode('processing'),
+        getDocumentStatusUseCase.getByCode('draft'),
         garageUseCase.getGaragesByOrganizationId(userContext.organization.id).catch(() => []),
         technicianUseCase.getMembersByOrganizationId(userContext.organization.id).catch(() => []),
       ]);

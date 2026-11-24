@@ -12,4 +12,9 @@ export interface IUseViewQuoteState {
   pdfUrl: ComputedRef<string>;
   filename: ComputedRef<string>;
   quote: ComputedRef<QuoteViewModel | undefined>;
+  subtotal: ComputedRef<number>;
+  totalDegarnissage: ComputedRef<number>;
+  taxRate: ComputedRef<number>;
+  totalTax: ComputedRef<number>;
+  total: ComputedRef<number>;
 }

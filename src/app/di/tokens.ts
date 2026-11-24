@@ -138,6 +138,7 @@ const SYMBOLS = {
       GetQuoteDetailsUseCase: Symbol.for(SYMBOL_NAMES.GET_QUOTE_DETAILS_USE_CASE),
       // AddQuoteDetailsUseCase: Symbol.for(SYMBOL_NAMES.ADD_QUOTE_DETAILS_USE_CASE),
       AddLineItemUseCase: Symbol.for(SYMBOL_NAMES.ADD_QUOTE_LINE_ITEM_USE_CASE),
+      UpdateLineItemUseCase: Symbol.for(SYMBOL_NAMES.UPDATE_QUOTE_LINE_ITEM_USE_CASE),
       DeleteLineItemUseCase: Symbol.for(SYMBOL_NAMES.DELETE_LINE_ITEM_USE_CASE),
       // -- Pdf UseCases
       GenerateQuotePdfUseCase: Symbol.for(SYMBOL_NAMES.GENERATE_QUOTE_PDF_USE_CASE),
@@ -158,6 +159,7 @@ const SYMBOLS = {
       GetInvoiceDetailsUseCase: Symbol.for(SYMBOL_NAMES.GET_INVOICE_DETAILS_USE_CASE),
       // AddInvoiceDetailsUseCase: Symbol.for(SYMBOL_NAMES.ADD_INVOICE_DETAILS_USE_CASE),
       AddLineItemUseCase: Symbol.for(SYMBOL_NAMES.ADD_INVOICE_LINE_ITEM_USE_CASE),
+      UpdateLineItemUseCase: Symbol.for(SYMBOL_NAMES.UPDATE_INVOICE_LINE_ITEM_USE_CASE),
       DeleteLineItemUseCase: Symbol.for(SYMBOL_NAMES.DELETE_LINE_ITEM_USE_CASE),
       // -- Pdf UseCases
       GenerateInvoicePdfUseCase: Symbol.for(SYMBOL_NAMES.GENERATE_INVOICE_PDF_USE_CASE),

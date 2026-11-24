@@ -40,13 +40,13 @@
               <v-icon :icon="kpi.icon" />
             </v-avatar>
             <div class="flex-grow-1">
-              <div class="text-body-2 text-medium-emphasis">
+              <div class="stat-label">
                 {{ kpi.label }}
               </div>
-              <div class="text-h5 font-weight-bold">
+              <div class="stat-value">
                 {{ kpi.value }}
               </div>
-              <div class="text-caption text-medium-emphasis">
+              <div class="stat-sub">
                 {{ kpi.caption }}
               </div>
               <v-progress-linear
@@ -118,8 +118,8 @@
                 </div>
                 <v-btn
                   class="mt-3"
-                  variant="outlined"
-                  color="default"
+                  variant="flat"
+                  color="primary"
                   size="small"
                 >
                   Changer d'offre

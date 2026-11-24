@@ -44,7 +44,7 @@
                 mdi-calendar-outline
               </v-icon>
             </div>
-            <span class="text-subtitle-2 font-weight-semibold">Dates du devis</span>
+            <span class="text-subtitle-1 font-weight-bold">Dates du devis</span>
           </div>
           <v-row dense>
             <v-col
@@ -88,7 +88,7 @@
                 mdi-account-wrench-outline
               </v-icon>
             </div>
-            <span class="text-subtitle-2 font-weight-semibold">Technicien</span>
+            <span class="text-subtitle-1 font-weight-bold">Technicien</span>
           </div>
           <v-autocomplete
             :model-value="selectedTechnician"
@@ -146,7 +146,7 @@
                 mdi-garage
               </v-icon>
             </div>
-            <span class="text-subtitle-2 font-weight-semibold">Client / Garage</span>
+            <span class="text-subtitle-1 font-weight-bold">Client / Garage</span>
           </div>
 
           <v-autocomplete
@@ -260,7 +260,7 @@
                 mdi-car
               </v-icon>
             </div>
-            <span class="text-subtitle-2 font-weight-semibold">Informations véhicule</span>
+            <span class="text-subtitle-1 font-weight-bold">Informations véhicule</span>
           </div>
 
           <v-row dense>
@@ -320,7 +320,7 @@
                 mdi-tune-variant
               </v-icon>
             </div>
-            <span class="text-subtitle-2 font-weight-semibold">Options</span>
+            <span class="text-subtitle-1 font-weight-bold">Options</span>
           </div>
 
           <div class="mb-3">
@@ -450,6 +450,7 @@ import { CountryViewModel } from '@/features/countries/presentation/models/Count
 import { GarageViewModel } from '@/features/garages/presentation/models/GarageViewModel';
 import { OrganizationMemberViewModel } from '@/features/organizations/presentation/models/OrganizationMemberViewmodel';
 import router from '@/app/router/index';
+import { setSelectedQuoteGuid } from '@/features/quotes/presentation/utils/quoteSelection';
 import { onMounted, ref } from 'vue';
 
 // ─── State ────────────────────────────────────────────────────────────────────
@@ -513,7 +514,10 @@ const onSaveBtnClick = async () => {
   loading.value = true;
   try {
     await save();
-    router.push(`/quotes/${quote.value?.id}/edit`);
+    if (quote.value?.id) {
+      setSelectedQuoteGuid(quote.value.id);
+      router.push(isForfait.value ? '/quotes' : '/quotes/items');
+    }
   } finally {
     loading.value = false;
   }

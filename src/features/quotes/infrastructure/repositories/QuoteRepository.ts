@@ -330,9 +330,28 @@ export class QuoteRepository implements IQuoteRepository {
   async markAsConverted(quoteId: string): Promise<void> {
     const { error } = await this.clientProvider.getClient()
       .from('quotes')
-      .update({ convert_to_invoice: true })
+      .update({ convert_to_invoice: true, converted_at: new Date().toISOString() })
       .eq('id', quoteId);
 
     if (error) throw new Error(`Error marking quote as converted: ${error.message}`);
+  }
+
+  // Rend le devis à nouveau convertible (facture brouillon supprimée)
+  async unmarkAsConverted(quoteId: string): Promise<void> {
+    const { error } = await this.clientProvider.getClient()
+      .from('quotes')
+      .update({ convert_to_invoice: false, converted_at: null })
+      .eq('id', quoteId);
+
+    if (error) throw new Error(`Error unmarking quote as converted: ${error.message}`);
+  }
+
+  async markAsAccepted(quoteId: string): Promise<void> {
+    const { error } = await this.clientProvider.getClient()
+      .from('quotes')
+      .update({ accepted_at: new Date().toISOString() })
+      .eq('id', quoteId);
+
+    if (error) throw new Error(`Error marking quote as accepted: ${error.message}`);
   }
 }

@@ -1,3 +1,5 @@
+import { invoiceItemsGuard } from '@/app/router/guards/invoices/invoiceGuards';
+import InvoiceItemsPage from '@/features/invoices/presentation/views/InvoiceItemsPage.vue';
 import CreateInvoicePage from '@/features/invoices/presentation/views/CreateInvoicePage.vue';
 import EditInvoicePage from '@/features/invoices/presentation/views/EditInvoicePage.vue';
 import InvoicesPage from '@/features/invoices/presentation/views/InvoicesPage.vue';
@@ -37,6 +39,19 @@ export const invoiceRoutes: RouteRecordRaw[] = [
       breadcrumb: [
         { title: 'Invoices', href: '/invoices' },
         { title: 'View Invoice', href: '/invoices/view/:id' },
+      ]
+    },
+  },
+  {
+    path: '/invoices/items/:id',
+    name: 'Invoice Items',
+    component: InvoiceItemsPage,
+    beforeEnter: invoiceItemsGuard,
+    meta: {
+      requiresAuth: true,
+      breadcrumb: [
+        { title: 'Invoices', href: '/invoices' },
+        { title: 'Invoice Items', href: '/invoices/items/:id' },
       ]
     },
   },

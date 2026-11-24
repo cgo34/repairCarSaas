@@ -192,6 +192,10 @@ export class QuoteMapper {
       convertToInvoice:
         api.convert_to_invoice ?? false,
 
+      acceptedAt: api.accepted_at ?? null,
+
+      convertedAt: api.converted_at ?? null,
+
       /**
        * ============================================================
        * SNAPSHOT GARAGE

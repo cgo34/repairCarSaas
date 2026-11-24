@@ -2,6 +2,7 @@ import type { Container } from 'inversify';
 import { SYMBOLS } from '@/app/di/tokens';
 import { QuoteDetailRepository } from '@/features/quotes/infrastructure/repositories/QuoteDetailRepository';
 import { AddQuoteLineItemUseCase } from '@/features/quotes/application/useCases/AddQuoteLineItemUseCase';
+import { IUpdateQuoteLineItemUseCase, UpdateQuoteLineItemUseCase } from '@/features/quotes/application/useCases/UpdateQuoteLineItemUseCase';
 import { CreateQuoteUseCase } from '@/features/quotes/application/useCases/CreateQuoteUseCase';
 import { DeleteQuoteUseCase } from '@/features/quotes/application/useCases/DeleteQuoteUseCase';
 import { DuplicateQuoteToInvoiceUseCase } from '@/features/quotes/application/useCases/DuplicateQuoteToInvoiceUseCase';
@@ -46,15 +47,16 @@ export function registerQuotesBindings(container: Container): void {
   container.bind<IViewQuoteUseCase>(SYMBOLS.UseCases.Quote.ViewQuoteUseCase).toDynamicValue(ctx => new ViewQuoteUseCase(ctx.container.get(SYMBOLS.UseCases.Quote.GetQuoteUseCase), ctx.container.get(SYMBOLS.UseCases.Quote.GetQuoteDetailsUseCase))).inSingletonScope();
   container.bind<ICreateQuoteUseCase>(SYMBOLS.UseCases.Quote.CreateQuoteUseCase).toDynamicValue(ctx => new CreateQuoteUseCase(ctx.container.get(SYMBOLS.Repositories.QuoteRepository))).inSingletonScope();
   container.bind<IInsertQuoteUseCase>(SYMBOLS.UseCases.Quote.InsertQuoteUseCase).toDynamicValue(ctx => new InsertQuoteUseCase(ctx.container.get(SYMBOLS.Repositories.QuoteRepository), ctx.container.get(SYMBOLS.UseCases.GetDocumentStatus))).inSingletonScope();
-  container.bind<IUpdateQuoteUseCase>(SYMBOLS.UseCases.Quote.UpdateQuoteUseCase).toDynamicValue(ctx => new UpdateQuoteUseCase(ctx.container.get(SYMBOLS.Repositories.QuoteRepository))).inSingletonScope();
+  container.bind<IUpdateQuoteUseCase>(SYMBOLS.UseCases.Quote.UpdateQuoteUseCase).toDynamicValue(ctx => new UpdateQuoteUseCase(ctx.container.get(SYMBOLS.Repositories.QuoteRepository), ctx.container.get(SYMBOLS.UseCases.GetDocumentStatus))).inSingletonScope();
   container.bind<IDeleteQuoteUseCase>(SYMBOLS.UseCases.Quote.DeleteQuoteUseCase).toDynamicValue(ctx => new DeleteQuoteUseCase(ctx.container.get(SYMBOLS.Repositories.QuoteRepository))).inSingletonScope();
   container.bind<IGetQuoteUseCase>(SYMBOLS.UseCases.Quote.GetQuoteUseCase).toDynamicValue(ctx => new GetQuoteUseCase(ctx.container.get(SYMBOLS.Repositories.QuoteRepository))).inSingletonScope();
   container.bind<IGetQuoteDetailUseCase>(SYMBOLS.UseCases.Quote.GetQuoteDetailsUseCase).toDynamicValue(ctx => new GetQuoteDetailUseCase(ctx.container.get(SYMBOLS.Repositories.QuoteDetailRepository))).inSingletonScope();
   container.bind<IUpdateStatusQuoteUseCase>(SYMBOLS.UseCases.Quote.UpdateStatusQuoteUseCase).toDynamicValue(ctx => new UpdateStatusQuoteUseCase(ctx.container.get(SYMBOLS.Repositories.QuoteRepository), ctx.container.get(SYMBOLS.UseCases.GetDocumentStatus))).inSingletonScope();
   container.bind<IAddQuoteLineItemUseCase>(SYMBOLS.UseCases.Quote.AddLineItemUseCase).toDynamicValue(ctx => new AddQuoteLineItemUseCase(ctx.container.get(SYMBOLS.Repositories.QuoteRepository), ctx.container.get(SYMBOLS.Repositories.QuoteDetailRepository))).inSingletonScope();
   container.bind<IGenerateQuotePdfUseCase>(SYMBOLS.UseCases.Quote.GenerateQuotePdfUseCase).toDynamicValue(ctx => new GenerateQuotePdfUseCase(ctx.container.get(SYMBOLS.Services.PdfGeneratorService))).inSingletonScope();
-  container.bind<ISendQuoteUseCase>(SYMBOLS.UseCases.Quote.SendQuoteUseCase).toDynamicValue(ctx => new SendQuoteUseCase(ctx.container.get(SYMBOLS.UseCases.Quote.ViewQuoteUseCase), ctx.container.get(SYMBOLS.UseCases.Quote.GenerateQuotePdfUseCase), ctx.container.get(SYMBOLS.Services.EmailService), ctx.container.get(SYMBOLS.Repositories.QuoteRepository), ctx.container.get(SYMBOLS.UseCases.OrganizationProfileUseCase)));
+  container.bind<ISendQuoteUseCase>(SYMBOLS.UseCases.Quote.SendQuoteUseCase).toDynamicValue(ctx => new SendQuoteUseCase(ctx.container.get(SYMBOLS.UseCases.Quote.ViewQuoteUseCase), ctx.container.get(SYMBOLS.UseCases.Quote.GenerateQuotePdfUseCase), ctx.container.get(SYMBOLS.Services.EmailService), ctx.container.get(SYMBOLS.Repositories.QuoteRepository), ctx.container.get(SYMBOLS.UseCases.OrganizationProfileUseCase), ctx.container.get(SYMBOLS.UseCases.GetDocumentStatus)));
   container.bind<IDuplicateQuoteToInvoiceUseCase>(SYMBOLS.UseCases.Quote.DuplicateQuoteToInvoiceUseCase).toDynamicValue(ctx => new DuplicateQuoteToInvoiceUseCase(ctx.container.get(SYMBOLS.States.AuthState), ctx.container.get(SYMBOLS.UseCases.GetDocumentStatus), ctx.container.get(SYMBOLS.Repositories.QuoteRepository), ctx.container.get(SYMBOLS.Repositories.QuoteDetailRepository), ctx.container.get(SYMBOLS.Repositories.InvoiceRepository), ctx.container.get(SYMBOLS.Repositories.InvoiceDetailRepository))).inSingletonScope();
+  container.bind<IUpdateQuoteLineItemUseCase>(SYMBOLS.UseCases.Quote.UpdateLineItemUseCase).toDynamicValue(ctx => new UpdateQuoteLineItemUseCase(ctx.container.get(SYMBOLS.Repositories.QuoteDetailRepository))).inSingletonScope();
   container.bind<IUseCreateQuoteState>(SYMBOLS.States.Quote.CreateQuoteState).toDynamicValue(() => {
     return useCreateQuoteState();
   });

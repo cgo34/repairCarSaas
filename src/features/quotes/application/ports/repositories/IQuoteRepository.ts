@@ -18,4 +18,6 @@ export interface IQuoteRepository {
   updateCommission(quoteId: string, commissionRate: number | null, commissionPaid: boolean): Promise<void>;
   markAsSent(quoteId: string): Promise<void>;
   markAsConverted(quoteId: string): Promise<void>;
+  unmarkAsConverted(quoteId: string): Promise<void>;
+  markAsAccepted(quoteId: string): Promise<void>;
 }

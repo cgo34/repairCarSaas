@@ -41,10 +41,10 @@
               />
             </v-avatar>
             <div>
-              <div class="text-h6 font-weight-bold">
+              <div class="stat-value">
                 {{ loading ? '…' : c.value }}
               </div>
-              <div class="text-caption text-medium-emphasis">
+              <div class="stat-sub">
                 {{ c.title }}
               </div>
             </div>
@@ -75,13 +75,13 @@
               />
             </v-avatar>
             <div>
-              <div class="text-subtitle-2 text-medium-emphasis">
+              <div class="stat-label">
                 {{ h.title }}
               </div>
-              <div class="text-h4 font-weight-bold">
+              <div class="stat-value">
                 {{ loading ? '…' : h.value }}
               </div>
-              <div class="text-caption text-medium-emphasis">
+              <div class="stat-sub">
                 {{ h.caption }}
               </div>
             </div>
@@ -99,7 +99,7 @@
             variant="flat"
             class="bg-surface border rounded-lg h-100"
           >
-            <v-card-title class="text-h6 pt-4">
+            <v-card-title class="text-subtitle-1 font-weight-bold pt-4">
               Activité récente
             </v-card-title>
             <v-tabs
@@ -114,15 +114,24 @@
               </v-tab>
             </v-tabs>
             <v-divider />
-            <v-table>
+            <v-table hover>
               <thead>
                 <tr>
                   <th>N°</th>
-                  <th>Garage</th>
-                  <th>Immat.</th>
-                  <th>Statut</th>
+                  <th>Client</th>
+                  <th>Véhicule</th>
+                  <th>Date</th>
+                  <th>Technicien</th>
                   <th class="text-right">
-                    Montant
+                    Montant HT
+                  </th>
+                  <th>Envoyé</th>
+                  <th>Statut</th>
+                  <th
+                    v-if="tab === 'quotes'"
+                    class="text-center"
+                  >
+                    Converti en facture
                   </th>
                   <th />
                 </tr>
@@ -130,7 +139,7 @@
               <tbody>
                 <tr v-if="loading">
                   <td
-                    colspan="6"
+                    :colspan="tab === 'quotes' ? 10 : 9"
                     class="text-center py-4"
                   >
                     Chargement…
@@ -138,7 +147,7 @@
                 </tr>
                 <tr v-else-if="rows.length === 0">
                   <td
-                    colspan="6"
+                    :colspan="tab === 'quotes' ? 10 : 9"
                     class="text-center py-4 text-disabled"
                   >
                     {{ tab === 'quotes' ? 'Aucun devis' : 'Aucune facture' }}
@@ -147,24 +156,113 @@
                 <tr
                   v-for="r in rows"
                   :key="r.id"
+                  style="cursor: pointer"
+                  @click="onRowClick($event, r)"
                 >
-                  <td>{{ r.number }}</td>
-                  <td>{{ r.garage }}</td>
-                  <td>{{ r.immat }}</td>
+                  <td class="font-weight-medium text-primary">
+                    {{ r.number }}
+                  </td>
+                  <td class="font-weight-medium">
+                    {{ r.garage }}
+                  </td>
+                  <td class="text-medium-emphasis">
+                    {{ r.vehicle }}
+                  </td>
+                  <td>{{ r.date }}</td>
+                  <td>
+                    <div class="d-flex align-center ga-2">
+                      <v-avatar
+                        size="26"
+                        :color="r.techColor"
+                        variant="tonal"
+                      >
+                        <span style="font-size:10px; font-weight:700">{{ r.techInitials }}</span>
+                      </v-avatar>
+                      <span>{{ r.techName }}</span>
+                    </div>
+                  </td>
+                  <td class="text-right font-weight-medium">
+                    {{ euro(r.amount) }}
+                  </td>
+                  <!-- Envoyé : date d'envoi (avant le statut, ordre chronologique) -->
+                  <td>
+                    <v-chip
+                      v-if="r.sentAt"
+                      size="small"
+                      variant="tonal"
+                      rounded="pill"
+                      color="primary"
+                      prepend-icon="mdi-send-check"
+                    >
+                      {{ r.sentAt }}
+                    </v-chip>
+                    <span
+                      v-else
+                      class="text-disabled"
+                    >Non envoyé</span>
+                  </td>
+                  <!-- Statut du devis / de la facture -->
                   <td>
                     <v-chip
                       size="small"
                       variant="tonal"
+                      rounded="pill"
                       :color="r.color"
                     >
                       {{ r.status }}
                     </v-chip>
                   </td>
-                  <td class="text-right">
-                    {{ euro(r.amount) }}
+                  <td
+                    v-if="tab === 'quotes'"
+                    class="text-center"
+                  >
+                    <v-avatar
+                      size="26"
+                      :color="r.converted ? 'success' : 'default'"
+                      variant="tonal"
+                      :title="r.converted ? 'Converti en facture' : 'Non converti en facture'"
+                    >
+                      <v-icon
+                        size="16"
+                        :icon="r.converted ? 'mdi-check' : 'mdi-close'"
+                      />
+                    </v-avatar>
                   </td>
                   <td class="text-right">
+                    <v-menu v-if="tab === 'quotes'">
+                      <template #activator="{ props }">
+                        <v-btn
+                          size="small"
+                          variant="text"
+                          icon="mdi-dots-vertical"
+                          v-bind="props"
+                        />
+                      </template>
+                      <v-list
+                        density="compact"
+                        min-width="200"
+                      >
+                        <v-list-item
+                          prepend-icon="mdi-file-pdf-box"
+                          title="Voir PDF"
+                          @click="openQuote(r.id, '/quotes/view')"
+                        />
+                        <v-list-item
+                          v-if="!r.locked"
+                          prepend-icon="mdi-pencil-outline"
+                          title="Modifier le devis"
+                          @click="openQuote(r.id, '/quotes/edit')"
+                        />
+                        <v-list-item
+                          v-if="!r.locked"
+                          prepend-icon="mdi-format-list-bulleted-square"
+                          title="Ajouter des éléments"
+                          @click="openQuote(r.id, '/quotes/items')"
+                        />
+                      </v-list>
+                    </v-menu>
                     <v-btn
+                      v-else
                       size="small"
                       variant="text"
                       color="primary"
@@ -190,10 +288,10 @@
             variant="flat"
             class="bg-surface border rounded-lg pa-4"
           >
-            <div class="text-h6 mb-2">
+            <div class="text-subtitle-1 font-weight-bold mb-2">
               Résumé de l'entreprise
             </div>
-            <v-row dense>
+            <v-row>
               <v-col
                 v-for="r in summaryRows"
                 :key="r.label"
@@ -217,7 +315,7 @@
             variant="flat"
             class="bg-surface border rounded-lg pa-4 flex-grow-1"
           >
-            <div class="text-h6">
+            <div class="text-subtitle-1 font-weight-bold">
               Mon organisation
             </div>
             <div class="text-body-2 text-medium-emphasis">
@@ -285,7 +383,7 @@
             variant="flat"
             class="bg-surface border rounded-lg pa-4"
           >
-            <div class="text-h6 mb-2">
+            <div class="text-subtitle-1 font-weight-bold mb-2">
               Mon abonnement
             </div>
             <div class="d-flex justify-space-between py-2 border-b text-body-2">
@@ -319,6 +417,7 @@
               class="mt-2"
               block
               variant="outlined"
+              color="primary"
               to="/subscription"
             >
               Gérer l'abonnement
@@ -332,7 +431,9 @@
 
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue';
+import { useRouter } from 'vue-router';
 import MainLayout from '@/app/layouts/MainLayout.vue';
+import { setSelectedQuoteGuid } from '@/features/quotes/presentation/utils/quoteSelection';
 import { useAdminDashboardState } from '@/features/dashboard/composition/useAdminDashboardState';
 import { quoteStatusChip, invoiceStatusChip } from '@/features/dashboard/presentation/labels/documentStatusLabels';
 import HailAlertWidget from '@/features/dashboard/presentation/components/HailAlertWidget.vue';
@@ -340,6 +441,18 @@ import { useAuthState } from '@/features/auth/composition/useAuthState';
 
 useAuthState();
 
+const router = useRouter();
+const openQuote = (id: string | undefined, path: string) => {
+  if (!id) return;
+  setSelectedQuoteGuid(id);
+  router.push(path);
+};
+
+const onRowClick = (e: MouseEvent, r: { id?: string; to: string; locked: boolean }) => {
+  if ((e.target as HTMLElement).closest('button, a, .v-menu')) return;
+  if (tab.value === 'quotes') openQuote(r.id, r.locked ? '/quotes/view' : '/quotes/edit');
+  else router.push(r.to);
+};
 const {
   totalUsers,
   totalGarages,
@@ -418,6 +531,35 @@ const shortcuts = computed(() => [
   { title: 'Tarification', icon: 'mdi-tag-outline', to: '/organization/pricing/general', count: undefined },
 ]);
 
+const TECH_COLORS = ['#2B54E0', '#15915F', '#F5871F', '#D8443A', '#9AA2B1'];
+
+const shortDate = (d?: string | Date | null) =>
+  d ? new Date(d).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' }) : '—';
+
+type CommonSource = {
+  carBrand?: string;
+  carImmatriculation?: string;
+  createdAt?: string | Date;
+  isSent?: boolean;
+  sentAt?: string | Date | null;
+  assignedMember?: { users?: { first_name?: string; last_name?: string } };
+};
+
+const commonColumns = (s: CommonSource) => {
+  const first = s.assignedMember?.users?.first_name ?? '';
+  const last = s.assignedMember?.users?.last_name ?? '';
+  const initials = `${first[0] ?? ''}${last[0] ?? ''}`.toUpperCase() || '?';
+  const hash = initials.charCodeAt(0) + (initials.charCodeAt(1) || 0);
+  return {
+    vehicle: [s.carBrand, s.carImmatriculation].filter(Boolean).join(' · ') || '—',
+    date: shortDate(s.createdAt),
+    techInitials: initials,
+    techName: first || last ? `${first}${last ? ` ${last[0]}.` : ''}` : '—',
+    techColor: TECH_COLORS[hash % TECH_COLORS.length],
+    sentAt: s.isSent ? shortDate(s.sentAt) : '',
+  };
+};
+
 const rows = computed(() =>
   tab.value === 'quotes'
     ? recentQuotes.value.map(q => {
@@ -426,11 +568,13 @@ const rows = computed(() =>
         id: q.id,
         number: q.quoteNumber,
         garage: q.garage?.name ?? q.garageName ?? '—',
-        immat: q.carImmatriculation ?? '—',
+        ...commonColumns(q),
         status: chip.label,
         color: chip.color,
         amount: q.totalHt ?? 0,
-        to: `/quotes/edit/${q.id}`,
+        to: '/quotes/edit',
+        converted: Boolean(q.convertToInvoice),
+        locked: Boolean(q.convertToInvoice) || ['accepted', 'signed', 'validated', 'invoiced'].includes(q.status?.code ?? ''),
       };
     })
     : recentInvoices.value.map(i => {
@@ -439,11 +583,13 @@ const rows = computed(() =>
         id: i.id,
         number: i.invoiceNumber,
         garage: i.garage?.name ?? i.garageName ?? '—',
-        immat: i.carImmatriculation ?? '—',
+        ...commonColumns(i),
         status: chip.label,
         color: chip.color,
         amount: i.totalHt ?? 0,
         to: `/invoices/edit/${i.id}`,
+        converted: false,
+        locked: false,
       };
     })
 );

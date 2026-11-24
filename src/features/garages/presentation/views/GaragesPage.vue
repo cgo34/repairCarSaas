@@ -168,12 +168,12 @@
             </v-avatar>
             <div>
               <div
-                class="text-h6 font-weight-bold"
+                class="stat-value"
                 :class="`text-${stat.color}`"
               >
                 {{ stat.value }}
               </div>
-              <div class="text-caption text-medium-emphasis">
+              <div class="stat-sub">
                 {{ stat.label }}
               </div>
             </div>

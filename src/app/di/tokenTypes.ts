@@ -114,6 +114,7 @@ export enum SYMBOL_NAMES {
     GET_QUOTE_DETAILS_USE_CASE = 'GetQuoteDetailsUseCase',
     ADD_QUOTE_DETAILS_USE_CASE = 'AddQuoteDetailsUseCase',
     ADD_QUOTE_LINE_ITEM_USE_CASE = 'AddQuoteLineItemUseCase',
+    UPDATE_QUOTE_LINE_ITEM_USE_CASE = 'UpdateQuoteLineItemUseCase',
     DELETE_LINE_ITEM_USE_CASE = 'DeleteLineItemUseCase',
 
     DUPLICATE_QUOTE_TO_INVOICE = 'DuplicateQuoteToInvoice',
@@ -137,6 +138,7 @@ export enum SYMBOL_NAMES {
     GET_INVOICE_DETAILS_USE_CASE = 'GetInvoiceDetailsUseCase',
     ADD_INVOICE_DETAILS_USE_CASE = 'AddInvoiceDetailsUseCase',
     ADD_INVOICE_LINE_ITEM_USE_CASE = 'AddInvoiceLineItemUseCase',
+    UPDATE_INVOICE_LINE_ITEM_USE_CASE = 'UpdateInvoiceLineItemUseCase',
     // DELETE_LINE_ITEM_USE_CASE = 'DeleteLineItemUseCase',
     // -- Pdf UseCases
     GENERATE_INVOICE_PDF_USE_CASE = 'GenerateInvoicePdfUseCase',

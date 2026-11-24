@@ -78,6 +78,27 @@ export class InvoiceDetailRepository implements IInvoiceDetailRepository {
     return data.map(LineItemMapper.apiToDto);
   }
 
+  async updateOne(item: LineItemDto): Promise<LineItemDto> {
+    if (!item.id) throw new Error('Invoice detail ID is required');
+
+    const { data, error } = await this.clientProvider.getClient()
+      .from('invoice_details')
+      .update(LineItemMapper.dtoToApi(item))
+      .eq('id', item.id)
+      .select(`
+        *,
+        bodyPart:body_parts(*),
+        bodyMaterial:body_materials(*),
+        repairType:repair_types(*)
+      `)
+      .returns<LineItemApiModel[]>();
+
+    if (error || !data?.length)
+      throw new Error('Error updating invoice detail');
+
+    return LineItemMapper.apiToDto(data[0]);
+  }
+
   async update(items: LineItemDto[]): Promise<LineItemDto[]> {
     const { data, error } = await this.clientProvider.getClient()
       .from('invoice_details')

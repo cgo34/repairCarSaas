@@ -51,13 +51,13 @@
               <v-icon icon="mdi-cash-check" />
             </v-avatar>
             <div>
-              <div class="text-body-2 text-medium-emphasis">
+              <div class="stat-label">
                 CA encaissé · {{ currentMonthShort }}
               </div>
-              <div class="text-h5 font-weight-bold">
+              <div class="stat-value">
                 {{ formatCurrency(kpiCaEncaisse) }}
               </div>
-              <div class="text-caption text-medium-emphasis">
+              <div class="stat-sub">
                 encaissé ce mois
               </div>
             </div>
@@ -83,13 +83,13 @@
               <v-icon icon="mdi-clock-outline" />
             </v-avatar>
             <div>
-              <div class="text-body-2 text-medium-emphasis">
+              <div class="stat-label">
                 En attente de paiement
               </div>
-              <div class="text-h5 font-weight-bold">
+              <div class="stat-value">
                 {{ formatCurrency(kpiEnAttente) }}
               </div>
-              <div class="text-caption text-medium-emphasis">
+              <div class="stat-sub">
                 {{ kpiEnAttenteCount }} facture{{ kpiEnAttenteCount > 1 ? 's' : '' }} envoyée{{ kpiEnAttenteCount > 1 ? 's' : '' }}
               </div>
             </div>
@@ -115,13 +115,13 @@
               <v-icon icon="mdi-check-circle-outline" />
             </v-avatar>
             <div>
-              <div class="text-body-2 text-medium-emphasis">
+              <div class="stat-label">
                 Payées ce mois
               </div>
-              <div class="text-h5 font-weight-bold">
+              <div class="stat-value">
                 {{ kpiPayees }}
               </div>
-              <div class="text-caption text-medium-emphasis">
+              <div class="stat-sub">
                 factures réglées
               </div>
             </div>
@@ -148,16 +148,16 @@
               <v-icon icon="mdi-alert-circle-outline" />
             </v-avatar>
             <div>
-              <div class="text-body-2 text-medium-emphasis">
+              <div class="stat-label">
                 En retard
               </div>
               <div
-                class="text-h5 font-weight-bold"
+                class="stat-value"
                 :class="kpiLateInvoices.length > 0 ? 'text-error' : ''"
               >
                 {{ formatCurrency(kpiEnRetardMontant) }}
               </div>
-              <div class="text-caption text-medium-emphasis">
+              <div class="stat-sub">
                 {{ kpiLateInvoices.length > 0 ? kpiLateInvoices.length + ' à relancer' : 'Aucune facture en retard' }}
               </div>
             </div>
@@ -264,6 +264,7 @@
           no-data-text="Aucune facture trouvée"
           hover
           class="invoices-table"
+          @click:row="onRowClick"
         >
           <!-- N° FACTURE -->
           <template #item.invoiceNumber="{ item }">
@@ -371,6 +372,7 @@
                 density="compact"
                 min-width="200"
               >
+                <!-- Pas de suppression : une facture est un document comptable -->
                 <v-list-item
                   prepend-icon="mdi-send-outline"
                   title="Envoyer"
@@ -382,23 +384,15 @@
                   @click="onViewPdfBtnClick(item.id)"
                 />
                 <v-list-item
-                  prepend-icon="mdi-pencil-outline"
-                  title="Modifier"
+                  :prepend-icon="isDraft(item) ? 'mdi-pencil-outline' : 'mdi-eye-outline'"
+                  :title="isDraft(item) ? 'Modifier' : 'Consulter'"
                   @click="onEditInvoice(item.id)"
                 />
-                <v-divider class="my-1" />
                 <v-list-item
+                  v-if="canMarkPaid(item)"
                   prepend-icon="mdi-cash-check"
                   title="Marquer payée"
-                  :disabled="!canMarkPaid(item)"
                   @click="onMarkPaid(item.id)"
-                />
-                <v-divider class="my-1" />
-                <v-list-item
-                  prepend-icon="mdi-delete-outline"
-                  title="Supprimer"
-                  base-color="error"
-                  @click="onDeleteBtnClick(item.id)"
                 />
               </v-list>
             </v-menu>
@@ -416,24 +410,12 @@
   >
     {{ snackbar.message }}
   </v-snackbar>
-
-  <ConfirmDialog
-    ref="deleteInvoiceConfirmDialogRef"
-    title="Supprimer la facture"
-    message="Cette facture sera supprimée définitivement. Continuer ?"
-    confirm-label="Supprimer"
-    cancel-label="Annuler"
-    type="warning"
-    @confirm="onConfirmDeleteInvoice"
-  />
 </template>
 
 <script setup lang="ts">
 import { useInvoicesPageDependencies } from '@/features/invoices/composition/useInvoicesPageDependencies';
 import { OrganizationProfileDto } from '@/features/organizations/application/dtos/OrganizationProfileDto';
 import MainLayout from '@/app/layouts/MainLayout.vue';
-import { ConfirmDialogExposed } from '@/shared/presentation/ui/components/ConfirmDialog';
-import ConfirmDialog from '@/shared/presentation/ui/components/ConfirmDialog.vue';
 import { usePeriodFilter } from '@/shared/presentation/composables/usePeriodFilter';
 import { InvoiceMapper } from '@/features/invoices/presentation/mappers/InvoiceMapper';
 import { LineItemMapper } from '@/features/lineItems/presentation/mappers/LineItemMapper';
@@ -445,7 +427,7 @@ import { useRouter } from 'vue-router';
   const { authState, useInvoiceState, generatePdfUseCase, organizationProfileUseCase, sendInvoiceUseCase } = useInvoicesPageDependencies();
 
 const router = useRouter();
-const { init, invoices, deleteInvoice, markAsPaid } = useInvoiceState;
+const { init, invoices, markAsPaid } = useInvoiceState;
 
 const {
   dateFrom, dateTo, activePreset, datePresets,
@@ -466,8 +448,6 @@ const sentOptions = [
   { title: 'Non envoyées', value: 'notSent' },
 ];
 const _company = ref<OrganizationProfileDto | null>(null);
-const deleteInvoiceConfirmDialogRef = ref<ConfirmDialogExposed>();
-const _invoiceToDelete = ref<string | undefined>();
 
 const snackbar = reactive({ show: false, message: '', color: 'success' });
 const showSnack = (message: string, color = 'success') => {
@@ -483,15 +463,17 @@ const getStatusCode = (status: unknown): string | undefined => {
   return undefined;
 };
 
-const isPaid   = (inv: InvoiceViewModel) => ['finalized','validated','accepted','signed'].includes(getStatusCode(inv.status) ?? '');
+const isDraft  = (inv: InvoiceViewModel) => getStatusCode(inv.status) === 'draft';
+const isPaid   = (inv: InvoiceViewModel) => ['paid','validated','accepted','signed'].includes(getStatusCode(inv.status) ?? '');
 const isCancelled = (inv: InvoiceViewModel) => ['cancel', 'cancelled'].includes(getStatusCode(inv.status) ?? '');
 const isSentUnpaid = (inv: InvoiceViewModel) => inv.isSent && !isPaid(inv);
 const isLate   = (inv: InvoiceViewModel) => {
   if (!inv.isSent || isPaid(inv) || isCancelled(inv) || !inv.sentAt) return false;
   return (Date.now() - new Date(inv.sentAt).getTime()) / 86_400_000 > 30;
 };
-const isPending = (inv: InvoiceViewModel) => !isPaid(inv) && !isCancelled(inv) && !isLate(inv);
-const canMarkPaid = (inv: InvoiceViewModel) => !isPaid(inv) && !isCancelled(inv);
+// Un brouillon n'est pas encore « en attente de paiement »
+const isPending = (inv: InvoiceViewModel) => !isDraft(inv) && !isPaid(inv) && !isCancelled(inv) && !isLate(inv);
+const canMarkPaid = (inv: InvoiceViewModel) => !isDraft(inv) && !isPaid(inv) && !isCancelled(inv);
 const isThisMonth = (inv: InvoiceViewModel) => {
   if (!inv.createdAt) return false;
   const d = new Date(inv.createdAt);
@@ -587,6 +569,7 @@ const techColor = (item: TechSource) => {
 // ─── Chip statut ──────────────────────────────────────────────
 const chipInfo = (item: InvoiceViewModel): { label: string; color: string } => {
   if (isCancelled(item))    return { label: 'Annulée',   color: 'default' };
+  if (isDraft(item))        return { label: 'Brouillon', color: 'default' };
   if (isLate(item))         return { label: 'En retard', color: 'error' };
   if (isPaid(item))         return { label: 'Payée',     color: 'success' };
   return { label: 'En attente', color: 'warning' };
@@ -616,8 +599,8 @@ const tableHeaders = [
   { title: 'DATE',         key: 'createdAt',     sortable: true  },
   { title: 'TECHNICIEN',   key: 'technician',    sortable: false },
   { title: 'MONTANT TTC',  key: 'total',         align: 'end' as const, sortable: true },
-  { title: 'STATUT',       key: 'status',        sortable: false },
   { title: 'ENVOYÉE',      key: 'sentAt',        sortable: false },
+  { title: 'STATUT',       key: 'status',        sortable: false },
   { title: '',             key: 'actions',       sortable: false },
 ];
 
@@ -625,8 +608,11 @@ const tableHeaders = [
 const onAddInvoice     = () => router.push('/invoices/new');
 const onEditInvoice    = (id?: string) => id && router.push(`/invoices/edit/${id}`);
 const onViewPdfBtnClick= (id?: string) => id && router.push(`/invoices/view/${id}`);
-const onDeleteBtnClick = (id?: string) => { if (!id) return; _invoiceToDelete.value = id; deleteInvoiceConfirmDialogRef.value?.open(); };
-const onConfirmDeleteInvoice = () => { if (_invoiceToDelete.value) deleteInvoice(_invoiceToDelete.value); };
+// Clic sur une ligne : ouvre la page de consultation de la facture (sauf clic sur checkbox / bouton / lien)
+const onRowClick = (_e: Event, { item }: { item: InvoiceViewModel }) => {
+  if ((_e.target as HTMLElement).closest('.v-selection-control, button, a')) return;
+  onEditInvoice(item.id);
+};
 
 const onMarkPaid = async (id?: string) => {
   if (!id) return;

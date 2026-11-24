@@ -53,11 +53,13 @@ export function createUseQuotesState(deps: UseQuotesStateDependencies) {
     loading.value = true;
     error.value = null;
     try {
-      await sendQuoteUseCase.execute(quoteId);
+      const status = await sendQuoteUseCase.execute(quoteId);
       const quote = _quotes.value.find(q => q.id === quoteId);
       if (quote) {
         quote.isSent = true;
         quote.sentAt = new Date();
+        quote.status_id = status.id;
+        quote.status = { ...(quote.status ?? {}), ...status } as QuoteViewModel['status'];
       }
     } catch (e) {
       error.value = e;

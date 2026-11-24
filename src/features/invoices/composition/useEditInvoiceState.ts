@@ -14,6 +14,7 @@ import { IGetDocumentStatusUseCase } from '@/features/documentStatuses/applicati
 import { ICalculateLineCostUseCase } from '@/features/costCalculation/application/useCases/CalculateLineCostUseCase';
 import { IAddInvoiceLineItemUseCase } from '@/features/invoices/application/useCases/AddInvoiceLineItemUseCase';
 import { IDeleteLineItemUseCase } from '@/features/lineItems/application/useCases/DeleteLineItemUseCase';
+import { IUpdateInvoiceLineItemUseCase } from '@/features/invoices/application/useCases/UpdateInvoiceLineItemUseCase';
 import { container } from '@/app/di/container';
 import { SYMBOLS } from '@/app/di/tokens';
 import { createUseEditInvoiceState } from '@/features/invoices/presentation/composables/useEditInvoiceState';
@@ -36,5 +37,6 @@ export function useEditInvoiceState() {
     calculateLineCostUseCase: container.get<ICalculateLineCostUseCase>(SYMBOLS.UseCases.CostCalculator.CalculateLineCostUseCase),
     addInvoiceDetailsUseCase: container.get<IAddInvoiceLineItemUseCase>(SYMBOLS.UseCases.Invoice.AddLineItemUseCase),
     deleteLineItemUseCase: container.get<IDeleteLineItemUseCase>(SYMBOLS.UseCases.Quote.DeleteLineItemUseCase),
+    updateLineItemUseCase: container.get<IUpdateInvoiceLineItemUseCase>(SYMBOLS.UseCases.Invoice.UpdateLineItemUseCase),
   });
 }

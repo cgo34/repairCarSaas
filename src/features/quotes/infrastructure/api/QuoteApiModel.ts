@@ -128,6 +128,10 @@ export interface QuoteApiModel {
 
   convert_to_invoice?: boolean;
 
+  accepted_at?: string | null;
+
+  converted_at?: string | null;
+
   /**
    * ============================================================
    * SNAPSHOT GARAGE

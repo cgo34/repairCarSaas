@@ -12,7 +12,9 @@ import { ISettingPriceUseCase } from '@/features/priceSettings/application/useCa
 import { IUpdateQuoteUseCase } from '@/features/quotes/application/useCases/UpdateQuoteUseCase';
 import { ICalculateLineCostUseCase } from '@/features/costCalculation/application/useCases/CalculateLineCostUseCase';
 import { IAddQuoteLineItemUseCase } from '@/features/quotes/application/useCases/AddQuoteLineItemUseCase';
+import { IUpdateQuoteLineItemUseCase } from '@/features/quotes/application/useCases/UpdateQuoteLineItemUseCase';
 import { IDeleteLineItemUseCase } from '@/features/lineItems/application/useCases/DeleteLineItemUseCase';
+import { ISendQuoteUseCase } from '@/features/quotes/application/useCases/SendQuoteUseCase';
 import { IDuplicateQuoteToInvoiceUseCase } from '@/features/quotes/application/useCases/DuplicateQuoteToInvoiceUseCase';
 import { container } from '@/app/di/container';
 import { SYMBOLS } from '@/app/di/tokens';
@@ -35,6 +37,8 @@ export function useEditQuoteState() {
     calculateLineCostUseCase: container.get<ICalculateLineCostUseCase>(SYMBOLS.UseCases.CostCalculator.CalculateLineCostUseCase),
     addQuoteDetailsUseCase: container.get<IAddQuoteLineItemUseCase>(SYMBOLS.UseCases.Quote.AddLineItemUseCase),
     deleteLineItemUseCase: container.get<IDeleteLineItemUseCase>(SYMBOLS.UseCases.Quote.DeleteLineItemUseCase),
+    updateLineItemUseCase: container.get<IUpdateQuoteLineItemUseCase>(SYMBOLS.UseCases.Quote.UpdateLineItemUseCase),
+    sendQuoteUseCase: container.get<ISendQuoteUseCase>(SYMBOLS.UseCases.Quote.SendQuoteUseCase),
     duplicateQuoteToInvoiceUseCase: container.get<IDuplicateQuoteToInvoiceUseCase>(SYMBOLS.UseCases.Quote.DuplicateQuoteToInvoiceUseCase),
   });
 }

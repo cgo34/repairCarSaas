@@ -129,6 +129,10 @@ export type QuoteViewModel = {
 
   convertToInvoice?: boolean;
 
+  acceptedAt?: Date;
+
+  convertedAt?: Date;
+
   /**
    * ============================================================
    * SNAPSHOT GARAGE

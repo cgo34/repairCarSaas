@@ -7,6 +7,10 @@ import { IEmailService } from '@/shared/application/ports/IEmailService';
 import { IInvoiceRepository } from '@/features/invoices/application/ports/repositories/IInvoiceRepository';
 import { IOrganizationProfileUseCase } from '@/features/organizations/application/useCases/OrganizationProfileUseCase';
 
+import { IGetDocumentStatusUseCase } from '@/features/documentStatuses/application/useCases/GetDocumentStatusUseCase';
+
+export const EMPTY_INVOICE_ERROR = "Ajoutez au moins un élément avant d'envoyer la facture.";
+
 export interface ISendInvoiceUseCase {
   execute(invoiceId: string, company?: OrganizationProfileDto | null): Promise<void>;
 }
@@ -22,6 +26,8 @@ export class SendInvoiceUseCase implements ISendInvoiceUseCase {
     private readonly invoiceRepository: IInvoiceRepository,
 
     private readonly organizationProfileUseCase: IOrganizationProfileUseCase,
+
+    private readonly getDocumentStatusUseCase: IGetDocumentStatusUseCase,
   ) {}
 
   async execute(invoiceId: string, _company?: OrganizationProfileDto | null): Promise<void> {
@@ -29,6 +35,12 @@ export class SendInvoiceUseCase implements ISendInvoiceUseCase {
 
     if (!invoice || !lines) {
       throw new Error('Invoice or invoice details not found');
+    }
+
+    // Une facture vide ne peut pas être envoyée (même règle que pour les devis)
+    const hasItems = invoice.isForfait ? Number(invoice.forfaitAmount ?? 0) > 0 : lines.length > 0;
+    if (!hasItems) {
+      throw new Error(EMPTY_INVOICE_ERROR);
     }
 
     const company = invoice.organization_id
@@ -52,6 +64,13 @@ export class SendInvoiceUseCase implements ISendInvoiceUseCase {
     const pdfBase64 = await this.urlToBase64(pdfUrl);
     await this.emailService.sendInvoiceEmail(recipientEmail, invoice.invoiceNumber, pdfBase64);
     await this.invoiceRepository.markAsSent(invoiceId);
+
+    // L'envoi rend la facture définitive : le brouillon passe « En attente » (de paiement)
+    if (invoice.status?.code === 'draft') {
+      const pendingStatus = await this.getDocumentStatusUseCase.getByCode('pending');
+      if (!pendingStatus?.id) throw new Error('Statut introuvable : pending');
+      await this.invoiceRepository.updateStatus(invoiceId, pendingStatus.id);
+    }
   }
 
   private async urlToBase64(url: string): Promise<string> {

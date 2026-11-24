@@ -998,6 +998,9 @@ export type Database = {
           car_year: number | null
           commission_paid: boolean
           commission_rate: number | null
+          accepted_at: string | null
+          converted_at: string | null
+          convert_to_invoice: boolean
           country: string | null
           created_at: string
           created_by_member_id: string
@@ -1020,7 +1023,6 @@ export type Database = {
           organization_id: string
           quote_number: string | null
           sent_at: string | null
-          convert_to_invoice: boolean
           start_date: string | null
           status_id: string | null
           total_ht: number | null
@@ -1034,6 +1036,9 @@ export type Database = {
           car_year?: number | null
           commission_paid?: boolean
           commission_rate?: number | null
+          accepted_at?: string | null
+          converted_at?: string | null
+          convert_to_invoice?: boolean
           country?: string | null
           created_at?: string
           created_by_member_id: string
@@ -1056,7 +1061,6 @@ export type Database = {
           organization_id: string
           quote_number?: string | null
           sent_at?: string | null
-          convert_to_invoice?: boolean
           start_date?: string | null
           status_id?: string | null
           total_ht?: number | null
@@ -1070,6 +1074,9 @@ export type Database = {
           car_year?: number | null
           commission_paid?: boolean
           commission_rate?: number | null
+          accepted_at?: string | null
+          converted_at?: string | null
+          convert_to_invoice?: boolean
           country?: string | null
           created_at?: string
           created_by_member_id?: string
@@ -1092,7 +1099,6 @@ export type Database = {
           organization_id?: string
           quote_number?: string | null
           sent_at?: string | null
-          convert_to_invoice?: boolean
           start_date?: string | null
           status_id?: string | null
           total_ht?: number | null

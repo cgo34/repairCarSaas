@@ -41,8 +41,9 @@ export function createUseAdminDashboardState(deps: UseAdminDashboardStateDepende
   const totalQuotes = computed(() => _quotes.value.length);
   const totalQuotesHt = computed(() => fmt(sumHt(_quotes.value)));
 
-  const quotesProcessing = computed(() => _quotes.value.filter(q => q.status?.code === 'processing').length);
-  const quotesProcessingHt = computed(() => fmt(sumHt(_quotes.value.filter(q => q.status?.code === 'processing'))));
+  const OPEN_QUOTE_CODES = ['draft', 'pending'];
+  const quotesProcessing = computed(() => _quotes.value.filter(q => OPEN_QUOTE_CODES.includes(q.status?.code ?? '')).length);
+  const quotesProcessingHt = computed(() => fmt(sumHt(_quotes.value.filter(q => OPEN_QUOTE_CODES.includes(q.status?.code ?? '')))));
 
   const quotesFinalized = computed(() => _quotes.value.filter(q => q.status?.code === 'finalized').length);
   const quotesFinalizedHt = computed(() => fmt(sumHt(_quotes.value.filter(q => q.status?.code === 'finalized'))));
@@ -88,11 +89,11 @@ export function createUseAdminDashboardState(deps: UseAdminDashboardStateDepende
   const invoicedQuoteIds = computed(() => new Set(_invoices.value.map(i => i.quote_id).filter(Boolean)));
   const openQuotes = computed(() =>
     _quotes.value.filter(q =>
-      ['processing', 'accepted'].includes(q.status?.code ?? '') && !invoicedQuoteIds.value.has(q.id)
+      [...OPEN_QUOTE_CODES, 'accepted'].includes(q.status?.code ?? '') && !invoicedQuoteIds.value.has(q.id)
     )
   );
   const openQuotesAmount = computed(() => sumHt(openQuotes.value));
-  const openQuotesProcessingCount = computed(() => openQuotes.value.filter(q => q.status?.code === 'processing').length);
+  const openQuotesProcessingCount = computed(() => openQuotes.value.filter(q => OPEN_QUOTE_CODES.includes(q.status?.code ?? '')).length);
   const openQuotesAcceptedCount = computed(() => openQuotes.value.filter(q => q.status?.code === 'accepted').length);
 
   // -- organization card

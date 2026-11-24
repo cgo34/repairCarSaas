@@ -1,15 +1,35 @@
 <template>
   <GenericDialog
     ref="genericDialogRef"
-    title="Ajouter un élément"
     persistent
-    :max-width="600"
+    :max-width="560"
   >
     <template #default>
-      <v-form ref="form">
-        <v-container>
-          <!-- Ligne 1 : Élément de carrosserie -->
-          <v-row>
+      <div class="dialog-header">
+        <div class="dialog-icon">
+          <v-icon
+            color="primary"
+            size="22"
+          >
+            {{ editingId ? 'mdi-pencil-outline' : 'mdi-car-wrench' }}
+          </v-icon>
+        </div>
+        <div>
+          <div class="dialog-title">
+            {{ dialogTitle }}
+          </div>
+          <div class="dialog-subtitle">
+            Renseigne les détails de la réparation
+          </div>
+        </div>
+      </div>
+      <v-form
+        ref="form"
+        class="add-dialog-form"
+      >
+        <v-container class="pa-0">
+          <!-- Ligne 1 : Élément de carrosserie (masqué si l'élément est déjà choisi) -->
+          <v-row v-if="!lockedBodyPart">
             <v-col cols="12">
               <BodyPartSelect
                 :model-value="line.bodyPart"
@@ -80,11 +100,21 @@
     </template>
 
     <template #actions>
-      <v-btn @click="onCancelBtnClick()">
+      <v-spacer />
+      <v-btn
+        variant="outlined"
+        height="40"
+        class="px-5"
+        @click="onCancelBtnClick()"
+      >
         Annuler
       </v-btn>
       <v-btn
         color="primary"
+        variant="flat"
+        height="40"
+        class="px-6"
+        prepend-icon="mdi-check"
         @click="onAddBtnClick()"
       >
         Valider
@@ -94,7 +124,8 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, reactive, ref } from 'vue'
+import { computed, onMounted, reactive, ref } from 'vue'
+import type { BodyPartViewModel } from '@/features/carRepairSettings/presentation/models/BodyPartViewModel'
 
 import BodyMaterialSelect from '@/features/carRepairSettings/presentation/components/BodyMaterialSelect.vue'
 import BodyPartSelect from '@/features/carRepairSettings/presentation/components/BodyPartSelect.vue'
@@ -119,6 +150,12 @@ const emit = defineEmits<AddLineItemDialogEmits>()
 //#region -> REFS
 const genericDialogRef = ref<GenericDialogExposed>()
 const form = ref()
+const editingId = ref<string | undefined>()
+const lockedBodyPart = ref<BodyPartViewModel | undefined>()
+const dialogTitle = computed(() => {
+  const action = editingId.value ? 'Modifier' : 'Ajouter'
+  return lockedBodyPart.value ? `${action} : ${lockedBodyPart.value.name}` : `${action} un élément`
+})
 //#endregion
 
 //#region -> DATA
@@ -142,13 +179,37 @@ const onCancelBtnClick = (): void => {
 const onAddBtnClick = (): void => {
   // TODO: (GCE) -> COMPUTE PRICE HERE WITH computePrice METHOD
   close()
+  if (editingId.value) {
+    emit('update', {
+      ...line,
+      id: editingId.value,
+      impactCount25: Number(line.impactCount25 ?? 0),
+      impactCount35: Number(line.impactCount35 ?? 0),
+      dentRemovalPrice: Number(line.dentRemovalPrice ?? 0),
+    })
+    return
+  }
   emit('add', line)
 }
 //#endregion
 
 //#region -> METHODS
-const open = (): void => {
+const open = (item?: LineItemViewModel, bodyPart?: BodyPartViewModel): void => {
   resetForm()
+  if (bodyPart) {
+    lockedBodyPart.value = bodyPart
+    line.bodyPart = bodyPart
+  }
+  if (item) {
+    editingId.value = item.id
+    line.bodyPart = item.bodyPart
+    line.impactCount25 = item.impactCount25
+    line.impactCount35 = item.impactCount35
+    line.bodyMaterial = item.bodyMaterial
+    line.repairType = item.repairType
+    line.dentRemovalPrice = item.dentRemovalPrice
+    line.price = item.price
+  }
   genericDialogRef.value?.open()
 }
 
@@ -157,6 +218,8 @@ const close = (): void => {
 }
 
 const resetForm = () => {
+  editingId.value = undefined
+  lockedBodyPart.value = undefined
   line.bodyPart = undefined
   line.impactCount25 = undefined
   line.impactCount35 = undefined
@@ -177,3 +240,46 @@ defineExpose({
 })
 //#endregion
 </script>
+
+<style scoped>
+.dialog-header {
+display: flex;
+align-items: center;
+gap: 14px;
+padding-bottom: 16px;
+margin-bottom: 20px;
+border-bottom: 1px solid rgba(var(--v-theme-on-surface), 0.1);
+}
+
+.dialog-icon {
+width: 44px;
+height: 44px;
+border-radius: 12px;
+background: rgba(var(--v-theme-primary), 0.1);
+display: flex;
+align-items: center;
+justify-content: center;
+flex-shrink: 0;
+}
+
+.dialog-title {
+font-size: 18px;
+font-weight: 700;
+line-height: 1.2;
+}
+
+.dialog-subtitle {
+font-size: 13px;
+color: rgba(var(--v-theme-on-surface), 0.6);
+margin-top: 2px;
+}
+
+.add-dialog-form :deep(.v-field) {
+border-radius: 12px;
+background: rgba(var(--v-theme-on-surface), 0.05);
+}
+
+.add-dialog-form :deep(.v-field--focused) {
+background: rgb(var(--v-theme-surface));
+}
+</style>
