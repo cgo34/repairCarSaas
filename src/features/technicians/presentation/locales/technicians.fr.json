@@ -1,0 +1,58 @@
+{
+  "technicians": {
+    "detail": {
+      "back": "Retour",
+      "active": "Actif",
+      "blocked": "Bloqué",
+      "block": "Bloquer",
+      "unblock": "Débloquer",
+      "quotes": "Devis",
+      "invoices": "Factures",
+      "searchPlaceholder": "Rechercher un numéro, un véhicule…",
+      "empty": "Aucun document",
+      "paid": "Payé",
+      "pending": "En attente",
+      "saveRate": "Enregistrer le taux",
+      "assignedGarages": "Garages assignés",
+      "assign": "Assigner",
+      "remove": "Retirer",
+      "noGarage": "Aucun garage assigné.",
+      "thisMember": "ce membre",
+      "filters": {
+        "all": "Tous les paiements"
+      },
+      "table": {
+        "quoteNumber": "N° Devis",
+        "invoiceNumber": "N° Facture",
+        "vehicle": "Véhicule",
+        "date": "Date",
+        "amountHt": "Montant HT",
+        "commissionRate": "Commission %",
+        "payment": "Paiement",
+        "actions": "Actions"
+      },
+      "stats": {
+        "quotesInProgress": "Devis en cours",
+        "invoices": "Factures",
+        "commissionDue": "Commission due",
+        "commissionPaid": "Commission payée"
+      },
+      "blockTitle": "Bloquer le membre",
+      "unblockTitle": "Débloquer le membre",
+      "blockMessage": "{name} n'aura plus accès à l'application. Continuer ?",
+      "unblockMessage": "{name} retrouvera l'accès à l'application. Continuer ?",
+      "removeTitle": "Retirer le garage",
+      "removeMessage": "Le garage {name} ne sera plus assigné à ce membre. Continuer ?",
+      "messages": {
+        "assignError": "Erreur lors de l'assignation des garages.",
+        "unblocked": "Technicien débloqué avec succès.",
+        "blocked": "Technicien bloqué avec succès.",
+        "statusError": "Erreur lors de la modification du statut."
+      }
+    },
+    "assignDialog": {
+      "title": "Assigner des garages",
+      "select": "Sélectionner des garages"
+    }
+  }
+}

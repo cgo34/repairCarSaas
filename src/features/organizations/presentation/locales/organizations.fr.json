@@ -2,6 +2,77 @@
   "organizations": {
     "breadcrumb": {
       "profile": "Organisation"
+    },
+    "members": {
+      "title": "Membres",
+      "subtitle": "Gérez les membres de votre organisation",
+      "add": "Ajouter un membre",
+      "searchPlaceholder": "Rechercher un nom, un email…",
+      "empty": "Aucun membre",
+      "manageSubscription": "Gérer l'abonnement",
+      "seatLimit": "Limite d'utilisateurs atteinte ({used} / {limit}). Passez à un abonnement supérieur pour ajouter des membres.",
+      "form": {
+        "firstName": "Prénom",
+        "lastName": "Nom",
+        "email": "Email",
+        "role": "Rôle",
+        "commission": "Commission (%)"
+      },
+      "table": {
+        "member": "Membre",
+        "commission": "Commission",
+        "status": "Statut"
+      },
+      "roles": {
+        "technician": "Technicien",
+        "manager": "Manager",
+        "admin": "Admin"
+      },
+      "status": {
+        "active": "Actif",
+        "pending": "En attente",
+        "blocked": "Bloqué",
+        "archived": "Archivé"
+      },
+      "filters": {
+        "allStatuses": "Tous les statuts",
+        "allRoles": "Tous les rôles"
+      },
+      "stats": {
+        "members": "Membres",
+        "active": "Actifs",
+        "blocked": "Bloqués",
+        "avgCommission": "Commission moyenne"
+      },
+      "actions": {
+        "label": "Actions",
+        "edit": "Modifier",
+        "assignGarages": "Assigner des garages",
+        "block": "Bloquer",
+        "unblock": "Débloquer",
+        "delete": "Supprimer"
+      },
+      "dialog": {
+        "edit": "Modifier le membre",
+        "new": "Nouveau membre"
+      },
+      "block": {
+        "blockTitle": "Bloquer le membre",
+        "unblockTitle": "Débloquer le membre",
+        "blockMessage": "{name} n'aura plus accès à l'application. Continuer ?",
+        "unblockMessage": "{name} retrouvera l'accès à l'application. Continuer ?"
+      },
+      "delete": {
+        "title": "Supprimer le membre",
+        "message": "Êtes-vous sûr de vouloir supprimer \"{name}\" ?"
+      },
+      "messages": {
+        "error": "Une erreur est survenue.",
+        "loadGaragesError": "Impossible de charger les garages assignés.",
+        "garagesAssigned": "Garages assignés.",
+        "assignError": "Erreur lors de l'assignation des garages.",
+        "seatLimit": "Limite d'utilisateurs de l'abonnement atteinte"
+      }
     }
   }
 }

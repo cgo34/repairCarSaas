@@ -5,7 +5,7 @@
   >
     <v-card>
       <v-card-title class="text-subtitle-1 font-weight-bold pa-4 pb-2">
-        Assigner des garages
+        {{ t('technicians.assignDialog.title') }}
       </v-card-title>
       <v-card-subtitle class="px-4 pb-3 text-medium-emphasis">
         {{ technicianName }}
@@ -18,7 +18,7 @@
           :items="availableGarages"
           item-title="name"
           item-value="id"
-          label="Sélectionner des garages"
+          :label="t('technicians.assignDialog.select')"
           variant="outlined"
           density="comfortable"
           multiple
@@ -35,7 +35,7 @@
           variant="text"
           @click="dialog = false"
         >
-          Annuler
+          {{ t('common.cancel') }}
         </v-btn>
         <v-btn
           color="primary"
@@ -43,7 +43,7 @@
           :disabled="!selectedGarageIds.length"
           @click="onAssign"
         >
-          Assigner<template v-if="selectedGarageIds.length > 1">
+          {{ t('technicians.detail.assign') }}<template v-if="selectedGarageIds.length > 1">
             ({{ selectedGarageIds.length }})
           </template>
         </v-btn>
@@ -54,7 +54,10 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { GarageDto } from '@/features/garages/application/dtos/GarageDto';
+
+const { t } = useI18n();
 
 const props = defineProps<{
   modelValue: boolean;

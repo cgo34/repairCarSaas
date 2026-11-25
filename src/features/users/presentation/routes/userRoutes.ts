@@ -1,5 +1,6 @@
 import OrganizationMembersPage from '@/features/organizations/presentation/views/OrganizationMemberPage.vue';
 import OrganizationMembersDetailPage from '@/features/technicians/presentation/views/TechnicianDetailPage.vue';
+import { memberDetailGuard } from '@/app/router/guards/members/memberGuards';
 import { RouteRecordRaw } from 'vue-router';
 
 export const usersRoutes: RouteRecordRaw[] = [
@@ -50,9 +51,10 @@ export const usersRoutes: RouteRecordRaw[] = [
   // },
   // TODO: (GCE) -> move page to organization members module
   {
-    path: '/organization/members/:id',
+    path: '/organization/members/detail',
     name: 'TechnicianDetail',
     component: OrganizationMembersDetailPage,
+    beforeEnter: memberDetailGuard,
     meta: {
       requiresAuth: true,
       breadcrumb: [

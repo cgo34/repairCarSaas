@@ -1,3 +1,78 @@
 {
-  "organizations": { "breadcrumb": { "profile": "Organization" } }
+  "organizations": {
+    "breadcrumb": {
+      "profile": "Organization"
+    },
+    "members": {
+      "title": "Members",
+      "subtitle": "Manage your organization’s members",
+      "add": "Add member",
+      "searchPlaceholder": "Search by name or email…",
+      "empty": "No members",
+      "manageSubscription": "Manage subscription",
+      "seatLimit": "User limit reached ({used} / {limit}). Upgrade your subscription to add more members.",
+      "form": {
+        "firstName": "First name",
+        "lastName": "Last name",
+        "email": "Email",
+        "role": "Role",
+        "commission": "Commission (%)"
+      },
+      "table": {
+        "member": "Member",
+        "commission": "Commission",
+        "status": "Status"
+      },
+      "roles": {
+        "technician": "Technician",
+        "manager": "Manager",
+        "admin": "Admin"
+      },
+      "status": {
+        "active": "Active",
+        "pending": "Pending",
+        "blocked": "Blocked",
+        "archived": "Archived"
+      },
+      "filters": {
+        "allStatuses": "All statuses",
+        "allRoles": "All roles"
+      },
+      "stats": {
+        "members": "Members",
+        "active": "Active",
+        "blocked": "Blocked",
+        "avgCommission": "Average commission"
+      },
+      "actions": {
+        "label": "Actions",
+        "edit": "Edit",
+        "assignGarages": "Assign garages",
+        "block": "Block",
+        "unblock": "Unblock",
+        "delete": "Delete"
+      },
+      "dialog": {
+        "edit": "Edit member",
+        "new": "New member"
+      },
+      "block": {
+        "blockTitle": "Block member",
+        "unblockTitle": "Unblock member",
+        "blockMessage": "{name} will no longer have access to the application. Continue?",
+        "unblockMessage": "{name} will regain access to the application. Continue?"
+      },
+      "delete": {
+        "title": "Delete member",
+        "message": "Are you sure you want to delete \"{name}\"?"
+      },
+      "messages": {
+        "error": "An error occurred.",
+        "loadGaragesError": "Unable to load assigned garages.",
+        "garagesAssigned": "Garages assigned.",
+        "assignError": "Error while assigning garages.",
+        "seatLimit": "Subscription user limit reached"
+      }
+    }
+  }
 }

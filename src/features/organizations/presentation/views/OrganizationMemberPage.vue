@@ -10,10 +10,10 @@
       <div class="d-flex align-center mb-4">
         <div>
           <div class="text-h5 font-weight-bold">
-            Membres
+            {{ t('organizations.members.title') }}
           </div>
           <div class="text-body-2 text-medium-emphasis">
-            Gérez les membres de votre organisation
+            {{ t('organizations.members.subtitle') }}
           </div>
         </div>
         <v-spacer />
@@ -28,7 +28,7 @@
               :disabled="seatLimitReached"
               v-bind="props"
             >
-              Ajouter un membre
+              {{ t('organizations.members.add') }}
             </v-btn>
           </template>
           <v-card>
@@ -41,19 +41,19 @@
                   <v-col cols="6">
                     <v-text-field
                       v-model="selectedMemberForm.first_name"
-                      label="Prénom"
+                      :label="t('organizations.members.form.firstName')"
                     />
                   </v-col>
                   <v-col cols="6">
                     <v-text-field
                       v-model="selectedMemberForm.last_name"
-                      label="Nom"
+                      :label="t('organizations.members.form.lastName')"
                     />
                   </v-col>
                   <v-col cols="12">
                     <v-text-field
                       v-model="selectedMemberForm.email"
-                      label="Email"
+                      :label="t('organizations.members.form.email')"
                     />
                   </v-col>
                   <v-col
@@ -65,7 +65,7 @@
                       :items="roleOptions"
                       item-title="label"
                       item-value="value"
-                      label="Rôle"
+                      :label="t('organizations.members.form.role')"
                     />
                   </v-col>
                   <v-col
@@ -74,7 +74,7 @@
                   >
                     <v-text-field
                       v-model.number="selectedMemberForm.percentage_commission"
-                      label="Commission (%)"
+                      :label="t('organizations.members.form.commission')"
                       type="number"
                       min="0"
                       max="100"
@@ -91,14 +91,14 @@
                 variant="text"
                 @click="onCloseEditDialogBtnClick"
               >
-                Annuler
+                {{ t('common.cancel') }}
               </v-btn>
               <v-btn
                 color="blue-darken-1"
                 variant="text"
                 @click="onSaveEditDialogBtnClick"
               >
-                Sauvegarder
+                {{ t('common.save') }}
               </v-btn>
             </v-card-actions>
           </v-card>
@@ -112,14 +112,14 @@
         density="compact"
         class="mb-4"
       >
-        Limite d'utilisateurs atteinte ({{ members.length }} / {{ seatsLimit }}). Passez à un abonnement supérieur pour ajouter des membres.
+        {{ t('organizations.members.seatLimit', { used: members.length, limit: seatsLimit }) }}
         <template #append>
           <v-btn
             size="small"
             variant="text"
             to="/subscription"
           >
-            Gérer l'abonnement
+            {{ t('organizations.members.manageSubscription') }}
           </v-btn>
         </template>
       </v-alert>
@@ -172,7 +172,7 @@
           <v-text-field
             v-model="search"
             prepend-inner-icon="mdi-magnify"
-            placeholder="Rechercher un nom, un email…"
+            :placeholder="t('organizations.members.searchPlaceholder')"
             density="compact"
             variant="outlined"
             hide-details
@@ -202,8 +202,8 @@
           :items="filteredMembers"
           :sort-by="[{ key: 'users.first_name', order: 'asc' }]"
           :row-props="{ style: 'cursor: pointer;' }"
-          items-per-page-text="Lignes par page"
-          no-data-text="Aucun membre"
+          :items-per-page-text="t('common.table.itemsPerPage')"
+          :no-data-text="t('organizations.members.empty')"
           hover
           @click:row="onRowClick"
         >
@@ -264,7 +264,7 @@
                     icon
                     size="small"
                     variant="text"
-                    aria-label="Actions"
+                    :aria-label="t('organizations.members.actions.label')"
                     v-bind="props"
                   >
                     <v-icon>mdi-dots-vertical</v-icon>
@@ -276,24 +276,24 @@
                 >
                   <v-list-item
                     prepend-icon="mdi-pencil-outline"
-                    title="Modifier"
+                    :title="t('organizations.members.actions.edit')"
                     @click="onEditBtnClick(item)"
                   />
                   <v-list-item
                     prepend-icon="mdi-office-building-plus-outline"
-                    title="Assigner des garages"
+                    :title="t('organizations.members.actions.assignGarages')"
                     @click="onAssignGaragesBtnClick(item)"
                   />
                   <v-divider class="my-1" />
                   <v-list-item
                     :prepend-icon="item.users?.isBlocked ? 'mdi-lock-open-outline' : 'mdi-lock-outline'"
-                    :title="item.users?.isBlocked ? 'Débloquer' : 'Bloquer'"
+                    :title="item.users?.isBlocked ? t('organizations.members.actions.unblock') : t('organizations.members.actions.block')"
                     :base-color="item.users?.isBlocked ? 'success' : 'warning'"
                     @click="onToggleBlockBtnClick(item)"
                   />
                   <v-list-item
                     prepend-icon="mdi-delete-outline"
-                    title="Supprimer"
+                    :title="t('organizations.members.actions.delete')"
                     base-color="error"
                     @click="onDeleteBtnClick(item)"
                   />
@@ -318,7 +318,7 @@
         :title="confirmState.title"
         :message="confirmState.message"
         :confirm-label="confirmState.confirmLabel"
-        cancel-label="Annuler"
+        :cancel-label="t('common.cancel')"
         type="warning"
         @confirm="onConfirmAction"
         @cancel="pendingAction = null"
@@ -346,10 +346,13 @@ import ConfirmDialog from '@/shared/presentation/ui/components/ConfirmDialog.vue
 import type { ConfirmDialogExposed } from '@/shared/presentation/ui/components/ConfirmDialog';
 import AssignGarageDialog from '@/features/technicians/presentation/components/AssignGarageDialog.vue';
 import { computed, onMounted, reactive, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { setSelectedMemberId } from '@/features/technicians/presentation/utils/memberSelection';
 
 // Injection du state depuis Inversify
   const { useOrganizationMember, authState, subscriptionState } = useOrganizationMemberPageDependencies();
 const { isFreePlan } = authState
+const { t, te } = useI18n();
 
 
 const {
@@ -382,19 +385,19 @@ const search = ref<string | null>('');
 const roleFilter = ref<string>('all');
 const statusFilter = ref<string>('all');
 
-const roleLabels: Record<string, string> = {
-  technician: 'Technicien',
-  manager: 'Manager',
-  admin: 'Admin',
-};
+const roleLabels = computed<Record<string, string>>(() => ({
+  technician: t('organizations.members.roles.technician'),
+  manager: t('organizations.members.roles.manager'),
+  admin: t('organizations.members.roles.admin'),
+}));
 
-const statusFilterOptions = [
-  { title: 'Tous les statuts', value: 'all' },
-  { title: 'Actif', value: 'active' },
-  { title: 'En attente', value: 'pending' },
-  { title: 'Bloqué', value: 'blocked' },
-  { title: 'Archivé', value: 'archived' },
-];
+const statusFilterOptions = computed(() => [
+  { title: t('organizations.members.filters.allStatuses'), value: 'all' },
+  { title: t('organizations.members.status.active'), value: 'active' },
+  { title: t('organizations.members.status.pending'), value: 'pending' },
+  { title: t('organizations.members.status.blocked'), value: 'blocked' },
+  { title: t('organizations.members.status.archived'), value: 'archived' },
+]);
 
 const memberName = (m: OrganizationMemberViewModel) =>
   `${m.users?.first_name ?? ''} ${m.users?.last_name ?? ''}`.trim() || m.users?.email || '—';
@@ -403,8 +406,8 @@ const initials = (m: OrganizationMemberViewModel) =>
   `${m.users?.first_name?.[0] ?? ''}${m.users?.last_name?.[0] ?? ''}`.toUpperCase() || '?';
 
 const memberStatus = (m: OrganizationMemberViewModel) => {
-  if (m.users?.isBlocked) return { key: 'blocked', label: 'bloqué', color: 'error' };
-  return { key: m.status, label: m.status, color: getStatusColor(m.status) };
+  if (m.users?.isBlocked) return { key: 'blocked', label: t('organizations.members.status.blocked'), color: 'error' };
+  return { key: m.status, label: te(`organizations.members.status.${m.status}`) ? t(`organizations.members.status.${m.status}`) : m.status, color: getStatusColor(m.status) };
 };
 
 const filteredMembers = computed(() => {
@@ -425,30 +428,30 @@ const statCards = computed(() => {
     ? list.reduce((sum, m) => sum + (m.percentage_commission || 0), 0) / list.length
     : 0;
   return [
-    { label: 'Membres', value: list.length, icon: 'mdi-account-group-outline', color: 'primary' },
-    { label: 'Actifs', value: active, icon: 'mdi-check-circle-outline', color: 'success' },
-    { label: 'Bloqués', value: blocked, icon: 'mdi-lock-outline', color: 'error' },
-    { label: 'Commission moyenne', value: `${Math.round(avg * 10) / 10} %`, icon: 'mdi-percent-outline', color: 'warning' },
+    { label: t('organizations.members.stats.members'), value: list.length, icon: 'mdi-account-group-outline', color: 'primary' },
+    { label: t('organizations.members.stats.active'), value: active, icon: 'mdi-check-circle-outline', color: 'success' },
+    { label: t('organizations.members.stats.blocked'), value: blocked, icon: 'mdi-lock-outline', color: 'error' },
+    { label: t('organizations.members.stats.avgCommission'), value: `${Math.round(avg * 10) / 10} %`, icon: 'mdi-percent-outline', color: 'warning' },
   ];
 });
 
-const headers = [
-  { title: 'Membre', align: 'start', key: 'users.first_name' },
-  { title: 'Email', key: 'users.email' },
-  { title: 'Rôle', key: 'role', sortable: false },
-  { title: 'Commission', key: 'percentage_commission', align: 'end', sortable: false },
-  { title: 'Statut', key: 'status', sortable: false },
+const headers = computed(() => [
+  { title: t('organizations.members.table.member'), align: 'start', key: 'users.first_name' },
+  { title: t('organizations.members.form.email'), key: 'users.email' },
+  { title: t('organizations.members.form.role'), key: 'role', sortable: false },
+  { title: t('organizations.members.table.commission'), key: 'percentage_commission', align: 'end', sortable: false },
+  { title: t('organizations.members.table.status'), key: 'status', sortable: false },
   { title: '', sortable: false, key: 'actions', align: 'end', width: 56 },
-] as const;
+] as const);
 
-const roleOptions = [
-  { label: 'Technicien', value: 'technician' }
-];
+const roleOptions = computed(() => [
+  { label: t('organizations.members.roles.technician'), value: 'technician' },
+]);
 
-const roleLabel = (role?: string) => (role && roleLabels[role]) || role || '—';
+const roleLabel = (role?: string) => (role && roleLabels.value[role]) || role || '—';
 
 const roleFilterOptions = computed(() => [
-  { title: 'Tous les rôles', value: 'all' },
+  { title: t('organizations.members.filters.allRoles'), value: 'all' },
   ...[...new Set(members.value.map(m => m.role))].map(role => ({ title: roleLabel(role), value: role })),
 ]);
 
@@ -475,16 +478,17 @@ const getStatusColor = (status?: string) => {
 
 const formTitle = computed(() =>
   selectedMemberForm.value?.id
-    ? 'Modifier le membre'
-    : 'Nouveau membre'
+    ? t('organizations.members.dialog.edit')
+    : t('organizations.members.dialog.new')
 );
 
 const onRowClick = (_event: Event, { item }: { item: OrganizationMemberViewModel }) => {
-  router.push(`/organization/members/${item.user_id}`);
+  setSelectedMemberId(item.user_id);
+  router.push('/organization/members/detail');
 };
 
 const confirmDialogRef = ref<ConfirmDialogExposed>();
-const confirmState = reactive({ title: '', message: '', confirmLabel: 'Confirmer' });
+const confirmState = reactive({ title: '', message: '', confirmLabel: t('common.confirm') });
 const pendingAction = ref<(() => void | Promise<void>) | null>(null);
 const snackbar = reactive({ show: false, message: '', color: 'success' });
 
@@ -504,7 +508,7 @@ const onConfirmAction = async () => {
   try {
     await action?.();
   } catch {
-    showSnack("Une erreur est survenue.", 'error');
+    showSnack(t('organizations.members.messages.error'), 'error');
   }
 };
 
@@ -512,11 +516,11 @@ const onToggleBlockBtnClick = (item: OrganizationMemberViewModel) => {
   const blocked = !!item.users?.isBlocked;
   const name = memberName(item);
   askConfirmation(
-    blocked ? 'Débloquer le membre' : 'Bloquer le membre',
+    blocked ? t('organizations.members.block.unblockTitle') : t('organizations.members.block.blockTitle'),
     blocked
-      ? `${name} retrouvera l'accès à l'application. Continuer ?`
-      : `${name} n'aura plus accès à l'application. Continuer ?`,
-    blocked ? 'Débloquer' : 'Bloquer',
+      ? t('organizations.members.block.unblockMessage', { name })
+      : t('organizations.members.block.blockMessage', { name }),
+    blocked ? t('organizations.members.actions.unblock') : t('organizations.members.actions.block'),
     () => setMemberBlocked(item.user_id, !blocked),
   );
 };
@@ -533,7 +537,7 @@ const onAssignGaragesBtnClick = async (item: OrganizationMemberViewModel) => {
     assignedGarages.value = garages.value.filter(g => g.id && ids.includes(g.id));
     assignDialog.value = true;
   } catch {
-    showSnack('Impossible de charger les garages assignés.', 'error');
+    showSnack(t('organizations.members.messages.loadGaragesError'), 'error');
   }
 };
 
@@ -543,9 +547,9 @@ const onAssignGarages = async (garageIds: string[]) => {
     for (const id of garageIds) {
       await toggleGarageAccess(assignTarget.value.user_id, id, true);
     }
-    showSnack('Garages assignés.');
+    showSnack(t('organizations.members.messages.garagesAssigned'));
   } catch {
-    showSnack("Erreur lors de l'assignation des garages.", 'error');
+    showSnack(t('organizations.members.messages.assignError'), 'error');
   }
 };
 
@@ -561,7 +565,7 @@ const onCloseEditDialogBtnClick = () => {
 
 const onSaveEditDialogBtnClick = async () => {
   if (selectedMemberForm.value?.id) await updateMember(selectedMemberForm.value);
-  else if (seatLimitReached.value) showSnack('Limite d\'utilisateurs de l\'abonnement atteinte', 'warning');
+  else if (seatLimitReached.value) showSnack(t('organizations.members.messages.seatLimit'), 'warning');
   else await addMember(selectedMemberForm.value);
   dialog.value = false;
 };
@@ -569,9 +573,9 @@ const onSaveEditDialogBtnClick = async () => {
 const onDeleteBtnClick = (item: OrganizationMemberViewModel) => {
   if (!item.id) return;
   askConfirmation(
-    'Supprimer le membre',
-    `Êtes-vous sûr de vouloir supprimer "${memberName(item)}" ?`,
-    'Supprimer',
+    t('organizations.members.delete.title'),
+    t('organizations.members.delete.message', { name: memberName(item) }),
+    t('common.delete'),
     () => archiveMember(item.id),
   );
 };

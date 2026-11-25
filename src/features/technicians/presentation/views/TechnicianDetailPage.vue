@@ -25,7 +25,7 @@
           <v-btn
             icon="mdi-arrow-left"
             variant="text"
-            aria-label="Retour"
+            :aria-label="t('technicians.detail.back')"
             @click="router.back()"
           />
           <v-avatar
@@ -56,7 +56,7 @@
                 variant="tonal"
                 size="small"
               >
-                {{ state.technician.value.isBlocked ? 'Bloqué' : 'Actif' }}
+                {{ state.technician.value.isBlocked ? t('technicians.detail.blocked') : t('technicians.detail.active') }}
               </v-chip>
             </div>
             <p
@@ -77,7 +77,7 @@
             :prepend-icon="state.technician.value.isBlocked ? 'mdi-lock-open' : 'mdi-lock'"
             @click="requestToggleBlock"
           >
-            {{ state.technician.value.isBlocked ? 'Débloquer' : 'Bloquer' }}
+            {{ state.technician.value.isBlocked ? t('technicians.detail.unblock') : t('technicians.detail.block') }}
           </v-btn>
         </v-card>
 
@@ -137,7 +137,7 @@
                 color="primary"
               >
                 <v-tab value="quotes">
-                  Devis
+                  {{ t('technicians.detail.quotes') }}
                   <v-chip
                     size="x-small"
                     class="ml-2"
@@ -146,7 +146,7 @@
                   </v-chip>
                 </v-tab>
                 <v-tab value="invoices">
-                  Factures
+                  {{ t('technicians.detail.invoices') }}
                   <v-chip
                     size="x-small"
                     class="ml-2"
@@ -160,7 +160,7 @@
                 <v-text-field
                   v-model="search"
                   prepend-inner-icon="mdi-magnify"
-                  placeholder="Rechercher un numéro, un véhicule…"
+                  :placeholder="t('technicians.detail.searchPlaceholder')"
                   density="compact"
                   variant="outlined"
                   hide-details
@@ -182,8 +182,8 @@
                 :search="search ?? undefined"
                 item-value="id"
                 :items-per-page="10"
-                items-per-page-text="Lignes par page"
-                no-data-text="Aucun document"
+                :items-per-page-text="t('common.table.itemsPerPage')"
+                :no-data-text="t('technicians.detail.empty')"
                 hover
               >
                 <!-- N° document -->
@@ -246,7 +246,7 @@
                     :color="item.commissionPaid ? 'success' : 'warning'"
                     variant="tonal"
                   >
-                    {{ item.commissionPaid ? 'Payé' : 'En attente' }}
+                    {{ item.commissionPaid ? t('technicians.detail.paid') : t('technicians.detail.pending') }}
                   </v-chip>
                 </template>
 
@@ -261,7 +261,7 @@
                       prepend-icon="mdi-check"
                       @click="markPaid(item)"
                     >
-                      Payé
+                      {{ t('technicians.detail.paid') }}
                     </v-btn>
                     <v-btn
                       size="small"
@@ -274,7 +274,7 @@
                         mdi-content-save
                       </v-icon>
                       <v-tooltip activator="parent">
-                        Enregistrer le taux
+                        {{ t('technicians.detail.saveRate') }}
                       </v-tooltip>
                     </v-btn>
                   </div>
@@ -293,7 +293,7 @@
               class="bg-surface border"
             >
               <v-card-title class="text-subtitle-1 font-weight-bold pa-4 pb-2 d-flex align-center">
-                Garages assignés
+                {{ t('technicians.detail.assignedGarages') }}
                 <v-spacer />
                 <v-btn
                   size="small"
@@ -302,7 +302,7 @@
                   prepend-icon="mdi-plus"
                   @click="garageDialog = true"
                 >
-                  Assigner
+                  {{ t('technicians.detail.assign') }}
                 </v-btn>
               </v-card-title>
               <v-divider />
@@ -339,7 +339,7 @@
                         mdi-close
                       </v-icon>
                       <v-tooltip activator="parent">
-                        Retirer
+                        {{ t('technicians.detail.remove') }}
                       </v-tooltip>
                     </v-btn>
                   </template>
@@ -349,7 +349,7 @@
                 v-else
                 class="text-body-2 text-medium-emphasis pa-4 mb-0"
               >
-                Aucun garage assigné.
+                {{ t('technicians.detail.noGarage') }}
               </p>
             </v-card>
           </v-col>
@@ -379,7 +379,7 @@
         :title="confirmState.title"
         :message="confirmState.message"
         :confirm-label="confirmState.confirmLabel"
-        cancel-label="Annuler"
+        :cancel-label="t('common.cancel')"
         type="warning"
         @confirm="onConfirmAction"
         @cancel="pendingAction = null"
@@ -391,7 +391,10 @@
 <script setup lang="ts">
 import { useTechnicianDetailPageDependencies } from '@/features/technicians/composition/useTechnicianDetailPageDependencies';
 import { computed, onMounted, reactive, ref } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
+import { useI18n } from 'vue-i18n';
+import { formatCurrency as fmtCurrency, formatDate as fmtDate } from '@/app/i18n/formatters';
+import { useRouter } from 'vue-router';
+import { getSelectedMemberId } from '@/features/technicians/presentation/utils/memberSelection';
 import MainLayout from '@/app/layouts/MainLayout.vue';
 import AssignGarageDialog from '@/features/technicians/presentation/components/AssignGarageDialog.vue';
 import ConfirmDialog from '@/shared/presentation/ui/components/ConfirmDialog.vue';
@@ -409,7 +412,7 @@ interface CommissionRow {
   commissionPaid?: boolean;
 }
 
-const route = useRoute();
+const { t } = useI18n();
 const router = useRouter();
 const { state, garageUseCase, authState } = useTechnicianDetailPageDependencies();
 
@@ -421,24 +424,24 @@ const allGarages = ref<GarageDto[]>([]);
 const tab = ref<'quotes' | 'invoices'>('quotes');
 const search = ref<string | null>('');
 const paymentFilter = ref<'all' | 'pending' | 'paid'>('all');
-const paymentOptions = [
-  { title: 'Tous les paiements', value: 'all' },
-  { title: 'En attente', value: 'pending' },
-  { title: 'Payé', value: 'paid' },
-];
+const paymentOptions = computed(() => [
+  { title: t('technicians.detail.filters.all'), value: 'all' },
+  { title: t('technicians.detail.pending'), value: 'pending' },
+  { title: t('technicians.detail.paid'), value: 'paid' },
+]);
 
 // Taux locaux (avant sauvegarde)
 const localRates = ref<Record<string, number>>({});
 
 const headers = computed(() => [
-  { title: tab.value === 'quotes' ? 'N° Devis' : 'N° Facture', key: 'number', sortable: true },
-  { title: 'Véhicule', key: 'car', sortable: false },
-  { title: 'Date', key: 'startDate', sortable: true },
-  { title: 'Montant HT', key: 'totalHt', sortable: true },
-  { title: 'Commission %', key: 'commissionRate', sortable: false },
-  { title: 'Commission due', key: 'commissionDue', sortable: false },
-  { title: 'Paiement', key: 'commissionPaid', sortable: false },
-  { title: 'Actions', key: 'actions', sortable: false, align: 'end' as const },
+  { title: tab.value === 'quotes' ? t('technicians.detail.table.quoteNumber') : t('technicians.detail.table.invoiceNumber'), key: 'number', sortable: true },
+  { title: t('technicians.detail.table.vehicle'), key: 'car', sortable: false },
+  { title: t('technicians.detail.table.date'), key: 'startDate', sortable: true },
+  { title: t('technicians.detail.table.amountHt'), key: 'totalHt', sortable: true },
+  { title: t('technicians.detail.table.commissionRate'), key: 'commissionRate', sortable: false },
+  { title: t('technicians.detail.stats.commissionDue'), key: 'commissionDue', sortable: false },
+  { title: t('technicians.detail.table.payment'), key: 'commissionPaid', sortable: false },
+  { title: t('technicians.detail.table.actions'), key: 'actions', sortable: false, align: 'end' as const },
 ]);
 
 const quoteRows = computed<CommissionRow[]>(() =>
@@ -481,10 +484,10 @@ const paidCommission = computed(() =>
 );
 
 const statCards = computed(() => [
-  { label: 'Devis en cours', value: state.stats.value?.quotesInProgress ?? '—', icon: 'mdi-file-document-outline', color: 'primary' },
-  { label: 'Factures', value: state.stats.value?.invoicesCount ?? '—', icon: 'mdi-receipt-text-outline', color: 'info' },
-  { label: 'Commission due', value: formatCurrency(state.stats.value?.commissionDue), icon: 'mdi-currency-eur', color: 'success' },
-  { label: 'Commission payée', value: formatCurrency(paidCommission.value), icon: 'mdi-check-circle-outline', color: 'warning' },
+  { label: t('technicians.detail.stats.quotesInProgress'), value: state.stats.value?.quotesInProgress ?? '—', icon: 'mdi-file-document-outline', color: 'primary' },
+  { label: t('technicians.detail.stats.invoices'), value: state.stats.value?.invoicesCount ?? '—', icon: 'mdi-receipt-text-outline', color: 'info' },
+  { label: t('technicians.detail.stats.commissionDue'), value: formatCurrency(state.stats.value?.commissionDue), icon: 'mdi-currency-eur', color: 'success' },
+  { label: t('technicians.detail.stats.commissionPaid'), value: formatCurrency(paidCommission.value), icon: 'mdi-check-circle-outline', color: 'warning' },
 ]);
 
 function displayName(t: { full_name?: string; first_name?: string; last_name?: string } | null): string {
@@ -499,12 +502,12 @@ function initials(name: string) {
 
 function formatCurrency(val?: number) {
   if (val === undefined || val === null) return '—';
-  return new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(val);
+  return fmtCurrency(val);
 }
 
 function formatDate(date?: string) {
   if (!date) return '—';
-  return new Date(date).toLocaleDateString('fr-FR');
+  return fmtDate(date);
 }
 
 // Taux effectif : local override > commissionRate du document > base technicien
@@ -541,7 +544,7 @@ async function markPaid(row: CommissionRow) {
 }
 
 const confirmDialogRef = ref<ConfirmDialogExposed>();
-const confirmState = reactive({ title: '', message: '', confirmLabel: 'Confirmer' });
+const confirmState = reactive({ title: '', message: '', confirmLabel: t('common.confirm') });
 const pendingAction = ref<(() => void | Promise<void>) | null>(null);
 
 function askConfirmation(title: string, message: string, confirmLabel: string, action: () => void | Promise<void>) {
@@ -562,25 +565,25 @@ async function assignGarages(garageIds: string[]) {
       await state.assignGarage(garageId);
     }
   } catch {
-    showSnack("Erreur lors de l'assignation des garages.", 'error');
+    showSnack(t('technicians.detail.messages.assignError'), 'error');
   }
 }
 
 function requestToggleBlock() {
-  const name = displayName(state.technician.value) || (state.technician.value?.email ?? 'ce membre');
+  const name = displayName(state.technician.value) || (state.technician.value?.email ?? t('technicians.detail.thisMember'));
   if (state.technician.value?.isBlocked) {
-    askConfirmation('Débloquer le membre', `${name} retrouvera l'accès à l'application. Continuer ?`, 'Débloquer', toggleBlock);
+    askConfirmation(t('technicians.detail.unblockTitle'), t('technicians.detail.unblockMessage', { name }), t('technicians.detail.unblock'), toggleBlock);
   } else {
-    askConfirmation('Bloquer le membre', `${name} n'aura plus accès à l'application. Continuer ?`, 'Bloquer', toggleBlock);
+    askConfirmation(t('technicians.detail.blockTitle'), t('technicians.detail.blockMessage', { name }), t('technicians.detail.block'), toggleBlock);
   }
 }
 
 function requestRemoveGarage(garageId: string) {
   const garage = state.assignedGarages.value.find(g => g.id === garageId);
   askConfirmation(
-    'Retirer le garage',
-    `Le garage ${garage?.name ?? ''} ne sera plus assigné à ce membre. Continuer ?`,
-    'Retirer',
+    t('technicians.detail.removeTitle'),
+    t('technicians.detail.removeMessage', { name: garage?.name ?? '' }),
+    t('technicians.detail.remove'),
     () => state.removeGarage(garageId),
   );
 }
@@ -589,18 +592,18 @@ async function toggleBlock() {
   try {
     if (state.technician.value?.isBlocked) {
       await state.unblockTechnician();
-      showSnack('Technicien débloqué avec succès.');
+      showSnack(t('technicians.detail.messages.unblocked'));
     } else {
       await state.blockTechnician();
-      showSnack('Technicien bloqué avec succès.');
+      showSnack(t('technicians.detail.messages.blocked'));
     }
   } catch {
-    showSnack('Erreur lors de la modification du statut.', 'error');
+    showSnack(t('technicians.detail.messages.statusError'), 'error');
   }
 }
 
 onMounted(async () => {
-  const id = route.params.id as string;
+  const id = getSelectedMemberId() ?? '';
   const organizationId = authState.userContext.value?.organization.id ?? '';
   const [, garages] = await Promise.all([
     state.init(id),
