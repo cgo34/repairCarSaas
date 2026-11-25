@@ -131,6 +131,19 @@ export class AuthSupabaseRepository implements IAuthRepository {
     if (error) throw new Error(`Error updating email in auth.users: ${error.message}`);
   }
 
+  async changePassword(currentPassword: string, newPassword: string): Promise<void> {
+    const auth = this.clientProvider.getClient().auth;
+    const { data: authData } = await auth.getUser();
+    const email = authData?.user?.email;
+    if (!email) throw new Error('INVALID_SESSION');
+
+    const { error: verifyError } = await auth.signInWithPassword({ email, password: currentPassword });
+    if (verifyError) throw new Error('INVALID_CURRENT_PASSWORD');
+
+    const { error } = await auth.updateUser({ password: newPassword });
+    if (error) throw new Error(error.message);
+  }
+
   async deleteUser(userId: string): Promise<void> {
     const { error } = await this.clientProvider.getClient().functions.invoke('delete-user', {
       body: { userId },

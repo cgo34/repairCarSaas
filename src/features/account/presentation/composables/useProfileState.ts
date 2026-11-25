@@ -89,11 +89,16 @@ export function createUseProfileState(deps: UseProfileStateDependencies): IUsePr
     }
   };
 
+  const changePassword = async (currentPassword: string, newPassword: string): Promise<void> => {
+    await authService.changePassword(currentPassword, newPassword);
+  };
+
   return {
     profile: computed(() => _profile.value),
     loading,
     error,
     init,
     save,
+    changePassword,
   };
 }

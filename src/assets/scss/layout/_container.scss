@@ -3,7 +3,7 @@ html {
 }
 
 .page-wrapper {
-  min-height: calc(100vh - 70px);
+  min-height: calc(100vh - 60px);
   padding: 10px 24px 20px;
   background: rgb(var(--v-theme-containerBg));
 }
@@ -111,8 +111,8 @@ body {
   }
 
   .page-wrapper {
-    min-height: calc(100dvh - 70px);
-    padding: 70px 16px calc(64px + env(safe-area-inset-bottom));
+    min-height: calc(100dvh - 60px);
+    padding: 60px 16px calc(64px + env(safe-area-inset-bottom));
     background: rgb(var(--v-theme-containerBg));
   }
 

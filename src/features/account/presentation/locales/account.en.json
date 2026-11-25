@@ -9,7 +9,28 @@
       "identity": "Identity",
       "firstName": "First name",
       "lastName": "Last name",
-      "email": "Email address"
+      "fullName": "Display name",
+      "phone": "Phone",
+      "email": "Email address",
+      "emailReadonly": "The email address cannot be changed here."
+    },
+    "security": {
+      "title": "Security",
+      "currentPassword": "Current password",
+      "newPassword": "New password",
+      "confirmPassword": "Confirm new password",
+      "forgot": "Forgot password? Receive a link by email",
+      "submit": "Change password",
+      "changed": "Password changed",
+      "required": "Required field",
+      "tooShort": "At least 8 characters, with an uppercase letter, a digit and a special character",
+      "mismatch": "Passwords do not match",
+      "invalidCurrent": "Current password is incorrect",
+      "strength": {
+        "weak": "Weak",
+        "medium": "Medium",
+        "strong": "Strong"
+      }
     }
   }
 }

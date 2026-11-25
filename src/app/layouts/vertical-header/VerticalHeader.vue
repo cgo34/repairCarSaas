@@ -2,8 +2,8 @@
   <v-app-bar
     flat
     color="rgb(var(--v-theme-containerBg))"
-    height="70"
-    scroll-threshold="70"
+    height="60"
+    scroll-threshold="60"
     scroll-behavior="hide"
     class="px-6"
     style="--v-toolbar-background: transparent;"

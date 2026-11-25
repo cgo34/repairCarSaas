@@ -9,7 +9,28 @@
       "identity": "Identité",
       "firstName": "Prénom",
       "lastName": "Nom",
-      "email": "Adresse e-mail"
+      "fullName": "Nom d'affichage",
+      "phone": "Téléphone",
+      "email": "Adresse e-mail",
+      "emailReadonly": "L'adresse e-mail ne peut pas être modifiée ici."
+    },
+    "security": {
+      "title": "Sécurité",
+      "currentPassword": "Mot de passe actuel",
+      "newPassword": "Nouveau mot de passe",
+      "confirmPassword": "Confirmer le nouveau mot de passe",
+      "forgot": "Mot de passe oublié ? Recevoir un lien par e-mail",
+      "submit": "Modifier le mot de passe",
+      "changed": "Mot de passe modifié",
+      "required": "Champ requis",
+      "tooShort": "8 caractères minimum, avec une majuscule, un chiffre et un caractère spécial",
+      "mismatch": "Les mots de passe ne correspondent pas",
+      "invalidCurrent": "Mot de passe actuel incorrect",
+      "strength": {
+        "weak": "Faible",
+        "medium": "Moyen",
+        "strong": "Fort"
+      }
     }
   }
 }

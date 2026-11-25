@@ -6,6 +6,7 @@ export type UserDto = {
   email: string;
   full_name?: string;
   fullName?: string;
+  phone?: string | null;
   first_name?: string;
   firstName?: string;
   last_name?: string;
