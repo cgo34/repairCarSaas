@@ -1,5 +1,8 @@
 <script setup>
+import { useI18n } from 'vue-i18n';
 import Icon from '@/app/layouts/vertical-sidebar/IconSet.vue';
+
+const { t, te } = useI18n();
 
 const props = defineProps({
   item: { type: Object, default: undefined },
@@ -25,7 +28,7 @@ const props = defineProps({
         :level="props.level"
       />
     </template>
-    <v-list-item-title>{{ item.title }}</v-list-item-title>
+    <v-list-item-title>{{ $t(item.title) }}</v-list-item-title>
     <!---If Caption-->
     <v-list-item-subtitle
       v-if="item.subCaption"
@@ -45,7 +48,7 @@ const props = defineProps({
         :variant="item.chipVariant"
         :prepend-icon="item.chipIcon"
       >
-        {{ item.chip }}
+        {{ te(item.chip) ? t(item.chip) : item.chip }}
       </v-chip>
     </template>
   </v-list-item>

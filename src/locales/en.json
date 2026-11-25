@@ -2,6 +2,23 @@
   "common": {
     "home": "Dashboard",
     "back": "Back",
+    "nav": {
+      "dashboard": "Dashboard",
+      "hail": "Hail weather",
+      "activity": "Activity",
+      "quotes": "Quotes",
+      "invoices": "Invoices",
+      "organization": "Organization",
+      "garages": "Garages",
+      "members": "Users",
+      "settings": "Settings",
+      "organizationSettings": "Organization",
+      "pricing": "Pricing",
+      "subscription": "Subscription",
+      "premium": "Premium",
+      "home": "Home",
+      "weather": "Weather"
+    },
     "menu": {
       "account": "My account",
       "darkTheme": "Dark theme",

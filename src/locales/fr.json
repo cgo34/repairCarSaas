@@ -2,6 +2,23 @@
   "common": {
     "home": "Tableau de bord",
     "back": "Retour",
+    "nav": {
+      "dashboard": "Tableau de bord",
+      "hail": "Météo grêle",
+      "activity": "Activité",
+      "quotes": "Devis",
+      "invoices": "Factures",
+      "organization": "Organisation",
+      "garages": "Garages",
+      "members": "Utilisateurs",
+      "settings": "Paramètres",
+      "organizationSettings": "Organisation",
+      "pricing": "Tarification",
+      "subscription": "Abonnement",
+      "premium": "Premium",
+      "home": "Accueil",
+      "weather": "Météo"
+    },
     "menu": {
       "account": "Mon compte",
       "darkTheme": "Thème sombre",

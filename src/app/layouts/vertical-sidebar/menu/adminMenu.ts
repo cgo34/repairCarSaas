@@ -28,7 +28,7 @@ export const adminMenu: MenuItem[] = [
   // Dashboard
   // ─────────────────────────────────────────────────────────
   {
-    title: 'Tableau de bord',
+    title: 'common.nav.dashboard',
     icon: DashboardIcon,
     to: '/dashboard',
   },
@@ -37,7 +37,7 @@ export const adminMenu: MenuItem[] = [
   // Surveillance grêle
   // ─────────────────────────────────────────────────────────
   {
-    title: 'Météo grêle',
+    title: 'common.nav.hail',
     icon: CloudStormIcon,
     to: '/weather',
   },
@@ -50,7 +50,7 @@ export const adminMenu: MenuItem[] = [
   // Activité
   // ─────────────────────────────────────────────────────────
   {
-    header: 'Activité',
+    header: 'common.nav.activity',
     roles: ['admin'],
   },
 
@@ -58,7 +58,7 @@ export const adminMenu: MenuItem[] = [
   // Devis
   // ─────────────────────────────────────────────────────────
   {
-    title: 'Devis',
+    title: 'common.nav.quotes',
     icon: FileInvoiceIcon,
     to: '/quotes',
   },
@@ -67,7 +67,7 @@ export const adminMenu: MenuItem[] = [
   // Factures
   // ─────────────────────────────────────────────────────────
   {
-    title: 'Factures',
+    title: 'common.nav.invoices',
     icon: FileEuroIcon,
     to: '/invoices',
   },
@@ -80,22 +80,22 @@ export const adminMenu: MenuItem[] = [
   // Organisation
   // ─────────────────────────────────────────────────────────
   {
-    header: 'Organisation',
+    header: 'common.nav.organization',
     roles: ['admin'],
   },
 
   {
-    title: 'Garages',
+    title: 'common.nav.garages',
     icon: BuildingCommunityIcon,
     to: '/organization/garages',
-    chip: isFreePlan ? 'Premium' : '',
+    chip: isFreePlan ? 'common.nav.premium' : '',
   },
 
   {
-    title: 'Utilisateurs',
+    title: 'common.nav.members',
     icon: UserIcon,
     to: '/organization/members',
-    chip: isFreePlan ? 'Premium' : '',
+    chip: isFreePlan ? 'common.nav.premium' : '',
     roles: ['admin'],
   },
 
@@ -107,26 +107,26 @@ export const adminMenu: MenuItem[] = [
   // Paramètres
   // ─────────────────────────────────────────────────────────
   {
-    header: 'Paramètres',
+    header: 'common.nav.settings',
     roles: ['admin'],
   },
 
   {
-    title: 'Organisation',
+    title: 'common.nav.organizationSettings',
     icon: SettingsIcon,
     to: '/organization/profile',
     roles: ['admin'],
   },
 
   {
-    title: 'Tarification',
+    title: 'common.nav.pricing',
     icon: SettingsDollarIcon,
     to: '/organization/pricing',
     roles: ['admin'],
   },
 
   {
-    title: 'Abonnement',
+    title: 'common.nav.subscription',
     icon: CreditCardIcon,
     to: '/subscription',
     roles: ['admin'],

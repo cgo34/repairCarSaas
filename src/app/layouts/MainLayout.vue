@@ -70,14 +70,14 @@
             to="/dashboard"
           >
             <v-icon>mdi-view-dashboard-outline</v-icon>
-            <span>Accueil</span>
+            <span>{{ $t('common.nav.home') }}</span>
           </v-btn>
           <v-btn
             value="quotes"
             to="/quotes"
           >
             <v-icon>mdi-file-document-outline</v-icon>
-            <span>Devis</span>
+            <span>{{ $t('common.nav.quotes') }}</span>
           </v-btn>
           <v-btn
             value="new-quote"
@@ -93,7 +93,7 @@
             to="/invoices"
           >
             <v-icon>mdi-receipt-outline</v-icon>
-            <span>Factures</span>
+            <span>{{ $t('common.nav.invoices') }}</span>
           </v-btn>
           <v-btn
             value="weather"
@@ -110,7 +110,7 @@
             <v-icon v-else>
               mdi-weather-hail
             </v-icon>
-            <span>Météo</span>
+            <span>{{ $t('common.nav.weather') }}</span>
           </v-btn>
         </v-bottom-navigation>
       </v-main>
