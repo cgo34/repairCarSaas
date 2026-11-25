@@ -2,6 +2,14 @@
   "account": {
     "breadcrumb": {
       "profile": "Mon profil"
+    },
+    "profile": {
+      "title": "Mon profil",
+      "subtitle": "Vos informations personnelles.",
+      "identity": "Identité",
+      "firstName": "Prénom",
+      "lastName": "Nom",
+      "email": "Adresse e-mail"
     }
   }
 }

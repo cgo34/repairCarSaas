@@ -7,6 +7,12 @@
       "darkTheme": "Thème sombre",
       "language": "Langue",
       "logout": "Déconnexion"
-    }
+    },
+    "save": "Enregistrer",
+    "saved": "Enregistré",
+    "cancel": "Annuler",
+    "reset": "Réinitialiser",
+    "required": "Champ obligatoire",
+    "invalidEmail": "Email invalide"
   }
 }

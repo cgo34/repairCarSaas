@@ -1,3 +1,15 @@
 {
-  "account": { "breadcrumb": { "profile": "My profile" } }
+  "account": {
+    "breadcrumb": {
+      "profile": "My profile"
+    },
+    "profile": {
+      "title": "My profile",
+      "subtitle": "Your personal information.",
+      "identity": "Identity",
+      "firstName": "First name",
+      "lastName": "Last name",
+      "email": "Email address"
+    }
+  }
 }

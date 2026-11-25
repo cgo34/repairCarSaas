@@ -7,6 +7,12 @@
       "darkTheme": "Dark theme",
       "language": "Language",
       "logout": "Log out"
-    }
+    },
+    "save": "Save",
+    "saved": "Saved",
+    "cancel": "Cancel",
+    "reset": "Reset",
+    "required": "Required field",
+    "invalidEmail": "Invalid email"
   }
 }

@@ -9,10 +9,10 @@
       <div class="d-flex align-center gap-3 mb-6">
         <div>
           <h1 class="text-h5 font-weight-bold mb-1">
-            Mon profil
+            {{ t('account.profile.title') }}
           </h1>
           <p class="text-body-2 text-medium-emphasis mb-0">
-            Vos informations personnelles.
+            {{ t('account.profile.subtitle') }}
           </p>
         </div>
         <v-spacer />
@@ -22,7 +22,7 @@
           variant="tonal"
           prepend-icon="mdi-check"
         >
-          Enregistré
+          {{ t('common.saved') }}
         </v-chip>
       </div>
 
@@ -49,7 +49,7 @@
           variant="outlined"
         >
           <v-card-title class="text-subtitle-1 font-weight-semibold pa-4 pb-2">
-            Identité
+            {{ t('account.profile.identity') }}
           </v-card-title>
           <v-card-text class="pa-4 pt-2">
             <v-row dense>
@@ -59,7 +59,7 @@
               >
                 <v-text-field
                   v-model="form.firstName"
-                  label="Prénom"
+                  :label="t('account.profile.firstName')"
                   variant="outlined"
                   density="comfortable"
                   clearable
@@ -71,7 +71,7 @@
               >
                 <v-text-field
                   v-model="form.lastName"
-                  label="Nom"
+                  :label="t('account.profile.lastName')"
                   variant="outlined"
                   density="comfortable"
                   clearable
@@ -80,7 +80,7 @@
               <v-col cols="12">
                 <v-text-field
                   v-model="form.email"
-                  label="Adresse e-mail"
+                  :label="t('account.profile.email')"
                   type="email"
                   variant="outlined"
                   density="comfortable"
@@ -97,7 +97,7 @@
             variant="text"
             @click="resetForm"
           >
-            Annuler
+            {{ t('common.cancel') }}
           </v-btn>
           <v-btn
             type="submit"
@@ -105,7 +105,7 @@
             variant="flat"
             :loading="profileState.loading.value"
           >
-            Enregistrer
+            {{ t('common.save') }}
           </v-btn>
         </div>
       </v-form>
@@ -116,9 +116,11 @@
 <script setup lang="ts">
 import { useUserSettingsPageDependencies } from '@/features/account/composition/useUserSettingsPageDependencies';
 import { onMounted, reactive, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 import MainLayout from '@/app/layouts/MainLayout.vue';
 
-  const { authState, profileState } = useUserSettingsPageDependencies();
+const { t } = useI18n();
+const { authState, profileState } = useUserSettingsPageDependencies();
 
 const formRef = ref();
 const saved = ref(false);
@@ -130,7 +132,7 @@ const form = reactive({
 });
 
 const rules = {
-  email: (v: string) => !v || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) || 'Email invalide',
+  email: (v: string) => !v || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) || t('common.invalidEmail'),
 };
 
 function syncForm() {
