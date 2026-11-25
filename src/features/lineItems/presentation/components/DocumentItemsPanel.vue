@@ -32,13 +32,13 @@
           value="list"
           prepend-icon="mdi-format-list-bulleted"
         >
-          Vue éléments
+          {{ t('lineItems.view.list') }}
         </v-btn>
         <v-btn
           value="car"
           prepend-icon="mdi-car-side"
         >
-          Vue voiture
+          {{ t('lineItems.view.car') }}
         </v-btn>
       </v-btn-toggle>
     </div>
@@ -64,10 +64,10 @@
         >
           <div class="min-w-0">
             <div class="part-name">
-              {{ row.bodyPart.name }}
+              {{ bodyPartLabel(row.bodyPart) }}
             </div>
             <div class="part-sub">
-              {{ row.line ? lineSubtitle(row.line) : 'Non ajouté' }}
+              {{ row.line ? lineSubtitle(row.line) : t('lineItems.notAdded') }}
             </div>
           </div>
           <template v-if="row.line">
@@ -112,10 +112,10 @@
         v-if="partRows.length === 0"
         class="text-center py-6 text-medium-emphasis text-body-2"
       >
-        Aucun élément de carrosserie n'est configuré.
+        {{ t('lineItems.noBodyParts') }}
       </div>
       <div class="text-caption text-medium-emphasis mt-3">
-        Clique sur un élément pour l'ajouter. Les éléments déjà ajoutés sont en bleu ; clique dessus pour les modifier.
+        {{ t('lineItems.listHint') }}
       </div>
     </template>
 
@@ -127,7 +127,7 @@
       <div class="car">
         <img
           :src="carImage"
-          alt="Voiture vue de dessus"
+          :alt="t('lineItems.carAlt')"
         >
         <div
           v-for="row in positionedRows"
@@ -135,12 +135,12 @@
           class="dot"
           :class="{ on: !!row.line, disabled: !canEdit }"
           :style="{ left: row.position!.x + '%', top: row.position!.y + '%' }"
-          :title="row.bodyPart.name"
+          :title="bodyPartLabel(row.bodyPart)"
           @click="onPartClick(row)"
         >
           <template v-if="row.line">
             {{ Math.round(row.line.price ?? 0) }}
-            <small v-if="row.line.repairType">{{ row.line.repairType.code || row.line.repairType.name }}</small>
+            <small v-if="row.line.repairType">{{ repairTypeLabel(row.line.repairType) }}</small>
           </template>
           <template v-else>
             +
@@ -149,7 +149,7 @@
       </div>
       <div class="car-side">
         <div class="text-subtitle-2 font-weight-bold mb-2">
-          Éléments ajoutés
+          {{ t('lineItems.added') }}
         </div>
         <div
           v-for="line in lines"
@@ -158,7 +158,7 @@
         >
           <div class="min-w-0">
             <div class="part-name">
-              {{ line.bodyPart?.name ?? '—' }}
+              {{ line.bodyPart ? bodyPartLabel(line.bodyPart) : '—' }}
             </div>
             <div class="part-sub">
               {{ lineSubtitle(line) }}
@@ -199,11 +199,11 @@
           v-if="lines.length === 0"
           class="text-caption text-medium-emphasis"
         >
-          Aucun élément pour l'instant.
+          {{ t('lineItems.empty') }}
         </div>
         <template v-if="unpositionedRows.length > 0">
           <div class="text-subtitle-2 font-weight-bold mt-4 mb-2">
-            Autres éléments
+            {{ t('lineItems.others') }}
           </div>
           <div class="d-flex flex-wrap ga-2">
             <v-chip
@@ -214,12 +214,12 @@
               :disabled="!canEdit"
               @click="onPartClick(row)"
             >
-              {{ row.bodyPart.name }}
+              {{ bodyPartLabel(row.bodyPart) }}
             </v-chip>
           </div>
         </template>
         <div class="text-caption text-medium-emphasis mt-3">
-          Clique sur une pastille grise pour ajouter un élément, ou sur une pastille bleue pour le modifier.
+          {{ t('lineItems.carHint') }}
         </div>
       </div>
     </div>
@@ -247,6 +247,8 @@
 // vue éléments / vue voiture + dialogue d'ajout/modification.
 // Il ne connaît ni le devis ni la facture : la persistance passe par les callbacks `onAdd`, `onUpdate` et `onRemove`.
 import { computed, reactive, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { bodyMaterialLabel, bodyPartLabel, repairTypeLabel } from '@/features/carRepairSettings/presentation/utils/carRepairLabels';
 import carImage from '@/assets/images/car-top.png';
 import type { BodyPartViewModel } from '@/features/carRepairSettings/presentation/models/BodyPartViewModel';
 import AddLineItemDialog from '@/features/lineItems/presentation/components/AddLineItemDialog.vue';
@@ -274,6 +276,7 @@ const props = defineProps<{
   onRemove: (lineId: string | undefined) => Promise<void>;
 }>();
 
+const { t } = useI18n();
 const addLineItemDialogRef = ref<AddLineItemDialogExposed>();
 const editedLine = ref<LineItemViewModel>();
 const saving = ref(false);
@@ -286,7 +289,7 @@ const partRows = computed<PartRow[]>(() =>
   props.bodyParts.map(bodyPart => ({
     bodyPart,
     line: props.lines.find(l => l.bodyPart?.id === bodyPart.id),
-    position: getCarPosition(bodyPart.name),
+    position: getCarPosition(bodyPart.code || bodyPart.name),
   })),
 );
 const positionedRows = computed(() => partRows.value.filter(r => r.position));
@@ -304,14 +307,14 @@ const dialogBodyParts = computed(() => {
 const formatPrice = (value?: number) => `${(value ?? 0).toFixed(2).replace('.', ',')} ${props.currency}`;
 
 const lineSubtitle = (line: LineItemViewModel) =>
-  [line.bodyMaterial?.name, line.repairType?.code || line.repairType?.name].filter(Boolean).join(' · ') || 'Ajouté';
+  [line.bodyMaterial && bodyMaterialLabel(line.bodyMaterial), line.repairType && repairTypeLabel(line.repairType)].filter(Boolean).join(' · ') || t('lineItems.added1');
 
 const run = async (action: () => Promise<void>) => {
   saving.value = true;
   try {
     await action();
   } catch {
-    snackbar.message = 'Une erreur est survenue lors de la sauvegarde.';
+    snackbar.message = t('lineItems.saveError');
     snackbar.show = true;
   } finally {
     saving.value = false;

@@ -1,0 +1,29 @@
+{
+  "lineItems": {
+    "view": {
+      "list": "Items view",
+      "car": "Car view"
+    },
+    "notAdded": "Not added",
+    "added1": "Added",
+    "noBodyParts": "No body parts are configured.",
+    "listHint": "Click an item to add it. Items already added are shown in blue; click them to edit.",
+    "carAlt": "Top view of the car",
+    "added": "Added items",
+    "empty": "No items yet.",
+    "others": "Other items",
+    "carHint": "Click a grey dot to add an item, or a blue dot to edit it.",
+    "saveError": "An error occurred while saving.",
+    "dialog": {
+      "subtitle": "Enter the repair details",
+      "impacts25": "Number of impacts Ø25",
+      "impacts35": "Number of impacts Ø35",
+      "strippingAmount": "Stripping amount (€)",
+      "confirm": "Confirm",
+      "add": "Add",
+      "edit": "Edit",
+      "addItem": "Add an item",
+      "editItem": "Edit an item"
+    }
+  }
+}

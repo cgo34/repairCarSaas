@@ -19,7 +19,7 @@
             {{ dialogTitle }}
           </div>
           <div class="dialog-subtitle">
-            Renseigne les détails de la réparation
+            {{ t('lineItems.dialog.subtitle') }}
           </div>
         </div>
       </div>
@@ -44,7 +44,7 @@
             <v-col cols="6">
               <v-text-field
                 v-model="line.impactCount25"
-                label="Nombre d'impacts Ø25"
+                :label="t('lineItems.dialog.impacts25')"
                 type="number"
                 outlined
                 dense
@@ -53,7 +53,7 @@
             <v-col cols="6">
               <v-text-field
                 v-model="line.impactCount35"
-                label="Nombre d'impacts Ø35"
+                :label="t('lineItems.dialog.impacts35')"
                 type="number"
                 outlined
                 dense
@@ -88,7 +88,7 @@
             <v-col cols="12">
               <v-text-field
                 v-model="line.dentRemovalPrice"
-                label="Montant dégarnissage (€)"
+                :label="t('lineItems.dialog.strippingAmount')"
                 type="number"
                 outlined
                 dense
@@ -107,7 +107,7 @@
         class="px-5"
         @click="onCancelBtnClick()"
       >
-        Annuler
+        {{ t('common.cancel') }}
       </v-btn>
       <v-btn
         color="primary"
@@ -117,7 +117,7 @@
         prepend-icon="mdi-check"
         @click="onAddBtnClick()"
       >
-        Valider
+        {{ t('lineItems.dialog.confirm') }}
       </v-btn>
     </template>
   </GenericDialog>
@@ -125,6 +125,8 @@
 
 <script setup lang="ts">
 import { computed, onMounted, reactive, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { bodyPartLabel } from '@/features/carRepairSettings/presentation/utils/carRepairLabels'
 import type { BodyPartViewModel } from '@/features/carRepairSettings/presentation/models/BodyPartViewModel'
 
 import BodyMaterialSelect from '@/features/carRepairSettings/presentation/components/BodyMaterialSelect.vue'
@@ -136,6 +138,7 @@ import type { GenericDialogExposed } from '@/shared/presentation/ui/components/c
 import { LineItemViewModel } from '@/features/lineItems/presentation/models/LineItemViewModel'
 import { AddLineItemDialogEmits, AddLineItemDialogProps } from './AddLineItemDialog'
 
+const { t } = useI18n()
 const {
   init,
   bodyMaterials,
@@ -153,8 +156,10 @@ const form = ref()
 const editingId = ref<string | undefined>()
 const lockedBodyPart = ref<BodyPartViewModel | undefined>()
 const dialogTitle = computed(() => {
-  const action = editingId.value ? 'Modifier' : 'Ajouter'
-  return lockedBodyPart.value ? `${action} : ${lockedBodyPart.value.name}` : `${action} un élément`
+  const action = t(editingId.value ? 'lineItems.dialog.edit' : 'lineItems.dialog.add')
+  return lockedBodyPart.value
+    ? `${action} : ${bodyPartLabel(lockedBodyPart.value)}`
+    : t(editingId.value ? 'lineItems.dialog.editItem' : 'lineItems.dialog.addItem')
 })
 //#endregion
 

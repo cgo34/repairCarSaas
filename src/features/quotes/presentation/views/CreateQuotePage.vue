@@ -18,7 +18,7 @@
         </v-btn>
         <div class="ml-3">
           <div class="text-h6 font-weight-bold">
-            Nouveau devis
+            {{ t('quotes.list.newQuote') }}
           </div>
           <div
             v-if="quoteInformations.number"
@@ -59,7 +59,7 @@
                     mdi-calendar-outline
                   </v-icon>
                 </div>
-                <span class="text-subtitle-1 font-weight-bold">Dates</span>
+                <span class="text-subtitle-1 font-weight-bold">{{ t('quotes.edit.dates') }}</span>
               </div>
               <v-row dense>
                 <v-col
@@ -68,7 +68,7 @@
                 >
                   <v-text-field
                     v-model="quoteInformations.date"
-                    label="Date de début"
+                    :label="t('quotes.create.startDate')"
                     type="date"
                     variant="outlined"
                     density="comfortable"
@@ -81,7 +81,7 @@
                 >
                   <v-text-field
                     :model-value="expirationDate"
-                    label="Valide jusqu'au"
+                    :label="t('quotes.edit.validUntil')"
                     type="date"
                     variant="outlined"
                     density="comfortable"
@@ -109,7 +109,7 @@
                         mdi-account-wrench-outline
                       </v-icon>
                     </div>
-                    <span class="text-subtitle-1 font-weight-bold">Technicien</span>
+                    <span class="text-subtitle-1 font-weight-bold">{{ t('quotes.view.technician') }}</span>
                   </div>
                   <v-autocomplete
                     :model-value="selectedTechnician"
@@ -117,7 +117,7 @@
                     :item-title="item => `${item.users.first_name} ${item.users.last_name}`"
                     item-value="id"
                     return-object
-                    label="Sélectionner un technicien"
+                    :label="t('quotes.edit.selectTechnician')"
                     variant="outlined"
                     density="comfortable"
                     clearable
@@ -173,7 +173,7 @@
                         mdi-garage
                       </v-icon>
                     </div>
-                    <span class="text-subtitle-1 font-weight-bold">Garage</span>
+                    <span class="text-subtitle-1 font-weight-bold">{{ t('quotes.create.garage') }}</span>
                   </div>
                   <v-autocomplete
                     :model-value="selectedGarage"
@@ -181,7 +181,7 @@
                     item-title="name"
                     item-value="id"
                     return-object
-                    label="Sélectionner un garage"
+                    :label="t('quotes.edit.selectGarage')"
                     variant="outlined"
                     density="comfortable"
                     clearable
@@ -217,10 +217,10 @@
                       prepend-icon="mdi-plus"
                       @click="onEditCustomerBtnClick"
                     >
-                      Nouveau client
+                      {{ t('quotes.create.newClient') }}
                     </v-btn>
                     <span class="text-caption text-medium-emphasis">
-                      Commission {{ commissionRate }} % · {{ selectedCountry?.code || 'FR' }} · TVA {{ selectedCountry?.taxRate ? `${selectedCountry.taxRate} %` : 'non applicable' }}
+                      {{ t('quotes.edit.commission', { rate: commissionRate }) }} · {{ selectedCountry?.code || 'FR' }} · {{ selectedCountry?.taxRate ? t('common.totals.vat', { rate: selectedCountry.taxRate }) : t('quotes.create.vatNotApplicable') }}
                     </span>
                   </div>
                 </div>
@@ -238,7 +238,7 @@
                     mdi-car
                   </v-icon>
                 </div>
-                <span class="text-subtitle-1 font-weight-bold">Informations véhicule</span>
+                <span class="text-subtitle-1 font-weight-bold">{{ t('quotes.create.vehicleInfo') }}</span>
               </div>
               <v-row dense>
                 <v-col
@@ -247,7 +247,7 @@
                 >
                   <v-text-field
                     v-model="carInformations.immatriculation"
-                    label="Immatriculation"
+                    :label="t('quotes.edit.plate')"
                     variant="outlined"
                     density="comfortable"
                     hide-details="auto"
@@ -261,7 +261,7 @@
                 >
                   <v-text-field
                     v-model="carInformations.brand"
-                    label="Marque"
+                    :label="t('quotes.edit.brand')"
                     variant="outlined"
                     density="comfortable"
                     hide-details="auto"
@@ -275,7 +275,7 @@
                 >
                   <v-text-field
                     v-model="carInformations.dateEntryCirculation"
-                    label="Année"
+                    :label="t('quotes.edit.year')"
                     variant="outlined"
                     density="comfortable"
                     hide-details="auto"
@@ -300,7 +300,7 @@
                     mdi-format-list-bulleted
                   </v-icon>
                 </div>
-                <span class="text-subtitle-1 font-weight-bold">Éléments du devis</span>
+                <span class="text-subtitle-1 font-weight-bold">{{ t('quotes.items.title') }}</span>
                 <v-spacer />
                 <v-chip
                   size="x-small"
@@ -312,10 +312,10 @@
               </div>
               <div class="empty-items text-center py-6 text-medium-emphasis">
                 <div class="text-body-2">
-                  Aucun élément pour le moment.
+                  {{ t('quotes.create.noItems') }}
                 </div>
                 <div class="text-body-2">
-                  Créez le devis puis ajoutez les éléments depuis « Gérer les éléments ».
+                  {{ t('quotes.create.noItemsHint') }}
                 </div>
               </div>
             </div>
@@ -338,7 +338,7 @@
                       mdi-flag-outline
                     </v-icon>
                   </div>
-                  <span class="text-subtitle-1 font-weight-bold">Statut du devis</span>
+                  <span class="text-subtitle-1 font-weight-bold">{{ t('quotes.edit.quoteStatus') }}</span>
                   <v-spacer />
                   <v-chip
                     size="small"
@@ -354,10 +354,10 @@
                   prepend-icon="mdi-send-outline"
                   disabled
                 >
-                  Envoyer au garage
+                  {{ t('quotes.edit.sendToGarage') }}
                 </v-btn>
                 <div class="text-caption text-medium-emphasis mt-2">
-                  Créez le devis puis ajoutez au moins un élément avant l'envoi.
+                  {{ t('quotes.create.sendHint') }}
                 </div>
               </div>
 
@@ -372,12 +372,12 @@
                       mdi-tune-variant
                     </v-icon>
                   </div>
-                  <span class="text-subtitle-1 font-weight-bold">Options</span>
+                  <span class="text-subtitle-1 font-weight-bold">{{ t('quotes.edit.options') }}</span>
                 </div>
 
                 <div class="mb-3">
                   <div class="text-caption text-medium-emphasis mb-1 font-weight-medium">
-                    Pays &amp; TVA
+                    {{ t('quotes.edit.countryVat') }}
                   </div>
                   <CountrySelect
                     :model-value="selectedCountry"
@@ -390,10 +390,10 @@
                 <div class="d-flex align-center justify-space-between py-2">
                   <div>
                     <div class="text-body-2 font-weight-medium">
-                      Mode forfait
+                      {{ t('quotes.edit.flatRate') }}
                     </div>
                     <div class="text-caption text-medium-emphasis">
-                      Remplacer les lignes par un montant fixe
+                      {{ t('quotes.edit.flatRateHint') }}
                     </div>
                   </div>
                   <v-switch
@@ -428,10 +428,10 @@
                   <div class="d-flex align-center justify-space-between py-2">
                     <div>
                       <div class="text-body-2 font-weight-medium">
-                        Prix unitaires visibles
+                        {{ t('quotes.edit.unitPrices') }}
                       </div>
                       <div class="text-caption text-medium-emphasis">
-                        Afficher le détail sur le devis
+                        {{ t('quotes.edit.unitPricesHint') }}
                       </div>
                     </div>
                     <v-switch
@@ -446,10 +446,10 @@
                   <div class="d-flex align-center justify-space-between py-2">
                     <div>
                       <div class="text-body-2 font-weight-medium">
-                        Commission hors dégarnissage
+                        {{ t('quotes.edit.commissionExclStripping') }}
                       </div>
                       <div class="text-caption text-medium-emphasis">
-                        Exclure le dégarnissage de la base de commission
+                        {{ t('quotes.edit.commissionExclStrippingHint') }}
                       </div>
                     </div>
                     <v-switch
@@ -474,10 +474,10 @@
                       mdi-calculator-variant-outline
                     </v-icon>
                   </div>
-                  <span class="text-subtitle-1 font-weight-bold">Récapitulatif</span>
+                  <span class="text-subtitle-1 font-weight-bold">{{ t('common.totals.summary') }}</span>
                 </div>
                 <div class="text-caption text-medium-emphasis">
-                  Total TTC
+                  {{ t('common.totals.inclTax') }}
                 </div>
                 <div class="recap-total text-primary">
                   {{ forfaitTotal }}
@@ -486,16 +486,16 @@
 
                 <div class="totals-list">
                   <div class="total-row">
-                    <span class="text-body-2 text-medium-emphasis">Total H.T</span>
+                    <span class="text-body-2 text-medium-emphasis">{{ t('common.totals.exclTax') }}</span>
                     <span class="text-body-2 font-weight-medium">{{ forfaitTotal }}</span>
                   </div>
                   <template v-if="!isForfait">
                     <div class="total-row">
-                      <span class="text-body-2 text-medium-emphasis">Total dégarnissage</span>
+                      <span class="text-body-2 text-medium-emphasis">{{ t('common.totals.totalStripping') }}</span>
                       <span class="text-body-2 font-weight-medium">{{ zero }}</span>
                     </div>
                     <div class="total-row">
-                      <span class="text-body-2 text-medium-emphasis">H.T + Dégarnissage</span>
+                      <span class="text-body-2 text-medium-emphasis">{{ t('common.totals.exclTaxPlusStripping') }}</span>
                       <span class="text-body-2 font-weight-medium">{{ zero }}</span>
                     </div>
                   </template>
@@ -513,7 +513,7 @@
                   <template v-if="commissionRate">
                     <v-divider class="my-2" />
                     <div class="total-row">
-                      <span class="text-body-2 font-weight-bold">Net technicien</span>
+                      <span class="text-body-2 font-weight-bold">{{ t('quotes.edit.technicianNet') }}</span>
                       <span class="text-body-2 font-weight-bold">{{ forfaitTotal }}</span>
                     </div>
                   </template>
@@ -530,7 +530,7 @@
                   prepend-icon="mdi-content-save-outline"
                   @click="onSaveBtnClick"
                 >
-                  Créer le devis
+                  {{ t('quotes.create.submit') }}
                 </v-btn>
                 <v-btn
                   class="d-none d-md-flex mt-2"
@@ -559,7 +559,7 @@
           elevation="0"
           @click="onSaveBtnClick"
         >
-          Créer le devis
+          {{ t('quotes.create.submit') }}
         </v-btn>
       </div>
     </v-container>
@@ -567,7 +567,7 @@
 
   <GarageDialog
     ref="garageDialogRef"
-    title="Nouveau client"
+    :title="t('quotes.create.newClient')"
     persistent
     :max-width="500"
     @validated="onGarageValidated"
@@ -587,9 +587,11 @@ import router from '@/app/router/index';
 import { setSelectedQuoteGuid } from '@/features/quotes/presentation/utils/quoteSelection';
 import { computed, onMounted, ref } from 'vue';
 import { useTheme } from 'vuetify';
+import { useI18n } from 'vue-i18n';
 
 // ─── State ────────────────────────────────────────────────────────────────────
 const { useCreateQuoteState } = useCreateQuotePageDependencies();
+const { t } = useI18n();
 const isDark = computed(() => useTheme().current.value.dark);
 
 const {

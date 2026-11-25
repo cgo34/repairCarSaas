@@ -11,13 +11,13 @@
 
     <template #actions>
       <v-btn @click="onCancelBtnClick()">
-        Annuler
+        {{ t('common.cancel') }}
       </v-btn>
       <v-btn
         color="primary"
         @click="onConfirmBtnClick()"
       >
-        Confirmer
+        {{ t('common.confirm') }}
       </v-btn>
     </template>
   </GenericDialog>
@@ -27,9 +27,11 @@
 import GenericDialog from '@/shared/presentation/ui/components/GenericDialog.vue';
 import type { GenericDialogExposed } from '@/shared/presentation/ui/components/components';
 import { ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { ConfirmDialogEmits, ConfirmDialogProps } from './ConfirmDialog';
 
 const props = defineProps<ConfirmDialogProps>()
+const { t } = useI18n()
 
 //#region -> DEFINES
 const emit = defineEmits<ConfirmDialogEmits>()

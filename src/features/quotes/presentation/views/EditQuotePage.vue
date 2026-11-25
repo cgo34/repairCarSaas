@@ -21,13 +21,13 @@
           </v-btn>
           <div class="ml-3">
             <div class="text-h6 font-weight-bold">
-              Devis n° {{ quoteInformations.number || '' }}
+              {{ t('quotes.view.title', { number: quoteInformations.number || '' }) }}
             </div>
             <div
               v-if="quoteInformations.date"
               class="text-caption text-medium-emphasis"
             >
-              Créé le {{ formatDate(quoteInformations.date) }}
+              {{ t('quotes.view.createdOn', { date: formatDate(quoteInformations.date) }) }}
             </div>
           </div>
           <v-chip
@@ -47,7 +47,7 @@
             variant="tonal"
             prepend-icon="mdi-receipt-text-check-outline"
           >
-            Converti en facture
+            {{ t('quotes.list.converted') }}
           </v-chip>
         </div>
 
@@ -59,7 +59,7 @@
             prepend-icon="mdi-file-pdf-box"
             @click="onViewPdfBtnClick"
           >
-            Voir le PDF
+            {{ t('quotes.items.viewPdf') }}
           </v-btn>
           <v-btn
             v-if="!isReadOnly"
@@ -69,7 +69,7 @@
             prepend-icon="mdi-format-list-bulleted-square"
             @click="onManageItemsBtnClick"
           >
-            Gérer les éléments
+            {{ t('quotes.edit.manageItems') }}
           </v-btn>
         </div>
       </div>
@@ -97,7 +97,7 @@
                     mdi-calendar-outline
                   </v-icon>
                 </div>
-                <span class="text-subtitle-1 font-weight-bold">Dates</span>
+                <span class="text-subtitle-1 font-weight-bold">{{ t('quotes.edit.dates') }}</span>
               </div>
               <v-row dense>
                 <v-col
@@ -106,7 +106,7 @@
                 >
                   <v-text-field
                     v-model="quoteInformations.date"
-                    label="Date de création"
+                    :label="t('quotes.edit.creationDate')"
                     type="date"
                     variant="outlined"
                     density="comfortable"
@@ -120,7 +120,7 @@
                 >
                   <v-text-field
                     :model-value="expirationDate"
-                    label="Valide jusqu'au"
+                    :label="t('quotes.edit.validUntil')"
                     type="date"
                     variant="outlined"
                     density="comfortable"
@@ -148,7 +148,7 @@
                         mdi-account-wrench-outline
                       </v-icon>
                     </div>
-                    <span class="text-subtitle-1 font-weight-bold">Technicien</span>
+                    <span class="text-subtitle-1 font-weight-bold">{{ t('quotes.view.technician') }}</span>
                   </div>
                   <v-autocomplete
                     :model-value="selectedTechnician"
@@ -156,7 +156,7 @@
                     :item-title="item => `${item.users.first_name} ${item.users.last_name}`"
                     item-value="id"
                     return-object
-                    label="Sélectionner un technicien"
+                    :label="t('quotes.edit.selectTechnician')"
                     variant="outlined"
                     density="comfortable"
                     :readonly="isReadOnly"
@@ -212,7 +212,7 @@
                         mdi-garage
                       </v-icon>
                     </div>
-                    <span class="text-subtitle-1 font-weight-bold">Client / Garage</span>
+                    <span class="text-subtitle-1 font-weight-bold">{{ t('quotes.edit.clientGarage') }}</span>
                   </div>
 
                   <v-autocomplete
@@ -221,7 +221,7 @@
                     item-title="name"
                     item-value="id"
                     return-object
-                    label="Sélectionner un garage"
+                    :label="t('quotes.edit.selectGarage')"
                     variant="outlined"
                     density="comfortable"
                     :clearable="!isReadOnly"
@@ -255,7 +255,7 @@
                     v-if="selectedGarage?.percentageCommission"
                     class="text-caption text-medium-emphasis mt-2"
                   >
-                    Commission {{ selectedGarage.percentageCommission }} %
+                    {{ t('quotes.edit.commission', { rate: selectedGarage.percentageCommission }) }}
                   </div>
                 </div>
               </v-col>
@@ -272,7 +272,7 @@
                   mdi-car-outline
                 </v-icon>
               </div>
-              <span class="text-subtitle-1 font-weight-bold">Véhicule</span>
+              <span class="text-subtitle-1 font-weight-bold">{{ t('quotes.view.vehicle') }}</span>
             </div> -->
 
               <!-- <v-autocomplete
@@ -281,7 +281,7 @@
               :item-title="v => v.immatriculation + ' — ' + v.marque + (v.annee ? ' ' + v.annee : '')"
               item-value="id"
               return-object
-              label="Véhicule existant (optionnel)"
+              :label="t('quotes.edit.existingVehicle')"
               variant="outlined"
               density="comfortable"
               clearable
@@ -302,7 +302,7 @@
                     mdi-car
                   </v-icon>
                 </div>
-                <span class="text-subtitle-1 font-weight-bold">Informations véhicule :</span>
+                <span class="text-subtitle-1 font-weight-bold">{{ t('quotes.edit.vehicleInfo') }}</span>
               </div>
 
               <v-row dense>
@@ -312,7 +312,7 @@
                 >
                   <v-text-field
                     v-model="carInformations.immatriculation"
-                    label="Immatriculation"
+                    :label="t('quotes.edit.plate')"
                     variant="outlined"
                     density="comfortable"
                     :readonly="isReadOnly"
@@ -327,7 +327,7 @@
                 >
                   <v-text-field
                     v-model="carInformations.brand"
-                    label="Marque"
+                    :label="t('quotes.edit.brand')"
                     variant="outlined"
                     density="comfortable"
                     :readonly="isReadOnly"
@@ -342,7 +342,7 @@
                 >
                   <v-text-field
                     v-model="carInformations.carYear"
-                    label="Année"
+                    :label="t('quotes.edit.year')"
                     variant="outlined"
                     density="comfortable"
                     :readonly="isReadOnly"
@@ -368,7 +368,7 @@
                     mdi-format-list-bulleted
                   </v-icon>
                 </div>
-                <span class="text-subtitle-1 font-weight-bold">Éléments du devis</span>
+                <span class="text-subtitle-1 font-weight-bold">{{ t('quotes.items.title') }}</span>
                 <v-chip
                   size="x-small"
                   variant="tonal"
@@ -385,7 +385,7 @@
                   prepend-icon="mdi-format-list-bulleted-square"
                   @click="onManageItemsBtnClick"
                 >
-                  Gérer les éléments
+                  {{ t('quotes.edit.manageItems') }}
                 </v-btn>
               </div>
               <div
@@ -425,7 +425,7 @@
                       mdi-traffic-light-outline
                     </v-icon>
                   </div>
-                  <span class="text-subtitle-1 font-weight-bold">Statut du devis</span>
+                  <span class="text-subtitle-1 font-weight-bold">{{ t('quotes.edit.quoteStatus') }}</span>
                   <v-spacer />
                   <v-chip
                     v-if="quoteInformations.status"
@@ -450,13 +450,13 @@
                   </v-icon>
                   <div>
                     <div class="text-body-2 font-weight-bold">
-                      Envoyé le {{ formatSentAt(sentAt) }}
+                      {{ t('quotes.edit.sentOn', { date: formatSentAt(sentAt) }) }}
                     </div>
                     <div
                       v-if="selectedGarage?.name"
                       class="text-caption text-medium-emphasis"
                     >
-                      à {{ selectedGarage.name }}
+                      {{ t('quotes.edit.sentTo', { name: selectedGarage.name }) }}
                     </div>
                   </div>
                 </div>
@@ -469,7 +469,7 @@
                     prepend-icon="mdi-check-circle-outline"
                     @click="onAcceptedBtnClick"
                   >
-                    Marquer accepté
+                    {{ t('quotes.actions.markAccepted') }}
                   </v-btn>
                   <v-btn
                     v-if="canDecide"
@@ -477,7 +477,7 @@
                     prepend-icon="mdi-close-circle-outline"
                     @click="onRefusedBtnClick"
                   >
-                    Marquer refusé
+                    {{ t('quotes.actions.markRefused') }}
                   </v-btn>
                   <v-btn
                     v-if="!isReadOnly && !isFreePlan"
@@ -488,7 +488,7 @@
                     :loading="sending"
                     @click="onSendBtnClick"
                   >
-                    {{ isSent ? 'Renvoyer au garage' : 'Envoyer au garage' }}
+                    {{ t(isSent ? 'quotes.edit.resendToGarage' : 'quotes.edit.sendToGarage') }}
                   </v-btn>
                   <v-btn
                     v-if="isAccepted && !quote?.convertToInvoice"
@@ -497,7 +497,7 @@
                     prepend-icon="mdi-file-plus-outline"
                     @click="onDuplicateQuoteToInvoiceBtnClick"
                   >
-                    Convertir en facture
+                    {{ t('quotes.actions.convertToInvoice') }}
                   </v-btn>
                   <v-btn
                     v-if="canDelete"
@@ -506,20 +506,20 @@
                     prepend-icon="mdi-delete-outline"
                     @click="onDeleteBtnClick"
                   >
-                    Supprimer le devis
+                    {{ t('quotes.delete.title') }}
                   </v-btn>
                 </div>
                 <div
                   v-if="!isReadOnly && !hasItems"
                   class="text-caption text-medium-emphasis mt-2"
                 >
-                  Ajoutez au moins un élément pour pouvoir envoyer le devis.
+                  {{ t('quotes.edit.addAtLeastOne') }}
                 </div>
                 <div
                   v-else-if="isSent && !isReadOnly"
                   class="text-caption text-medium-emphasis mt-2"
                 >
-                  Devis envoyé : suppression impossible. S'il n'est plus d'actualité, marquez-le « Refusé ».
+                  {{ t('quotes.edit.sentNoDelete') }}
                 </div>
               </div>
 
@@ -534,12 +534,12 @@
                       mdi-tune-variant
                     </v-icon>
                   </div>
-                  <span class="text-subtitle-1 font-weight-bold">Options</span>
+                  <span class="text-subtitle-1 font-weight-bold">{{ t('quotes.edit.options') }}</span>
                 </div>
 
                 <div class="mb-3">
                   <div class="text-caption text-medium-emphasis mb-1 font-weight-medium">
-                    Pays &amp; TVA
+                    {{ t('quotes.edit.countryVat') }}
                   </div>
                   <CountrySelect
                     :model-value="selectedCountry"
@@ -554,10 +554,10 @@
                 <div class="d-flex align-center justify-space-between py-2">
                   <div>
                     <div class="text-body-2 font-weight-medium">
-                      Mode forfait
+                      {{ t('quotes.edit.flatRate') }}
                     </div>
                     <div class="text-caption text-medium-emphasis">
-                      Remplacer les lignes par un montant fixe
+                      {{ t('quotes.edit.flatRateHint') }}
                     </div>
                   </div>
                   <v-switch
@@ -577,7 +577,7 @@
                   >
                     <v-text-field
                       :model-value="forfaitAmount"
-                      label="Montant du forfait (€)"
+                      :label="t('quotes.edit.flatRateAmount')"
                       type="number"
                       variant="outlined"
                       density="comfortable"
@@ -594,10 +594,10 @@
                   <div class="d-flex align-center justify-space-between py-2">
                     <div>
                       <div class="text-body-2 font-weight-medium">
-                        Prix unitaires visibles
+                        {{ t('quotes.edit.unitPrices') }}
                       </div>
                       <div class="text-caption text-medium-emphasis">
-                        Afficher le détail sur le devis
+                        {{ t('quotes.edit.unitPricesHint') }}
                       </div>
                     </div>
                     <v-switch
@@ -614,10 +614,10 @@
                   <div class="d-flex align-center justify-space-between py-2">
                     <div>
                       <div class="text-body-2 font-weight-medium">
-                        Commission hors dégarnissage
+                        {{ t('quotes.edit.commissionExclStripping') }}
                       </div>
                       <div class="text-caption text-medium-emphasis">
-                        Exclure le dégarnissage de la base de commission
+                        {{ t('quotes.edit.commissionExclStrippingHint') }}
                       </div>
                     </div>
                     <v-switch
@@ -643,11 +643,11 @@
                       mdi-calculator-variant-outline
                     </v-icon>
                   </div>
-                  <span class="text-subtitle-1 font-weight-bold">Récapitulatif</span>
+                  <span class="text-subtitle-1 font-weight-bold">{{ t('common.totals.summary') }}</span>
                 </div>
 
                 <div class="text-caption text-medium-emphasis">
-                  Total TTC
+                  {{ t('common.totals.inclTax') }}
                 </div>
                 <div class="recap-total text-primary">
                   {{ regionManager.formatNumber(total) }} {{ selectedCountry?.currencySymbol || '€' }}
@@ -656,20 +656,20 @@
 
                 <div class="totals-list">
                   <div class="total-row">
-                    <span class="text-body-2 text-medium-emphasis">Total H.T</span>
+                    <span class="text-body-2 text-medium-emphasis">{{ t('common.totals.exclTax') }}</span>
                     <span class="text-body-2 font-weight-medium">
                       {{ regionManager.formatNumber(subtotal) }} {{ selectedCountry?.currencySymbol || '€' }}
                     </span>
                   </div>
                   <template v-if="!isForfait">
                     <div class="total-row">
-                      <span class="text-body-2 text-medium-emphasis">Total dégarnissage</span>
+                      <span class="text-body-2 text-medium-emphasis">{{ t('common.totals.totalStripping') }}</span>
                       <span class="text-body-2 font-weight-medium">
                         {{ regionManager.formatNumber(totalDegarnissage) }} {{ selectedCountry?.currencySymbol || '€' }}
                       </span>
                     </div>
                     <div class="total-row">
-                      <span class="text-body-2 text-medium-emphasis">H.T + Dégarnissage</span>
+                      <span class="text-body-2 text-medium-emphasis">{{ t('common.totals.exclTaxPlusStripping') }}</span>
                       <span class="text-body-2 font-weight-medium">
                         {{ regionManager.formatNumber(subTotalWithDegarnissage) }} {{ selectedCountry?.currencySymbol || '€' }}
                       </span>
@@ -693,7 +693,7 @@
                   <template v-if="selectedGarage?.percentageCommission">
                     <v-divider class="my-2" />
                     <div class="total-row">
-                      <span class="text-body-2 font-weight-bold">Net technicien</span>
+                      <span class="text-body-2 font-weight-bold">{{ t('quotes.edit.technicianNet') }}</span>
                       <span class="text-body-2 font-weight-bold">
                         {{ regionManager.formatNumber(total - totalCommission) }}
                         {{ selectedCountry?.currencySymbol || '€' }}
@@ -747,7 +747,7 @@
           prepend-icon="mdi-content-save-outline"
           @click="onUpdateBtnClick"
         >
-          Sauvegarder
+          {{ t('common.save') }}
         </v-btn>
       </div>
     </v-container>
@@ -756,7 +756,7 @@
   <!-- ── Dialogs ── -->
   <GarageDialog
     ref="garageDialogRef"
-    title="Modifier le client"
+    :title="t('quotes.edit.editClient')"
     persistent
     :max-width="500"
     @validated="onGarageValidated"
@@ -773,10 +773,10 @@
 
   <ConfirmDialog
     ref="deleteQuoteConfirmDialogRef"
-    title="Supprimer le devis"
-    message="Cette action est irréversible. Confirmer la suppression ?"
-    confirm-label="Supprimer"
-    cancel-label="Annuler"
+    :title="t('quotes.delete.title')"
+    :message="t('quotes.edit.deleteConfirm')"
+    :confirm-label="t('common.delete')"
+    :cancel-label="t('common.cancel')"
     type="warning"
     @confirm="onConfirmDeleteQuote"
   />
@@ -797,7 +797,10 @@ import { setSelectedInvoiceGuid } from '@/features/invoices/presentation/utils/i
   import { OrganizationMemberViewModel } from '@/features/organizations/presentation/models/OrganizationMemberViewmodel';
   import { computed, onMounted, reactive, ref } from 'vue';
   import { useTheme } from 'vuetify';
+import { EMPTY_QUOTE_ERROR } from '@/features/quotes/application/useCases/SendQuoteUseCase';
   import { useRouter } from 'vue-router';
+import { useI18n } from 'vue-i18n';
+import { formatDate as formatIntlDate, intlLocale } from '@/app/i18n/formatters';
 
   // ── Services ─────────────────────────────────────────────────────────────────
   const { regionManager, authState, useEditQuoteState } = useEditQuotePageDependencies();
@@ -858,6 +861,7 @@ import { setSelectedInvoiceGuid } from '@/features/invoices/presentation/utils/i
   } = useEditQuoteState;
 
   const router = useRouter();
+const { t } = useI18n();
   const theme = useTheme();
   const isDark = computed(() => theme.current.value.dark);
   const sending = ref(false);
@@ -883,12 +887,12 @@ import { setSelectedInvoiceGuid } from '@/features/invoices/presentation/utils/i
   };
 
   const statusLabel = (code?: string, isSent?: boolean) => {
-    if (OPEN_STATUS_CODES.includes(code ?? '')) return isSent ? 'En attente' : 'Brouillon';
+    if (OPEN_STATUS_CODES.includes(code ?? '')) return isSent ? t('quotes.status.pending') : t('quotes.status.draft');
     switch (code) {
-      case 'accepted':   return 'Accepté';
-      case 'refused':    return 'Refusé';
-      case 'cancelled':  return 'Annulé';
-      case 'invoiced':   return 'Facturé';
+      case 'accepted':   return t('quotes.status.accepted');
+      case 'refused':    return t('quotes.status.refused');
+      case 'cancelled':  return t('quotes.status.cancelled');
+      case 'invoiced':   return t('quotes.status.invoiced');
       default:           return code ?? '';
     }
   };
@@ -912,7 +916,7 @@ import { setSelectedInvoiceGuid } from '@/features/invoices/presentation/utils/i
 
   // ── Handlers lignes ───────────────────────────────────────────────────────────
   const onManageItemsBtnClick = () => router.push('/quotes/edit/items');
-  const formatDate = (d: string | Date) => new Date(d).toLocaleDateString('fr-FR');
+  const formatDate = (d: string | Date) => formatIntlDate(d);
 
   // ── Handlers actions ──────────────────────────────────────────────────────────
   const onAcceptedBtnClick = () => updateQuoteStatus({ code: 'accepted'});
@@ -923,14 +927,14 @@ import { setSelectedInvoiceGuid } from '@/features/invoices/presentation/utils/i
       await updateQuote();
       await sendQuote();
     } catch (e) {
-      snackbar.message = e instanceof Error ? e.message : "Impossible d'envoyer le devis.";
+      snackbar.message = e instanceof Error && e.message !== EMPTY_QUOTE_ERROR ? e.message : t('quotes.messages.emptyQuote');
       snackbar.show = true;
     } finally {
       sending.value = false;
     }
   };
   const formatSentAt = (d: Date) =>
-    new Date(d).toLocaleString('fr-FR', { dateStyle: 'short', timeStyle: 'short' });
+    new Date(d).toLocaleString(intlLocale(), { dateStyle: 'short', timeStyle: 'short' });
   const onDuplicateQuoteToInvoiceBtnClick = async () => {
     const invoiceId = await duplicateQuoteToInvoice();
     if (invoiceId) {

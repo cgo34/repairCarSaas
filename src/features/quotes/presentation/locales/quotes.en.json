@@ -7,6 +7,157 @@
       "preview": "PDF preview",
       "edit": "Edit quote",
       "items": "Quote items"
+    },
+    "list": {
+      "title": "Quotes",
+      "summary": "{month} · {count} quotes",
+      "newQuote": "New quote",
+      "search": "Search a quote, a client…",
+      "noData": "No quotes found",
+      "allStatuses": "All statuses",
+      "allGarages": "All garages",
+      "sent": {
+        "all": "Sent / not sent",
+        "sent": "Sent",
+        "notSent": "Not sent"
+      },
+      "convertedFilter": {
+        "all": "Converted / not converted",
+        "converted": "Converted to invoice",
+        "notConverted": "Not converted"
+      },
+      "converted": "Converted to invoice",
+      "notConverted": "Not converted to invoice",
+      "modifiedResend": "Modified · to resend",
+      "notSent": "Not sent",
+      "tabs": {
+        "all": "All",
+        "draft": "Drafts",
+        "pending": "Pending",
+        "accepted": "Accepted",
+        "refused": "Refused"
+      },
+      "headers": {
+        "quoteNumber": "QUOTE NO.",
+        "client": "CLIENT",
+        "vehicle": "VEHICLE",
+        "date": "DATE",
+        "technician": "TECHNICIAN",
+        "totalExclTax": "TOTAL EXCL. TAX",
+        "sent": "SENT",
+        "status": "STATUS",
+        "converted": "CONVERTED TO INVOICE"
+      }
+    },
+    "kpi": {
+      "acceptedAmount": "Accepted amount · {month}",
+      "acceptedSub": "accepted this month",
+      "pending": "Awaiting reply",
+      "sentCount": "{count} quote sent | {count} quote sent | {count} quotes sent",
+      "acceptedMonth": "Accepted this month",
+      "signedOrValidated": "signed or validated quotes",
+      "refused": "Refused",
+      "toProcess": "{count} to handle",
+      "noneRefused": "No refused quotes"
+    },
+    "status": {
+      "refused": "Refused",
+      "accepted": "Accepted",
+      "pending": "Pending",
+      "draft": "Draft",
+      "cancelled": "Cancelled",
+      "invoiced": "Invoiced"
+    },
+    "actions": {
+      "view": "View",
+      "send": "Send",
+      "viewPdf": "View PDF",
+      "edit": "Edit quote",
+      "addItems": "Add items",
+      "markAccepted": "Mark as accepted",
+      "markRefused": "Mark as refused",
+      "convertToInvoice": "Convert to invoice"
+    },
+    "delete": {
+      "title": "Delete quote",
+      "message": "This quote will be permanently deleted. Continue?"
+    },
+    "messages": {
+      "sent": "Quote sent successfully!",
+      "emptyQuote": "Add at least one item before sending the quote.",
+      "sendError": "Error while sending the quote.",
+      "markedAccepted": "Quote marked as accepted.",
+      "markedRefused": "Quote marked as refused.",
+      "statusError": "Error while changing the status.",
+      "converted": "Quote converted to invoice!",
+      "convertError": "Error while converting to invoice.",
+      "noPdf": "No PDF could be generated.",
+      "downloaded": "{count} quote downloaded | {count} quotes downloaded"
+    },
+    "items": {
+      "title": "Quote items",
+      "viewPdf": "View PDF",
+      "forfaitMessage": "This quote is a flat rate: no detailed items are needed."
+    },
+    "view": {
+      "title": "Quote no. {number}",
+      "createdOn": "Created on {date}",
+      "validUntil": "Valid until {date}",
+      "lockedConverted": "This quote is accepted and converted to an invoice: it can no longer be edited. You can view, download or resend the PDF.",
+      "lockedAccepted": "This quote is accepted: it can no longer be edited. You can view, download or resend the PDF.",
+      "pdfPreview": "PDF preview",
+      "client": "Client",
+      "vehicle": "Vehicle",
+      "technician": "Technician",
+      "information": "Information",
+      "history": "History",
+      "created": "Created",
+      "sentToClient": "Sent to client"
+    },
+    "edit": {
+      "manageItems": "Manage items",
+      "dates": "Dates",
+      "creationDate": "Creation date",
+      "validUntil": "Valid until",
+      "selectTechnician": "Select a technician",
+      "clientGarage": "Client / Garage",
+      "selectGarage": "Select a garage",
+      "commission": "Commission {rate}%",
+      "existingVehicle": "Existing vehicle (optional)",
+      "vehicleInfo": "Vehicle information:",
+      "plate": "License plate",
+      "brand": "Make",
+      "year": "Year",
+      "quoteStatus": "Quote status",
+      "sentOn": "Sent on {date}",
+      "sentTo": "to {name}",
+      "resendToGarage": "Resend to garage",
+      "sendToGarage": "Send to garage",
+      "addAtLeastOne": "Add at least one item to be able to send the quote.",
+      "sentNoDelete": "Quote sent: it cannot be deleted. If it is no longer relevant, mark it as \"Refused\".",
+      "options": "Options",
+      "countryVat": "Country & VAT",
+      "flatRate": "Flat-rate mode",
+      "flatRateHint": "Replace the lines with a fixed amount",
+      "flatRateAmount": "Flat-rate amount (€)",
+      "unitPrices": "Show unit prices",
+      "unitPricesHint": "Display the breakdown on the quote",
+      "commissionExclStripping": "Commission excluding stripping",
+      "commissionExclStrippingHint": "Exclude stripping from the commission base",
+      "technicianNet": "Technician net",
+      "editClient": "Edit client",
+      "deleteConfirm": "This action cannot be undone. Confirm deletion?"
+    },
+    "create": {
+      "startDate": "Start date",
+      "garage": "Garage",
+      "newClient": "New client",
+      "vatNotApplicable": "VAT not applicable",
+      "vehicleInfo": "Vehicle information",
+      "noItems": "No items yet.",
+      "noItemsHint": "Create the quote, then add items from \"Manage items\".",
+      "sendHint": "Create the quote, then add at least one item before sending.",
+      "submit": "Create quote"
     }
   }
 }

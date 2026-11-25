@@ -13,6 +13,35 @@
     "cancel": "Cancel",
     "reset": "Reset",
     "required": "Required field",
-    "invalidEmail": "Invalid email"
+    "invalidEmail": "Invalid email",
+    "confirm": "Confirm",
+    "delete": "Delete",
+    "export": "Export",
+    "period": {
+      "all": "All",
+      "today": "Today",
+      "week": "This week",
+      "month": "This month",
+      "year": "This year",
+      "allDates": "All dates",
+      "custom": "Custom",
+      "from": "From",
+      "to": "To"
+    },
+    "table": {
+      "itemsPerPage": "Rows per page"
+    },
+    "download": "Download",
+    "totals": {
+      "summary": "Summary",
+      "exclTax": "Total excl. tax",
+      "inclTax": "Total incl. tax",
+      "stripping": "Stripping",
+      "totalStripping": "Total stripping",
+      "exclTaxPlusStripping": "Excl. tax + stripping",
+      "vat": "VAT ({rate}%)",
+      "commission": "Commission ({rate}%)"
+    },
+    "search": "Search"
   }
 }

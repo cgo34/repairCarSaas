@@ -2,7 +2,7 @@
   <GenericSelect
     :model-value="model"
     :items="bodyParts"
-    label="Elément"
+    :label="t('carRepairSettings.bodyPart')"
     :item-title="itemTitle"
     @select="onSelectBodyPart"
   />
@@ -12,6 +12,8 @@
 import GenericSelect from '@/shared/presentation/ui/components/GenericSelect.vue';
 import { BodyPartViewModel } from '@/features/carRepairSettings/presentation/models/BodyPartViewModel';
 import { ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { bodyPartLabel } from '@/features/carRepairSettings/presentation/utils/carRepairLabels';
 
 const props = defineProps<{
   modelValue?: BodyPartViewModel;
@@ -19,7 +21,8 @@ const props = defineProps<{
 }>();
 
 const model = ref<BodyPartViewModel | undefined>(props.modelValue);
-const itemTitle = 'name'
+const itemTitle = bodyPartLabel;
+const { t } = useI18n();
 
 const emit = defineEmits<{
   (e: 'update:modelValue', value: BodyPartViewModel | undefined): void;

@@ -3,7 +3,7 @@
     :model-value="model"
     :items="bodyMaterials"
     :item-title="itemTitle"
-    label="Matériau"
+    :label="t('carRepairSettings.material')"
     @update:model-value="onSelectBodyMaterial"
     @select="onSelectBodyMaterial"
   />
@@ -13,6 +13,8 @@
 import GenericSelect from '@/shared/presentation/ui/components/GenericSelect.vue';
 import { BodyMaterialViewModel } from '@/features/carRepairSettings/presentation/models/BodyMaterialViewModel';
 import { ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { bodyMaterialLabel } from '@/features/carRepairSettings/presentation/utils/carRepairLabels';
 
 const props = defineProps<{
   modelValue?: BodyMaterialViewModel;
@@ -20,7 +22,8 @@ const props = defineProps<{
 }>();
 
 const model = ref<BodyMaterialViewModel | undefined>(props.modelValue);
-const itemTitle = 'name'
+const itemTitle = bodyMaterialLabel;
+const { t } = useI18n();
 const emit = defineEmits<{
   (e: 'update:modelValue', value: BodyMaterialViewModel | undefined): void;
   (e: 'select', value: BodyMaterialViewModel | undefined): void;

@@ -7,6 +7,157 @@
       "preview": "Aperçu PDF",
       "edit": "Modifier le devis",
       "items": "Éléments du devis"
+    },
+    "list": {
+      "title": "Devis",
+      "summary": "{month} · {count} devis",
+      "newQuote": "Nouveau devis",
+      "search": "Rechercher un devis, un client…",
+      "noData": "Aucun devis trouvé",
+      "allStatuses": "Tous les statuts",
+      "allGarages": "Tous les garages",
+      "sent": {
+        "all": "Envoyés / non envoyés",
+        "sent": "Envoyés",
+        "notSent": "Non envoyés"
+      },
+      "convertedFilter": {
+        "all": "Convertis / non convertis",
+        "converted": "Convertis en facture",
+        "notConverted": "Non convertis"
+      },
+      "converted": "Converti en facture",
+      "notConverted": "Non converti en facture",
+      "modifiedResend": "Modifié · à renvoyer",
+      "notSent": "Non envoyé",
+      "tabs": {
+        "all": "Tous",
+        "draft": "Brouillons",
+        "pending": "En attente",
+        "accepted": "Acceptés",
+        "refused": "Refusés"
+      },
+      "headers": {
+        "quoteNumber": "N° DEVIS",
+        "client": "CLIENT",
+        "vehicle": "VÉHICULE",
+        "date": "DATE",
+        "technician": "TECHNICIEN",
+        "totalExclTax": "MONTANT HT",
+        "sent": "ENVOYÉ",
+        "status": "STATUT",
+        "converted": "CONVERTI EN FACTURE"
+      }
+    },
+    "kpi": {
+      "acceptedAmount": "Montant accepté · {month}",
+      "acceptedSub": "accepté ce mois",
+      "pending": "En attente de réponse",
+      "sentCount": "{count} devis envoyé | {count} devis envoyé | {count} devis envoyés",
+      "acceptedMonth": "Acceptés ce mois",
+      "signedOrValidated": "devis signés ou validés",
+      "refused": "Refusés",
+      "toProcess": "{count} à traiter",
+      "noneRefused": "Aucun devis refusé"
+    },
+    "status": {
+      "refused": "Refusé",
+      "accepted": "Accepté",
+      "pending": "En attente",
+      "draft": "Brouillon",
+      "cancelled": "Annulé",
+      "invoiced": "Facturé"
+    },
+    "actions": {
+      "view": "Consulter",
+      "send": "Envoyer",
+      "viewPdf": "Voir PDF",
+      "edit": "Modifier le devis",
+      "addItems": "Ajouter des éléments",
+      "markAccepted": "Marquer accepté",
+      "markRefused": "Marquer refusé",
+      "convertToInvoice": "Convertir en facture"
+    },
+    "delete": {
+      "title": "Supprimer le devis",
+      "message": "Ce devis sera supprimé définitivement. Continuer ?"
+    },
+    "messages": {
+      "sent": "Devis envoyé avec succès !",
+      "emptyQuote": "Ajoutez au moins un élément avant d'envoyer le devis.",
+      "sendError": "Erreur lors de l'envoi du devis.",
+      "markedAccepted": "Devis marqué comme accepté.",
+      "markedRefused": "Devis marqué comme refusé.",
+      "statusError": "Erreur lors du changement de statut.",
+      "converted": "Devis converti en facture !",
+      "convertError": "Erreur lors de la conversion en facture.",
+      "noPdf": "Aucun PDF n'a pu être généré.",
+      "downloaded": "{count} devis téléchargé | {count} devis téléchargés"
+    },
+    "items": {
+      "title": "Éléments du devis",
+      "viewPdf": "Voir le PDF",
+      "forfaitMessage": "Ce devis est au forfait : aucun élément détaillé n'est nécessaire."
+    },
+    "view": {
+      "title": "Devis n° {number}",
+      "createdOn": "Créé le {date}",
+      "validUntil": "Valable jusqu'au {date}",
+      "lockedConverted": "Ce devis est accepté et converti en facture : il n'est plus modifiable. Tu peux consulter, télécharger ou renvoyer le PDF.",
+      "lockedAccepted": "Ce devis est accepté : il n'est plus modifiable. Tu peux consulter, télécharger ou renvoyer le PDF.",
+      "pdfPreview": "Aperçu du PDF",
+      "client": "Client",
+      "vehicle": "Véhicule",
+      "technician": "Technicien",
+      "information": "Informations",
+      "history": "Historique",
+      "created": "Créé",
+      "sentToClient": "Envoyé au client"
+    },
+    "edit": {
+      "manageItems": "Gérer les éléments",
+      "dates": "Dates",
+      "creationDate": "Date de création",
+      "validUntil": "Valide jusqu'au",
+      "selectTechnician": "Sélectionner un technicien",
+      "clientGarage": "Client / Garage",
+      "selectGarage": "Sélectionner un garage",
+      "commission": "Commission {rate} %",
+      "existingVehicle": "Véhicule existant (optionnel)",
+      "vehicleInfo": "Informations véhicule :",
+      "plate": "Immatriculation",
+      "brand": "Marque",
+      "year": "Année",
+      "quoteStatus": "Statut du devis",
+      "sentOn": "Envoyé le {date}",
+      "sentTo": "à {name}",
+      "resendToGarage": "Renvoyer au garage",
+      "sendToGarage": "Envoyer au garage",
+      "addAtLeastOne": "Ajoutez au moins un élément pour pouvoir envoyer le devis.",
+      "sentNoDelete": "Devis envoyé : suppression impossible. S'il n'est plus d'actualité, marquez-le « Refusé ».",
+      "options": "Options",
+      "countryVat": "Pays & TVA",
+      "flatRate": "Mode forfait",
+      "flatRateHint": "Remplacer les lignes par un montant fixe",
+      "flatRateAmount": "Montant du forfait (€)",
+      "unitPrices": "Prix unitaires visibles",
+      "unitPricesHint": "Afficher le détail sur le devis",
+      "commissionExclStripping": "Commission hors dégarnissage",
+      "commissionExclStrippingHint": "Exclure le dégarnissage de la base de commission",
+      "technicianNet": "Net technicien",
+      "editClient": "Modifier le client",
+      "deleteConfirm": "Cette action est irréversible. Confirmer la suppression ?"
+    },
+    "create": {
+      "startDate": "Date de début",
+      "garage": "Garage",
+      "newClient": "Nouveau client",
+      "vatNotApplicable": "TVA non applicable",
+      "vehicleInfo": "Informations véhicule",
+      "noItems": "Aucun élément pour le moment.",
+      "noItemsHint": "Créez le devis puis ajoutez les éléments depuis « Gérer les éléments ».",
+      "sendHint": "Créez le devis puis ajoutez au moins un élément avant l'envoi.",
+      "submit": "Créer le devis"
     }
   }
 }

@@ -11,10 +11,10 @@
             class="text-h5 font-weight-bold mb-0"
             style="font-family:'Space Grotesk',sans-serif"
           >
-            Devis
+            {{ t('quotes.list.title') }}
           </h1>
           <p class="text-body-2 text-medium-emphasis mb-0">
-            {{ monthLabel }} · {{ quotes.length }} devis
+            {{ t('quotes.list.summary', { month: monthLabel, count: quotes.length }) }}
           </p>
         </div>
         <v-btn
@@ -23,7 +23,7 @@
           prepend-icon="mdi-plus"
           @click="onAddQuote"
         >
-          Nouveau devis
+          {{ t('quotes.list.newQuote') }}
         </v-btn>
       </div>
 
@@ -52,13 +52,13 @@
             </v-avatar>
             <div>
               <div class="stat-label">
-                Montant accepté · {{ currentMonthShort }}
+                {{ t('quotes.kpi.acceptedAmount', { month: currentMonthShort }) }}
               </div>
               <div class="stat-value">
                 {{ formatCurrency(kpiAccepteAmount) }}
               </div>
               <div class="stat-sub">
-                accepté ce mois
+                {{ t('quotes.kpi.acceptedSub') }}
               </div>
             </div>
           </v-card>
@@ -84,13 +84,13 @@
             </v-avatar>
             <div>
               <div class="stat-label">
-                En attente de réponse
+                {{ t('quotes.kpi.pending') }}
               </div>
               <div class="stat-value">
                 {{ formatCurrency(kpiEnAttenteAmount) }}
               </div>
               <div class="stat-sub">
-                {{ kpiEnAttenteCount }} devis envoyé{{ kpiEnAttenteCount > 1 ? 's' : '' }}
+                {{ t('quotes.kpi.sentCount', kpiEnAttenteCount) }}
               </div>
             </div>
           </v-card>
@@ -116,13 +116,13 @@
             </v-avatar>
             <div>
               <div class="stat-label">
-                Acceptés ce mois
+                {{ t('quotes.kpi.acceptedMonth') }}
               </div>
               <div class="stat-value">
                 {{ kpiAccepteCount }}
               </div>
               <div class="stat-sub">
-                devis signés ou validés
+                {{ t('quotes.kpi.signedOrValidated') }}
               </div>
             </div>
           </v-card>
@@ -149,7 +149,7 @@
             </v-avatar>
             <div>
               <div class="stat-label">
-                Refusés
+                {{ t('quotes.kpi.refused') }}
               </div>
               <div
                 class="stat-value"
@@ -158,7 +158,7 @@
                 {{ kpiRefuseCount }}
               </div>
               <div class="stat-sub">
-                {{ kpiRefuseCount > 0 ? `${kpiRefuseCount} à traiter` : 'Aucun devis refusé' }}
+                {{ kpiRefuseCount > 0 ? t('quotes.kpi.toProcess', { count: kpiRefuseCount }) : t('quotes.kpi.noneRefused') }}
               </div>
             </div>
           </v-card>
@@ -173,7 +173,7 @@
           <v-text-field
             v-model="search"
             prepend-inner-icon="mdi-magnify"
-            placeholder="Rechercher un devis, un client…"
+            :placeholder="t('quotes.list.search')"
             density="compact"
             variant="outlined"
             hide-details
@@ -224,7 +224,7 @@
           <template v-if="activePreset === 'custom'">
             <v-text-field
               v-model="dateFrom"
-              label="Du"
+              :label="t('common.period.from')"
               type="date"
               density="compact"
               variant="outlined"
@@ -233,7 +233,7 @@
             />
             <v-text-field
               v-model="dateTo"
-              label="Au"
+              :label="t('common.period.to')"
               type="date"
               density="compact"
               variant="outlined"
@@ -247,7 +247,7 @@
             size="small"
             @click="resetFilters"
           >
-            Réinitialiser
+            {{ t('common.reset') }}
           </v-btn>
           <v-spacer />
           <v-btn
@@ -257,7 +257,7 @@
             :loading="downloading"
             @click="onBulkDownload"
           >
-            Exporter
+            {{ t('common.export') }}
           </v-btn>
         </div>
         <v-divider />
@@ -272,11 +272,11 @@
           show-select
           item-value="id"
           return-object
-          no-data-text="Aucun devis trouvé"
+          :no-data-text="t('quotes.list.noData')"
           hover
           :row-props="rowProps"
           class="quotes-table"
-          items-per-page-text="Lignes par page"
+          :items-per-page-text="t('common.table.itemsPerPage')"
           @click:row="onRowClick"
         >
           <!-- N° DEVIS -->
@@ -370,13 +370,13 @@
               rounded="pill"
               prepend-icon="mdi-send-clock-outline"
             >
-              Modifié · à renvoyer
+              {{ t('quotes.list.modifiedResend') }}
             </v-chip>
             <span
               v-else
               class="text-body-2 text-disabled"
             >
-              Non envoyé
+              {{ t('quotes.list.notSent') }}
             </span>
           </template>
 
@@ -386,7 +386,7 @@
               size="26"
               :color="isConverted(item) ? 'success' : 'default'"
               variant="tonal"
-              :title="isConverted(item) ? 'Converti en facture' : 'Non converti en facture'"
+              :title="isConverted(item) ? t('quotes.list.converted') : t('quotes.list.notConverted')"
             >
               <v-icon
                 size="16"
@@ -402,7 +402,7 @@
               size="small"
               variant="text"
               icon="mdi-eye-outline"
-              title="Consulter"
+              :title="t('quotes.actions.view')"
               @click.stop="onViewQuote(item.id)"
             />
             <v-menu v-else>
@@ -422,24 +422,24 @@
                 <v-list-item
                   v-if="amount(item) > 0"
                   prepend-icon="mdi-send-outline"
-                  title="Envoyer"
+                  :title="t('quotes.actions.send')"
                   @click="onSendBtnClick(item.id)"
                 />
                 <v-list-item
                   prepend-icon="mdi-file-pdf-box"
-                  title="Voir PDF"
+                  :title="t('quotes.actions.viewPdf')"
                   @click="onViewPdfBtnClick(item.id)"
                 />
                 <v-list-item
                   v-if="!isLocked(item)"
                   prepend-icon="mdi-pencil-outline"
-                  title="Modifier le devis"
+                  :title="t('quotes.actions.edit')"
                   @click="onEditQuote(item.id)"
                 />
                 <v-list-item
                   v-if="!isLocked(item)"
                   prepend-icon="mdi-format-list-bulleted-square"
-                  title="Ajouter des éléments"
+                  :title="t('quotes.actions.addItems')"
                   @click="onEditItems(item.id)"
                 />
                 <v-divider
@@ -449,26 +449,26 @@
                 <v-list-item
                   v-if="canAccept(item)"
                   prepend-icon="mdi-check-circle-outline"
-                  title="Marquer accepté"
+                  :title="t('quotes.actions.markAccepted')"
                   @click="onSetStatus(item.id, 'accepted')"
                 />
                 <v-list-item
                   v-if="canRefuse(item)"
                   prepend-icon="mdi-close-circle-outline"
-                  title="Marquer refusé"
+                  :title="t('quotes.actions.markRefused')"
                   @click="onSetStatus(item.id, 'refused')"
                 />
                 <v-list-item
                   v-if="canConvert(item)"
                   prepend-icon="mdi-receipt-text-check-outline"
-                  title="Convertir en facture"
+                  :title="t('quotes.actions.convertToInvoice')"
                   @click="onConvertToInvoice(item.id)"
                 />
                 <template v-if="!isLocked(item)">
                   <v-divider class="my-1" />
                   <v-list-item
                     prepend-icon="mdi-delete-outline"
-                    title="Supprimer"
+                    :title="t('common.delete')"
                     base-color="error"
                     @click="onDeleteBtnClick(item.id)"
                   />
@@ -492,10 +492,10 @@
 
   <ConfirmDialog
     ref="deleteQuoteConfirmDialogRef"
-    title="Supprimer le devis"
-    message="Ce devis sera supprimé définitivement. Continuer ?"
-    confirm-label="Supprimer"
-    cancel-label="Annuler"
+    :title="t('quotes.delete.title')"
+    :message="t('quotes.delete.message')"
+    :confirm-label="t('common.delete')"
+    :cancel-label="t('common.cancel')"
     type="warning"
     @confirm="onConfirmDeleteQuote"
   />
@@ -516,11 +516,14 @@ import { QuoteViewModel } from '@/features/quotes/presentation/models/QuoteViewM
 import JSZip from 'jszip';
 import { computed, onMounted, reactive, ref } from 'vue';
 import { useRouter } from 'vue-router';
+import { useI18n } from 'vue-i18n';
+import { capitalize, formatCurrency, formatDate } from '@/app/i18n/formatters';
 import { EMPTY_QUOTE_ERROR } from '@/features/quotes/application/useCases/SendQuoteUseCase';
 
   const { authState, useQuoteState, generatePdfUseCase, organizationProfileUseCase } = useQuotesPageDependencies();
 
 const router = useRouter();
+const { t } = useI18n();
 const { init, quotes, deleteQuote, sendQuote, setStatus, convertToInvoice } = useQuoteState;
 
 const {
@@ -536,16 +539,16 @@ const garageFilter = ref('all');
 const activeTab = ref<'all' | 'draft' | 'pending' | 'accepted' | 'refused'>('all');
 const sentFilter = ref<'all' | 'sent' | 'notSent'>('all');
 const convertedFilter = ref<'all' | 'converted' | 'notConverted'>('all');
-const sentOptions = [
-  { title: 'Envoyés / non envoyés', value: 'all' },
-  { title: 'Envoyés', value: 'sent' },
-  { title: 'Non envoyés', value: 'notSent' },
-];
-const convertedOptions = [
-  { title: 'Convertis / non convertis', value: 'all' },
-  { title: 'Convertis en facture', value: 'converted' },
-  { title: 'Non convertis', value: 'notConverted' },
-];
+const sentOptions = computed(() => [
+  { title: t('quotes.list.sent.all'), value: 'all' },
+  { title: t('quotes.list.sent.sent'), value: 'sent' },
+  { title: t('quotes.list.sent.notSent'), value: 'notSent' },
+]);
+const convertedOptions = computed(() => [
+  { title: t('quotes.list.convertedFilter.all'), value: 'all' },
+  { title: t('quotes.list.convertedFilter.converted'), value: 'converted' },
+  { title: t('quotes.list.convertedFilter.notConverted'), value: 'notConverted' },
+]);
 const _company = ref<OrganizationProfileDto | null>(null);
 const deleteQuoteConfirmDialogRef = ref<ConfirmDialogExposed>();
 const _quoteIdToDelete = ref<string | undefined>();
@@ -598,24 +601,24 @@ const kpiRefuseCount     = computed(() => quotes.value.filter(isRefused).length)
 const tabSource = computed(() => hasActiveFilter.value ? periodFiltered.value : quotes.value);
 
 const tabs = computed<{ key: typeof activeTab.value; label: string; count: number }[]>(() => [
-  { key: 'all',      label: 'Tous',       count: tabSource.value.length },
-  { key: 'draft',    label: 'Brouillons',  count: tabSource.value.filter(isDraft).length },
-  { key: 'pending',  label: 'En attente',  count: tabSource.value.filter(isSentPending).length },
-  { key: 'accepted', label: 'Acceptés',   count: tabSource.value.filter(isAccepted).length },
-  { key: 'refused',  label: 'Refusés',    count: tabSource.value.filter(isRefused).length },
+  { key: 'all',      label: t('quotes.list.tabs.all'), count: tabSource.value.length },
+  { key: 'draft',    label: t('quotes.list.tabs.draft'), count: tabSource.value.filter(isDraft).length },
+  { key: 'pending',  label: t('quotes.list.tabs.pending'), count: tabSource.value.filter(isSentPending).length },
+  { key: 'accepted', label: t('quotes.list.tabs.accepted'), count: tabSource.value.filter(isAccepted).length },
+  { key: 'refused',  label: t('quotes.list.tabs.refused'), count: tabSource.value.filter(isRefused).length },
 ]);
 
 const quoteGarageName = (q: QuoteViewModel) => q.garage?.name ?? '';
 
-const statusOptions = computed(() => tabs.value.map(tab => ({ title: `${tab.key === 'all' ? 'Tous les statuts' : tab.label} · ${tab.count}`, value: tab.key })));
+const statusOptions = computed(() => tabs.value.map(tab => ({ title: `${tab.key === 'all' ? t('quotes.list.allStatuses') : tab.label} · ${tab.count}`, value: tab.key })));
 const garageOptions = computed(() => [
-  { title: 'Tous les garages', value: 'all' },
+  { title: t('quotes.list.allGarages'), value: 'all' },
   ...[...new Set(quotes.value.map(quoteGarageName).filter(Boolean))].sort().map(name => ({ title: name, value: name })),
 ]);
-const periodOptions = [
-  ...datePresets.map(preset => ({ title: preset.key === 'all' ? 'Toutes les dates' : preset.label, value: preset.key })),
-  { title: 'Personnalisée', value: 'custom' as const },
-];
+const periodOptions = computed(() => [
+  ...datePresets.map(preset => ({ title: preset.key === 'all' ? t('common.period.allDates') : preset.label, value: preset.key })),
+  { title: t('common.period.custom'), value: 'custom' as const },
+]);
 
 const resetFilters = () => {
   search.value = '';
@@ -673,41 +676,37 @@ const techColor = (item: TechSource) => {
 };
 
 const chipInfo = (q: QuoteViewModel): { label: string; color: string } => {
-  if (isRefused(q))     return { label: 'Refusé',    color: 'error'     };
+  if (isRefused(q))     return { label: t('quotes.status.refused'), color: 'error'     };
   if (isAccepted(q)) {
-    return { label: 'Accepté', color: 'success' };
+    return { label: t('quotes.status.accepted'), color: 'success' };
   }
-  if (isSentPending(q)) return { label: 'En attente', color: 'warning' };
-  return { label: 'Brouillon', color: 'default' };
+  if (isSentPending(q)) return { label: t('quotes.status.pending'), color: 'warning' };
+  return { label: t('quotes.status.draft'), color: 'default' };
 };
 const chipLabel    = (q: QuoteViewModel) => chipInfo(q).label;
 const chipColor    = (q: QuoteViewModel) => chipInfo(q).color;
 
-const formatCurrency = (val: number) =>
-  new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(val);
-
 const formatDateShort = (d?: string) => {
   if (!d) return '—';
-  return new Date(d).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' });
+  return formatDate(d, { day: 'numeric', month: 'long' });
 };
 
-const MONTHS = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
 const now = new Date();
-const monthLabel        = computed(() => `${MONTHS[now.getMonth()]} ${now.getFullYear()}`);
-const currentMonthShort = MONTHS[now.getMonth()].toLowerCase();
+const monthLabel        = computed(() => capitalize(formatDate(now, { month: 'long', year: 'numeric' })));
+const currentMonthShort = computed(() => formatDate(now, { month: 'long' }).toLowerCase());
 
-const tableHeaders = [
-  { title: 'N° DEVIS',   key: 'quoteNumber', sortable: true  },
-  { title: 'CLIENT',     key: 'client',      sortable: false },
-  { title: 'VÉHICULE',   key: 'vehicle',     sortable: false },
-  { title: 'DATE',       key: 'createdAt',   sortable: true  },
-  { title: 'TECHNICIEN', key: 'technician',  sortable: false },
-  { title: 'MONTANT HT', key: 'total',       align: 'end' as const, sortable: true },
-  { title: 'ENVOYÉ',     key: 'sentAt',      sortable: false },
-  { title: 'STATUT',     key: 'status',      sortable: false },
-  { title: 'CONVERTI EN FACTURE', key: 'converted',   sortable: false, align: 'center' as const },
+const tableHeaders = computed(() => [
+  { title: t('quotes.list.headers.quoteNumber'),   key: 'quoteNumber', sortable: true  },
+  { title: t('quotes.list.headers.client'),     key: 'client',      sortable: false },
+  { title: t('quotes.list.headers.vehicle'),   key: 'vehicle',     sortable: false },
+  { title: t('quotes.list.headers.date'),       key: 'createdAt',   sortable: true  },
+  { title: t('quotes.list.headers.technician'), key: 'technician',  sortable: false },
+  { title: t('quotes.list.headers.totalExclTax'), key: 'total',       align: 'end' as const, sortable: true },
+  { title: t('quotes.list.headers.sent'),     key: 'sentAt',      sortable: false },
+  { title: t('quotes.list.headers.status'),     key: 'status',      sortable: false },
+  { title: t('quotes.list.headers.converted'), key: 'converted',   sortable: false, align: 'center' as const },
   { title: '',           key: 'actions',     sortable: false },
-];
+]);
 
 const onAddQuote        = () => router.push('/quotes/new');
 const openQuote = (id: string, path: string) => {
@@ -739,9 +738,9 @@ const onSendBtnClick = async (quoteId?: string) => {
   if (!quoteId) return;
   try {
     await sendQuote(quoteId);
-    showSnack('Devis envoyé avec succès !');
+    showSnack(t('quotes.messages.sent'));
   } catch (e) {
-    showSnack(e instanceof Error && e.message === EMPTY_QUOTE_ERROR ? e.message : "Erreur lors de l'envoi du devis.", 'error');
+    showSnack(e instanceof Error && e.message === EMPTY_QUOTE_ERROR ? t('quotes.messages.emptyQuote') : t('quotes.messages.sendError'), 'error');
   }
 };
 
@@ -749,9 +748,9 @@ const onSetStatus = async (quoteId: string | undefined, statusCode: 'accepted' |
   if (!quoteId) return;
   try {
     await setStatus(quoteId, statusCode);
-    showSnack(statusCode === 'accepted' ? 'Devis marqué comme accepté.' : 'Devis marqué comme refusé.');
+    showSnack(statusCode === 'accepted' ? t('quotes.messages.markedAccepted') : t('quotes.messages.markedRefused'));
   } catch {
-    showSnack('Erreur lors du changement de statut.', 'error');
+    showSnack(t('quotes.messages.statusError'), 'error');
   }
 };
 
@@ -759,11 +758,11 @@ const onConvertToInvoice = async (quoteId?: string) => {
   if (!quoteId) return;
   try {
     const invoiceId = await convertToInvoice(quoteId);
-    showSnack('Devis converti en facture !');
+    showSnack(t('quotes.messages.converted'));
     setSelectedInvoiceGuid(invoiceId);
     router.push('/invoices/edit');
   } catch {
-    showSnack('Erreur lors de la conversion en facture.', 'error');
+    showSnack(t('quotes.messages.convertError'), 'error');
   }
 };
 
@@ -783,13 +782,13 @@ const onBulkDownload = async () => {
         success++;
       } catch (e) { console.error(`Erreur PDF devis ${quote.quoteNumber}:`, e); }
     }
-    if (success === 0) { showSnack("Aucun PDF n'a pu être généré.", 'error'); return; }
+    if (success === 0) { showSnack(t('quotes.messages.noPdf'), 'error'); return; }
     const link = document.createElement('a');
     link.href = URL.createObjectURL(await zip.generateAsync({ type: 'blob' }));
     link.download = `devis_${new Date().toISOString().split('T')[0]}.zip`;
     link.click();
     URL.revokeObjectURL(link.href);
-    showSnack(`${success} devis téléchargé(s).`);
+    showSnack(t('quotes.messages.downloaded', success));
     selectedQuotes.value = [];
   } finally { downloading.value = false; }
 };

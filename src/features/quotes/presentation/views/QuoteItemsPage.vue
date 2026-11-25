@@ -18,7 +18,7 @@
           </v-btn>
           <div class="d-flex flex-column">
             <span class="text-h6 font-weight-bold">
-              Devis n° {{ quoteInformations.number || '' }}
+              {{ t('quotes.view.title', { number: quoteInformations.number || '' }) }}
             </span>
           </div>
           <v-chip
@@ -39,7 +39,7 @@
             prepend-icon="mdi-file-pdf-box"
             @click="onViewPdfBtnClick"
           >
-            Voir le PDF
+            {{ t('quotes.items.viewPdf') }}
           </v-btn>
           <v-btn
             variant="outlined"
@@ -48,7 +48,7 @@
             prepend-icon="mdi-pencil-outline"
             @click="onEditQuoteBtnClick"
           >
-            Modifier le devis
+            {{ t('quotes.actions.edit') }}
           </v-btn>
         </div>
       </div>
@@ -59,8 +59,8 @@
           md="8"
         >
           <DocumentItemsPanel
-            title="Éléments du devis"
-            forfait-message="Ce devis est au forfait : aucun élément détaillé n'est nécessaire."
+            :title="t('quotes.items.title')"
+            :forfait-message="t('quotes.items.forfaitMessage')"
             :lines="quoteLines"
             :body-parts="bodyParts"
             :available-body-parts="availableBodyParts"
@@ -87,32 +87,32 @@
                   mdi-calculator-variant-outline
                 </v-icon>
               </div>
-              <span class="text-subtitle-1 font-weight-bold">Récapitulatif</span>
+              <span class="text-subtitle-1 font-weight-bold">{{ t('common.totals.summary') }}</span>
             </div>
 
             <div class="totals-list">
               <div class="total-row">
-                <span class="text-body-2 text-medium-emphasis">Total H.T</span>
+                <span class="text-body-2 text-medium-emphasis">{{ t('common.totals.exclTax') }}</span>
                 <span class="text-body-2 font-weight-bold">
                   {{ regionManager.formatNumber(subtotal) }} {{ currency }}
                 </span>
               </div>
               <template v-if="!isForfait">
                 <div class="total-row">
-                  <span class="text-body-2 text-medium-emphasis">Total dégarnissage</span>
+                  <span class="text-body-2 text-medium-emphasis">{{ t('common.totals.totalStripping') }}</span>
                   <span class="text-body-2 font-weight-bold">
                     {{ regionManager.formatNumber(totalDegarnissage) }} {{ currency }}
                   </span>
                 </div>
                 <div class="total-row">
-                  <span class="text-body-2 text-medium-emphasis">H.T + Dégarnissage</span>
+                  <span class="text-body-2 text-medium-emphasis">{{ t('common.totals.exclTaxPlusStripping') }}</span>
                   <span class="text-body-2 font-weight-bold">
                     {{ regionManager.formatNumber(subTotalWithDegarnissage) }} {{ currency }}
                   </span>
                 </div>
               </template>
               <div class="total-row">
-                <span class="text-body-2 text-medium-emphasis">TVA ({{ selectedCountry?.taxRate || 0 }}%)</span>
+                <span class="text-body-2 text-medium-emphasis">{{ t('common.totals.vat', { rate: selectedCountry?.taxRate || 0 }) }}</span>
                 <span class="text-body-2 font-weight-bold">
                   {{ regionManager.formatNumber(totalTaxRate) }} {{ currency }}
                 </span>
@@ -121,13 +121,13 @@
                 v-if="selectedGarage?.percentageCommission"
                 class="total-row text-orange"
               >
-                <span class="text-body-2">Commission ({{ selectedGarage.percentageCommission }}%)</span>
+                <span class="text-body-2">{{ t('common.totals.commission', { rate: selectedGarage.percentageCommission }) }}</span>
                 <span class="text-body-2 font-weight-bold">
                   {{ regionManager.formatNumber(totalCommission) }} {{ currency }}
                 </span>
               </div>
               <div class="total-row total-final mt-2 pt-3">
-                <span class="text-subtitle-2 font-weight-bold">Total TTC</span>
+                <span class="text-subtitle-2 font-weight-bold">{{ t('common.totals.inclTax') }}</span>
                 <span class="text-h5 font-weight-black text-primary">
                   {{ regionManager.formatNumber(total) }} {{ currency }}
                 </span>
@@ -143,6 +143,7 @@
 <script setup lang="ts">
 import { computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
+import { useI18n } from 'vue-i18n';
 import { useTheme } from 'vuetify';
 import MainLayout from '@/app/layouts/MainLayout.vue';
 import DocumentItemsPanel from '@/features/lineItems/presentation/components/DocumentItemsPanel.vue';
@@ -150,6 +151,7 @@ import { useEditQuotePageDependencies } from '@/features/quotes/composition/useE
 import { getSelectedQuoteGuid } from '@/features/quotes/presentation/utils/quoteSelection';
 
 const router = useRouter();
+const { t } = useI18n();
 const theme = useTheme();
 const isDark = computed(() => theme.current.value.dark);
 const { regionManager, useEditQuoteState } = useEditQuotePageDependencies();
@@ -191,12 +193,12 @@ const statusColor = (code?: string, isSent?: boolean) => {
 };
 
 const statusLabel = (code?: string, isSent?: boolean) => {
-  if (OPEN_STATUS_CODES.includes(code ?? '')) return isSent ? 'En attente' : 'Brouillon';
+  if (OPEN_STATUS_CODES.includes(code ?? '')) return isSent ? t('quotes.status.pending') : t('quotes.status.draft');
   switch (code) {
-    case 'accepted': return 'Accepté';
-    case 'refused': return 'Refusé';
-    case 'cancelled': return 'Annulé';
-    case 'invoiced': return 'Facturé';
+    case 'accepted': return t('quotes.status.accepted');
+    case 'refused': return t('quotes.status.refused');
+    case 'cancelled': return t('quotes.status.cancelled');
+    case 'invoiced': return t('quotes.status.invoiced');
     default: return code ?? '';
   }
 };

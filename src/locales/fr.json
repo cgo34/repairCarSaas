@@ -13,6 +13,35 @@
     "cancel": "Annuler",
     "reset": "Réinitialiser",
     "required": "Champ obligatoire",
-    "invalidEmail": "Email invalide"
+    "invalidEmail": "Email invalide",
+    "confirm": "Confirmer",
+    "delete": "Supprimer",
+    "export": "Exporter",
+    "period": {
+      "all": "Tout",
+      "today": "Aujourd'hui",
+      "week": "Cette semaine",
+      "month": "Ce mois",
+      "year": "Cette année",
+      "allDates": "Toutes les dates",
+      "custom": "Personnalisée",
+      "from": "Du",
+      "to": "Au"
+    },
+    "table": {
+      "itemsPerPage": "Lignes par page"
+    },
+    "download": "Télécharger",
+    "totals": {
+      "summary": "Récapitulatif",
+      "exclTax": "Total H.T",
+      "inclTax": "Total TTC",
+      "stripping": "Dégarnissage",
+      "totalStripping": "Total dégarnissage",
+      "exclTaxPlusStripping": "H.T + Dégarnissage",
+      "vat": "TVA ({rate}%)",
+      "commission": "Commission ({rate}%)"
+    },
+    "search": "Rechercher"
   }
 }

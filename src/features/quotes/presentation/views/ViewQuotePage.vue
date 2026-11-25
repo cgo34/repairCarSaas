@@ -19,14 +19,14 @@
           </v-btn>
           <div class="ml-3">
             <div class="text-h6 font-weight-bold">
-              Devis n° {{ quote?.quoteNumber ?? '' }}
+              {{ t('quotes.view.title', { number: quote?.quoteNumber ?? '' }) }}
             </div>
             <div class="text-caption text-medium-emphasis">
               <template v-if="quote?.createdAt">
-                Créé le {{ formatDate(quote.createdAt) }}
+                {{ t('quotes.view.createdOn', { date: formatDate(quote.createdAt) }) }}
               </template>
               <template v-if="quote?.endDate">
-                · Valable jusqu'au {{ formatDate(quote.endDate) }}
+                · {{ t('quotes.view.validUntil', { date: formatDate(quote.endDate) }) }}
               </template>
             </div>
           </div>
@@ -47,7 +47,7 @@
             variant="tonal"
             prepend-icon="mdi-receipt-text-check-outline"
           >
-            Converti en facture
+            {{ t('quotes.list.converted') }}
           </v-chip>
         </div>
 
@@ -60,7 +60,7 @@
             :disabled="isLocked"
             @click="onEditBtnClick"
           >
-            Modifier le devis
+            {{ t('quotes.actions.edit') }}
           </v-btn>
           <v-btn
             variant="outlined"
@@ -70,7 +70,7 @@
             :disabled="!pdfUrl"
             @click="onDownloadBtnClick"
           >
-            Télécharger
+            {{ t('common.download') }}
           </v-btn>
           <v-btn
             v-if="!isFreePlan"
@@ -82,7 +82,7 @@
             :loading="sending"
             @click="onSendBtnClick"
           >
-            Envoyer
+            {{ t('quotes.actions.send') }}
           </v-btn>
         </div>
       </div>
@@ -97,8 +97,7 @@
           icon="mdi-lock-outline"
         />
         <span>
-          Ce devis est {{ quote?.convertToInvoice ? 'accepté et converti en facture' : 'accepté' }} :
-          il n'est plus modifiable. Tu peux consulter, télécharger ou renvoyer le PDF.
+          {{ t(quote?.convertToInvoice ? 'quotes.view.lockedConverted' : 'quotes.view.lockedAccepted') }}
         </span>
       </div>
 
@@ -106,7 +105,7 @@
         <!-- Viewer PDF -->
         <div class="q-card viewer">
           <div class="viewer-bar">
-            <span class="text-subtitle-1 font-weight-bold">Aperçu du PDF</span>
+            <span class="text-subtitle-1 font-weight-bold">{{ t('quotes.view.pdfPreview') }}</span>
             <div class="zoom-controls">
               <button
                 type="button"
@@ -171,52 +170,52 @@
         <div class="side">
           <div class="q-card pa-5">
             <div class="text-caption text-medium-emphasis">
-              Total TTC
+              {{ t('common.totals.inclTax') }}
             </div>
             <div class="recap-total text-primary">
               {{ money(total) }}
             </div>
             <div class="mini-row mt-3">
-              <span class="text-medium-emphasis">Total H.T.</span>
+              <span class="text-medium-emphasis">{{ t('common.totals.exclTax') }}</span>
               <span>{{ money(subtotal) }}</span>
             </div>
             <div
               v-if="totalDegarnissage"
               class="mini-row"
             >
-              <span class="text-medium-emphasis">Dégarnissage</span>
+              <span class="text-medium-emphasis">{{ t('common.totals.stripping') }}</span>
               <span>{{ money(totalDegarnissage) }}</span>
             </div>
             <div
               v-if="taxRate"
               class="mini-row"
             >
-              <span class="text-medium-emphasis">TVA ({{ taxRate }}%)</span>
+              <span class="text-medium-emphasis">{{ t('common.totals.vat', { rate: taxRate }) }}</span>
               <span>{{ money(totalTax) }}</span>
             </div>
           </div>
 
           <div class="q-card pa-5">
             <div class="text-subtitle-1 font-weight-bold mb-3">
-              Informations
+              {{ t('quotes.view.information') }}
             </div>
             <div class="mini-row no-border">
-              <span class="text-medium-emphasis">Client</span>
+              <span class="text-medium-emphasis">{{ t('quotes.view.client') }}</span>
               <strong>{{ quote?.garage?.name ?? quote?.garageName ?? '—' }}</strong>
             </div>
             <div class="mini-row">
-              <span class="text-medium-emphasis">Véhicule</span>
+              <span class="text-medium-emphasis">{{ t('quotes.view.vehicle') }}</span>
               <strong>{{ vehicle }}</strong>
             </div>
             <div class="mini-row">
-              <span class="text-medium-emphasis">Technicien</span>
+              <span class="text-medium-emphasis">{{ t('quotes.view.technician') }}</span>
               <strong>{{ technician }}</strong>
             </div>
           </div>
 
           <div class="q-card pa-5">
             <div class="text-subtitle-1 font-weight-bold mb-3">
-              Historique
+              {{ t('quotes.view.history') }}
             </div>
             <v-timeline
               side="end"
@@ -265,6 +264,8 @@ import { computed, nextTick, onMounted, reactive, ref, watch } from 'vue';
 import { getDocument, GlobalWorkerOptions, type PDFDocumentProxy } from 'pdfjs-dist';
 import pdfWorkerUrl from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
 import { useRouter } from 'vue-router';
+import { useI18n } from 'vue-i18n';
+import { formatCurrency, formatDate as formatIntlDate } from '@/app/i18n/formatters';
 import { useTheme } from 'vuetify';
 import { EMPTY_QUOTE_ERROR } from '@/features/quotes/application/useCases/SendQuoteUseCase';
 import { getSelectedQuoteGuid } from '@/features/quotes/presentation/utils/quoteSelection';
@@ -287,6 +288,7 @@ const {
 } = useViewQuoteState;
 
 const router = useRouter();
+const { t } = useI18n();
 const theme = useTheme();
 const isDark = computed(() => theme.current.value.dark);
 
@@ -357,20 +359,19 @@ const isLocked = computed(
 
 const statusInfo = computed(() => {
   const code = quote.value?.status?.code ?? '';
-  if (code === 'invoiced') return { label: 'Facturé', color: 'success' };
-  if (code === 'accepted' || quote.value?.convertToInvoice) return { label: 'Accepté', color: 'success' };
-  if (code === 'refused') return { label: 'Refusé', color: 'error' };
-  if (code === 'cancelled') return { label: 'Annulé', color: 'error' };
+  if (code === 'invoiced') return { label: t('quotes.status.invoiced'), color: 'success' };
+  if (code === 'accepted' || quote.value?.convertToInvoice) return { label: t('quotes.status.accepted'), color: 'success' };
+  if (code === 'refused') return { label: t('quotes.status.refused'), color: 'error' };
+  if (code === 'cancelled') return { label: t('quotes.status.cancelled'), color: 'error' };
   return quote.value?.isSent
-    ? { label: 'En attente', color: 'warning' }
-    : { label: 'Brouillon', color: 'default' };
+    ? { label: t('quotes.status.pending'), color: 'warning' }
+    : { label: t('quotes.status.draft'), color: 'default' };
 });
 
-const formatDate = (d: string | Date) => new Date(d).toLocaleDateString('fr-FR');
+const formatDate = (d: string | Date) => formatIntlDate(d);
 const longDate = (d?: string | Date) =>
-  d ? new Date(d).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' }) : '';
-const money = (n: number) =>
-  new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(n);
+  d ? formatIntlDate(d, { day: 'numeric', month: 'long' }) : '';
+const money = (n: number) => formatCurrency(n);
 
 const vehicle = computed(
   () => [quote.value?.carBrand, quote.value?.carImmatriculation].filter(Boolean).join(' · ') || '—'
@@ -385,13 +386,13 @@ const history = computed(() => {
   const q = quote.value;
   if (!q) return [];
   const items: { label: string; date?: string; ok?: boolean }[] = [
-    { label: 'Créé', date: longDate(q.createdAt) },
+    { label: t('quotes.view.created'), date: longDate(q.createdAt) },
   ];
-  if (q.isSent) items.push({ label: 'Envoyé au client', date: longDate(q.sentAt) });
+  if (q.isSent) items.push({ label: t('quotes.view.sentToClient'), date: longDate(q.sentAt) });
   if (q.status?.code === 'accepted' || isLocked.value)
-    items.push({ label: 'Accepté', date: q.acceptedAt ? longDate(q.acceptedAt) : undefined, ok: true });
+    items.push({ label: t('quotes.status.accepted'), date: q.acceptedAt ? longDate(q.acceptedAt) : undefined, ok: true });
   if (q.convertToInvoice)
-    items.push({ label: 'Converti en facture', date: q.convertedAt ? longDate(q.convertedAt) : undefined, ok: true });
+    items.push({ label: t('quotes.list.converted'), date: q.convertedAt ? longDate(q.convertedAt) : undefined, ok: true });
   return items;
 });
 
@@ -408,9 +409,9 @@ const onSendBtnClick = async () => {
   sending.value = true;
   try {
     await sendQuote();
-    showSnack('Devis envoyé avec succès.');
+    showSnack(t('quotes.messages.sent'));
   } catch (e) {
-    showSnack(e instanceof Error && e.message === EMPTY_QUOTE_ERROR ? e.message : "Erreur lors de l'envoi du devis.", 'error');
+    showSnack(e instanceof Error && e.message === EMPTY_QUOTE_ERROR ? t('quotes.messages.emptyQuote') : t('quotes.messages.sendError'), 'error');
   } finally {
     sending.value = false;
   }
