@@ -280,13 +280,14 @@ export function createUseCreateQuoteState(deps: UseCreateQuoteStateDependencies)
   }
 
   const save = async () => {
+    error.value = undefined;
     if (!authState.userContext.value)
       throw new Error('User not found');
 
     if (!_quote.value)
       throw new Error('Quote not found');
 
-    if (!_quote.value.garageId || !_quote.value.assigned_member_id)
+    if ((!_quote.value.garageId && !_quote.value.garageName) || !_quote.value.assigned_member_id)
       throw new Error('Garage or Technician not selected');
 
     if (!_quote.value.carImmatriculation || !_quote.value.carBrand || !_quote.value.carYear)

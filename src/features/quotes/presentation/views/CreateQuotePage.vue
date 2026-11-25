@@ -36,6 +36,17 @@
           Brouillon
         </v-chip>
         <v-spacer />
+        <v-btn
+          class="d-none d-md-flex"
+          color="primary"
+          rounded="lg"
+          elevation="0"
+          :loading="loading"
+          prepend-icon="mdi-content-save-outline"
+          @click="onSaveBtnClick"
+        >
+          {{ t('quotes.create.submit') }}
+        </v-btn>
       </div>
 
       <v-form
@@ -563,6 +574,13 @@
         </v-btn>
       </div>
     </v-container>
+    <v-snackbar
+      v-model="snackbar.show"
+      color="error"
+      :timeout="5000"
+    >
+      {{ snackbar.message }}
+    </v-snackbar>
   </MainLayout>
 
   <GarageDialog
@@ -585,7 +603,7 @@ import { GarageViewModel } from '@/features/garages/presentation/models/GarageVi
 import { OrganizationMemberViewModel } from '@/features/organizations/presentation/models/OrganizationMemberViewmodel';
 import router from '@/app/router/index';
 import { setSelectedQuoteGuid } from '@/features/quotes/presentation/utils/quoteSelection';
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted, reactive, ref } from 'vue';
 import { useTheme } from 'vuetify';
 import { useI18n } from 'vue-i18n';
 
@@ -621,9 +639,11 @@ const {
   selectCountry,
   selectedCountry,
   save,
+  error,
 } = useCreateQuoteState;
 
 const loading = ref(false);
+const snackbar = reactive({ show: false, message: '' });
 const garageDialogRef = ref<GarageDialogExposed>();
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -660,10 +680,14 @@ const onSaveBtnClick = async () => {
   loading.value = true;
   try {
     await save();
+    if (error.value) throw error.value;
     if (quote.value?.id) {
       setSelectedQuoteGuid(quote.value.id);
       router.push(isForfait.value ? '/quotes' : '/quotes/items');
     }
+  } catch (e) {
+    snackbar.message = e instanceof Error ? e.message : String(e ?? t('quotes.create.submit'));
+    snackbar.show = true;
   } finally {
     loading.value = false;
   }
