@@ -2,6 +2,56 @@
   "garages": {
     "breadcrumb": {
       "list": "Garages"
+    },
+    "title": "Garages",
+    "subtitle": "Gérez les garages de votre organisation",
+    "add": "Ajouter un garage",
+    "searchPlaceholder": "Rechercher un nom, une ville…",
+    "empty": "Aucun garage",
+    "form": {
+      "name": "Nom du garage",
+      "phone": "Téléphone",
+      "email": "Email",
+      "address": "Adresse",
+      "zipCode": "Code postal",
+      "city": "Ville",
+      "commission": "Commission (%)",
+      "commissionPercent": "Pourcentage commission"
+    },
+    "table": {
+      "garage": "Garage",
+      "contact": "Contact",
+      "commission": "Commission",
+      "status": "Statut"
+    },
+    "status": {
+      "active": "Actif",
+      "archived": "Archivé"
+    },
+    "filters": {
+      "allStatuses": "Tous les statuts",
+      "allCities": "Toutes les villes"
+    },
+    "stats": {
+      "garages": "Garages",
+      "active": "Actifs",
+      "archived": "Archivés",
+      "avgCommission": "Commission moyenne"
+    },
+    "actions": {
+      "label": "Actions",
+      "edit": "Modifier",
+      "delete": "Supprimer"
+    },
+    "dialog": {
+      "edit": "Modifier le garage",
+      "new": "Nouveau garage",
+      "add": "Ajouter un garage",
+      "validate": "Valider"
+    },
+    "delete": {
+      "title": "Supprimer le garage",
+      "message": "Êtes-vous sûr de vouloir supprimer le garage \"{name}\" ?"
     }
   }
 }

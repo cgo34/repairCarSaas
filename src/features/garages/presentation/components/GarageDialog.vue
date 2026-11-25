@@ -1,7 +1,7 @@
 <template>
   <GenericDialog
     ref="genericDialogRef"
-    title="Ajouter un élément"
+    :title="t('garages.dialog.add')"
     persistent
     :max-width="600"
   >
@@ -13,7 +13,7 @@
             <v-col cols="12">
               <v-text-field
                 v-model="garage.name"
-                label="Name"
+                :label="t('garages.form.name')"
                 outlined
                 dense
               />
@@ -21,7 +21,7 @@
             <v-col cols="12">
               <v-text-field
                 v-model="garage.address"
-                label="address"
+                :label="t('garages.form.address')"
                 outlined
                 dense
               />
@@ -33,7 +33,7 @@
             <v-col cols="6">
               <v-text-field
                 v-model="garage.zip_code"
-                label="Zipcode"
+                :label="t('garages.form.zipCode')"
                 outlined
                 dense
               />
@@ -41,7 +41,7 @@
             <v-col cols="6">
               <v-text-field
                 v-model="garage.city"
-                label="City"
+                :label="t('garages.form.city')"
                 outlined
                 dense
               />
@@ -54,7 +54,7 @@
             <v-col cols="6">
               <v-text-field
                 v-model="garage.email"
-                label="Email"
+                :label="t('garages.form.email')"
                 outlined
                 dense
               />
@@ -62,7 +62,7 @@
             <v-col cols="6">
               <v-text-field
                 v-model="garage.phone"
-                label="Phone"
+                :label="t('garages.form.phone')"
                 outlined
                 dense
               />
@@ -74,7 +74,7 @@
             <v-col cols="12">
               <v-text-field
                 v-model="garage.percentageCommission"
-                label="Pourcentage commission"
+                :label="t('garages.form.commissionPercent')"
                 type="number"
                 outlined
                 dense
@@ -87,14 +87,14 @@
 
     <template #actions>
       <v-btn @click="onCancelBtnClick()">
-        Annuler
+        {{ t('common.cancel') }}
       </v-btn>
       <v-btn
         color="primary"
         :disabled="!isValidGarage"
         @click="onValidateBtnClick()"
       >
-        Valider
+        {{ t('garages.dialog.validate') }}
       </v-btn>
     </template>
   </GenericDialog>
@@ -105,11 +105,13 @@ import { useGarageDialogDependencies } from '@/features/garages/composition/useG
 import GenericDialog from '@/shared/presentation/ui/components/GenericDialog.vue';
 import type { GenericDialogExposed } from '@/shared/presentation/ui/components/components';
 import { computed, reactive, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { GarageViewModel } from '@/features/garages/presentation/models/GarageViewModel';
 import { GarageDialogEmits } from './GarageDialog';
 
 
   const { authState } = useGarageDialogDependencies();
+const { t } = useI18n();
 
 //#region -> DEFINES
 const emit = defineEmits<GarageDialogEmits>()
