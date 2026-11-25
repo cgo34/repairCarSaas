@@ -98,6 +98,10 @@ export class SupabaseClient implements IClient {
     return this.client.from(table);
   }
 
+  fromView<T extends keyof Database['public']['Views']>(view: T) {
+    return this.client.from(view);
+  }
+
   rpc<FnName extends keyof Database['public']['Functions']>(
     fn: FnName,
     params?: Database['public']['Functions'][FnName]['Args'],

@@ -280,6 +280,36 @@ export type Database = {
         }
         Relationships: []
       }
+      features: {
+        Row: {
+          created_at: string
+          description: string | null
+          is_addon: boolean
+          key: string
+          name: string
+          stripe_price_id: string | null
+          type: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          is_addon?: boolean
+          key: string
+          name: string
+          stripe_price_id?: string | null
+          type: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          is_addon?: boolean
+          key?: string
+          name?: string
+          stripe_price_id?: string | null
+          type?: string
+        }
+        Relationships: []
+      }
       garage_members: {
         Row: {
           created_at: string | null
@@ -709,6 +739,63 @@ export type Database = {
           },
         ]
       }
+      organization_features: {
+        Row: {
+          created_at: string
+          expires_at: string | null
+          feature_key: string
+          granted_by: string | null
+          id: string
+          note: string | null
+          organization_id: string
+          source: string
+          starts_at: string
+          stripe_subscription_item_id: string | null
+          value: Json | null
+        }
+        Insert: {
+          created_at?: string
+          expires_at?: string | null
+          feature_key: string
+          granted_by?: string | null
+          id?: string
+          note?: string | null
+          organization_id: string
+          source: string
+          starts_at?: string
+          stripe_subscription_item_id?: string | null
+          value?: Json | null
+        }
+        Update: {
+          created_at?: string
+          expires_at?: string | null
+          feature_key?: string
+          granted_by?: string | null
+          id?: string
+          note?: string | null
+          organization_id?: string
+          source?: string
+          starts_at?: string
+          stripe_subscription_item_id?: string | null
+          value?: Json | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "organization_features_feature_key_fkey"
+            columns: ["feature_key"]
+            isOneToOne: false
+            referencedRelation: "features"
+            referencedColumns: ["key"]
+          },
+          {
+            foreignKeyName: "organization_features_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       organization_members: {
         Row: {
           created_at: string | null
@@ -924,6 +1011,39 @@ export type Database = {
         }
         Relationships: []
       }
+      plan_features: {
+        Row: {
+          feature_key: string
+          plan_id: string
+          value: Json | null
+        }
+        Insert: {
+          feature_key: string
+          plan_id: string
+          value?: Json | null
+        }
+        Update: {
+          feature_key?: string
+          plan_id?: string
+          value?: Json | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "plan_features_feature_key_fkey"
+            columns: ["feature_key"]
+            isOneToOne: false
+            referencedRelation: "features"
+            referencedColumns: ["key"]
+          },
+          {
+            foreignKeyName: "plan_features_plan_id_fkey"
+            columns: ["plan_id"]
+            isOneToOne: false
+            referencedRelation: "subscription_plans"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       quote_details: {
         Row: {
           body_material_id: string | null
@@ -991,6 +1111,7 @@ export type Database = {
       }
       quotes: {
         Row: {
+          accepted_at: string | null
           archived_at: string | null
           assigned_member_id: string | null
           car_brand: string | null
@@ -998,9 +1119,8 @@ export type Database = {
           car_year: number | null
           commission_paid: boolean
           commission_rate: number | null
-          accepted_at: string | null
-          converted_at: string | null
           convert_to_invoice: boolean
+          converted_at: string | null
           country: string | null
           created_at: string
           created_by_member_id: string
@@ -1029,6 +1149,7 @@ export type Database = {
           updated_at: string | null
         }
         Insert: {
+          accepted_at?: string | null
           archived_at?: string | null
           assigned_member_id?: string | null
           car_brand?: string | null
@@ -1036,9 +1157,8 @@ export type Database = {
           car_year?: number | null
           commission_paid?: boolean
           commission_rate?: number | null
-          accepted_at?: string | null
-          converted_at?: string | null
           convert_to_invoice?: boolean
+          converted_at?: string | null
           country?: string | null
           created_at?: string
           created_by_member_id: string
@@ -1067,6 +1187,7 @@ export type Database = {
           updated_at?: string | null
         }
         Update: {
+          accepted_at?: string | null
           archived_at?: string | null
           assigned_member_id?: string | null
           car_brand?: string | null
@@ -1074,9 +1195,8 @@ export type Database = {
           car_year?: number | null
           commission_paid?: boolean
           commission_rate?: number | null
-          accepted_at?: string | null
-          converted_at?: string | null
           convert_to_invoice?: boolean
+          converted_at?: string | null
           country?: string | null
           created_at?: string
           created_by_member_id?: string
@@ -1362,6 +1482,7 @@ export type Database = {
           max_seats: number | null
           organization_id: string
           plan_id: string
+          source: string
           start_date: string
           status: string
           stripe_subscription_id: string | null
@@ -1376,6 +1497,7 @@ export type Database = {
           max_seats?: number | null
           organization_id: string
           plan_id: string
+          source?: string
           start_date: string
           status: string
           stripe_subscription_id?: string | null
@@ -1390,6 +1512,7 @@ export type Database = {
           max_seats?: number | null
           organization_id?: string
           plan_id?: string
+          source?: string
           start_date?: string
           status?: string
           stripe_subscription_id?: string | null
@@ -1494,7 +1617,15 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      organization_effective_features: {
+        Row: {
+          feature_key: string | null
+          organization_id: string | null
+          type: string | null
+          value: Json | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       ensure_user_profile: {

@@ -87,7 +87,7 @@
           <!-- Gauche : logo + description + bouton -->
           <v-col
             cols="12"
-            md="5"
+            md="4"
           >
             <div class="d-flex align-center ga-4 mb-3">
               <v-avatar
@@ -131,16 +131,22 @@
           <!-- Milieu : tarification -->
           <v-col
             cols="12"
-            md="3"
+            md="4"
           >
-            <div class="text-body-2 text-medium-emphasis mb-1">
+            <div class="text-h6 font-weight-bold mb-1">
               {{ t('subscription.page.pricing') }}
             </div>
             <div class="text-h4 font-weight-bold mb-1">
               {{ isFreePlan ? formatCurrency(0) : formatCurrency(15) }}
             </div>
             <div class="text-caption text-medium-emphasis mb-1">
-              {{ isFreePlan ? t('subscription.page.seatsIncluded', { count: seatsLimit, price: formatCurrency(15) }) : t('subscription.page.perUserMonth') }}
+              <template v-if="isFreePlan">
+                <div>{{ t('subscription.page.seatsIncluded', { count: seatsLimit }) }}</div>
+                <div class="text-no-wrap">{{ t('subscription.page.extraSeatPrice', { price: formatCurrency(15) }) }}</div>
+              </template>
+              <template v-else>
+                {{ t('subscription.page.perUserMonth') }}
+              </template>
             </div>
             <div class="text-caption text-medium-emphasis">
               {{ isFreePlan ? t('subscription.page.noBilling') : t('subscription.page.monthlyBilling') }}
@@ -490,7 +496,7 @@ const plans = computed(() => [
   { code: 'PREMIUM', name: t('subscription.page.plans.premium.name'), price: formatCurrency(25), unit: t('subscription.page.perUserMonth'), features: [t('subscription.page.plans.premium.f1'), t('subscription.page.plans.premium.f2'), t('subscription.page.plans.premium.f3')] },
 ])
 
-const { seatsUsed, seatsLimit, seatsPercent, seatLimitReached, isFreePlan, load } = useSubscriptionSeats()
+const { seatsUsed, seatsLimit, seatsPercent, seatLimitReached, garagesUsed, garagesLimit, isFreePlan, load } = useSubscriptionSeats()
 
 // Seule la jauge d'utilisateurs est réelle ; le reste est mocké en attendant l'intégration de paiement.
 const kpis = computed(() => [
@@ -518,8 +524,8 @@ const kpis = computed(() => [
         label: t('subscription.page.kpi.garages'),
         icon: 'mdi-warehouse',
         color: 'warning',
-        value: t('subscription.page.kpi.unlimited'),
-        caption: t('subscription.page.kpi.noGarageLimit'),
+        value: garagesLimit.value ? `${garagesUsed.value} / ${garagesLimit.value}` : t('subscription.page.kpi.unlimited'),
+        caption: garagesLimit.value ? t('subscription.page.kpi.garagesLimit') : t('subscription.page.kpi.noGarageLimit'),
       },
       {
         label: t('subscription.page.kpi.billing'),

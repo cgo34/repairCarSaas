@@ -103,7 +103,7 @@ export function createUseAdminDashboardState(deps: UseAdminDashboardStateDepende
   const subscription = computed(() => subscriptionState.subscription.value);
   const planName = computed(() => subscription.value?.subscriptionPlan?.name ?? 'Free');
   const isFreePlan = computed(() => (subscription.value?.subscriptionPlan?.code ?? 'FREE') === 'FREE');
-  const seatsLimit = computed(() => subscription.value?.maxSeats ?? ((subscription.value?.includedSeats ?? 0) + (subscription.value?.extraSeats ?? 0)));
+  const seatsLimit = computed(() => subscription.value?.seatsLimit ?? 0);
   const seatsUsed = computed(() => totalUsers.value);
   const seatLimitReached = computed(() => seatsLimit.value > 0 && seatsUsed.value >= seatsLimit.value);
   const extraSeatPrice = computed(() => subscription.value?.extraSeatPrice ?? 0);

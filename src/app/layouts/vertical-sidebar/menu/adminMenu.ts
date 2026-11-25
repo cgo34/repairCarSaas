@@ -85,18 +85,18 @@ export const adminMenu: MenuItem[] = [
   },
 
   {
-    title: 'common.nav.garages',
-    icon: BuildingCommunityIcon,
-    to: '/organization/garages',
-    chip: isFreePlan ? 'common.nav.premium' : '',
-  },
-
-  {
     title: 'common.nav.members',
     icon: UserIcon,
     to: '/organization/members',
     chip: isFreePlan ? 'common.nav.premium' : '',
     roles: ['admin'],
+  },
+
+  {
+    title: 'common.nav.garages',
+    icon: BuildingCommunityIcon,
+    to: '/organization/garages',
+    chip: isFreePlan ? 'common.nav.premium' : '',
   },
 
   // {

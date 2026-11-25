@@ -6,7 +6,14 @@ export class SubscriptionMapper {
   /**
    * Convertit un `SubscriptionApiModel` (BDD) en `SubscriptionDto` (Application)
    */
-  static apiToDto(api: SubscriptionApiModel): SubscriptionDto {
+  static apiToDto(
+    api: SubscriptionApiModel,
+    features: Record<string, number | boolean | null> = {},
+  ): SubscriptionDto {
+    const legacySeats = api.max_seats ?? (api.included_seats + api.extra_seats);
+    const seatsLimit = 'max_seats' in features
+      ? (features.max_seats === null ? 0 : Number(features.max_seats))
+      : legacySeats;
     return {
       id: api.id,
       organizationId: api.organization_id,
@@ -17,6 +24,8 @@ export class SubscriptionMapper {
       extraSeats: api.extra_seats,
       extraSeatPrice: Number(api.extra_seat_price),
       maxSeats: api.max_seats,
+      features,
+      seatsLimit,
       startDate: api.start_date,
       endDate: api.end_date,
       createdAt: api.created_at,

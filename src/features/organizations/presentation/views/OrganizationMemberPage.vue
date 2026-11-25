@@ -375,10 +375,7 @@ const {
 
 const dialog = ref<boolean>(false);
 
-const seatsLimit = computed(() => {
-  const sub = subscriptionState.subscription.value;
-  return sub?.maxSeats ?? ((sub?.includedSeats ?? 0) + (sub?.extraSeats ?? 0));
-});
+const seatsLimit = computed(() => subscriptionState.subscription.value?.seatsLimit ?? 0);
 const seatLimitReached = computed(() => seatsLimit.value > 0 && members.value.length >= seatsLimit.value);
 
 const search = ref<string | null>('');
