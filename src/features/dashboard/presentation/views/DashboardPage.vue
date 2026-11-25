@@ -91,38 +91,38 @@
             class="bg-surface border rounded-lg h-100"
           >
             <v-card-title class="text-subtitle-1 font-weight-bold pt-4">
-              Activité récente
+              {{ t('dashboard.recent') }}
             </v-card-title>
             <v-tabs
               v-model="tab"
               color="primary"
             >
               <v-tab value="quotes">
-                Devis ({{ totalQuotes }})
+                {{ t('dashboard.tabs.quotes', { count: totalQuotes }) }}
               </v-tab>
               <v-tab value="invoices">
-                Factures ({{ totalInvoices }})
+                {{ t('dashboard.tabs.invoices', { count: totalInvoices }) }}
               </v-tab>
             </v-tabs>
             <v-divider />
             <v-table hover>
               <thead>
                 <tr>
-                  <th>N°</th>
-                  <th>Client</th>
-                  <th>Véhicule</th>
-                  <th>Date</th>
-                  <th>Technicien</th>
+                  <th>{{ t('dashboard.table.number') }}</th>
+                  <th>{{ t('dashboard.table.client') }}</th>
+                  <th>{{ t('dashboard.table.vehicle') }}</th>
+                  <th>{{ t('dashboard.table.date') }}</th>
+                  <th>{{ t('dashboard.table.technician') }}</th>
                   <th class="text-right">
-                    Montant HT
+                    {{ t('dashboard.table.amountHt') }}
                   </th>
-                  <th>Envoyé</th>
-                  <th>Statut</th>
+                  <th>{{ t('dashboard.table.sent') }}</th>
+                  <th>{{ t('dashboard.table.status') }}</th>
                   <th
                     v-if="tab === 'quotes'"
                     class="text-center"
                   >
-                    Converti en facture
+                    {{ t('dashboard.table.converted') }}
                   </th>
                   <th />
                 </tr>
@@ -133,7 +133,7 @@
                     :colspan="tab === 'quotes' ? 10 : 9"
                     class="text-center py-4"
                   >
-                    Chargement…
+                    {{ t('dashboard.loading') }}
                   </td>
                 </tr>
                 <tr v-else-if="rows.length === 0">
@@ -141,7 +141,7 @@
                     :colspan="tab === 'quotes' ? 10 : 9"
                     class="text-center py-4 text-disabled"
                   >
-                    {{ tab === 'quotes' ? 'Aucun devis' : 'Aucune facture' }}
+                    {{ tab === 'quotes' ? t('dashboard.noQuote') : t('dashboard.noInvoice') }}
                   </td>
                 </tr>
                 <tr
@@ -190,7 +190,7 @@
                     <span
                       v-else
                       class="text-disabled"
-                    >Non envoyé</span>
+                    >{{ t('dashboard.table.notSent') }}</span>
                   </td>
                   <!-- Statut du devis / de la facture -->
                   <td>
@@ -211,7 +211,7 @@
                       size="26"
                       :color="r.converted ? 'success' : 'default'"
                       variant="tonal"
-                      :title="r.converted ? 'Converti en facture' : 'Non converti en facture'"
+                      :title="r.converted ? t('dashboard.table.converted') : t('dashboard.table.notConverted')"
                     >
                       <v-icon
                         size="16"
@@ -235,19 +235,19 @@
                       >
                         <v-list-item
                           prepend-icon="mdi-file-pdf-box"
-                          title="Voir PDF"
+                          :title="t('dashboard.actions.viewPdf')"
                           @click="openQuote(r.id, '/quotes/preview')"
                         />
                         <v-list-item
                           v-if="!r.locked"
                           prepend-icon="mdi-pencil-outline"
-                          title="Modifier le devis"
+                          :title="t('dashboard.actions.editQuote')"
                           @click="openQuote(r.id, '/quotes/edit')"
                         />
                         <v-list-item
                           v-if="!r.locked"
                           prepend-icon="mdi-format-list-bulleted-square"
-                          title="Ajouter des éléments"
+                          :title="t('dashboard.actions.addItems')"
                           @click="openQuote(r.id, '/quotes/edit/items')"
                         />
                       </v-list>
@@ -259,7 +259,7 @@
                       color="primary"
                       @click="openInvoice(r.id, r.to)"
                     >
-                      Voir
+                      {{ t('dashboard.actions.view') }}
                     </v-btn>
                   </td>
                 </tr>
@@ -271,7 +271,7 @@
                 color="primary"
                 :to="tab === 'quotes' ? '/quotes' : '/invoices'"
               >
-                Tout voir →
+                {{ t('dashboard.seeAll') }}
               </v-btn>
             </div>
           </v-card>
@@ -280,7 +280,7 @@
             class="bg-surface border rounded-lg pa-4"
           >
             <div class="text-subtitle-1 font-weight-bold mb-2">
-              Résumé de l'entreprise
+              {{ t('dashboard.company.summary') }}
             </div>
             <v-row>
               <v-col
@@ -291,7 +291,7 @@
               >
                 <div class="d-flex justify-space-between py-2 border-b text-body-2">
                   <span class="text-medium-emphasis">{{ r.label }}</span>
-                  <strong :class="r.value ? '' : 'text-medium-emphasis'">{{ r.value || 'Non renseigné' }}</strong>
+                  <strong :class="r.value ? '' : 'text-medium-emphasis'">{{ r.value || t('dashboard.company.notProvided') }}</strong>
                 </div>
               </v-col>
             </v-row>
@@ -307,14 +307,14 @@
             class="bg-surface border rounded-lg pa-4 flex-grow-1"
           >
             <div class="text-subtitle-1 font-weight-bold">
-              Mon organisation
+              {{ t('dashboard.organization.title') }}
             </div>
             <div class="text-body-2 text-medium-emphasis">
               {{ organizationName }}
             </div>
 
             <div class="text-overline text-medium-emphasis mt-4">
-              Accès rapide
+              {{ t('dashboard.organization.quickAccess') }}
             </div>
             <v-list
               density="compact"
@@ -344,7 +344,7 @@
 
             <template v-if="missingProfileFields.length">
               <div class="text-overline text-medium-emphasis mt-4">
-                À compléter
+                {{ t('dashboard.organization.toComplete') }}
               </div>
               <v-list
                 density="compact"
@@ -363,7 +363,7 @@
                       color="warning"
                       variant="tonal"
                     >
-                      Manquant
+                      {{ t('dashboard.organization.missing') }}
                     </v-chip>
                   </template>
                 </v-list-item>
@@ -375,10 +375,10 @@
             class="bg-surface border rounded-lg pa-4"
           >
             <div class="text-subtitle-1 font-weight-bold mb-2">
-              Mon abonnement
+              {{ t('dashboard.subscription.title') }}
             </div>
             <div class="d-flex justify-space-between py-2 border-b text-body-2">
-              <span class="text-medium-emphasis">Plan</span>
+              <span class="text-medium-emphasis">{{ t('dashboard.subscription.plan') }}</span>
               <v-chip
                 size="small"
                 variant="tonal"
@@ -388,7 +388,7 @@
               </v-chip>
             </div>
             <div class="d-flex justify-space-between py-2 text-body-2">
-              <span class="text-medium-emphasis">Utilisateurs</span>
+              <span class="text-medium-emphasis">{{ t('dashboard.subscription.users') }}</span>
               <strong>{{ seatsUsed }} / {{ seatsLimit || '—' }}</strong>
             </div>
             <v-progress-linear
@@ -402,7 +402,7 @@
               v-if="seatLimitReached"
               class="text-caption text-warning mb-3"
             >
-              Limite atteinte<span v-if="extraSeatPrice"> · siège supplémentaire : {{ euro(extraSeatPrice) }}</span>
+              {{ t('dashboard.subscription.limitReached') }}<span v-if="extraSeatPrice"> · {{ t('dashboard.subscription.extraSeat', { price: euro(extraSeatPrice) }) }}</span>
             </div>
             <v-btn
               class="mt-2"
@@ -411,7 +411,7 @@
               color="primary"
               to="/subscription"
             >
-              Gérer l'abonnement
+              {{ t('dashboard.subscription.manage') }}
             </v-btn>
           </v-card>
         </v-col>
@@ -422,6 +422,8 @@
 
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { formatCurrency, formatDate } from '@/app/i18n/formatters';
 import { useRouter } from 'vue-router';
 import MainLayout from '@/app/layouts/MainLayout.vue';
 import { setSelectedQuoteGuid } from '@/features/quotes/presentation/utils/quoteSelection';
@@ -432,6 +434,7 @@ import HailAlertWidget from '@/features/dashboard/presentation/components/HailAl
 import { useAuthState } from '@/features/auth/composition/useAuthState';
 
 useAuthState();
+const { t } = useI18n();
 
 const router = useRouter();
 const openQuote = (id: string | undefined, path: string) => {
@@ -486,52 +489,52 @@ const {
 const tab = ref<'quotes' | 'invoices'>('quotes');
 
 const euro = (n: number) =>
-  new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(n);
+  formatCurrency(n);
 
-const plural = (n: number, word: string) => `${n} ${word}${n > 1 ? 's' : ''}`;
+
 
 const heroCards = computed(() => [
   {
-    title: 'Paiements reçus',
+    title: t('dashboard.hero.received'),
     value: euro(paidAmount.value),
-    caption: `${plural(invoicesValidated.value, 'facture')} ${invoicesValidated.value > 1 ? 'payées' : 'payée'}`,
+    caption: t('dashboard.hero.paidInvoices', invoicesValidated.value),
     icon: 'mdi-cash-check',
     color: 'success',
   },
   {
-    title: 'À encaisser',
+    title: t('dashboard.hero.toCollect'),
     value: euro(unpaidAmount.value),
-    caption: `${plural(unpaidCount.value, 'facture')} ${unpaidCount.value > 1 ? 'non payées' : 'non payée'} · ${unpaidSentCount.value} envoyée${unpaidSentCount.value > 1 ? 's' : ''}, ${unpaidUnsentCount.value} à envoyer`,
+    caption: `${t('dashboard.hero.unpaidInvoices', unpaidCount.value)} · ${t('dashboard.hero.sentCount', unpaidSentCount.value)}, ${t('dashboard.hero.toSend', { count: unpaidUnsentCount.value })}`,
     icon: 'mdi-clock-outline',
     color: 'warning',
   },
   {
-    title: 'Devis',
+    title: t('dashboard.hero.quotes'),
     value: euro(openQuotesAmount.value),
-    caption: `${openQuotesProcessingCount.value} en cours · ${openQuotesAcceptedCount.value} accepté${openQuotesAcceptedCount.value > 1 ? 's' : ''}`,
+    caption: `${t('dashboard.hero.inProgress', { count: openQuotesProcessingCount.value })} · ${t('dashboard.hero.acceptedCount', openQuotesAcceptedCount.value)}`,
     icon: 'mdi-file-document-outline',
     color: 'info',
   },
 ]);
 
 const counters = computed(() => [
-  { title: 'Devis en attente', value: quotesProcessing.value, icon: 'mdi-clock-outline', color: 'warning' },
-  { title: 'Devis finalisés', value: quotesFinalized.value, icon: 'mdi-check-circle-outline', color: 'info' },
-  { title: 'Factures en attente', value: invoicesPending.value, icon: 'mdi-receipt-text-clock-outline', color: 'warning' },
-  { title: 'Factures payées', value: invoicesValidated.value, icon: 'mdi-check-decagram-outline', color: 'success' },
+  { title: t('dashboard.counters.quotesPending'), value: quotesProcessing.value, icon: 'mdi-clock-outline', color: 'warning' },
+  { title: t('dashboard.counters.quotesFinalized'), value: quotesFinalized.value, icon: 'mdi-check-circle-outline', color: 'info' },
+  { title: t('dashboard.counters.invoicesPending'), value: invoicesPending.value, icon: 'mdi-receipt-text-clock-outline', color: 'warning' },
+  { title: t('dashboard.counters.invoicesPaid'), value: invoicesValidated.value, icon: 'mdi-check-decagram-outline', color: 'success' },
 ]);
 
 const shortcuts = computed(() => [
-  { title: 'Utilisateurs', icon: 'mdi-account-group-outline', to: '/organization/members', count: totalUsers.value },
-  { title: 'Garages', icon: 'mdi-store-outline', to: '/organization/garages', count: totalGarages.value },
-  { title: 'Paramètres', icon: 'mdi-cog-outline', to: '/organization/profile', count: undefined },
-  { title: 'Tarification', icon: 'mdi-tag-outline', to: '/organization/pricing', count: undefined },
+  { title: t('dashboard.shortcuts.users'), icon: 'mdi-account-group-outline', to: '/organization/members', count: totalUsers.value },
+  { title: t('dashboard.shortcuts.garages'), icon: 'mdi-store-outline', to: '/organization/garages', count: totalGarages.value },
+  { title: t('dashboard.shortcuts.settings'), icon: 'mdi-cog-outline', to: '/organization/profile', count: undefined },
+  { title: t('dashboard.shortcuts.pricing'), icon: 'mdi-tag-outline', to: '/organization/pricing', count: undefined },
 ]);
 
 const TECH_COLORS = ['#2B54E0', '#15915F', '#F5871F', '#D8443A', '#9AA2B1'];
 
 const shortDate = (d?: string | Date | null) =>
-  d ? new Date(d).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' }) : '—';
+  d ? formatDate(d, { day: 'numeric', month: 'long' }) : '—';
 
 type CommonSource = {
   carBrand?: string;
@@ -593,11 +596,11 @@ const rows = computed(() =>
 
 const summaryRows = computed(() => [
   { label: 'SIREN', value: companySummary.value.siren },
-  { label: 'Adresse', value: companySummary.value.address },
+  { label: t('dashboard.company.address'), value: companySummary.value.address },
   { label: 'SIRET', value: companySummary.value.siret },
   { label: 'IBAN', value: companySummary.value.iban },
-  { label: 'N° TVA', value: companySummary.value.tva },
-  { label: 'Délai de paiement', value: companySummary.value.paymentDelay },
+  { label: t('dashboard.company.vatNumber'), value: companySummary.value.tva },
+  { label: t('dashboard.company.paymentDelay'), value: companySummary.value.paymentDelay },
 ]);
 onMounted(async () => {
   await fetchDashboardStats();

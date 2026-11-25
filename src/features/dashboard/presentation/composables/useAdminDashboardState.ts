@@ -11,6 +11,7 @@ import { QuoteMapper } from '@/features/quotes/presentation/mappers/QuoteMapper'
 import { InvoiceViewModel } from '@/features/invoices/presentation/models/InvoiceViewModel';
 import { QuoteViewModel } from '@/features/quotes/presentation/models/QuoteViewModel';
 import { computed, ref } from 'vue';
+import { i18n } from '@/app/i18n';
 
 export interface UseAdminDashboardStateDependencies {
   authState: IAuthState;
@@ -110,7 +111,7 @@ export function createUseAdminDashboardState(deps: UseAdminDashboardStateDepende
     const p = profileState.profile.value;
     const missing: string[] = [];
     if (!p.iban || !p.bic) missing.push('IBAN / BIC');
-    if (!p.tva_number) missing.push('N° TVA');
+    if (!p.tva_number) missing.push(i18n.global.t('dashboard.missing.vatNumber') as string);
     return missing;
   });
 
@@ -122,7 +123,7 @@ export function createUseAdminDashboardState(deps: UseAdminDashboardStateDepende
       tva: p.tva_number,
       iban: p.iban,
       address: [p.address, [p.zip_code, p.city].filter(Boolean).join(' ')].filter(Boolean).join(', '),
-      paymentDelay: p.payment_delay ? `${p.payment_delay} jours` : '',
+      paymentDelay: p.payment_delay ? i18n.global.t('dashboard.paymentDays', { days: p.payment_delay }) as string : '',
     };
   });
   const fetchDashboardStats = async () => {

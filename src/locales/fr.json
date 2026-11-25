@@ -42,6 +42,12 @@
       "vat": "TVA ({rate}%)",
       "commission": "Commission ({rate}%)"
     },
-    "search": "Rechercher"
+    "search": "Rechercher",
+    "timeAgo": {
+      "now": "à l'instant",
+      "minutes": "il y a {n} min",
+      "hours": "il y a {n} h",
+      "days": "il y a {n} j"
+    }
   }
 }

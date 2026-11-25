@@ -2,6 +2,117 @@
   "dashboard": {
     "breadcrumb": {
       "home": "Tableau de bord"
+    },
+    "hail": {
+      "title": "Surveillance grêle",
+      "live": "EN DIRECT",
+      "loading": "Chargement des données météo…",
+      "noAlert": "Aucune alerte en cours",
+      "seeAll": "Voir tout",
+      "departmentsInAlert": "département en alerte | départements en alerte",
+      "critical": "{count} critique | {count} critiques",
+      "high": "{count} élevé | {count} élevés",
+      "moderate": "{count} modéré | {count} modérés",
+      "zones": "Zones les plus touchées",
+      "last24h": "dernières 24h",
+      "updatedAt": "Mis à jour {date} à {time}",
+      "notSynced": "Non synchronisé",
+      "source": "source Open-Meteo",
+      "moreDepartments": "+ {count} autres départements",
+      "riskCritical": "Critique",
+      "riskHigh": "Élevé",
+      "riskModerate": "Modéré",
+      "riskNone": "OK"
+    },
+    "status": {
+      "draft": "Brouillon",
+      "processing": "En cours",
+      "pending": "En attente",
+      "finalized": "Finalisé",
+      "accepted": "Accepté",
+      "signed": "Signé",
+      "invoiced": "Facturé",
+      "refused": "Refusé",
+      "cancelled": "Annulé",
+      "paid": "Payée",
+      "sent": "Envoyée",
+      "cancelledInvoice": "Annulée"
+    },
+    "missing": {
+      "vatNumber": "N° TVA"
+    },
+    "paymentDays": "{days} jours",
+    "recent": "Activité récente",
+    "tabs": {
+      "quotes": "Devis ({count})",
+      "invoices": "Factures ({count})"
+    },
+    "table": {
+      "number": "N°",
+      "client": "Client",
+      "vehicle": "Véhicule",
+      "date": "Date",
+      "technician": "Technicien",
+      "amountHt": "Montant HT",
+      "sent": "Envoyé",
+      "status": "Statut",
+      "converted": "Converti en facture",
+      "notConverted": "Non converti en facture",
+      "notSent": "Non envoyé"
+    },
+    "loading": "Chargement…",
+    "noQuote": "Aucun devis",
+    "noInvoice": "Aucune facture",
+    "actions": {
+      "viewPdf": "Voir PDF",
+      "editQuote": "Modifier le devis",
+      "addItems": "Ajouter des éléments",
+      "view": "Voir"
+    },
+    "seeAll": "Tout voir →",
+    "company": {
+      "summary": "Résumé de l'entreprise",
+      "notProvided": "Non renseigné",
+      "address": "Adresse",
+      "vatNumber": "N° TVA",
+      "paymentDelay": "Délai de paiement"
+    },
+    "organization": {
+      "title": "Mon organisation",
+      "quickAccess": "Accès rapide",
+      "toComplete": "À compléter",
+      "missing": "Manquant"
+    },
+    "subscription": {
+      "title": "Mon abonnement",
+      "plan": "Plan",
+      "users": "Utilisateurs",
+      "limitReached": "Limite atteinte",
+      "extraSeat": "siège supplémentaire : {price}",
+      "manage": "Gérer l'abonnement"
+    },
+    "hero": {
+      "received": "Paiements reçus",
+      "paidInvoices": "{count} facture payée | {count} factures payées",
+      "toCollect": "À encaisser",
+      "unpaidInvoices": "{count} facture non payée | {count} factures non payées",
+      "sentCount": "{count} envoyée | {count} envoyées",
+      "toSend": "{count} à envoyer",
+      "quotes": "Devis",
+      "inProgress": "{count} en cours",
+      "acceptedCount": "{count} accepté | {count} acceptés"
+    },
+    "counters": {
+      "quotesPending": "Devis en attente",
+      "quotesFinalized": "Devis finalisés",
+      "invoicesPending": "Factures en attente",
+      "invoicesPaid": "Factures payées"
+    },
+    "shortcuts": {
+      "users": "Utilisateurs",
+      "garages": "Garages",
+      "settings": "Paramètres",
+      "pricing": "Tarification"
     }
   }
 }

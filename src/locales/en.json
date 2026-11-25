@@ -42,6 +42,12 @@
       "vat": "VAT ({rate}%)",
       "commission": "Commission ({rate}%)"
     },
-    "search": "Search"
+    "search": "Search",
+    "timeAgo": {
+      "now": "just now",
+      "minutes": "{n} min ago",
+      "hours": "{n} h ago",
+      "days": "{n} d ago"
+    }
   }
 }
