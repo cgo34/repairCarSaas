@@ -403,7 +403,7 @@
               variant="text"
               icon="mdi-eye-outline"
               title="Consulter"
-              @click.stop="onViewPdfBtnClick(item.id)"
+              @click.stop="onViewQuote(item.id)"
             />
             <v-menu v-else>
               <template #activator="{ props }">
@@ -502,6 +502,7 @@
 </template>
 
 <script setup lang="ts">
+import { setSelectedInvoiceGuid } from '@/features/invoices/presentation/utils/invoiceSelection';
 import { useQuotesPageDependencies } from '@/features/quotes/composition/useQuotesPageDependencies';
 import { OrganizationProfileDto } from '@/features/organizations/application/dtos/OrganizationProfileDto';
 import MainLayout from '@/app/layouts/MainLayout.vue';
@@ -708,7 +709,7 @@ const tableHeaders = [
   { title: '',           key: 'actions',     sortable: false },
 ];
 
-const onAddQuote        = () => router.push('/quotes/add');
+const onAddQuote        = () => router.push('/quotes/new');
 const openQuote = (id: string, path: string) => {
   setSelectedQuoteGuid(id);
   router.push(path);
@@ -717,15 +718,19 @@ const onEditQuote = (id?: string) => {
   if (id) openQuote(id, '/quotes/edit');
 };
 const onEditItems = (id?: string) => {
-  if (id) openQuote(id, '/quotes/items');
+  if (id) openQuote(id, '/quotes/edit/items');
+};
+const onViewQuote = (id?: string) => {
+  if (id) openQuote(id, '/quotes/view');
 };
 const onViewPdfBtnClick = (id?: string) => {
-  if (id) openQuote(id, '/quotes/view');
+  if (id) openQuote(id, '/quotes/preview');
 };
 const rowProps = () => ({ style: 'cursor: pointer' });
 const onRowClick = (e: Event, { item }: { item: QuoteViewModel }) => {
   if ((e.target as HTMLElement).closest('.v-selection-control, button, a')) return;
-  onEditQuote(item.id);
+  if (isLocked(item)) onViewQuote(item.id);
+  else onEditQuote(item.id);
 };
 const onDeleteBtnClick  = (id?: string) => { if (!id) return; _quoteIdToDelete.value = id; deleteQuoteConfirmDialogRef.value?.open(); };
 const onConfirmDeleteQuote = () => { if (_quoteIdToDelete.value) deleteQuote(_quoteIdToDelete.value); };
@@ -755,7 +760,8 @@ const onConvertToInvoice = async (quoteId?: string) => {
   try {
     const invoiceId = await convertToInvoice(quoteId);
     showSnack('Devis converti en facture !');
-    router.push(`/invoices/edit/${invoiceId}`);
+    setSelectedInvoiceGuid(invoiceId);
+    router.push('/invoices/edit');
   } catch {
     showSnack('Erreur lors de la conversion en facture.', 'error');
   }

@@ -168,8 +168,9 @@ const onReset = async () => {
 };
 
 watch(tab, value => {
-  if (route.params.tab !== value) {
-    router.replace({ name: 'PricingSettings', params: { tab: value } });
+  if ((route.params.tab || 'general') !== value) {
+    // The general tab is the base URL: /organization/pricing
+    router.replace({ name: 'PricingSettings', params: { tab: value === 'general' ? undefined : value } });
   }
 });
 </script>

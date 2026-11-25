@@ -8,29 +8,24 @@ export const subscriptionRoutes: RouteRecordRaw[] = [
       requiresAuth: true,
     },
     children: [
-      {
-        path: '',
-        redirect: '/subscription/overview',
-      },
-
       // =========================
       // MON ABONNEMENT
       // =========================
       {
-        path: 'overview',
+        path: '',
         name: 'subscription-overview',
         component: () => import('@/features/subscription/presentation/views/SubscriptionPage.vue'),
         meta: {
           breadcrumb: [
             {
-              title: 'Abonnement',
+              title: 'subscription.breadcrumb.root',
               disabled: true,
               href: '#',
             },
             {
-              title: 'Mon abonnement',
+              title: 'subscription.breadcrumb.mine',
               disabled: false,
-              href: '/subscription/overview',
+              href: '/subscription',
             },
           ],
         },
@@ -44,15 +39,15 @@ export const subscriptionRoutes: RouteRecordRaw[] = [
         name: 'subscription-usage',
         component: () => import('@/features/subscription/presentation/views/SubscriptionPage.vue'),
         meta: {
-          title: 'Utilisation',
+          title: 'subscription.breadcrumb.usage',
           breadcrumb: [
             {
-              title: 'Abonnement',
+              title: 'subscription.breadcrumb.root',
               disabled: true,
               href: '#',
             },
             {
-              title: 'Utilisation',
+              title: 'subscription.breadcrumb.usage',
               disabled: false,
               href: '/subscription/usage',
             },
@@ -68,15 +63,15 @@ export const subscriptionRoutes: RouteRecordRaw[] = [
         name: 'subscription-invoices',
         component: () => import('@/features/subscription/presentation/views/SubscriptionPage.vue'),
         meta: {
-          title: 'Factures abonnement',
+          title: 'subscription.breadcrumb.invoices',
           breadcrumb: [
             {
-              title: 'Abonnement',
+              title: 'subscription.breadcrumb.root',
               disabled: true,
               href: '#',
             },
             {
-              title: 'Factures',
+              title: 'subscription.breadcrumb.invoices',
               disabled: false,
               href: '/subscription/invoices',
             },

@@ -783,6 +783,7 @@
 </template>
 
   <script setup lang="ts">
+import { setSelectedInvoiceGuid } from '@/features/invoices/presentation/utils/invoiceSelection';
   import { useEditQuotePageDependencies } from '@/features/quotes/composition/useEditQuotePageDependencies';
   import MainLayout from '@/app/layouts/MainLayout.vue';
   import { ConfirmDialogExposed } from '@/shared/presentation/ui/components/ConfirmDialog';
@@ -910,7 +911,7 @@
   };
 
   // ── Handlers lignes ───────────────────────────────────────────────────────────
-  const onManageItemsBtnClick = () => router.push('/quotes/items');
+  const onManageItemsBtnClick = () => router.push('/quotes/edit/items');
   const formatDate = (d: string | Date) => new Date(d).toLocaleDateString('fr-FR');
 
   // ── Handlers actions ──────────────────────────────────────────────────────────
@@ -932,9 +933,12 @@
     new Date(d).toLocaleString('fr-FR', { dateStyle: 'short', timeStyle: 'short' });
   const onDuplicateQuoteToInvoiceBtnClick = async () => {
     const invoiceId = await duplicateQuoteToInvoice();
-    if (invoiceId) router.push(`/invoices/edit/${invoiceId}`);
+    if (invoiceId) {
+      setSelectedInvoiceGuid(invoiceId);
+      router.push('/invoices/edit');
+    }
   };
-  const onViewPdfBtnClick = () => router.push('/quotes/view');
+  const onViewPdfBtnClick = () => router.push('/quotes/preview');
   const onDeleteBtnClick = () => deleteQuoteConfirmDialogRef.value?.open();
   const onConfirmDeleteQuote = () => {
     deleteQuote();

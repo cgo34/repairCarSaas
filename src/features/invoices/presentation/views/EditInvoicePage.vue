@@ -715,6 +715,7 @@
 </template>
 
 <script setup lang="ts">
+import { getSelectedInvoiceGuid } from '@/features/invoices/presentation/utils/invoiceSelection';
 import { useEditInvoicePageDependencies } from '@/features/invoices/composition/useEditInvoicePageDependencies';
 import MainLayout from '@/app/layouts/MainLayout.vue';
 import { ConfirmDialogExposed } from '@/shared/presentation/ui/components/ConfirmDialog';
@@ -724,7 +725,7 @@ import { CountryViewModel } from '@/features/countries/presentation/models/Count
 import { GarageViewModel } from '@/features/garages/presentation/models/GarageViewModel';
 import { OrganizationMemberViewModel } from '@/features/organizations/presentation/models/OrganizationMemberViewmodel';
 import { computed, onMounted, reactive, ref } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
+import { useRouter } from 'vue-router';
 import { useTheme } from 'vuetify';
 
 // ── Services ──────────────────────────────────────────────────────────────────
@@ -780,7 +781,6 @@ const {
 } = useEditInvoiceState;
 
 const router = useRouter();
-const route = useRoute();
 const statusLoading = ref(false);
 const sending = ref(false);
 const snackbar = reactive({ show: false, message: '', color: 'success' });
@@ -832,13 +832,10 @@ const onSelectCountry = (c: CountryViewModel | undefined) => { if (c) selectCoun
 
 // ── Handlers lignes ───────────────────────────────────────────────────────────
 // La gestion des éléments se fait sur une page dédiée (mêmes écrans que pour un devis)
-const onManageItemsBtnClick = () => router.push(`/invoices/items/${route.params.id}`);
+const onManageItemsBtnClick = () => router.push('/invoices/edit/items');
 
 // ── Handlers actions ──────────────────────────────────────────────────────────
-const getInvoiceId = () => {
-  const id = route.params.id;
-  return Array.isArray(id) ? id[0] : id;
-};
+const getInvoiceId = () => getSelectedInvoiceGuid() ?? '';
 
 const onMarkPaid = async () => {
   statusLoading.value = true;
@@ -869,7 +866,7 @@ const onSendBtnClick = async () => {
   }
 };
 
-const onViewPdfBtnClick = () => router.push(`/invoices/view/${route.params.id}`);
+const onViewPdfBtnClick = () => router.push('/invoices/preview');
 const onDeleteBtnClick = () => deleteInvoiceConfirmDialogRef.value?.open();
 const onConfirmDeleteInvoice = () => {
   deleteInvoice();

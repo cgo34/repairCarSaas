@@ -4,15 +4,6 @@
       fluid
       class="pa-0"
     >
-      <div class="mb-4">
-        <h1 class="text-h4 font-weight-bold">
-          Bonjour{{ firstName ? ` ${firstName}` : '' }} 👋
-        </h1>
-        <div class="text-body-2 text-medium-emphasis">
-          Voici l'activité de votre organisation.
-        </div>
-      </div>
-
       <HailAlertWidget
         compact
         class="mb-4"
@@ -245,7 +236,7 @@
                         <v-list-item
                           prepend-icon="mdi-file-pdf-box"
                           title="Voir PDF"
-                          @click="openQuote(r.id, '/quotes/view')"
+                          @click="openQuote(r.id, '/quotes/preview')"
                         />
                         <v-list-item
                           v-if="!r.locked"
@@ -257,7 +248,7 @@
                           v-if="!r.locked"
                           prepend-icon="mdi-format-list-bulleted-square"
                           title="Ajouter des éléments"
-                          @click="openQuote(r.id, '/quotes/items')"
+                          @click="openQuote(r.id, '/quotes/edit/items')"
                         />
                       </v-list>
                     </v-menu>
@@ -266,7 +257,7 @@
                       size="small"
                       variant="text"
                       color="primary"
-                      :to="r.to"
+                      @click="openInvoice(r.id, r.to)"
                     >
                       Voir
                     </v-btn>
@@ -362,7 +353,7 @@
                 <v-list-item
                   v-for="m in missingProfileFields"
                   :key="m"
-                  to="/organization/settings"
+                  to="/organization/profile"
                   :title="m"
                   rounded
                 >
@@ -434,6 +425,7 @@ import { computed, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import MainLayout from '@/app/layouts/MainLayout.vue';
 import { setSelectedQuoteGuid } from '@/features/quotes/presentation/utils/quoteSelection';
+import { setSelectedInvoiceGuid } from '@/features/invoices/presentation/utils/invoiceSelection';
 import { useAdminDashboardState } from '@/features/dashboard/composition/useAdminDashboardState';
 import { quoteStatusChip, invoiceStatusChip } from '@/features/dashboard/presentation/labels/documentStatusLabels';
 import HailAlertWidget from '@/features/dashboard/presentation/components/HailAlertWidget.vue';
@@ -448,10 +440,16 @@ const openQuote = (id: string | undefined, path: string) => {
   router.push(path);
 };
 
+const openInvoice = (id: string | undefined, path: string) => {
+  if (!id) return;
+  setSelectedInvoiceGuid(id);
+  router.push(path);
+};
+
 const onRowClick = (e: MouseEvent, r: { id?: string; to: string; locked: boolean }) => {
   if ((e.target as HTMLElement).closest('button, a, .v-menu')) return;
   if (tab.value === 'quotes') openQuote(r.id, r.locked ? '/quotes/view' : '/quotes/edit');
-  else router.push(r.to);
+  else openInvoice(r.id, r.to);
 };
 const {
   totalUsers,
@@ -473,7 +471,6 @@ const {
   openQuotesProcessingCount,
   openQuotesAcceptedCount,
   organizationName,
-  firstName,
   planName,
   isFreePlan,
   seatsLimit,
@@ -527,8 +524,8 @@ const counters = computed(() => [
 const shortcuts = computed(() => [
   { title: 'Utilisateurs', icon: 'mdi-account-group-outline', to: '/organization/members', count: totalUsers.value },
   { title: 'Garages', icon: 'mdi-store-outline', to: '/organization/garages', count: totalGarages.value },
-  { title: 'Paramètres', icon: 'mdi-cog-outline', to: '/organization/settings', count: undefined },
-  { title: 'Tarification', icon: 'mdi-tag-outline', to: '/organization/pricing/general', count: undefined },
+  { title: 'Paramètres', icon: 'mdi-cog-outline', to: '/organization/profile', count: undefined },
+  { title: 'Tarification', icon: 'mdi-tag-outline', to: '/organization/pricing', count: undefined },
 ]);
 
 const TECH_COLORS = ['#2B54E0', '#15915F', '#F5871F', '#D8443A', '#9AA2B1'];
@@ -587,7 +584,7 @@ const rows = computed(() =>
         status: chip.label,
         color: chip.color,
         amount: i.totalHt ?? 0,
-        to: `/invoices/edit/${i.id}`,
+        to: '/invoices/edit',
         converted: false,
         locked: false,
       };

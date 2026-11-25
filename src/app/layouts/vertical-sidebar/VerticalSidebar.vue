@@ -42,6 +42,10 @@
           </v-list-item-title>
         </v-list-item>
 
+        <!-- MENU UTILISATEUR (sous le logo) -->
+        <SidebarUserMenu :compact="miniSidebar && !isHovered && !mobile" />
+        <v-divider class="my-3" />
+
         <template
           v-for="(item, i) in sidebarMenu"
           :key="i"
@@ -87,7 +91,7 @@
 
     <!-- VERSION (épinglée en bas) -->
     <template #append>
-      <div class="pa-4 text-center">
+      <div class="pb-3 text-center">
         <v-chip
           color="inputBorder"
           size="small"
@@ -120,6 +124,7 @@ import { menu } from '@/app/layouts/vertical-sidebar/menu/adminMenu';
 import NavCollapse from '@/app/layouts/vertical-sidebar/NavCollapse/NavCollapse.vue';
 import NavGroup from '@/app/layouts/vertical-sidebar/NavGroup/NavGroup.vue';
 import NavItem from '@/app/layouts/vertical-sidebar/NavItem/NavItem.vue';
+import SidebarUserMenu from '@/app/layouts/vertical-sidebar/SidebarUserMenu.vue';
 
 
 import Logo from '@/app/layouts/logo/LogoMain.vue';
@@ -163,6 +168,19 @@ const sidebarMenu = computed(() => {
 .modern-sidebar {
   border-right: none !important;
   background: rgb(var(--v-theme-navBg)) !important;
+
+  /* La zone de menu prend la hauteur restante (le bloc utilisateur est en bas)
+     au lieu d'une hauteur fixe, et la scrollbar est masquée. */
+  :deep(.scrollnavbar) {
+    height: auto;
+    flex: 1 1 auto;
+    min-height: 0;
+  }
+
+  :deep(.ps__rail-y),
+  :deep(.ps__rail-x) {
+    display: none !important;
+  }
 
   :deep(.v-list) {
     color: rgba(255, 255, 255, 0.75) !important;

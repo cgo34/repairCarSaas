@@ -43,7 +43,7 @@ import { CarIcon } from 'vue-tabler-icons';
       block
       height="44"
       class="text-none font-weight-semibold"
-      to="/subscription/overview"
+      to="/subscription"
     >
       Voir les offres
     </v-btn>

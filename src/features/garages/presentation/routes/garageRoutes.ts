@@ -11,7 +11,7 @@ export const garageRoutes: RouteRecordRaw[] = [
       roles: ['technician', 'admin'],
       subtitle: 'Manage your garages',
       breadcrumb: [
-        { title: 'Garages', href: '/organization/garages' },
+        { title: 'garages.breadcrumb.list', href: '/organization/garages' },
       ]
     },
   },

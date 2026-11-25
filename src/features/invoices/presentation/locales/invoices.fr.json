@@ -1,0 +1,12 @@
+{
+  "invoices": {
+    "breadcrumb": {
+      "list": "Factures",
+      "new": "Nouvelle facture",
+      "view": "Consulter la facture",
+      "preview": "Aperçu PDF",
+      "edit": "Modifier la facture",
+      "items": "Éléments de la facture"
+    }
+  }
+}

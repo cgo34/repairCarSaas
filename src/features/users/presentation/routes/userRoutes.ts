@@ -1,6 +1,5 @@
 import OrganizationMembersPage from '@/features/organizations/presentation/views/OrganizationMemberPage.vue';
 import OrganizationMembersDetailPage from '@/features/technicians/presentation/views/TechnicianDetailPage.vue';
-import OrganizationProfilePage from '@/features/organizations/presentation/views/OrganizationProfilePage.vue';
 import { RouteRecordRaw } from 'vue-router';
 
 export const usersRoutes: RouteRecordRaw[] = [
@@ -11,18 +10,7 @@ export const usersRoutes: RouteRecordRaw[] = [
     meta: {
       requiresAuth: true,
       breadcrumb: [
-        { title: 'Utilisateurs', href: '/organization/members' },
-      ]
-    },
-  },
-  {
-    path: '/organization/settings',
-    name: 'Settings',
-    component: OrganizationProfilePage,
-    meta: {
-      requiresAuth: true,
-      breadcrumb: [
-        { title: 'Paramètres', href: '/organization/settings' },
+        { title: 'users.breadcrumb.users', href: '/organization/members' },
       ]
     },
   },
@@ -45,7 +33,7 @@ export const usersRoutes: RouteRecordRaw[] = [
   //     requiresAuth: true,
   //     breadcrumb: [
   //       { title: 'Techniciens', href: '/technicians' },
-  //       { title: 'Détail', href: '' },
+  //       { title: 'users.breadcrumb.detail', href: '' },
   //     ]
   //   },
   // },
@@ -68,8 +56,8 @@ export const usersRoutes: RouteRecordRaw[] = [
     meta: {
       requiresAuth: true,
       breadcrumb: [
-        { title: 'Membres', href: '/organization/members' },
-        { title: 'Détail', href: '' },
+        { title: 'users.breadcrumb.members', href: '/organization/members' },
+        { title: 'users.breadcrumb.detail', href: '' },
       ]
     },
   },

@@ -568,6 +568,7 @@
 </template>
 
 <script setup lang="ts">
+import { setSelectedInvoiceGuid } from '@/features/invoices/presentation/utils/invoiceSelection';
 import { useCreateInvoicePageDependencies } from '@/features/invoices/composition/useCreateInvoicePageDependencies';
 import MainLayout from '@/app/layouts/MainLayout.vue';
 import CountrySelect from '@/features/countries/presentation/components/CountrySelect.vue';
@@ -621,7 +622,8 @@ watch(quoteDialog, open => { if (!open) invoiceSource.value = 'free'; });
 // La conversion crée directement la facture brouillon : on l'ouvre pour la compléter
 const onQuoteConverted = (invoiceId: string) => {
   quoteDialog.value = false;
-  router.push(`/invoices/edit/${invoiceId}`);
+  setSelectedInvoiceGuid(invoiceId);
+  router.push('/invoices/edit');
 };
 const onQuoteError = (message: string) => {
   snackbar.message = message;
@@ -650,7 +652,8 @@ const onSaveBtnClick = async () => {
   loading.value = true;
   try {
     await save();
-    router.push(`/invoices/edit/${invoice.value?.id}`);
+    if (invoice.value?.id) setSelectedInvoiceGuid(invoice.value.id);
+    router.push('/invoices/edit');
   } catch (e) {
     snackbar.message = e instanceof Error ? e.message : 'Impossible de créer la facture.';
     snackbar.show = true;

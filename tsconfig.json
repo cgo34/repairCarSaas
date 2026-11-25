@@ -8,6 +8,8 @@
     "strict": true,
     "jsx": "preserve",
     "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "types": ["vite/client"],
     "allowJs": true,
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,

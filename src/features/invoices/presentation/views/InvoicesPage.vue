@@ -386,7 +386,7 @@
                 <v-list-item
                   :prepend-icon="isDraft(item) ? 'mdi-pencil-outline' : 'mdi-eye-outline'"
                   :title="isDraft(item) ? 'Modifier' : 'Consulter'"
-                  @click="onEditInvoice(item.id)"
+                  @click="isDraft(item) ? onEditInvoice(item.id) : onViewInvoice(item.id)"
                 />
                 <v-list-item
                   v-if="canMarkPaid(item)"
@@ -413,6 +413,7 @@
 </template>
 
 <script setup lang="ts">
+import { setSelectedInvoiceGuid } from '@/features/invoices/presentation/utils/invoiceSelection';
 import { useInvoicesPageDependencies } from '@/features/invoices/composition/useInvoicesPageDependencies';
 import { OrganizationProfileDto } from '@/features/organizations/application/dtos/OrganizationProfileDto';
 import MainLayout from '@/app/layouts/MainLayout.vue';
@@ -606,12 +607,20 @@ const tableHeaders = [
 
 // ─── Actions ──────────────────────────────────────────────────
 const onAddInvoice     = () => router.push('/invoices/new');
-const onEditInvoice    = (id?: string) => id && router.push(`/invoices/edit/${id}`);
-const onViewPdfBtnClick= (id?: string) => id && router.push(`/invoices/view/${id}`);
-// Clic sur une ligne : ouvre la page de consultation de la facture (sauf clic sur checkbox / bouton / lien)
+// The selected invoice is stored in localStorage instead of the URL
+const openInvoice = (id: string | undefined, path: string) => {
+  if (!id) return;
+  setSelectedInvoiceGuid(id);
+  router.push(path);
+};
+const onEditInvoice    = (id?: string) => openInvoice(id, '/invoices/edit');
+const onViewInvoice    = (id?: string) => openInvoice(id, '/invoices/view');
+const onViewPdfBtnClick= (id?: string) => openInvoice(id, '/invoices/preview');
+// Clic sur une ligne : édition d'un brouillon, consultation en lecture seule sinon (sauf clic sur checkbox / bouton / lien)
 const onRowClick = (_e: Event, { item }: { item: InvoiceViewModel }) => {
   if ((_e.target as HTMLElement).closest('.v-selection-control, button, a')) return;
-  onEditInvoice(item.id);
+  if (isDraft(item)) onEditInvoice(item.id);
+  else onViewInvoice(item.id);
 };
 
 const onMarkPaid = async (id?: string) => {

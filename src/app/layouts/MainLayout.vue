@@ -81,7 +81,7 @@
           </v-btn>
           <v-btn
             value="new-quote"
-            to="/quotes/add"
+            to="/quotes/new"
             class="fab-btn"
           >
             <v-icon size="28">

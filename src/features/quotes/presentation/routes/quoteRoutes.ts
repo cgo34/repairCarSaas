@@ -1,4 +1,4 @@
-import { quoteEditGuard, quoteItemsGuard, quoteViewGuard } from '@/app/router/guards/quotes/quoteGuards';
+import { quoteEditGuard, quoteItemsGuard, quotePreviewGuard, quoteViewGuard } from '@/app/router/guards/quotes/quoteGuards';
 import CreateQuotePage from '@/features/quotes/presentation/views/CreateQuotePage.vue';
 import EditQuotePage from '@/features/quotes/presentation/views/EditQuotePage.vue';
 import QuoteItemsPage from '@/features/quotes/presentation/views/QuoteItemsPage.vue';
@@ -14,32 +14,19 @@ export const quoteRoutes: RouteRecordRaw[] = [
     meta: {
       requiresAuth: true,
       breadcrumb: [
-        { title: 'Quotes', href: '/quotes' },
+        { title: 'quotes.breadcrumb.list', href: '/quotes' },
       ]
     },
   },
   {
-    path: '/quotes/add',
+    path: '/quotes/new',
     name: 'New Quote',
     component: CreateQuotePage,
     meta: {
       requiresAuth: true,
       breadcrumb: [
-        { title: 'Quotes', href: '/quotes' },
-        { title: 'New Quote', href: '/quotes/add' },
-      ]
-    },
-  },
-  {
-    path: '/quotes/view',
-    name: 'View Quote',
-    component: ViewQuotePage,
-    beforeEnter: quoteViewGuard,
-    meta: {
-      requiresAuth: true,
-      breadcrumb: [
-        { title: 'Quotes', href: '/quotes' },
-        { title: 'View Quote', href: '/quotes/view' },
+        { title: 'quotes.breadcrumb.list', href: '/quotes' },
+        { title: 'quotes.breadcrumb.new', href: '/quotes/new' },
       ]
     },
   },
@@ -51,21 +38,50 @@ export const quoteRoutes: RouteRecordRaw[] = [
     meta: {
       requiresAuth: true,
       breadcrumb: [
-        { title: 'Quotes', href: '/quotes' },
-        { title: 'Edit Quote', href: '/quotes/edit' },
+        { title: 'quotes.breadcrumb.list', href: '/quotes' },
+        { title: 'quotes.breadcrumb.edit', href: '/quotes/edit' },
       ]
     },
   },
   {
-    path: '/quotes/items',
+    path: '/quotes/edit/items',
     name: 'Quote Items',
     component: QuoteItemsPage,
     beforeEnter: quoteItemsGuard,
     meta: {
       requiresAuth: true,
       breadcrumb: [
-        { title: 'Quotes', href: '/quotes' },
-        { title: 'Quote Items', href: '/quotes/items' },
+        { title: 'quotes.breadcrumb.list', href: '/quotes' },
+        { title: 'quotes.breadcrumb.edit', href: '/quotes/edit' },
+        { title: 'quotes.breadcrumb.items', href: '/quotes/edit/items' },
+      ]
+    },
+  },
+  {
+    // Same component as /quotes/edit: it renders read-only once the quote is locked.
+    path: '/quotes/view',
+    name: 'View Quote',
+    component: EditQuotePage,
+    beforeEnter: quoteViewGuard,
+    meta: {
+      requiresAuth: true,
+      breadcrumb: [
+        { title: 'quotes.breadcrumb.list', href: '/quotes' },
+        { title: 'quotes.breadcrumb.view', href: '/quotes/view' },
+      ]
+    },
+  },
+  {
+    path: '/quotes/preview',
+    name: 'Preview Quote',
+    component: ViewQuotePage,
+    beforeEnter: quotePreviewGuard,
+    meta: {
+      requiresAuth: true,
+      // Default value: the guard replaces the parent crumb depending on the quote state.
+      breadcrumb: [
+        { title: 'quotes.breadcrumb.list', href: '/quotes' },
+        { title: 'quotes.breadcrumb.preview', href: '/quotes/preview' },
       ]
     },
   },

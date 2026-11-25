@@ -43,7 +43,9 @@
           :disabled="!selectedGarageIds.length"
           @click="onAssign"
         >
-          Assigner<template v-if="selectedGarageIds.length > 1"> ({{ selectedGarageIds.length }})</template>
+          Assigner<template v-if="selectedGarageIds.length > 1">
+            ({{ selectedGarageIds.length }})
+          </template>
         </v-btn>
       </v-card-actions>
     </v-card>

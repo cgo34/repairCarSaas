@@ -7,11 +7,9 @@ import {
   BuildingCommunityIcon,
   // BuildingWarehouseIcon,
   SettingsDollarIcon,
-  CircleIcon,
   DashboardIcon,
   FileInvoiceIcon,
   FileEuroIcon,
-  ToolIcon,
   UserIcon,
   SettingsIcon,
   CloudStormIcon,
@@ -116,45 +114,21 @@ export const adminMenu: MenuItem[] = [
   {
     title: 'Organisation',
     icon: SettingsIcon,
-    to: '/organization/settings',
+    to: '/organization/profile',
     roles: ['admin'],
   },
 
   {
     title: 'Tarification',
     icon: SettingsDollarIcon,
-    to: '/organization/pricing/general',
+    to: '/organization/pricing',
     roles: ['admin'],
   },
 
   {
-    title: 'Référentiels',
-    icon: SettingsDollarIcon,
-    roles: ['superadmin'],
-    children: [
-      {
-        title: 'Pièces carrosserie',
-        icon: CircleIcon,
-        to: '/organization/pricing/body-parts',
-      },
-
-      {
-        title: 'Matériaux carrosserie',
-        icon: CircleIcon,
-        to: '/organization/pricing/body-materials',
-      },
-
-      {
-        title: 'Types de réparation',
-        icon: ToolIcon,
-        to: '/organization/pricing/repair-types',
-      },
-    ],
-  },
-  {
     title: 'Abonnement',
     icon: CreditCardIcon,
-    to: '/subscription/overview',
+    to: '/subscription',
     roles: ['admin'],
   },
 
@@ -175,7 +149,7 @@ export const adminMenu: MenuItem[] = [
   //   icon: CreditCardIcon,
   //   roles: ['admin'],
   //   children: [
-  //     { title: 'Mon abonnement', icon: CircleIcon, to: '/subscription/overview' },
+  //     { title: 'Mon abonnement', icon: CircleIcon, to: '/subscription' },
   //     { title: 'Utilisation',    icon: CircleIcon, to: '/subscription/usage'    },
   //     { title: 'Factures abonnement', icon: CircleIcon, to: '/subscription/invoices' },
   //   ],

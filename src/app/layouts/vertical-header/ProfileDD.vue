@@ -1,61 +1,18 @@
 <script setup lang="ts">
-import { IAuthState } from '@/features/auth/presentation/state/IAuthState';
-import { container } from '@/app/di/container';
-import { SYMBOLS } from '@/app/di/tokens';
-import { LogoutIcon, UserIcon } from 'vue-tabler-icons';
+import { LogoutIcon, MoonIcon, UserIcon } from 'vue-tabler-icons';
+import { useCustomizerState } from '@/app/layouts/useCustomizerState';
 
-const authState = container.get<IAuthState>(SYMBOLS.States.AuthState);
-const { userContext } = authState;
-
-const roleFr = (role?: string) => ({
-  admin: 'Administrateur',
-  technician: 'Technicien',
-  garage: 'Garage',
-  independant_technician: 'Technicien indépendant',
-  user: 'Utilisateur',
-} as Record<string, string>)[role ?? ''] ?? role ?? '';
-
-const initials = (name?: string) => {
-  if (!name) return '?';
-  return name.split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase();
-};
+const { toggleTheme, isDarkTheme } = useCustomizerState();
 </script>
 
 <template>
-  <div class="profile-dd pa-4">
-    <!-- Avatar + infos utilisateur -->
-    <div class="d-flex align-center gap-3 mb-4">
-      <v-avatar
-        color="primary"
-        size="44"
-      >
-        <span class="text-body-1 font-weight-bold text-white">{{ initials(userContext?.email) }}</span>
-      </v-avatar>
-      <div class="min-w-0">
-        <div class="text-subtitle-1 font-weight-semibold text-truncate">
-          {{ userContext?.email }}
-        </div>
-        <v-chip
-          size="x-small"
-          color="primary"
-          variant="tonal"
-          class="mt-1"
-        >
-          {{ roleFr(userContext?.membership?.role) }}
-        </v-chip>
-      </div>
-    </div>
-
-    <v-divider class="mb-3" />
-
-    <!-- Actions -->
+  <div class="profile-dd pa-2">
     <v-list
-      density="compact"
-      class="pa-0"
+      density="comfortable"
+      class="pa-0 bg-transparent"
     >
       <v-list-item
-        rounded="lg"
-        color="primary"
+        rounded="md"
         :to="'/profile'"
       >
         <template #prepend>
@@ -65,14 +22,41 @@ const initials = (name?: string) => {
           />
         </template>
         <v-list-item-title class="text-body-2">
-          Mon profil
+          Mon compte
         </v-list-item-title>
+      </v-list-item>
+
+      <!-- Thème clair / sombre -->
+      <v-list-item
+        rounded="md"
+        @click="toggleTheme"
+      >
+        <template #prepend>
+          <MoonIcon
+            size="18"
+            class="mr-3 text-medium-emphasis"
+          />
+        </template>
+        <v-list-item-title class="text-body-2">
+          Thème sombre
+        </v-list-item-title>
+        <template #append>
+          <v-switch
+            :model-value="isDarkTheme"
+            color="primary"
+            density="compact"
+            hide-details
+            inset
+            readonly
+            class="ml-4"
+          />
+        </template>
       </v-list-item>
 
       <v-divider class="my-2" />
 
       <v-list-item
-        rounded="lg"
+        rounded="md"
         color="error"
         class="text-error"
         :to="'/logout'"
@@ -93,9 +77,6 @@ const initials = (name?: string) => {
 
 <style scoped>
 .profile-dd {
-  min-width: 240px;
-}
-.min-w-0 {
-  min-width: 0;
+  min-width: 260px;
 }
 </style>

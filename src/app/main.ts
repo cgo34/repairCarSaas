@@ -14,6 +14,7 @@ import App from './App.vue';
 // Plugins & configuration
 import vuetify from '@/app/plugins/vuetify';
 import router from '@/app/router/index';
+import { i18n } from '@/app/i18n';
 
 // import { initAuth } from '@/app/plugins/auth';
 
@@ -29,6 +30,7 @@ const app = createApp(App);
 app.provide(DOWNLOAD_SERVICE_KEY, container.get<IDownloadService>(SYMBOLS.Services.DownloadService));
 registerCompanyProfileDependencies();
 app.use(router);
+app.use(i18n);
 app.use(PerfectScrollbarPlugin);
 app.use(VueTablerIcons);
 app.use(VueApexCharts);

@@ -139,14 +139,14 @@
 </template>
 
 <script setup lang="ts">
+import { getSelectedInvoiceGuid } from '@/features/invoices/presentation/utils/invoiceSelection';
 import { computed, onMounted } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
+import { useRouter } from 'vue-router';
 import { useTheme } from 'vuetify';
 import MainLayout from '@/app/layouts/MainLayout.vue';
 import { useEditInvoicePageDependencies } from '@/features/invoices/composition/useEditInvoicePageDependencies';
 import DocumentItemsPanel from '@/features/lineItems/presentation/components/DocumentItemsPanel.vue';
 
-const route = useRoute();
 const router = useRouter();
 const theme = useTheme();
 const isDark = computed(() => theme.current.value.dark);
@@ -176,10 +176,7 @@ const {
 
 const currency = computed(() => selectedCountry.value?.currencySymbol || '€');
 
-const getInvoiceId = () => {
-  const id = route.params.id;
-  return Array.isArray(id) ? id[0] : id;
-};
+const getInvoiceId = () => getSelectedInvoiceGuid() ?? '';
 
 const statusColor = (status?: string) => ({
   pending: 'orange',
@@ -196,8 +193,8 @@ const statusLabel = (status?: string) => ({
 } as Record<string, string>)[status ?? ''] ?? (status ?? '');
 
 const onBackBtnClick = () => router.push('/invoices');
-const onEditInvoiceBtnClick = () => router.push(`/invoices/edit/${getInvoiceId()}`);
-const onViewPdfBtnClick = () => router.push(`/invoices/view/${getInvoiceId()}`);
+const onEditInvoiceBtnClick = () => router.push('/invoices/edit');
+const onViewPdfBtnClick = () => router.push('/invoices/preview');
 
 onMounted(async () => {
   await init(getInvoiceId());

@@ -203,7 +203,7 @@ const statusLabel = (code?: string, isSent?: boolean) => {
 
 const onBackBtnClick = () => router.push('/quotes');
 const onEditQuoteBtnClick = () => router.push('/quotes/edit');
-const onViewPdfBtnClick = () => router.push('/quotes/view');
+const onViewPdfBtnClick = () => router.push('/quotes/preview');
 
 onMounted(async () => {
   const quoteId = getSelectedQuoteGuid();

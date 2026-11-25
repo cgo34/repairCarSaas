@@ -26,11 +26,32 @@
         />
       </v-btn>
 
+      <!-- TITRE ACCUEIL (remplace le fil d'Ariane sur le dashboard) -->
+      <div
+        v-if="isDashboard"
+        class="ml-4 hidden-sm-and-down"
+      >
+        <div class="text-h6 font-weight-bold">
+          Bonjour{{ userContext?.firstName ? ` ${userContext.firstName}` : '' }} 👋
+        </div>
+        <div class="text-caption text-medium-emphasis">
+          Voici l'activité de votre organisation.
+        </div>
+      </div>
+
       <!-- BREADCRUMB -->
       <v-breadcrumbs
+        v-else
         :items="breadcrumbItems"
-        class="pa-0 ml-4 text-body-2 hidden-sm-and-down"
-      />
+        class="app-breadcrumb pa-0 ml-4 text-body-2 hidden-sm-and-down"
+      >
+        <template #divider>
+          <ChevronRightIcon
+            size="16"
+            class="text-medium-emphasis"
+          />
+        </template>
+      </v-breadcrumbs>
     </div>
 
     <v-spacer />
@@ -45,30 +66,6 @@
       >
         Besoin d'aide ?
       </v-btn> -->
-
-      <!-- THEME -->
-      <v-btn
-        icon
-        class="text-primary"
-        color="lightprimary"
-        rounded="sm"
-        size="small"
-        variant="flat"
-        :title="isDarkTheme ? 'Passer en mode clair' : 'Passer en mode sombre'"
-        @click="toggleTheme"
-      >
-        <MoonIcon
-          v-if="!isDarkTheme"
-          size="20"
-          stroke-width="1.5"
-        />
-
-        <SunIcon
-          v-else
-          size="20"
-          stroke-width="1.5"
-        />
-      </v-btn>
 
       <!-- NOTIFICATIONS (masqué) -->
       <!-- <v-menu :close-on-content-click="false">
@@ -97,56 +94,13 @@
           <NotificationDD />
         </v-sheet>
       </v-menu> -->
-
-      <!-- PROFILE -->
-      <v-menu :close-on-content-click="false">
-        <template #activator="{ props }">
-          <v-btn
-            variant="text"
-            rounded="pill"
-            height="54"
-            v-bind="props"
-          >
-            <v-avatar
-              size="36"
-              class="mr-3"
-            >
-              <img
-                src="@/assets/images/profile/user-round.svg"
-                alt="User"
-              >
-            </v-avatar>
-
-            <div class="text-left">
-              <div class="font-weight-semibold">
-                {{ userContext?.organization.name }}
-              </div>
-
-              <div class="text-caption text-medium-emphasis">
-                {{ userContext?.firstName }} {{ userContext?.lastName }}
-              </div>
-            </div>
-          </v-btn>
-        </template>
-
-        <v-sheet
-          rounded="xl"
-          width="330"
-          elevation="12"
-        >
-          <ProfileDD />
-        </v-sheet>
-      </v-menu>
     </div>
   </v-app-bar>
 </template>
 
 <script setup lang="ts">
-import {
-  Menu2Icon,
-  MoonIcon,
-  SunIcon
-} from 'vue-tabler-icons';
+import { Menu2Icon, ChevronRightIcon } from 'vue-tabler-icons';
+import { useI18n } from 'vue-i18n';
 
 import {
   computed,
@@ -155,48 +109,45 @@ import {
   ref
 } from 'vue';
 import { useRoute } from 'vue-router';
-import { IAuthState } from '@/features/auth/presentation/state/IAuthState';
 
 import { useCustomizerState } from '@/app/layouts/useCustomizerState';
-
-import ProfileDD from './ProfileDD.vue';
-
+import { IAuthState } from '@/features/auth/presentation/state/IAuthState';
 import { container } from '@/app/di/container';
 import { SYMBOLS } from '@/app/di/tokens';
 
-const authState = container.get<IAuthState>(
-  SYMBOLS.States.AuthState
-);
+const { userContext } = container.get<IAuthState>(SYMBOLS.States.AuthState);
 
-const { userContext } = authState;
-
-const {
-  toggleSidebarDrawer,
-  toggleTheme,
-  isDarkTheme
-} = useCustomizerState();
+const { toggleSidebarDrawer } = useCustomizerState();
 
 const isScrolled = ref(false);
 
 const route = useRoute();
 
 const HOME_PATH = '/dashboard';
+const isDashboard = computed(() => route.path === HOME_PATH);
+
+const { t, te } = useI18n();
+
+// Le titre d'un breadcrumb est une clé i18n ; un texte brut reste affiché tel quel
+const translate = (title: string) => (te(title) ? t(title) : title);
 
 const breadcrumbItems = computed(() => {
   const crumbs = (route.meta.breadcrumb ?? []).filter(
     (crumb) => crumb.href !== HOME_PATH
   );
 
-  const items = [{ title: 'Accueil', href: HOME_PATH, disabled: false }, ...crumbs];
+  const items = [{ title: 'common.home', href: HOME_PATH, disabled: false }, ...crumbs];
 
   return items.map((crumb, index) => {
     const isLast = index === items.length - 1;
     const isLink = !isLast && !crumb.disabled && crumb.href && crumb.href !== '#';
 
     return {
-      title: crumb.title,
+      title: translate(crumb.title),
       to: isLink ? crumb.href : undefined,
-      disabled: !isLink
+      disabled: !isLink,
+      // Dernier élément (page courante) en gras
+      class: isLast ? 'breadcrumb-current' : ''
     };
   });
 });
@@ -222,3 +173,18 @@ onBeforeUnmount(() => {
   );
 });
 </script>
+<style scoped>
+.app-breadcrumb :deep(.v-breadcrumbs-item--disabled) {
+  opacity: 1;
+}
+.app-breadcrumb :deep(.breadcrumb-current) {
+  font-weight: 700;
+  color: rgb(var(--v-theme-on-surface));
+}
+.app-breadcrumb :deep(.v-breadcrumbs-item:not(.breadcrumb-current)) {
+  color: rgba(var(--v-theme-on-surface), 0.7);
+}
+.app-breadcrumb :deep(.v-breadcrumbs-divider) {
+  padding: 0 6px;
+}
+</style>

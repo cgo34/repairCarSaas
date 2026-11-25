@@ -1,0 +1,12 @@
+{
+  "quotes": {
+    "breadcrumb": {
+      "list": "Devis",
+      "new": "Nouveau devis",
+      "view": "Consulter le devis",
+      "preview": "Aperçu PDF",
+      "edit": "Modifier le devis",
+      "items": "Éléments du devis"
+    }
+  }
+}

@@ -235,12 +235,12 @@
 </template>
 
 <script setup lang="ts">
+import { getSelectedInvoiceGuid } from '@/features/invoices/presentation/utils/invoiceSelection';
 import { useViewInvoicePageDependencies } from '@/features/invoices/composition/useViewInvoicePageDependencies';
 import MainLayout from '@/app/layouts/MainLayout.vue';
 import { computed, nextTick, onMounted, reactive, ref, watch } from 'vue';
 import { getDocument, GlobalWorkerOptions, type PDFDocumentProxy } from 'pdfjs-dist';
 import pdfWorkerUrl from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
-import { useRoute } from 'vue-router';
 import { useTheme } from 'vuetify';
 
 GlobalWorkerOptions.workerSrc = pdfWorkerUrl;
@@ -259,7 +259,6 @@ const {
   total,
 } = useViewInvoiceState;
 
-const route = useRoute();
 const theme = useTheme();
 const isDark = computed(() => theme.current.value.dark);
 
@@ -400,7 +399,7 @@ const onSendBtnClick = async () => {
 };
 
 onMounted(async () => {
-  await init(route.params.id as string);
+  await init(getSelectedInvoiceGuid() ?? '');
 });
 </script>
 

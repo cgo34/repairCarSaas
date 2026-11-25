@@ -4,7 +4,6 @@ import { accountRoutes } from '@/features/account/presentation/routes/accountRou
 import { authRoutes } from '@/features/auth/presentation/routes/authRoutes';
 // import { logoutRoute } from './modules/auth/logoutRoute';
 import { authGuard } from '@/features/auth/presentation/routes/navigationGuards';
-import { carSettingsRoutes } from '@/features/carRepairSettings/presentation/routes/carSettingsRoutes';
 import { settingPriceRoutes } from '@/features/priceSettings/presentation/routes/settingPriceRoutes';
 import { dashboardRoutes } from '@/features/dashboard/presentation/routes/dashboardRoutes';
 import { garageRoutes } from '@/features/garages/presentation/routes/garageRoutes';
@@ -17,7 +16,6 @@ import { weatherRoutes } from '@/features/weather/presentation/routes/weatherRou
 
 const routes: RouteRecordRaw[] = [
   ...authRoutes,
-  ...carSettingsRoutes,
   ...dashboardRoutes,
   ...quoteRoutes,
   ...invoiceRoutes,
@@ -27,7 +25,16 @@ const routes: RouteRecordRaw[] = [
   ...settingPriceRoutes,
   ...accountRoutes,
   ...subscriptionRoutes,
-  ...weatherRoutes
+  ...weatherRoutes,
+  // Legacy URLs kept so old bookmarks still work
+  { path: '/quotes/add', redirect: '/quotes/new' },
+  { path: '/quotes/items', redirect: '/quotes/edit/items' },
+  { path: '/invoices/items', redirect: '/invoices/edit/items' },
+  { path: '/organization/settings', redirect: '/organization/profile' },
+  { path: '/company-settings', redirect: '/organization/profile' },
+  { path: '/account-settings', redirect: '/organization/profile' },
+  { path: '/organization/pricing/general', redirect: '/organization/pricing' },
+  { path: '/subscription/overview', redirect: '/subscription' },
   // logoutRoute,
 ];
 
