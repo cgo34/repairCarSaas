@@ -73,6 +73,58 @@
         "assignError": "Erreur lors de l'assignation des garages.",
         "seatLimit": "Limite d'utilisateurs de l'abonnement atteinte"
       }
+    },
+    "profile": {
+      "title": "Paramètres de l'organisation",
+      "subtitle": "Informations légales, coordonnées et conditions affichées sur vos documents.",
+      "saved": "Enregistré",
+      "tabs": {
+        "legal": "Identité légale",
+        "contact": "Coordonnées",
+        "bank": "Coordonnées bancaires",
+        "payment": "Conditions de paiement"
+      },
+      "fields": {
+        "companyName": "Nom de l'entreprise *",
+        "legalForm": "Forme juridique *",
+        "siren": "N° d'identification (SIREN, IDE...)",
+        "siret": "N° établissement (SIRET, UID...)",
+        "tvaNumber": "N° TVA intracommunautaire",
+        "capital": "Capital social",
+        "address": "Adresse *",
+        "zipCode": "Code postal *",
+        "city": "Ville *",
+        "country": "Pays",
+        "phone": "Téléphone",
+        "email": "Email",
+        "website": "Site web",
+        "iban": "IBAN",
+        "bic": "BIC / SWIFT",
+        "paymentDelay": "Délai de paiement *",
+        "latePaymentPenalty": "Pénalités de retard",
+        "recoveryFee": "Indemnité forfaitaire de recouvrement"
+      },
+      "hints": {
+        "capital": "Requis pour SARL/SAS",
+        "iban": "Affiché en pied de facture",
+        "latePaymentPenalty": "Mention légale obligatoire",
+        "recoveryFee": "Obligatoire entre professionnels"
+      },
+      "placeholders": {
+        "latePaymentPenalty": "3 fois le taux légal"
+      },
+      "delays": {
+        "cash": "Comptant (0 jour)",
+        "days": "{count} jours"
+      },
+      "validation": {
+        "required": "Champ obligatoire",
+        "invalidEmail": "Email invalide"
+      },
+      "messages": {
+        "saved": "Paramètres enregistrés avec succès.",
+        "saveError": "Une erreur est survenue lors de l'enregistrement."
+      }
     }
   }
 }
