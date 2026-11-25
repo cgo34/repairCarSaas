@@ -2,6 +2,41 @@
   "weather": {
     "breadcrumb": {
       "monitoring": "Surveillance grêle"
+    },
+    "page": {
+      "title": "Surveillance grêle",
+      "subtitle": "France · {count} département surveillé | France · {count} départements surveillés",
+      "updatedAt": "mis à jour {date}",
+      "refresh": "Actualiser",
+      "search": "Rechercher un département...",
+      "kpi": {
+        "active": "Alertes actives",
+        "activeHint": "grêle confirmée",
+        "high": "Risque élevé",
+        "highHint": "orages intenses",
+        "moderate": "Risque modéré",
+        "moderateHint": "averses/orages",
+        "none": "Sans risque",
+        "noneHint": "temps calme"
+      },
+      "tabs": {
+        "all": "Tous ({count})",
+        "high": "Risque élevé ({count})"
+      },
+      "risk": {
+        "active": "⚡ Grêle active",
+        "high": "🔴 Risque élevé",
+        "moderate": "🟡 Risque modéré",
+        "none": "🟢 Aucun risque"
+      },
+      "table": {
+        "code": "Code",
+        "department": "Département",
+        "riskLevel": "Niveau de risque",
+        "cape": "CAPE (J/kg)",
+        "lastChecked": "Dernière vérification",
+        "empty": "Aucun département trouvé"
+      }
     }
   }
 }
