@@ -7,10 +7,10 @@
       <!-- HEADER -->
       <div class="mb-4">
         <div class="text-h5 font-weight-bold">
-          Mon abonnement
+          {{ t('subscription.page.title') }}
         </div>
         <div class="text-body-2 text-medium-emphasis">
-          Gérez votre abonnement, mettez à jour vos informations de paiement et consultez l'historique de vos factures.
+          {{ t('subscription.page.subtitle') }}
         </div>
       </div>
 
@@ -81,7 +81,7 @@
         class="mb-4 pa-5"
       >
         <div class="text-subtitle-1 font-weight-bold mb-4">
-          Votre offre actuelle
+          {{ t('subscription.page.currentPlan') }}
         </div>
         <v-row align="center">
           <!-- Gauche : logo + description + bouton -->
@@ -104,17 +104,17 @@
               </v-avatar>
               <div>
                 <div class="d-flex align-center ga-2 mb-1">
-                  <span class="text-h6 font-weight-bold">{{ isFreePlan ? 'Offre Free' : 'Offre Essentielle' }}</span>
+                  <span class="text-h6 font-weight-bold">{{ isFreePlan ? t('subscription.page.plan.freeName') : t('subscription.page.plan.essentialName') }}</span>
                   <v-chip
                     size="x-small"
                     color="primary"
                     variant="tonal"
                   >
-                    {{ isFreePlan ? 'Offre gratuite' : 'Offre de base' }}
+                    {{ isFreePlan ? t('subscription.page.plan.freeBadge') : t('subscription.page.plan.essentialBadge') }}
                   </v-chip>
                 </div>
                 <div class="text-body-2 text-medium-emphasis">
-                  {{ isFreePlan ? 'Offre d\'inscription avec fonctionnalités limitées.' : 'Toutes les fonctionnalités essentielles pour gérer vos devis, factures et garages.' }}
+                  {{ isFreePlan ? t('subscription.page.plan.freeDescription') : t('subscription.page.plan.essentialDescription') }}
                 </div>
                 <v-btn
                   class="mt-3"
@@ -122,7 +122,7 @@
                   color="primary"
                   size="small"
                 >
-                  Changer d'offre
+                  {{ t('subscription.page.changePlan') }}
                 </v-btn>
               </div>
             </div>
@@ -134,16 +134,16 @@
             md="3"
           >
             <div class="text-body-2 text-medium-emphasis mb-1">
-              Tarification
+              {{ t('subscription.page.pricing') }}
             </div>
             <div class="text-h4 font-weight-bold mb-1">
-              {{ isFreePlan ? '0,00 €' : '15,00 €' }}
+              {{ isFreePlan ? formatCurrency(0) : formatCurrency(15) }}
             </div>
             <div class="text-caption text-medium-emphasis mb-1">
-              {{ isFreePlan ? `${seatsLimit} utilisateurs inclus · 15,00 € / utilisateur supplémentaire` : 'par utilisateur / mois' }}
+              {{ isFreePlan ? t('subscription.page.seatsIncluded', { count: seatsLimit, price: formatCurrency(15) }) : t('subscription.page.perUserMonth') }}
             </div>
             <div class="text-caption text-medium-emphasis">
-              {{ isFreePlan ? 'Sans facturation' : 'Facturation mensuelle' }}
+              {{ isFreePlan ? t('subscription.page.noBilling') : t('subscription.page.monthlyBilling') }}
             </div>
           </v-col>
 
@@ -186,7 +186,7 @@
           class="mb-4 pa-5"
         >
           <div class="text-subtitle-1 font-weight-bold mb-4">
-            Comparer les offres
+            {{ t('subscription.page.compare') }}
           </div>
           <v-row>
             <v-col
@@ -241,7 +241,7 @@
                   :disabled="true"
                   variant="outlined"
                 >
-                  {{ plan.code === 'FREE' ? 'Votre offre' : 'Bientôt disponible' }}
+                  {{ plan.code === 'FREE' ? t('subscription.page.yourPlan') : t('subscription.page.comingSoon') }}
                 </v-btn>
               </v-card>
             </v-col>
@@ -255,10 +255,10 @@
         >
           <div>
             <div class="text-subtitle-2 font-weight-bold mb-1">
-              Besoin d'aide ?
+              {{ t('subscription.page.help.title') }}
             </div>
             <div class="text-caption text-medium-emphasis">
-              Notre équipe est là pour vous accompagner.
+              {{ t('subscription.page.help.text') }}
             </div>
           </div>
           <v-btn
@@ -267,7 +267,7 @@
             size="small"
             prepend-icon="mdi-headset"
           >
-            Contacter le support
+            {{ t('subscription.page.help.contact') }}
           </v-btn>
         </v-card>
       </template>
@@ -285,28 +285,28 @@
             class="pa-4"
           >
             <div class="text-subtitle-1 font-weight-bold mb-3">
-              Historique de factures
+              {{ t('subscription.page.invoices.title') }}
             </div>
             <v-table density="compact">
               <thead>
                 <tr>
                   <th class="text-body-2">
-                    Date
+                    {{ t('subscription.page.invoices.date') }}
                   </th>
                   <th class="text-body-2">
-                    N° de facture
+                    {{ t('subscription.page.invoices.number') }}
                   </th>
                   <th class="text-body-2">
-                    Période
+                    {{ t('subscription.page.invoices.period') }}
                   </th>
                   <th class="text-body-2">
-                    Montant HT
+                    {{ t('subscription.page.invoices.amount') }}
                   </th>
                   <th class="text-body-2">
-                    Statut
+                    {{ t('subscription.page.invoices.status') }}
                   </th>
                   <th class="text-body-2">
-                    Action
+                    {{ t('subscription.page.invoices.action') }}
                   </th>
                 </tr>
               </thead>
@@ -333,7 +333,7 @@
                       color="success"
                       variant="tonal"
                     >
-                      Payée
+                      {{ t('subscription.page.invoices.paid') }}
                     </v-chip>
                   </td>
                   <td>
@@ -351,7 +351,7 @@
               </tbody>
             </v-table>
             <a class="text-primary text-body-2 text-decoration-none d-flex align-center ga-1 mt-3">
-              Voir toutes les factures <v-icon size="16">mdi-arrow-right</v-icon>
+              {{ t('subscription.page.invoices.viewAll') }} <v-icon size="16">mdi-arrow-right</v-icon>
             </a>
           </v-card>
         </v-col>
@@ -368,7 +368,7 @@
             class="pa-4 mb-4"
           >
             <div class="text-subtitle-1 font-weight-bold mb-3">
-              Mode de paiement
+              {{ t('subscription.page.payment.title') }}
             </div>
             <div class="d-flex align-center justify-space-between">
               <div class="d-flex align-center ga-3">
@@ -387,7 +387,7 @@
                     Visa **** **** **** 4242
                   </div>
                   <div class="text-caption text-medium-emphasis">
-                    Expire 06/2027
+                    {{ t('subscription.page.payment.expires', { date: '06/2027' }) }}
                   </div>
                 </div>
               </div>
@@ -396,7 +396,7 @@
                 color="primary"
                 size="small"
               >
-                Mettre à jour
+                {{ t('subscription.page.payment.update') }}
               </v-btn>
             </div>
           </v-card>
@@ -410,10 +410,10 @@
             <div class="d-flex align-start justify-space-between">
               <div>
                 <div class="text-subtitle-2 font-weight-bold mb-1">
-                  Besoin d'aide ?
+                  {{ t('subscription.page.help.title') }}
                 </div>
                 <div class="text-caption text-medium-emphasis mb-3">
-                  Notre équipe est là pour vous accompagner.
+                  {{ t('subscription.page.help.text') }}
                 </div>
                 <v-btn
                   variant="text"
@@ -421,7 +421,7 @@
                   size="small"
                   prepend-icon="mdi-headset"
                 >
-                  Contacter le support
+                  {{ t('subscription.page.help.contact') }}
                 </v-btn>
               </div>
               <v-icon
@@ -443,7 +443,7 @@
         <v-icon size="14">
           mdi-shield-check-outline
         </v-icon>
-        Paiement 100% sécurisé. Vos données sont protégées.
+        {{ t('subscription.page.secure') }}
       </div>
     </v-container>
   </MainLayout>
@@ -451,85 +451,100 @@
 
 <script setup lang="ts">
 import MainLayout from '@/app/layouts/MainLayout.vue'
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { formatCurrency, formatDate } from '@/app/i18n/formatters'
 import { useSubscriptionSeats } from '@/features/subscription/composition/useSubscriptionSeats'
 
-const factures = ref([
-  { id: 1, date: '15 mai 2025',  numero: 'FAC-2025-0005', periode: '15 avr. – 14 mai 2025',  montant: '120,00 €' },
-  { id: 2, date: '15 avr. 2025', numero: 'FAC-2025-0004', periode: '15 mars – 14 avr. 2025', montant: '120,00 €' },
-  { id: 3, date: '15 mars 2025', numero: 'FAC-2025-0003', periode: '15 févr. – 14 mars 2025', montant: '120,00 €' },
-  { id: 4, date: '15 févr. 2025',numero: 'FAC-2025-0002', periode: '15 janv. – 14 févr. 2025',montant: '120,00 €' },
-  { id: 5, date: '15 janv. 2025',numero: 'FAC-2025-0001', periode: '15 déc. – 14 janv. 2025', montant: '120,00 €' },
-])
+const { t } = useI18n()
+
+const longDate = (value: string) => formatDate(value, { day: 'numeric', month: 'long', year: 'numeric' })
+const shortDate = (value: string) => formatDate(value, { day: 'numeric', month: 'short', year: 'numeric' })
+
+const invoiceSamples = [
+  { id: 1, date: '2025-05-15', numero: 'FAC-2025-0005', from: '2025-04-15', to: '2025-05-14' },
+  { id: 2, date: '2025-04-15', numero: 'FAC-2025-0004', from: '2025-03-15', to: '2025-04-14' },
+  { id: 3, date: '2025-03-15', numero: 'FAC-2025-0003', from: '2025-02-15', to: '2025-03-14' },
+  { id: 4, date: '2025-02-15', numero: 'FAC-2025-0002', from: '2025-01-15', to: '2025-02-14' },
+  { id: 5, date: '2025-01-15', numero: 'FAC-2025-0001', from: '2024-12-15', to: '2025-01-14' },
+]
+
+const factures = computed(() => invoiceSamples.map(invoice => ({
+  id: invoice.id,
+  numero: invoice.numero,
+  date: shortDate(invoice.date),
+  periode: `${shortDate(invoice.from)} – ${shortDate(invoice.to)}`,
+  montant: formatCurrency(120),
+})))
 
 const offerDetails = computed(() => [
-  { icon: 'mdi-calendar-outline',       label: 'Type d\'abonnement', value: isFreePlan.value ? 'Gratuit' : 'Mensuel' },
-  { icon: 'mdi-calendar-start-outline', label: 'Date de début',      value: '15 mars 2025'  },
-  { icon: 'mdi-calendar-end-outline',   label: 'Date de fin',        value: isFreePlan.value ? 'Aucune' : '14 juin 2025' },
-  { icon: 'mdi-clock-outline',          label: 'Prochain prélèvement', value: isFreePlan.value ? 'Aucun' : '15 juin 2025' },
+  { icon: 'mdi-calendar-outline',       label: t('subscription.page.details.type'), value: isFreePlan.value ? t('subscription.page.details.free') : t('subscription.page.details.monthly') },
+  { icon: 'mdi-calendar-start-outline', label: t('subscription.page.details.start'),      value: longDate('2025-03-15') },
+  { icon: 'mdi-calendar-end-outline',   label: t('subscription.page.details.end'),        value: isFreePlan.value ? t('subscription.page.details.none') : longDate('2025-06-14') },
+  { icon: 'mdi-clock-outline',          label: t('subscription.page.details.nextDebit'), value: isFreePlan.value ? t('subscription.page.details.noneMasc') : longDate('2025-06-15') },
 ])
 
-const plans = [
-  { code: 'FREE', name: 'Free', price: '0 €', unit: 'pour toujours', badge: 'Offre actuelle', features: ['3 utilisateurs inclus', 'Devis & factures', 'Garages illimités'] },
-  { code: 'ESSENTIAL', name: 'Essentielle', price: '15 €', unit: 'par utilisateur / mois', features: ['Utilisateurs illimités', 'Devis & factures', 'Support par e-mail'] },
-  { code: 'PREMIUM', name: 'Premium', price: '25 €', unit: 'par utilisateur / mois', features: ['Tout Essentielle', 'Statistiques avancées', 'Support prioritaire'] },
-]
+const plans = computed(() => [
+  { code: 'FREE', name: t('subscription.page.plans.free.name'), price: formatCurrency(0), unit: t('subscription.page.plans.free.unit'), badge: t('subscription.page.plans.free.badge'), features: [t('subscription.page.plans.free.f1'), t('subscription.page.plans.quotesInvoices'), t('subscription.page.plans.free.f3')] },
+  { code: 'ESSENTIAL', name: t('subscription.page.plans.essential.name'), price: formatCurrency(15), unit: t('subscription.page.perUserMonth'), features: [t('subscription.page.plans.essential.f1'), t('subscription.page.plans.quotesInvoices'), t('subscription.page.plans.essential.f3')] },
+  { code: 'PREMIUM', name: t('subscription.page.plans.premium.name'), price: formatCurrency(25), unit: t('subscription.page.perUserMonth'), features: [t('subscription.page.plans.premium.f1'), t('subscription.page.plans.premium.f2'), t('subscription.page.plans.premium.f3')] },
+])
 
 const { seatsUsed, seatsLimit, seatsPercent, seatLimitReached, isFreePlan, load } = useSubscriptionSeats()
 
 // Seule la jauge d'utilisateurs est réelle ; le reste est mocké en attendant l'intégration de paiement.
 const kpis = computed(() => [
   {
-    label: 'Utilisateurs',
+    label: t('subscription.page.kpi.users'),
     icon: 'mdi-account-group-outline',
     color: 'primary',
     value: `${seatsUsed.value} / ${seatsLimit.value || '—'}`,
-    caption: 'utilisateurs actifs',
+    caption: t('subscription.page.kpi.activeUsers'),
     progress: seatsPercent.value,
-    link: { label: 'Gérer les utilisateurs', to: '/organization/members', arrow: true },
+    link: { label: t('subscription.page.kpi.manageUsers'), to: '/organization/members', arrow: true },
   },
   {
-    label: 'Utilisateur supplémentaire',
+    label: t('subscription.page.kpi.extraUser'),
     icon: 'mdi-tag-outline',
     color: 'success',
-    value: '15,00 €',
+    value: formatCurrency(15),
     caption: isFreePlan.value && seatsLimit.value
-      ? `par mois, au-delà de ${seatsLimit.value} utilisateurs inclus`
-      : 'par utilisateur / mois',
+      ? t('subscription.page.kpi.extraUserLimit', { count: seatsLimit.value })
+      : t('subscription.page.perUserMonth'),
   },
   ...(isFreePlan.value
     ? [
       {
-        label: 'Garages',
+        label: t('subscription.page.kpi.garages'),
         icon: 'mdi-warehouse',
         color: 'warning',
-        value: 'Illimités',
-        caption: 'aucune limite de garages',
+        value: t('subscription.page.kpi.unlimited'),
+        caption: t('subscription.page.kpi.noGarageLimit'),
       },
       {
-        label: 'Facturation',
+        label: t('subscription.page.kpi.billing'),
         icon: 'mdi-file-document-outline',
         color: 'purple',
-        value: 'Aucune',
-        caption: 'Plan gratuit · 0,00 € / mois',
+        value: t('subscription.page.kpi.noneFem'),
+        caption: t('subscription.page.kpi.freeCaption', { price: formatCurrency(0) }),
       },
     ]
     : [
       {
-        label: 'Coût mensuel',
+        label: t('subscription.page.kpi.monthlyCost'),
         icon: 'mdi-file-document-outline',
         color: 'purple',
-        value: '120,00 €',
-        caption: 'HT / mois',
-        link: { label: 'Voir le détail', to: '/subscription' },
+        value: formatCurrency(120),
+        caption: t('subscription.page.kpi.exclTaxMonth'),
+        link: { label: t('subscription.page.kpi.seeDetail'), to: '/subscription' },
       },
       {
-        label: 'Prochain prélèvement',
+        label: t('subscription.page.details.nextDebit'),
         icon: 'mdi-calendar-outline',
         color: 'warning',
-        value: '15 juin 2025',
-        caption: '120,00 € HT',
-        link: { label: 'Voir le mode de paiement', to: '/subscription' },
+        value: longDate('2025-06-15'),
+        caption: t('subscription.page.kpi.amountExclTax', { amount: formatCurrency(120) }),
+        link: { label: t('subscription.page.kpi.seePayment'), to: '/subscription' },
       },
     ]),
 ])

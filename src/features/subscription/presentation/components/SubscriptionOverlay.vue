@@ -1,15 +1,18 @@
 <template>
   <div class="subscription-overlay">
     <div class="overlay-content">
-      <p>Cette fonctionnalité est réservée aux utilisateurs avec une souscription payante.</p>
+      <p>{{ t('subscription.page.overlay.message') }}</p>
       <button @click="redirectToUpgrade">
-        Mettre à niveau
+        {{ t('subscription.page.overlay.upgrade') }}
       </button>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 const redirectToUpgrade = () => {
   console.log('redirectToUpgrade')
