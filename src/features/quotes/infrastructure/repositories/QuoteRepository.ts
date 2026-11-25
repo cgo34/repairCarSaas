@@ -27,6 +27,19 @@ export class QuoteRepository implements IQuoteRepository {
     return quoteNumber;
   }
 
+  async countCreatedSince(organizationId: string, sinceIso: string): Promise<number> {
+    const { count, error } = await this.clientProvider.getClient()
+      .from('quotes')
+      .select('*', { count: 'exact', head: true })
+      .eq('organization_id', organizationId)
+      .gte('created_at', sinceIso);
+
+    if (error)
+      throw new Error('Error counting quotes');
+
+    return count ?? 0;
+  }
+
   /**
    * Récupère tous les devis.
    */

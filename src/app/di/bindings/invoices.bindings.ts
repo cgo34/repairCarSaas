@@ -23,6 +23,7 @@ import { IGetInvoiceDetailUseCase } from '@/features/invoices/application/useCas
 import { IGetInvoiceUseCase } from '@/features/invoices/application/useCases/GetInvoiceUseCase';
 import { IInsertInvoiceUseCase } from '@/features/invoices/application/useCases/InsertInvoiceUseCase';
 import { IInvoicesUseCase } from '@/features/invoices/application/useCases/GetInvoicesUseCase';
+import { CountInvoicesThisMonthUseCase, ICountInvoicesThisMonthUseCase } from '@/features/invoices/application/useCases/CountInvoicesThisMonthUseCase';
 import { ISendInvoiceUseCase } from '@/features/invoices/application/useCases/SendInvoiceUseCase';
 import { IUpdateInvoiceUseCase } from '@/features/invoices/application/useCases/UpdateInvoiceUseCase';
 import { IViewInvoiceUseCase } from '@/features/invoices/application/useCases/ViewInvoiceUseCase';
@@ -40,6 +41,7 @@ import { InvoiceRepository } from '@/features/invoices/infrastructure/repositori
 export function registerInvoicesBindings(container: Container): void {
   container.bind<IInvoiceRepository>(SYMBOLS.Repositories.InvoiceRepository).toDynamicValue(ctx => new InvoiceRepository(ctx.container.get(SYMBOLS.Providers.ClientProvider))).inSingletonScope();
   container.bind<IInvoiceDetailRepository>(SYMBOLS.Repositories.InvoiceDetailRepository).toDynamicValue(ctx => new InvoiceDetailRepository(ctx.container.get(SYMBOLS.Providers.ClientProvider))).inSingletonScope();
+  container.bind<ICountInvoicesThisMonthUseCase>(SYMBOLS.UseCases.Invoice.CountInvoicesThisMonthUseCase).toDynamicValue(ctx => new CountInvoicesThisMonthUseCase(ctx.container.get(SYMBOLS.Repositories.InvoiceRepository))).inSingletonScope();
   container.bind<IInvoicesUseCase>(SYMBOLS.UseCases.Invoice.GetInvoicesUseCase).toDynamicValue(ctx => new GetInvoicesUseCase(ctx.container.get(SYMBOLS.Repositories.InvoiceRepository))).inSingletonScope();
   container.bind<IViewInvoiceUseCase>(SYMBOLS.UseCases.Invoice.ViewInvoiceUseCase).toDynamicValue(ctx => new ViewInvoiceUseCase(ctx.container.get(SYMBOLS.UseCases.Invoice.GetInvoiceUseCase), ctx.container.get(SYMBOLS.UseCases.Invoice.GetInvoiceDetailsUseCase))).inSingletonScope();
   container.bind<ICreateInvoiceUseCase>(SYMBOLS.UseCases.Invoice.CreateInvoiceUseCase).toDynamicValue(ctx => new CreateInvoiceUseCase(ctx.container.get(SYMBOLS.Repositories.InvoiceRepository))).inSingletonScope();

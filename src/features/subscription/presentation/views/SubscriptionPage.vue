@@ -14,6 +14,16 @@
         </div>
       </div>
 
+      <v-alert
+        v-if="nearLimitLabels.length"
+        type="warning"
+        variant="tonal"
+        density="comfortable"
+        class="mb-4"
+        :title="t('subscription.page.alert.title')"
+        :text="t('subscription.page.alert.text', { items: nearLimitLabels.join(', ') })"
+      />
+
       <!-- KPI CARDS -->
       <v-row
         class="mb-4"
@@ -52,7 +62,7 @@
               <v-progress-linear
                 v-if="kpi.progress !== undefined"
                 :model-value="kpi.progress"
-                :color="seatLimitReached ? 'warning' : 'primary'"
+                :color="kpi.barColor"
                 height="6"
                 rounded
                 class="my-2"
@@ -142,7 +152,9 @@
             <div class="text-caption text-medium-emphasis mb-1">
               <template v-if="isFreePlan">
                 <div>{{ t('subscription.page.seatsIncluded', { count: seatsLimit }) }}</div>
-                <div class="text-no-wrap">{{ t('subscription.page.extraSeatPrice', { price: formatCurrency(15) }) }}</div>
+                <div class="text-no-wrap">
+                  {{ t('subscription.page.extraSeatPrice', { price: formatCurrency(15) }) }}
+                </div>
               </template>
               <template v-else>
                 {{ t('subscription.page.perUserMonth') }}
@@ -184,6 +196,40 @@
         </v-row>
       </v-card>
 
+      <!-- INCLUS DANS VOTRE OFFRE -->
+      <v-card
+        flat
+        border
+        class="mb-4 pa-5"
+      >
+        <div class="text-subtitle-1 font-weight-bold mb-4">
+          {{ t('subscription.page.included') }}
+        </div>
+        <div class="included-list">
+          <div
+            v-for="item in includedFeatures"
+            :key="item.key"
+            class="d-flex align-center ga-2 text-body-2 mb-2"
+          >
+            <v-icon
+              size="18"
+              :color="item.enabled ? 'success' : 'grey'"
+            >
+              {{ item.enabled ? 'mdi-check-circle' : 'mdi-close-circle-outline' }}
+            </v-icon>
+            <span :class="item.enabled ? '' : 'text-medium-emphasis text-decoration-line-through'">{{ item.label }}</span>
+            <v-chip
+              v-if="!item.enabled"
+              size="x-small"
+              color="warning"
+              variant="tonal"
+            >
+              Premium
+            </v-chip>
+          </div>
+        </div>
+      </v-card>
+
       <!-- PLAN FREE : COMPARATIF DES OFFRES + AIDE -->
       <template v-if="isFreePlan">
         <v-card
@@ -194,64 +240,55 @@
           <div class="text-subtitle-1 font-weight-bold mb-4">
             {{ t('subscription.page.compare') }}
           </div>
-          <v-row>
-            <v-col
-              v-for="plan in plans"
-              :key="plan.code"
-              cols="12"
-              md="4"
-            >
-              <v-card
-                flat
-                class="pa-5 h-100 d-flex flex-column"
-                :class="plan.code === 'FREE' ? '' : 'border text-medium-emphasis'"
-                :style="plan.code === 'FREE'
-                  ? 'border: 2px solid rgb(var(--v-theme-primary)); background: rgba(var(--v-theme-primary), 0.08)'
-                  : 'background: rgba(var(--v-theme-on-surface), 0.04)'"
-              >
-                <div class="d-flex align-center justify-space-between">
-                  <span class="text-h6 font-weight-bold">{{ plan.name }}</span>
+          <v-table density="comfortable">
+            <thead>
+              <tr>
+                <th />
+                <th class="text-center">
+                  Free
                   <v-chip
-                    v-if="plan.badge"
                     size="x-small"
-                    :color="plan.code === 'FREE' ? 'primary' : 'warning'"
+                    color="primary"
                     variant="tonal"
+                    class="ml-1"
                   >
-                    {{ plan.badge }}
+                    {{ t('subscription.page.yourPlan') }}
                   </v-chip>
-                </div>
-                <div class="text-h4 font-weight-bold mt-2">
-                  {{ plan.price }}
-                </div>
-                <div class="text-caption text-medium-emphasis mb-3">
-                  {{ plan.unit }}
-                </div>
-                <div
-                  v-for="feature in plan.features"
-                  :key="feature"
-                  class="d-flex align-center ga-2 text-body-2 mb-1"
-                >
+                </th>
+                <th class="text-center">
+                  Premium · {{ formatCurrency(49) }}{{ t('subscription.page.perMonthShort') }}
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                v-for="row in compareRows"
+                :key="row.label"
+              >
+                <td>{{ row.label }}</td>
+                <td class="text-center">
                   <v-icon
-                    size="16"
-                    color="success"
+                    v-if="typeof row.free === 'boolean'"
+                    size="18"
+                    :color="row.free ? 'success' : 'grey'"
                   >
-                    mdi-check
+                    {{ row.free ? 'mdi-check' : 'mdi-close' }}
                   </v-icon>
-                  {{ feature }}
-                </div>
-                <v-spacer />
-                <v-btn
-                  class="mt-4"
-                  block
-                  size="small"
-                  :disabled="true"
-                  variant="outlined"
-                >
-                  {{ plan.code === 'FREE' ? t('subscription.page.yourPlan') : t('subscription.page.comingSoon') }}
-                </v-btn>
-              </v-card>
-            </v-col>
-          </v-row>
+                  <span v-else>{{ row.free }}</span>
+                </td>
+                <td class="text-center">
+                  <v-icon
+                    v-if="typeof row.premium === 'boolean'"
+                    size="18"
+                    :color="row.premium ? 'success' : 'grey'"
+                  >
+                    {{ row.premium ? 'mdi-check' : 'mdi-close' }}
+                  </v-icon>
+                  <span v-else>{{ row.premium }}</span>
+                </td>
+              </tr>
+            </tbody>
+          </v-table>
         </v-card>
 
         <v-card
@@ -490,69 +527,86 @@ const offerDetails = computed(() => [
   { icon: 'mdi-clock-outline',          label: t('subscription.page.details.nextDebit'), value: isFreePlan.value ? t('subscription.page.details.noneMasc') : longDate('2025-06-15') },
 ])
 
-const plans = computed(() => [
-  { code: 'FREE', name: t('subscription.page.plans.free.name'), price: formatCurrency(0), unit: t('subscription.page.plans.free.unit'), badge: t('subscription.page.plans.free.badge'), features: [t('subscription.page.plans.free.f1'), t('subscription.page.plans.quotesInvoices'), t('subscription.page.plans.free.f3')] },
-  { code: 'ESSENTIAL', name: t('subscription.page.plans.essential.name'), price: formatCurrency(15), unit: t('subscription.page.perUserMonth'), features: [t('subscription.page.plans.essential.f1'), t('subscription.page.plans.quotesInvoices'), t('subscription.page.plans.essential.f3')] },
-  { code: 'PREMIUM', name: t('subscription.page.plans.premium.name'), price: formatCurrency(25), unit: t('subscription.page.perUserMonth'), features: [t('subscription.page.plans.premium.f1'), t('subscription.page.plans.premium.f2'), t('subscription.page.plans.premium.f3')] },
-])
+const {
+  seatsUsed, seatsLimit, garagesUsed, garagesLimit,
+  quotesUsed, quotesLimit, invoicesUsed, invoicesLimit,
+  features, isFreePlan, load,
+} = useSubscriptionSeats()
 
-const { seatsUsed, seatsLimit, seatsPercent, seatLimitReached, garagesUsed, garagesLimit, isFreePlan, load } = useSubscriptionSeats()
+const NEAR_LIMIT_PERCENT = 80
 
-// Seule la jauge d'utilisateurs est réelle ; le reste est mocké en attendant l'intégration de paiement.
+const quotaKpi = (label: string, icon: string, used: number, limit: number, caption: string) => {
+  const percent = limit > 0 ? Math.min(100, (used / limit) * 100) : undefined
+  const barColor = percent === undefined ? 'primary' : percent >= 100 ? 'error' : percent >= NEAR_LIMIT_PERCENT ? 'warning' : 'primary'
+  return {
+    label,
+    icon,
+    color: barColor,
+    value: limit > 0 ? `${used} / ${limit}` : `${used} · ${t('subscription.page.kpi.unlimited')}`,
+    caption,
+    progress: percent,
+    barColor,
+    link: undefined as { label: string; to: string; arrow: boolean } | undefined,
+  }
+}
+
 const kpis = computed(() => [
   {
-    label: t('subscription.page.kpi.users'),
-    icon: 'mdi-account-group-outline',
-    color: 'primary',
-    value: `${seatsUsed.value} / ${seatsLimit.value || '—'}`,
-    caption: t('subscription.page.kpi.activeUsers'),
-    progress: seatsPercent.value,
+    ...quotaKpi(t('subscription.page.kpi.users'), 'mdi-account-group-outline', seatsUsed.value, seatsLimit.value, t('subscription.page.kpi.activeUsers')),
     link: { label: t('subscription.page.kpi.manageUsers'), to: '/organization/members', arrow: true },
   },
-  {
-    label: t('subscription.page.kpi.extraUser'),
-    icon: 'mdi-tag-outline',
-    color: 'success',
-    value: formatCurrency(15),
-    caption: isFreePlan.value && seatsLimit.value
-      ? t('subscription.page.kpi.extraUserLimit', { count: seatsLimit.value })
-      : t('subscription.page.perUserMonth'),
-  },
-  ...(isFreePlan.value
-    ? [
-      {
-        label: t('subscription.page.kpi.garages'),
-        icon: 'mdi-warehouse',
-        color: 'warning',
-        value: garagesLimit.value ? `${garagesUsed.value} / ${garagesLimit.value}` : t('subscription.page.kpi.unlimited'),
-        caption: garagesLimit.value ? t('subscription.page.kpi.garagesLimit') : t('subscription.page.kpi.noGarageLimit'),
-      },
-      {
-        label: t('subscription.page.kpi.billing'),
-        icon: 'mdi-file-document-outline',
-        color: 'purple',
-        value: t('subscription.page.kpi.noneFem'),
-        caption: t('subscription.page.kpi.freeCaption', { price: formatCurrency(0) }),
-      },
-    ]
-    : [
-      {
-        label: t('subscription.page.kpi.monthlyCost'),
-        icon: 'mdi-file-document-outline',
-        color: 'purple',
-        value: formatCurrency(120),
-        caption: t('subscription.page.kpi.exclTaxMonth'),
-        link: { label: t('subscription.page.kpi.seeDetail'), to: '/subscription' },
-      },
-      {
-        label: t('subscription.page.details.nextDebit'),
-        icon: 'mdi-calendar-outline',
-        color: 'warning',
-        value: longDate('2025-06-15'),
-        caption: t('subscription.page.kpi.amountExclTax', { amount: formatCurrency(120) }),
-        link: { label: t('subscription.page.kpi.seePayment'), to: '/subscription' },
-      },
-    ]),
+  quotaKpi(t('subscription.page.kpi.garages'), 'mdi-warehouse', garagesUsed.value, garagesLimit.value, t('subscription.page.kpi.garagesLimit')),
+  quotaKpi(t('subscription.page.kpi.quotesMonth'), 'mdi-file-document-edit-outline', quotesUsed.value, quotesLimit.value, t('subscription.page.kpi.createdThisMonth')),
+  quotaKpi(t('subscription.page.kpi.invoicesMonth'), 'mdi-file-document-outline', invoicesUsed.value, invoicesLimit.value, t('subscription.page.kpi.createdThisMonth')),
+])
+
+const nearLimitLabels = computed(() =>
+  kpis.value.filter(kpi => (kpi.progress ?? 0) >= NEAR_LIMIT_PERCENT).map(kpi => kpi.label.toLowerCase()),
+)
+
+// null = illimité
+const limitText = (key: string, singular: string, plural: string) => {
+  const value = features.value[key]
+  if (typeof value === 'number') return `${value} ${value > 1 ? plural : singular}`
+  return `${t('subscription.page.kpi.unlimited')} ${plural}`
+}
+
+const includedFeatures = computed(() => [
+  { key: 'max_seats', enabled: true, label: limitText('max_seats', t('subscription.page.feature.user'), t('subscription.page.feature.users')) },
+  { key: 'max_garages', enabled: true, label: limitText('max_garages', t('subscription.page.feature.garage'), t('subscription.page.feature.garages')) },
+  { key: 'max_quotes_per_month', enabled: true, label: `${limitText('max_quotes_per_month', t('subscription.page.feature.quote'), t('subscription.page.feature.quotes'))} ${t('subscription.page.feature.perMonth')}` },
+  { key: 'max_invoices_per_month', enabled: true, label: `${limitText('max_invoices_per_month', t('subscription.page.feature.invoice'), t('subscription.page.feature.invoices'))} ${t('subscription.page.feature.perMonth')}` },
+  { key: 'quote_to_invoice', enabled: features.value.quote_to_invoice === true, label: t('subscription.page.feature.quoteToInvoice') },
+  { key: 'quote_email_sending', enabled: features.value.quote_email_sending === true, label: t('subscription.page.feature.emailSending') },
+  { key: 'car_view', enabled: features.value.car_view === true, label: t('subscription.page.feature.carView') },
+].sort((a, b) => Number(b.enabled) - Number(a.enabled)))
+
+const unlimited = computed(() => t('subscription.page.kpi.unlimited'))
+const compareRows = computed(() => [
+  { label: t('subscription.page.feature.users'), free: 2, premium: 10 },
+  { label: t('subscription.page.feature.garages'), free: 5, premium: unlimited.value },
+  { label: t('subscription.page.kpi.quotesMonth'), free: 5, premium: unlimited.value },
+  { label: t('subscription.page.kpi.invoicesMonth'), free: 5, premium: unlimited.value },
+  { label: t('subscription.page.feature.quoteToInvoice'), free: true, premium: true },
+  { label: t('subscription.page.feature.emailSending'), free: false, premium: true },
+  { label: t('subscription.page.feature.carView'), free: false, premium: true },
 ])
 
 onMounted(load)</script>
+
+<style scoped>
+.included-list {
+  column-count: 2;
+  column-gap: 32px;
+}
+
+.included-list > div {
+  break-inside: avoid;
+}
+
+@media (max-width: 959px) {
+  .included-list {
+    column-count: 1;
+  }
+}
+</style>

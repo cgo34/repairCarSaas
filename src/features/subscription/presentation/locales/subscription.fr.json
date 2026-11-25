@@ -26,6 +26,26 @@
       "noBilling": "Sans facturation",
       "monthlyBilling": "Facturation mensuelle",
       "compare": "Comparer les offres",
+      "included": "Inclus dans votre offre",
+      "perMonthShort": " / mois",
+      "alert": {
+        "title": "Quota bientôt atteint",
+        "text": "Vous approchez de la limite de votre offre : {items}."
+      },
+      "feature": {
+        "user": "utilisateur",
+        "users": "utilisateurs",
+        "garage": "garage",
+        "garages": "garages",
+        "quote": "devis",
+        "quotes": "devis",
+        "invoice": "facture",
+        "invoices": "factures",
+        "perMonth": "par mois",
+        "quoteToInvoice": "Transformation d'un devis en facture",
+        "emailSending": "Envoi des devis par e-mail",
+        "carView": "Vue véhicule"
+      },
       "yourPlan": "Votre offre",
       "comingSoon": "Bientôt disponible",
       "help": {
@@ -91,6 +111,9 @@
         "unlimited": "Illimités",
         "noGarageLimit": "aucune limite de garages",
         "garagesLimit": "garages enregistrés",
+        "quotesMonth": "Devis du mois",
+        "invoicesMonth": "Factures du mois",
+        "createdThisMonth": "créés ce mois-ci",
         "billing": "Facturation",
         "noneFem": "Aucune",
         "freeCaption": "Plan gratuit · {price} / mois",

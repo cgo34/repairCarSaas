@@ -40,6 +40,19 @@ export class InvoiceRepository implements IInvoiceRepository {
     return invoiceNumber;
   }
 
+  async countCreatedSince(organizationId: string, sinceIso: string): Promise<number> {
+    const { count, error } = await this.clientProvider.getClient()
+      .from('invoices')
+      .select('*', { count: 'exact', head: true })
+      .eq('organization_id', organizationId)
+      .gte('created_at', sinceIso);
+
+    if (error)
+      throw new Error('Error counting invoices');
+
+    return count ?? 0;
+  }
+
   /**
    * ============================================================
    * GET ALL BY ORGANIZATION MEMBER

@@ -26,6 +26,26 @@
       "noBilling": "No billing",
       "monthlyBilling": "Monthly billing",
       "compare": "Compare plans",
+      "included": "Included in your plan",
+      "perMonthShort": " / month",
+      "alert": {
+        "title": "Quota almost reached",
+        "text": "You are approaching your plan limit: {items}."
+      },
+      "feature": {
+        "user": "user",
+        "users": "users",
+        "garage": "garage",
+        "garages": "garages",
+        "quote": "quote",
+        "quotes": "quotes",
+        "invoice": "invoice",
+        "invoices": "invoices",
+        "perMonth": "per month",
+        "quoteToInvoice": "Convert a quote into an invoice",
+        "emailSending": "Send quotes by email",
+        "carView": "Vehicle view"
+      },
       "yourPlan": "Your plan",
       "comingSoon": "Coming soon",
       "help": {
@@ -91,6 +111,9 @@
         "unlimited": "Unlimited",
         "noGarageLimit": "no garage limit",
         "garagesLimit": "registered garages",
+        "quotesMonth": "Quotes this month",
+        "invoicesMonth": "Invoices this month",
+        "createdThisMonth": "created this month",
         "billing": "Billing",
         "noneFem": "None",
         "freeCaption": "Free plan · {price} / month",

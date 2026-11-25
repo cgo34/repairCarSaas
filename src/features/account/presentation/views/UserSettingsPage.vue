@@ -3,7 +3,7 @@
     <v-container
       fluid
       class="pa-0"
-      style="max-width: 600px;"
+      style="max-width: 1100px;"
     >
       <!-- Header -->
       <div class="d-flex align-center gap-3 mb-6">
@@ -38,186 +38,215 @@
         />
       </div>
 
-      <v-form
-        v-else
-        ref="formRef"
-        @submit.prevent="onSave"
-      >
-        <!-- Identité -->
-        <v-card
-          flat
-          border
-          class="mb-4 pa-5"
+      <v-row v-else>
+        <v-col
+          cols="12"
+          md="6"
         >
-          <div class="text-subtitle-1 font-weight-bold mb-4">
-            {{ t('account.profile.identity') }}
-          </div>
-          <v-card-text class="pa-0">
-            <v-row dense>
-              <v-col
-                cols="12"
-                sm="6"
-              >
-                <v-text-field
-                  v-model="form.firstName"
-                  :label="t('account.profile.firstName')"
-                  variant="outlined"
-                  density="comfortable"
-                  clearable
-                />
-              </v-col>
-              <v-col
-                cols="12"
-                sm="6"
-              >
-                <v-text-field
-                  v-model="form.lastName"
-                  :label="t('account.profile.lastName')"
-                  variant="outlined"
-                  density="comfortable"
-                  clearable
-                />
-              </v-col>
-              <v-col cols="12">
-                <v-text-field
-                  v-model="form.fullName"
-                  :label="t('account.profile.fullName')"
-                  variant="outlined"
-                  density="comfortable"
-                />
-              </v-col>
-              <v-col cols="12">
-                <v-text-field
-                  v-model="form.phone"
-                  :label="t('account.profile.phone')"
-                  type="tel"
-                  variant="outlined"
-                  density="comfortable"
-                  clearable
-                />
-              </v-col>
-              <v-col cols="12">
-                <v-text-field
-                  v-model="form.email"
-                  :label="t('account.profile.email')"
-                  :hint="t('account.profile.emailReadonly')"
-                  persistent-hint
-                  type="email"
-                  variant="outlined"
-                  density="comfortable"
-                  readonly
-                  disabled
-                />
-              </v-col>
-            </v-row>
-          </v-card-text>
-        </v-card>
-
-        <!-- Actions -->
-        <div class="d-flex justify-end gap-3 mt-4">
-          <v-btn
-            variant="text"
-            @click="resetForm"
-          >
-            {{ t('common.cancel') }}
-          </v-btn>
-          <v-btn
-            type="submit"
-            color="primary"
-            variant="flat"
-            :loading="profileState.loading.value"
-          >
-            {{ t('common.save') }}
-          </v-btn>
-        </div>
-      </v-form>
-
-      <!-- Sécurité -->
-      <v-card
-        v-if="!profileState.loading.value"
-        flat
-        border
-        class="mt-6 pa-5"
-      >
-        <div class="text-subtitle-1 font-weight-bold mb-4">
-          {{ t('account.security.title') }}
-        </div>
-        <v-card-text class="pa-0">
           <v-form
-            ref="pwdFormRef"
-            @submit.prevent="onChangePassword"
+            ref="formRef"
+            class="h-100"
+            @submit.prevent="onSave"
           >
-            <v-text-field
-              v-model="pwd.current"
-              :label="t('account.security.currentPassword')"
-              :type="showPwd.current ? 'text' : 'password'"
-              :append-inner-icon="showPwd.current ? 'mdi-eye-off' : 'mdi-eye'"
-              variant="outlined"
-              density="comfortable"
-              autocomplete="current-password"
-              :rules="[pwdRules.required]"
-              :error-messages="pwdError"
-              @click:append-inner="showPwd.current = !showPwd.current"
-            />
-            <v-text-field
-              v-model="pwd.next"
-              :label="t('account.security.newPassword')"
-              :type="showPwd.next ? 'text' : 'password'"
-              :append-inner-icon="showPwd.next ? 'mdi-eye-off' : 'mdi-eye'"
-              variant="outlined"
-              density="comfortable"
-              autocomplete="new-password"
-              :rules="[pwdRules.required, pwdRules.min]"
-              hide-details
-              @click:append-inner="showPwd.next = !showPwd.next"
-            />
-            <div class="d-flex ga-1 mt-2">
-              <div
-                v-for="i in 4"
-                :key="i"
-                class="flex-1-1 rounded"
-                style="height: 4px;"
-                :class="i <= strength.segments ? `bg-${strength.color}` : 'bg-grey-lighten-2'"
-              />
-            </div>
-            <div
-              class="text-caption mt-1 mb-4"
-              :class="pwd.next && !pwdRules.valid(pwd.next) ? 'text-error' : 'text-medium-emphasis'"
+            <!-- Identité -->
+            <v-card
+              flat
+              border
+              class="pa-5 h-100 d-flex flex-column"
             >
-              {{ t('account.security.tooShort') }}
-            </div>
-            <v-text-field
-              v-model="pwd.confirm"
-              :label="t('account.security.confirmPassword')"
-              :type="showPwd.confirm ? 'text' : 'password'"
-              :append-inner-icon="showPwd.confirm ? 'mdi-eye-off' : 'mdi-eye'"
-              variant="outlined"
-              density="comfortable"
-              autocomplete="new-password"
-              :rules="[pwdRules.required, pwdRules.match]"
-              @click:append-inner="showPwd.confirm = !showPwd.confirm"
-            />
-            <div class="d-flex align-center">
-              <router-link
-                to="/forgot-password"
-                class="text-caption text-decoration-none text-primary"
-              >
-                {{ t('account.security.forgot') }}
-              </router-link>
+              <div class="text-subtitle-1 font-weight-bold mb-4 d-flex align-center ga-2">
+                <v-icon
+                  size="20"
+                  color="primary"
+                >
+                  mdi-account-outline
+                </v-icon>
+                {{ t('account.profile.identity') }}
+              </div>
+              <v-card-text class="pa-0">
+                <v-row dense>
+                  <v-col
+                    cols="12"
+                    class="mb-3"
+                  >
+                    <v-text-field
+                      v-model="form.email"
+                      :label="t('account.profile.email')"
+                      :hint="t('account.profile.emailReadonly')"
+                      persistent-hint
+                      type="email"
+                      variant="outlined"
+                      density="comfortable"
+                      readonly
+                      disabled
+                    />
+                  </v-col>
+                  <v-col
+                    cols="12"
+                    sm="6"
+                  >
+                    <v-text-field
+                      v-model="form.firstName"
+                      :label="t('account.profile.firstName')"
+                      variant="outlined"
+                      density="comfortable"
+                      clearable
+                    />
+                  </v-col>
+                  <v-col
+                    cols="12"
+                    sm="6"
+                  >
+                    <v-text-field
+                      v-model="form.lastName"
+                      :label="t('account.profile.lastName')"
+                      variant="outlined"
+                      density="comfortable"
+                      clearable
+                    />
+                  </v-col>
+                  <v-col cols="12">
+                    <v-text-field
+                      v-model="form.fullName"
+                      :label="t('account.profile.fullName')"
+                      variant="outlined"
+                      density="comfortable"
+                    />
+                  </v-col>
+                  <v-col cols="12">
+                    <v-text-field
+                      v-model="form.phone"
+                      :label="t('account.profile.phone')"
+                      type="tel"
+                      variant="outlined"
+                      density="comfortable"
+                      clearable
+                    />
+                  </v-col>
+                </v-row>
+              </v-card-text>
+
               <v-spacer />
-              <v-btn
-                type="submit"
-                color="primary"
-                variant="flat"
-                class="text-none"
-                :loading="pwdLoading"
-              >
-                {{ t('account.security.submit') }}
-              </v-btn>
-            </div>
+              <v-divider class="my-4" />
+              <div class="d-flex justify-end ga-3">
+                <v-btn
+                  variant="text"
+                  class="text-none"
+                  @click="resetForm"
+                >
+                  {{ t('common.cancel') }}
+                </v-btn>
+                <v-btn
+                  type="submit"
+                  color="primary"
+                  variant="flat"
+                  class="text-none"
+                  :loading="profileState.loading.value"
+                >
+                  {{ t('common.save') }}
+                </v-btn>
+              </div>
+            </v-card>
           </v-form>
-        </v-card-text>
-      </v-card>
+        </v-col>
+
+        <!-- Sécurité -->
+        <v-col
+          cols="12"
+          md="6"
+        >
+          <v-card
+            flat
+            border
+            class="pa-5 h-100 d-flex flex-column"
+          >
+            <div class="text-subtitle-1 font-weight-bold mb-4 d-flex align-center ga-2">
+              <v-icon
+                size="20"
+                color="primary"
+              >
+                mdi-shield-lock-outline
+              </v-icon>
+              {{ t('account.security.title') }}
+            </div>
+            <v-card-text class="pa-0">
+              <v-form
+                ref="pwdFormRef"
+                @submit.prevent="onChangePassword"
+              >
+                <v-text-field
+                  v-model="pwd.current"
+                  :label="t('account.security.currentPassword')"
+                  :type="showPwd.current ? 'text' : 'password'"
+                  :append-inner-icon="showPwd.current ? 'mdi-eye-off' : 'mdi-eye'"
+                  variant="outlined"
+                  density="comfortable"
+                  autocomplete="current-password"
+                  :rules="[pwdRules.required]"
+                  :error-messages="pwdError"
+                  @click:append-inner="showPwd.current = !showPwd.current"
+                />
+                <v-text-field
+                  v-model="pwd.next"
+                  :label="t('account.security.newPassword')"
+                  :type="showPwd.next ? 'text' : 'password'"
+                  :append-inner-icon="showPwd.next ? 'mdi-eye-off' : 'mdi-eye'"
+                  variant="outlined"
+                  density="comfortable"
+                  autocomplete="new-password"
+                  :rules="[pwdRules.required, pwdRules.min]"
+                  hide-details
+                  @click:append-inner="showPwd.next = !showPwd.next"
+                />
+                <div class="d-flex ga-1 mt-2">
+                  <div
+                    v-for="i in 4"
+                    :key="i"
+                    class="flex-1-1 rounded"
+                    style="height: 4px;"
+                    :class="i <= strength.segments ? `bg-${strength.color}` : 'bg-grey-lighten-2'"
+                  />
+                </div>
+                <div
+                  class="text-caption mt-1 mb-4"
+                  :class="pwd.next && !pwdRules.valid(pwd.next) ? 'text-error' : 'text-medium-emphasis'"
+                >
+                  {{ t('account.security.tooShort') }}
+                </div>
+                <v-text-field
+                  v-model="pwd.confirm"
+                  :label="t('account.security.confirmPassword')"
+                  :type="showPwd.confirm ? 'text' : 'password'"
+                  :append-inner-icon="showPwd.confirm ? 'mdi-eye-off' : 'mdi-eye'"
+                  variant="outlined"
+                  density="comfortable"
+                  autocomplete="new-password"
+                  :rules="[pwdRules.required, pwdRules.match]"
+                  @click:append-inner="showPwd.confirm = !showPwd.confirm"
+                />
+                <router-link
+                  to="/forgot-password"
+                  class="text-caption text-decoration-none text-primary d-inline-block mb-2"
+                >
+                  {{ t('account.security.forgot') }}
+                </router-link>
+                <v-divider class="mb-4" />
+                <div class="d-flex justify-end">
+                  <v-btn
+                    type="submit"
+                    color="primary"
+                    variant="flat"
+                    class="text-none"
+                    :loading="pwdLoading"
+                  >
+                    {{ t('account.security.submit') }}
+                  </v-btn>
+                </div>
+              </v-form>
+            </v-card-text>
+          </v-card>
+        </v-col>
+      </v-row>
     </v-container>
   </MainLayout>
 </template>

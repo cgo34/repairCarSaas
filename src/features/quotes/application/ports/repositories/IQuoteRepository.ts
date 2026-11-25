@@ -2,6 +2,7 @@ import { QuoteDto } from '@/features/quotes/application/dtos/QuoteDto';
 
 export interface IQuoteRepository {
   generateQuoteNumber(userId: string): Promise<string>;
+  countCreatedSince(organizationId: string, sinceIso: string): Promise<number>;
   
   getAll(): Promise<QuoteDto[]>;
   getAllByUserId(userId: string): Promise<QuoteDto[]>;

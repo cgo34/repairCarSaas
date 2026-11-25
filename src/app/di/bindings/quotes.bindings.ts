@@ -26,6 +26,7 @@ import { IGetQuoteDetailUseCase } from '@/features/quotes/application/useCases/G
 import { IGetQuoteUseCase } from '@/features/quotes/application/useCases/GetQuoteUseCase';
 import { IInsertQuoteUseCase } from '@/features/quotes/application/useCases/InsertQuoteUseCase';
 import { IQuotesUseCase } from '@/features/quotes/application/useCases/GetQuotesUseCase';
+import { CountQuotesThisMonthUseCase, ICountQuotesThisMonthUseCase } from '@/features/quotes/application/useCases/CountQuotesThisMonthUseCase';
 import { ISendQuoteUseCase } from '@/features/quotes/application/useCases/SendQuoteUseCase';
 import { IUpdateQuoteUseCase } from '@/features/quotes/application/useCases/UpdateQuoteUseCase';
 import { IUpdateStatusQuoteUseCase } from '@/features/quotes/application/useCases/UpdateStatusQuoteUseCase';
@@ -43,6 +44,7 @@ import { QuoteRepository } from '@/features/quotes/infrastructure/repositories/Q
 export function registerQuotesBindings(container: Container): void {
   container.bind<IQuoteRepository>(SYMBOLS.Repositories.QuoteRepository).toDynamicValue(ctx => new QuoteRepository(ctx.container.get(SYMBOLS.Providers.ClientProvider))).inSingletonScope();
   container.bind<IQuoteDetailRepository>(SYMBOLS.Repositories.QuoteDetailRepository).toDynamicValue(ctx => new QuoteDetailRepository(ctx.container.get(SYMBOLS.Providers.ClientProvider))).inSingletonScope();
+  container.bind<ICountQuotesThisMonthUseCase>(SYMBOLS.UseCases.Quote.CountQuotesThisMonthUseCase).toDynamicValue(ctx => new CountQuotesThisMonthUseCase(ctx.container.get(SYMBOLS.Repositories.QuoteRepository))).inSingletonScope();
   container.bind<IQuotesUseCase>(SYMBOLS.UseCases.Quote.GetQuotesUseCase).toDynamicValue(ctx => new GetQuotesUseCase(ctx.container.get(SYMBOLS.Repositories.QuoteRepository))).inSingletonScope();
   container.bind<IViewQuoteUseCase>(SYMBOLS.UseCases.Quote.ViewQuoteUseCase).toDynamicValue(ctx => new ViewQuoteUseCase(ctx.container.get(SYMBOLS.UseCases.Quote.GetQuoteUseCase), ctx.container.get(SYMBOLS.UseCases.Quote.GetQuoteDetailsUseCase))).inSingletonScope();
   container.bind<ICreateQuoteUseCase>(SYMBOLS.UseCases.Quote.CreateQuoteUseCase).toDynamicValue(ctx => new CreateQuoteUseCase(ctx.container.get(SYMBOLS.Repositories.QuoteRepository))).inSingletonScope();
