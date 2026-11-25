@@ -5,7 +5,7 @@
       type="info"
       icon="$info"
       variant="tonal"
-      text="L'indice de difficulté 1 est une bosse sur un pavillon. Vous pouvez décider qu'une bosse sur un autre élément de carrosserie est X fois plus difficile à réparer."
+      :text="t('priceSettings.variation.info')"
     />
     <v-form>
       <v-row>
@@ -20,7 +20,7 @@
             <span>{{ elm.bodyParts.name }}</span>
             <v-text-field
               v-model="elm.coefficient"
-              label="Difficulty coefficient"
+              :label="t('priceSettings.variation.difficulty')"
               required
             />
           </div>
@@ -37,7 +37,7 @@
             <span>{{ elm.bodyParts.name }}</span>
             <v-text-field
               v-model="elm.coefficient"
-              label="Difficulty coefficient"
+              :label="t('priceSettings.variation.difficulty')"
               required
             />
           </div>
@@ -49,8 +49,11 @@
 
 <script setup lang="ts">
 import { usePriceSettingsDependencies } from '@/features/priceSettings/composition/usePriceSettingsDependencies';
+import { useI18n } from 'vue-i18n';
 import { usePriceTabForm } from '@/features/priceSettings/presentation/composables/usePriceTabForm';
 import { onMounted } from 'vue';
+
+const { t } = useI18n();
 
 const { useSettingPriceBodyPartCoefficientState } = usePriceSettingsDependencies();
 

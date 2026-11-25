@@ -7,10 +7,10 @@
       <div class="d-flex align-center flex-wrap ga-3 mb-4">
         <div>
           <h1 class="text-h5 font-weight-bold">
-            Tarification
+            {{ t('priceSettings.title') }}
           </h1>
           <div class="text-body-2 text-medium-emphasis">
-            Taux horaire, unités de temps et coefficients appliqués à vos chiffrages.
+            {{ t('priceSettings.subtitle') }}
           </div>
         </div>
 
@@ -22,7 +22,7 @@
           variant="tonal"
           prepend-icon="mdi-check"
         >
-          Enregistré
+          {{ t('priceSettings.saved') }}
         </v-chip>
 
         <v-btn
@@ -30,7 +30,7 @@
           :disabled="saving || !hasChanges"
           @click="onReset"
         >
-          Annuler
+          {{ t('common.cancel') }}
         </v-btn>
 
         <v-btn
@@ -41,7 +41,7 @@
           :disabled="!hasChanges"
           @click="onSave"
         >
-          Enregistrer
+          {{ t('common.save') }}
         </v-btn>
       </div>
 
@@ -59,7 +59,7 @@
             :value="item.value"
             :prepend-icon="item.icon"
           >
-            {{ item.label }}
+            {{ t('priceSettings.tabs.' + item.value) }}
             <v-icon
               v-if="isTabDirty(item.value)"
               size="8"
@@ -114,13 +114,16 @@ import PriceTechnicityTab from '@/features/priceSettings/presentation/components
 import PriceVariationTab from '@/features/priceSettings/presentation/components/PriceVariationTab.vue';
 import type { PriceTabHandle } from '@/features/priceSettings/presentation/composables/usePriceTabForm';
 import { computed, ref, useTemplateRef, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useRoute, useRouter } from 'vue-router';
 
+const { t } = useI18n();
+
 const tabs = [
-  { value: 'general', label: 'Général', icon: 'mdi-cash' },
-  { value: 'impact-unit-time', label: 'Unités de temps', icon: 'mdi-timer-outline' },
-  { value: 'technicity-coefficients', label: 'Technicité', icon: 'mdi-wrench-outline' },
-  { value: 'variation-coefficients', label: 'Variations', icon: 'mdi-car-door' },
+  { value: 'general', icon: 'mdi-cash' },
+  { value: 'impact-unit-time', icon: 'mdi-timer-outline' },
+  { value: 'technicity-coefficients', icon: 'mdi-wrench-outline' },
+  { value: 'variation-coefficients', icon: 'mdi-car-door' },
 ] as const;
 
 type TabKey = (typeof tabs)[number]['value'];
@@ -128,7 +131,7 @@ type TabKey = (typeof tabs)[number]['value'];
 const route = useRoute();
 const router = useRouter();
 
-const isTabKey = (value: unknown): value is TabKey => tabs.some(t => t.value === value);
+const isTabKey = (value: unknown): value is TabKey => tabs.some(item => item.value === value);
 
 const tab = ref<TabKey>(isTabKey(route.params.tab) ? route.params.tab : 'general');
 
@@ -145,12 +148,12 @@ const handles = computed<Record<TabKey, PriceTabHandle | null>>(() => ({
 }));
 
 const isTabDirty = (key: TabKey) => !!handles.value[key]?.isDirty;
-const hasChanges = computed(() => tabs.some(t => isTabDirty(t.value)));
+const hasChanges = computed(() => tabs.some(item => isTabDirty(item.value)));
 
 const saving = ref(false);
 const saved = ref(false);
 
-const dirtyHandles = () => tabs.map(t => handles.value[t.value]).filter((h): h is PriceTabHandle => !!h?.isDirty);
+const dirtyHandles = () => tabs.map(item => handles.value[item.value]).filter((h): h is PriceTabHandle => !!h?.isDirty);
 
 const onSave = async () => {
   saving.value = true;
