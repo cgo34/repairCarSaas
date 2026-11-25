@@ -1,6 +1,11 @@
 import { OrganizationProfileDto } from '@/features/organizations/application/dtos/OrganizationProfileDto';
 import { InvoiceDto } from '@/features/invoices/application/dtos/InvoiceDto';
 import { LineItemDto } from '@/features/lineItems/application/dtos/LineItemDto';
+import { i18n } from '@/app/i18n';
+import { intlLocale } from '@/app/i18n/formatters';
+
+const t = (key: string, params: Record<string, unknown> = {}): string =>
+  i18n.global.t(`invoices.pdf.${key}`, params) as string;
 
 export const buildInvoiceHtmlTemplate = (invoice: InvoiceDto, lines: LineItemDto[], company: OrganizationProfileDto | null): string => {
   const c = company ?? {} as Partial<OrganizationProfileDto>;
@@ -25,30 +30,30 @@ export const buildInvoiceHtmlTemplate = (invoice: InvoiceDto, lines: LineItemDto
       })()
     : totalTTC;
 
-  const invoiceDate = new Date(invoice.startDate).toLocaleDateString('fr-FR');
+  const invoiceDate = new Date(invoice.startDate).toLocaleDateString(intlLocale());
   const dueDate = (() => {
     const d = new Date(invoice.startDate);
     d.setDate(d.getDate() + (c.payment_delay ?? 30));
-    return d.toLocaleDateString('fr-FR');
+    return d.toLocaleDateString(intlLocale());
   })();
 
-  const companyDisplay = c.company_name || 'Votre entreprise';
+  const companyDisplay = c.company_name || t('yourCompany');
   const garageName = invoice.garage?.name    ?? invoice.garageName    ?? '';
   const garageAddr = invoice.garage?.address ?? invoice.garageAddress ?? '';
   const garageZip  = invoice.garage?.zip_code ?? invoice.garageZipCode ?? '';
   const garageCity = invoice.garage?.city    ?? invoice.garageCity    ?? '';
 
-  const vehicleDesc = `Réparation du véhicule (${invoice.carBrand ?? ''} / ${invoice.carYear ?? ''} / ${invoice.carImmatriculation ?? ''})`;
+  const vehicleDesc = t('vehicleRepair', { brand: invoice.carBrand ?? '', year: invoice.carYear ?? '', plate: invoice.carImmatriculation ?? '' });
 
   const tvaNote = taxRate > 0
-    ? `TVA ${taxRate * 100}% — Assujetti à la TVA en Suisse.`
-    : `TVA non applicable — Autoliquidation de la TVA par le client (Article 196 de la directive 2006/112/CE)`;
+    ? t('vatSwiss', { rate: taxRate * 100 })
+    : t('vatReverseCharge');
 
   return `<!DOCTYPE html>
-<html lang="fr">
+<html lang="${i18n.global.locale.value}">
 <head>
   <meta charset="UTF-8"/>
-  <title>Facture ${invoice.invoiceNumber ?? ''}</title>
+  <title>${t('invoice')} ${invoice.invoiceNumber ?? ''}</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; }
     html, body { margin: 0; padding: 0; background: #fff; }
@@ -234,11 +239,11 @@ export const buildInvoiceHtmlTemplate = (invoice: InvoiceDto, lines: LineItemDto
       ${companyDisplay}
     </div>
     <div class="header-doc">
-      <p class="doc-type">FACTURE</p>
+      <p class="doc-type">${t('docType')}</p>
       <div class="meta">
-        <div>N° : ${invoice.invoiceNumber ?? ''}</div>
-        <div>DATE : ${invoiceDate}</div>
-        <div>ÉCHÉANCE : ${dueDate}</div>
+        <div>${t('number')} : ${invoice.invoiceNumber ?? ''}</div>
+        <div>${t('date')} : ${invoiceDate}</div>
+        <div>${t('dueDate')} : ${dueDate}</div>
       </div>
     </div>
   </div>
@@ -248,8 +253,8 @@ export const buildInvoiceHtmlTemplate = (invoice: InvoiceDto, lines: LineItemDto
     <!-- SOCIÉTÉ | CLIENT -->
     <table class="parties-table">
       <tr>
-        <td class="th-cell">SOCIÉTÉ</td>
-        <td class="th-cell">CLIENT</td>
+        <td class="th-cell">${t('company')}</td>
+        <td class="th-cell">${t('client')}</td>
       </tr>
       <tr>
         <td class="td-cell">
@@ -259,9 +264,9 @@ export const buildInvoiceHtmlTemplate = (invoice: InvoiceDto, lines: LineItemDto
           ${c.phone ? `<div class="party-line">${c.phone}</div>` : ''}
           ${c.email ? `<div class="party-line">${c.email}</div>` : ''}
           ${(c.siret || c.tva_number || c.legal_form) ? `<div class="party-legal">
-            ${c.siret ? `SIRET : ${c.siret}` : ''}
-            ${c.tva_number ? `<br>N° TVA : ${c.tva_number}` : ''}
-            ${c.legal_form ? `<br>${c.legal_form}${c.capital ? ' — Capital : ' + c.capital : ''}` : ''}
+            ${c.siret ? `${t('siret')} : ${c.siret}` : ''}
+            ${c.tva_number ? `<br>${t('vatNumber')} : ${c.tva_number}` : ''}
+            ${c.legal_form ? `<br>${c.legal_form}${c.capital ? ` — ${t('capital')} : ` + c.capital : ''}` : ''}
           </div>` : ''}
         </td>
         <td class="td-cell">
@@ -276,9 +281,9 @@ export const buildInvoiceHtmlTemplate = (invoice: InvoiceDto, lines: LineItemDto
     <table class="lines-table">
       <thead>
         <tr>
-          <th>DESCRIPTION</th>
-          <th class="center">QUANTITÉ</th>
-          <th class="right">TOTAL</th>
+          <th>${t('description')}</th>
+          <th class="center">${t('quantity')}</th>
+          <th class="right">${t('totalCol')}</th>
         </tr>
       </thead>
       <tbody>
@@ -293,11 +298,11 @@ export const buildInvoiceHtmlTemplate = (invoice: InvoiceDto, lines: LineItemDto
     <!-- Totaux -->
     <table class="totals-table">
       <tr class="th-row">
-        <td>DÉTAILS DES TOTAUX</td>
-        <td class="right">MONTANT</td>
+        <td>${t('totalsDetails')}</td>
+        <td class="right">${t('amount')}</td>
       </tr>
       <tr class="final-row">
-        <td>Total</td>
+        <td>${t('total')}</td>
         <td class="right">${displayTotal.toFixed(2)} ${currencySymbol}</td>
       </tr>
     </table>
@@ -309,21 +314,21 @@ export const buildInvoiceHtmlTemplate = (invoice: InvoiceDto, lines: LineItemDto
   <!-- Footer -->
   <div class="footer">
     <div class="footer-block">
-      <div class="footer-title">Informations de paiement</div>
-      ${c.company_name ? `<p>Nom : ${c.company_name}</p>` : ''}
-      ${c.iban ? `<p>IBAN : ${c.iban}</p>` : ''}
-      ${c.bic  ? `<p>Swift/BIC : ${c.bic}</p>` : ''}
-      ${!c.iban ? `<p style="color:#aaa;font-style:italic;">À compléter dans les paramètres</p>` : ''}
+      <div class="footer-title">${t('paymentInfo')}</div>
+      ${c.company_name ? `<p>${t('name')} : ${c.company_name}</p>` : ''}
+      ${c.iban ? `<p>${t('iban')} : ${c.iban}</p>` : ''}
+      ${c.bic  ? `<p>${t('bic')} : ${c.bic}</p>` : ''}
+      ${!c.iban ? `<p style="color:#aaa;font-style:italic;">${t('fillInSettings')}</p>` : ''}
     </div>
     <div class="footer-block">
-      <div class="footer-title">Terme et conditions</div>
-      <p>Le paiement devra être effectué dans un délai de ${c.payment_delay ?? 30} jours maximum après réception de la facture.</p>
-      ${c.late_payment_penalty ? `<p>Pénalités de retard : ${c.late_payment_penalty}.</p>` : ''}
-      ${c.recovery_fee ? `<p>Indemnité de recouvrement : ${c.recovery_fee}.</p>` : ''}
+      <div class="footer-title">${t('terms')}</div>
+      <p>${t('paymentDelay', { days: c.payment_delay ?? 30 })}</p>
+      ${c.late_payment_penalty ? `<p>${t('latePenalty')} : ${c.late_payment_penalty}.</p>` : ''}
+      ${c.recovery_fee ? `<p>${t('recoveryFee')} : ${c.recovery_fee}.</p>` : ''}
     </div>
   </div>
 
-  <div class="merci">MERCI</div>
+  <div class="merci">${t('thanks')}</div>
 
 </div>
 </body>

@@ -9,10 +9,10 @@
       <v-card-title class="d-flex align-center pa-5 pb-2">
         <div>
           <div class="text-h6 font-weight-bold">
-            Choisir un devis accepté
+            {{ t('invoices.selectQuote.title') }}
           </div>
           <div class="text-caption text-medium-emphasis">
-            La facture reprendra le client, le véhicule et les éléments du devis.
+            {{ t('invoices.selectQuote.subtitle') }}
           </div>
         </div>
         <v-spacer />
@@ -28,7 +28,7 @@
       <div class="px-5 pb-3">
         <v-text-field
           v-model="search"
-          placeholder="Rechercher par n°, garage, immatriculation, marque…"
+          :placeholder="t('invoices.selectQuote.search')"
           prepend-inner-icon="mdi-magnify"
           variant="outlined"
           density="comfortable"
@@ -61,7 +61,7 @@
             mdi-file-search-outline
           </v-icon>
           <div class="text-body-2">
-            {{ search ? 'Aucun devis ne correspond à la recherche.' : 'Aucun devis accepté à convertir.' }}
+            {{ search ? t('invoices.selectQuote.noMatch') : t('invoices.selectQuote.noneAccepted') }}
           </div>
         </div>
         <v-list
@@ -90,7 +90,7 @@
             <v-list-item-title class="font-weight-bold">
               {{ quote.quoteNumber }}
               <span class="text-medium-emphasis font-weight-regular">
-                · {{ quote.garage?.name || quote.garageName || 'Sans garage' }}
+                · {{ quote.garage?.name || quote.garageName || t('invoices.selectQuote.noGarage') }}
               </span>
             </v-list-item-title>
             <v-list-item-subtitle>
@@ -118,7 +118,7 @@
 
       <v-card-actions class="pa-4">
         <div class="text-caption text-medium-emphasis">
-          {{ filteredQuotes.length }} devis disponible(s)
+          {{ t('invoices.selectQuote.available', filteredQuotes.length) }}
         </div>
         <v-spacer />
         <v-btn
@@ -126,7 +126,7 @@
           :disabled="converting"
           @click="close"
         >
-          Annuler
+          {{ t('common.cancel') }}
         </v-btn>
         <v-btn
           color="primary"
@@ -135,7 +135,7 @@
           :loading="converting"
           @click="onConfirm"
         >
-          Créer la facture
+          {{ t('invoices.selectQuote.create') }}
         </v-btn>
       </v-card-actions>
     </v-card>
@@ -144,9 +144,12 @@
 
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { formatCurrency as formatMoney, formatDate as formatIntlDate } from '@/app/i18n/formatters';
 import { useSelectQuoteDialogDependencies } from '@/features/invoices/composition/useSelectQuoteDialogDependencies';
 import { QuoteViewModel } from '@/features/quotes/presentation/models/QuoteViewModel';
 
+const { t } = useI18n();
 const props = defineProps<{ modelValue: boolean }>();
 const emit = defineEmits<{
   (e: 'update:modelValue', value: boolean): void;
@@ -175,9 +178,9 @@ const isConvertible = (q: QuoteViewModel) =>
 
 const amount = (q: QuoteViewModel) => q.totalHt ?? (q.isForfait ? (q.forfaitAmount ?? 0) : 0);
 const vehicleLabel = (q: QuoteViewModel) =>
-  [q.carImmatriculation, q.carBrand].filter(Boolean).join(' · ') || 'Véhicule non renseigné';
-const formatCurrency = (v: number) => new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(v);
-const formatDate = (d?: string) => (d ? new Date(d).toLocaleDateString('fr-FR') : '—');
+  [q.carImmatriculation, q.carBrand].filter(Boolean).join(' · ') || t('invoices.selectQuote.noVehicle');
+const formatCurrency = (v: number) => formatMoney(v);
+const formatDate = (d?: string) => (d ? formatIntlDate(d) : '—');
 
 const filteredQuotes = computed(() => {
   const term = (search.value ?? '').trim().toLowerCase();
@@ -201,7 +204,7 @@ const onConfirm = async () => {
     const invoiceId = await convertToInvoice(selectedId.value);
     emit('converted', invoiceId);
   } catch (e) {
-    emit('error', e instanceof Error ? e.message : 'Impossible de créer la facture depuis ce devis.');
+    emit('error', e instanceof Error ? e.message : t('invoices.selectQuote.error'));
   } finally {
     converting.value = false;
   }

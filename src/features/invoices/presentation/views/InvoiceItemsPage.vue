@@ -17,7 +17,7 @@
             <v-icon>mdi-arrow-left</v-icon>
           </v-btn>
           <span class="text-h6 font-weight-bold">
-            Facture n° {{ invoiceInformations.number || '' }}
+            {{ t('invoices.view.title', { number: invoiceInformations.number || '' }) }}
           </span>
           <v-chip
             :color="statusColor(invoiceStatus)"
@@ -36,7 +36,7 @@
             prepend-icon="mdi-file-pdf-box"
             @click="onViewPdfBtnClick"
           >
-            Voir le PDF
+            {{ t('invoices.actions.viewPdf') }}
           </v-btn>
           <v-btn
             variant="outlined"
@@ -45,7 +45,7 @@
             prepend-icon="mdi-pencil-outline"
             @click="onEditInvoiceBtnClick"
           >
-            Modifier la facture
+            {{ t('invoices.items.editInvoice') }}
           </v-btn>
         </div>
       </div>
@@ -57,7 +57,7 @@
         >
           <!-- Même panneau que pour les devis : liste / vue voiture -->
           <DocumentItemsPanel
-            title="Éléments de la facture"
+            :title="t('invoices.form.items')"
             forfait-message="Cette facture est au forfait : aucun élément détaillé n'est nécessaire."
             :lines="invoiceLines"
             :body-parts="bodyParts"
@@ -85,32 +85,32 @@
                   mdi-calculator-variant-outline
                 </v-icon>
               </div>
-              <span class="text-subtitle-1 font-weight-bold">Récapitulatif</span>
+              <span class="text-subtitle-1 font-weight-bold">{{ t('common.totals.summary') }}</span>
             </div>
 
             <div class="totals-list">
               <div class="total-row">
-                <span class="text-body-2 text-medium-emphasis">Total H.T</span>
+                <span class="text-body-2 text-medium-emphasis">{{ t('common.totals.exclTax') }}</span>
                 <span class="text-body-2 font-weight-bold">
                   {{ regionManager.formatNumber(subtotal) }} {{ currency }}
                 </span>
               </div>
               <template v-if="!isForfait">
                 <div class="total-row">
-                  <span class="text-body-2 text-medium-emphasis">Total dégarnissage</span>
+                  <span class="text-body-2 text-medium-emphasis">{{ t('common.totals.totalStripping') }}</span>
                   <span class="text-body-2 font-weight-bold">
                     {{ regionManager.formatNumber(totalDegarnissage) }} {{ currency }}
                   </span>
                 </div>
                 <div class="total-row">
-                  <span class="text-body-2 text-medium-emphasis">H.T + Dégarnissage</span>
+                  <span class="text-body-2 text-medium-emphasis">{{ t('common.totals.exclTaxPlusStripping') }}</span>
                   <span class="text-body-2 font-weight-bold">
                     {{ regionManager.formatNumber(subTotalWithDegarnissage) }} {{ currency }}
                   </span>
                 </div>
               </template>
               <div class="total-row">
-                <span class="text-body-2 text-medium-emphasis">TVA ({{ selectedCountry?.taxRate || 0 }}%)</span>
+                <span class="text-body-2 text-medium-emphasis">{{ t('common.totals.vat', { rate: selectedCountry?.taxRate || 0 }) }}</span>
                 <span class="text-body-2 font-weight-bold">
                   {{ regionManager.formatNumber(totalTaxRate) }} {{ currency }}
                 </span>
@@ -119,13 +119,13 @@
                 v-if="selectedGarage?.percentageCommission"
                 class="total-row text-orange"
               >
-                <span class="text-body-2">Commission ({{ selectedGarage.percentageCommission }}%)</span>
+                <span class="text-body-2">{{ t('common.totals.commission', { rate: selectedGarage.percentageCommission }) }}</span>
                 <span class="text-body-2 font-weight-bold">
                   {{ regionManager.formatNumber(totalCommission) }} {{ currency }}
                 </span>
               </div>
               <div class="total-row total-final mt-2 pt-3">
-                <span class="text-subtitle-2 font-weight-bold">Total TTC</span>
+                <span class="text-subtitle-2 font-weight-bold">{{ t('common.totals.inclTax') }}</span>
                 <span class="text-h5 font-weight-black text-primary">
                   {{ regionManager.formatNumber(total) }} {{ currency }}
                 </span>
@@ -142,12 +142,14 @@
 import { getSelectedInvoiceGuid } from '@/features/invoices/presentation/utils/invoiceSelection';
 import { computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
+import { useI18n } from 'vue-i18n';
 import { useTheme } from 'vuetify';
 import MainLayout from '@/app/layouts/MainLayout.vue';
 import { useEditInvoicePageDependencies } from '@/features/invoices/composition/useEditInvoicePageDependencies';
 import DocumentItemsPanel from '@/features/lineItems/presentation/components/DocumentItemsPanel.vue';
 
 const router = useRouter();
+const { t } = useI18n();
 const theme = useTheme();
 const isDark = computed(() => theme.current.value.dark);
 const { regionManager, useEditInvoiceState } = useEditInvoicePageDependencies();
@@ -186,10 +188,10 @@ const statusColor = (status?: string) => ({
 } as Record<string, string>)[status ?? ''] ?? 'default';
 
 const statusLabel = (status?: string) => ({
-  pending: 'En attente de paiement',
-  validated: 'Payée',
-  draft: 'Brouillon',
-  cancel: 'Annulée',
+  pending: t('invoices.status.awaitingPayment'),
+  validated: t('invoices.status.paid'),
+  draft: t('invoices.status.draft'),
+  cancel: t('invoices.status.cancelled'),
 } as Record<string, string>)[status ?? ''] ?? (status ?? '');
 
 const onBackBtnClick = () => router.push('/invoices');

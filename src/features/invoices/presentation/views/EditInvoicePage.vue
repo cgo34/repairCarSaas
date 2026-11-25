@@ -21,15 +21,15 @@
           </v-btn>
           <div class="ml-3">
             <div class="text-h6 font-weight-bold">
-              Facture n° {{ invoiceInformations.number || '' }}
+              {{ t('invoices.view.title', { number: invoiceInformations.number || '' }) }}
             </div>
             <div
               v-if="invoiceInformations.date"
               class="text-caption text-medium-emphasis"
             >
-              Créée le {{ formatDate(invoiceInformations.date) }}
+              {{ t('invoices.view.createdOn', { date: formatDate(invoiceInformations.date) }) }}
               <template v-if="invoiceInformations.quoteNumber">
-                · Issue du devis n° {{ invoiceInformations.quoteNumber }}
+                · {{ t('invoices.view.fromQuote', { number: invoiceInformations.quoteNumber }) }}
               </template>
             </div>
           </div>
@@ -52,7 +52,7 @@
             prepend-icon="mdi-file-pdf-box"
             @click="onViewPdfBtnClick"
           >
-            Voir le PDF
+            {{ t('invoices.actions.viewPdf') }}
           </v-btn>
         </div>
       </div>
@@ -66,8 +66,7 @@
         density="comfortable"
         icon="mdi-lock-outline"
       >
-        Cette facture est définitive : elle ne peut plus être modifiée ni supprimée.
-        En cas d'erreur, émettez un avoir puis une nouvelle facture.
+        {{ t('invoices.edit.final') }}
       </v-alert>
 
       <!-- ═══════════════════════════════════════════════════
@@ -93,7 +92,7 @@
                     mdi-calendar-outline
                   </v-icon>
                 </div>
-                <span class="text-subtitle-1 font-weight-bold">Dates</span>
+                <span class="text-subtitle-1 font-weight-bold">{{ t('invoices.form.dates') }}</span>
               </div>
               <v-row dense>
                 <v-col
@@ -102,7 +101,7 @@
                 >
                   <v-text-field
                     v-model="invoiceInformations.date"
-                    label="Date de facturation"
+                    :label="t('invoices.form.invoiceDate')"
                     type="date"
                     variant="outlined"
                     density="comfortable"
@@ -116,7 +115,7 @@
                 >
                   <v-text-field
                     :model-value="expirationDate"
-                    label="Échéance"
+                    :label="t('invoices.form.dueDate')"
                     type="date"
                     variant="outlined"
                     density="comfortable"
@@ -144,7 +143,7 @@
                         mdi-account-wrench-outline
                       </v-icon>
                     </div>
-                    <span class="text-subtitle-1 font-weight-bold">Technicien</span>
+                    <span class="text-subtitle-1 font-weight-bold">{{ t('invoices.form.technician') }}</span>
                   </div>
                   <v-autocomplete
                     :model-value="selectedTechnician"
@@ -152,7 +151,7 @@
                     :item-title="item => `${item.users.first_name} ${item.users.last_name}`"
                     item-value="id"
                     return-object
-                    label="Sélectionner un technicien"
+                    :label="t('invoices.form.selectTechnician')"
                     variant="outlined"
                     density="comfortable"
                     :readonly="isReadOnly"
@@ -208,7 +207,7 @@
                         mdi-garage
                       </v-icon>
                     </div>
-                    <span class="text-subtitle-1 font-weight-bold">Client / Garage</span>
+                    <span class="text-subtitle-1 font-weight-bold">{{ t('invoices.edit.clientGarage') }}</span>
                   </div>
 
                   <v-autocomplete
@@ -217,7 +216,7 @@
                     item-title="name"
                     item-value="id"
                     return-object
-                    label="Sélectionner un garage"
+                    :label="t('invoices.form.selectGarage')"
                     variant="outlined"
                     density="comfortable"
                     :clearable="!isReadOnly"
@@ -251,7 +250,7 @@
                     v-if="selectedGarage?.percentageCommission"
                     class="text-caption text-medium-emphasis mt-2"
                   >
-                    Commission {{ selectedGarage.percentageCommission }} %
+                    {{ t('invoices.form.commission', { rate: selectedGarage.percentageCommission }) }}
                   </div>
                 </div>
               </v-col>
@@ -268,7 +267,7 @@
                     mdi-car
                   </v-icon>
                 </div>
-                <span class="text-subtitle-1 font-weight-bold">Informations véhicule :</span>
+                <span class="text-subtitle-1 font-weight-bold">{{ t('invoices.form.vehicleInfo') }}</span>
               </div>
 
               <v-row dense>
@@ -278,7 +277,7 @@
                 >
                   <v-text-field
                     v-model="carInformations.immatriculation"
-                    label="Immatriculation"
+                    :label="t('invoices.form.plate')"
                     variant="outlined"
                     density="comfortable"
                     :readonly="isReadOnly"
@@ -293,7 +292,7 @@
                 >
                   <v-text-field
                     v-model="carInformations.brand"
-                    label="Marque"
+                    :label="t('invoices.form.brand')"
                     variant="outlined"
                     density="comfortable"
                     :readonly="isReadOnly"
@@ -308,7 +307,7 @@
                 >
                   <v-text-field
                     v-model="carInformations.dateEntryCirculation"
-                    label="Année"
+                    :label="t('invoices.form.year')"
                     variant="outlined"
                     density="comfortable"
                     :readonly="isReadOnly"
@@ -334,7 +333,7 @@
                     mdi-format-list-bulleted
                   </v-icon>
                 </div>
-                <span class="text-subtitle-1 font-weight-bold">Éléments de la facture</span>
+                <span class="text-subtitle-1 font-weight-bold">{{ t('invoices.form.items') }}</span>
                 <v-chip
                   size="x-small"
                   variant="tonal"
@@ -351,7 +350,7 @@
                   prepend-icon="mdi-format-list-bulleted-square"
                   @click="onManageItemsBtnClick"
                 >
-                  Gérer les éléments
+                  {{ t('invoices.edit.manageItems') }}
                 </v-btn>
               </div>
 
@@ -365,9 +364,9 @@
                   class="d-flex justify-space-between align-center py-2 line-summary"
                 >
                   <span class="text-body-2">
-                    {{ line.bodyPart?.name ?? '—' }}
+                    {{ line.bodyPart ? bodyPartLabel(line.bodyPart) : '—' }}
                     <span class="text-medium-emphasis">
-                      · {{ line.bodyMaterial?.name }} · {{ line.repairType?.name }}
+                      · {{ line.bodyMaterial ? bodyMaterialLabel(line.bodyMaterial) : '' }} · {{ line.repairType ? repairTypeLabel(line.repairType) : '' }}
                     </span>
                   </span>
                   <span class="text-body-2 font-weight-bold flex-shrink-0 ml-2">
@@ -387,7 +386,7 @@
                   mdi-playlist-plus
                 </v-icon>
                 <div class="text-body-2">
-                  Aucun élément pour l'instant
+                  {{ t('invoices.edit.noItems') }}
                 </div>
               </div>
             </div>
@@ -410,7 +409,7 @@
                       mdi-flag-outline
                     </v-icon>
                   </div>
-                  <span class="text-subtitle-1 font-weight-bold">Statut de la facture</span>
+                  <span class="text-subtitle-1 font-weight-bold">{{ t('invoices.form.invoiceStatus') }}</span>
                 </div>
 
                 <v-chip
@@ -427,27 +426,28 @@
                   v-if="isSent"
                   class="sent-info text-caption mb-3"
                 >
-                  Envoyée le {{ sentAt ? formatSentAt(sentAt) : '' }}
-                  <span v-if="selectedGarage"> à {{ selectedGarage.name }}</span>
+                  {{ t('invoices.edit.sentOn', { date: sentAt ? formatSentAt(sentAt) : '' }) }}
+                  <span v-if="selectedGarage"> {{ t('invoices.edit.sentTo', { name: selectedGarage.name }) }}</span>
                 </div>
 
                 <div class="d-flex flex-column ga-2">
                   <!-- Brouillon : envoi définitif (au moins un élément requis) -->
                   <v-btn
                     v-if="!isReadOnly"
-                    color="primary"
+                    color="blue"
+                    variant="tonal"
                     prepend-icon="mdi-send-outline"
                     :disabled="!hasItems"
                     :loading="sending"
                     @click="onAskSend"
                   >
-                    Envoyer au client
+                    {{ t('invoices.form.sendToClient') }}
                   </v-btn>
                   <div
                     v-if="!isReadOnly && !hasItems"
                     class="text-caption text-medium-emphasis"
                   >
-                    Ajoutez au moins un élément pour pouvoir envoyer la facture.
+                    {{ t('invoices.edit.addAtLeastOne') }}
                   </div>
                   <!-- Facture verrouillée : seul le paiement peut évoluer -->
                   <v-btn
@@ -458,17 +458,17 @@
                     :loading="statusLoading"
                     @click="onMarkPaid"
                   >
-                    Marquer payée
+                    {{ t('invoices.actions.markPaid') }}
                   </v-btn>
                   <!-- Suppression : brouillon uniquement (une facture émise ne se supprime pas) -->
                   <v-btn
                     v-if="canDelete"
                     color="error"
-                    variant="text"
+                    variant="tonal"
                     prepend-icon="mdi-delete-outline"
                     @click="onDeleteBtnClick"
                   >
-                    Supprimer le brouillon
+                    {{ t('invoices.edit.deleteDraft') }}
                   </v-btn>
                 </div>
               </div>
@@ -484,12 +484,12 @@
                       mdi-tune-variant
                     </v-icon>
                   </div>
-                  <span class="text-subtitle-1 font-weight-bold">Options</span>
+                  <span class="text-subtitle-1 font-weight-bold">{{ t('invoices.form.options') }}</span>
                 </div>
 
                 <div class="mb-3">
                   <div class="text-caption text-medium-emphasis mb-1 font-weight-medium">
-                    Pays &amp; TVA
+                    {{ t('invoices.form.countryVat') }}
                   </div>
                   <CountrySelect
                     :model-value="selectedCountry"
@@ -503,10 +503,10 @@
                 <div class="d-flex align-center justify-space-between py-2">
                   <div>
                     <div class="text-body-2 font-weight-medium">
-                      Mode forfait
+                      {{ t('invoices.form.flatRate') }}
                     </div>
                     <div class="text-caption text-medium-emphasis">
-                      Remplacer les lignes par un montant fixe
+                      {{ t('invoices.form.flatRateHint') }}
                     </div>
                   </div>
                   <v-switch
@@ -526,7 +526,7 @@
                   >
                     <v-text-field
                       :model-value="forfaitAmount"
-                      label="Montant du forfait (€)"
+                      :label="t('invoices.form.flatRateAmount')"
                       type="number"
                       variant="outlined"
                       density="comfortable"
@@ -543,10 +543,10 @@
                   <div class="d-flex align-center justify-space-between py-2">
                     <div>
                       <div class="text-body-2 font-weight-medium">
-                        Prix unitaires visibles
+                        {{ t('invoices.form.unitPrices') }}
                       </div>
                       <div class="text-caption text-medium-emphasis">
-                        Afficher le détail sur la facture
+                        {{ t('invoices.form.unitPricesHint') }}
                       </div>
                     </div>
                     <v-switch
@@ -563,10 +563,10 @@
                   <div class="d-flex align-center justify-space-between py-2">
                     <div>
                       <div class="text-body-2 font-weight-medium">
-                        Commission hors dégarnissage
+                        {{ t('invoices.form.commissionExclStripping') }}
                       </div>
                       <div class="text-caption text-medium-emphasis">
-                        Exclure le dégarnissage de la base de commission
+                        {{ t('invoices.form.commissionExclStrippingHint') }}
                       </div>
                     </div>
                     <v-switch
@@ -592,7 +592,7 @@
                       mdi-calculator-variant-outline
                     </v-icon>
                   </div>
-                  <span class="text-subtitle-1 font-weight-bold">Récapitulatif</span>
+                  <span class="text-subtitle-1 font-weight-bold">{{ t('common.totals.summary') }}</span>
                 </div>
 
                 <div class="recap-total text-primary mb-2">
@@ -601,27 +601,27 @@
 
                 <div class="totals-list">
                   <div class="total-row">
-                    <span class="text-body-2 text-medium-emphasis">Total H.T</span>
+                    <span class="text-body-2 text-medium-emphasis">{{ t('common.totals.exclTax') }}</span>
                     <span class="text-body-2 font-weight-medium">
                       {{ regionManager.formatNumber(subtotal) }} {{ selectedCountry?.currencySymbol || '€' }}
                     </span>
                   </div>
                   <template v-if="!isForfait">
                     <div class="total-row">
-                      <span class="text-body-2 text-medium-emphasis">Total dégarnissage</span>
+                      <span class="text-body-2 text-medium-emphasis">{{ t('common.totals.totalStripping') }}</span>
                       <span class="text-body-2 font-weight-medium">
                         {{ regionManager.formatNumber(totalDegarnissage) }} {{ selectedCountry?.currencySymbol || '€' }}
                       </span>
                     </div>
                     <div class="total-row">
-                      <span class="text-body-2 text-medium-emphasis">H.T + Dégarnissage</span>
+                      <span class="text-body-2 text-medium-emphasis">{{ t('common.totals.exclTaxPlusStripping') }}</span>
                       <span class="text-body-2 font-weight-medium">
                         {{ regionManager.formatNumber(subTotalWithDegarnissage) }} {{ selectedCountry?.currencySymbol || '€' }}
                       </span>
                     </div>
                   </template>
                   <div class="total-row">
-                    <span class="text-body-2 text-medium-emphasis">TVA ({{ selectedCountry?.taxRate || 0 }}%)</span>
+                    <span class="text-body-2 text-medium-emphasis">{{ t('common.totals.vat', { rate: selectedCountry?.taxRate || 0 }) }}</span>
                     <span class="text-body-2 font-weight-medium">
                       {{ regionManager.formatNumber(totalTaxRate) }} {{ selectedCountry?.currencySymbol || '€' }}
                     </span>
@@ -630,7 +630,7 @@
                     v-if="selectedGarage?.percentageCommission"
                     class="total-row text-orange"
                   >
-                    <span class="text-body-2">Net technicien ({{ selectedGarage.percentageCommission }}%)</span>
+                    <span class="text-body-2">{{ t('invoices.form.technicianNetRate', { rate: selectedGarage.percentageCommission }) }}</span>
                     <span class="text-body-2 font-weight-medium">
                       {{ regionManager.formatNumber(totalCommission) }} {{ selectedCountry?.currencySymbol || '€' }}
                     </span>
@@ -647,13 +647,13 @@
                     prepend-icon="mdi-content-save-outline"
                     @click="onUpdateBtnClick"
                   >
-                    Sauvegarder le brouillon
+                    {{ t('invoices.form.saveDraft') }}
                   </v-btn>
                   <v-btn
                     variant="text"
                     @click="$router.back()"
                   >
-                    Annuler
+                    {{ t('common.cancel') }}
                   </v-btn>
                 </div>
               </div>
@@ -676,7 +676,7 @@
           prepend-icon="mdi-content-save-outline"
           @click="onUpdateBtnClick"
         >
-          Sauvegarder le brouillon
+          {{ t('invoices.form.saveDraft') }}
         </v-btn>
       </div>
     </v-container>
@@ -685,10 +685,10 @@
   <!-- ── Dialogs ── -->
   <ConfirmDialog
     ref="deleteInvoiceConfirmDialogRef"
-    title="Supprimer le brouillon"
-    message="Cette action est irréversible. Confirmer la suppression ?"
-    confirm-label="Supprimer"
-    cancel-label="Annuler"
+    :title="t('invoices.edit.deleteDraft')"
+    :message="t('invoices.edit.deleteConfirm')"
+    :confirm-label="t('common.delete')"
+    :cancel-label="t('common.cancel')"
     type="warning"
     @confirm="onConfirmDeleteInvoice"
   />
@@ -696,10 +696,10 @@
   <!-- Confirmation avant envoi : l'envoi rend la facture définitive -->
   <ConfirmDialog
     ref="sendInvoiceConfirmDialogRef"
-    title="Envoyer définitivement"
-    message="Une fois envoyée, la facture ne pourra plus être modifiée ni supprimée. En cas d'erreur, il faudra émettre un avoir puis une nouvelle facture. Confirmer l'envoi ?"
-    confirm-label="Envoyer définitivement"
-    cancel-label="Annuler"
+    :title="t('invoices.edit.sendFinal')"
+    :message="t('invoices.edit.sendFinalMessage')"
+    :confirm-label="t('invoices.edit.sendFinal')"
+    :cancel-label="t('common.cancel')"
     type="warning"
     @confirm="onSendBtnClick"
   />
@@ -725,8 +725,12 @@ import { CountryViewModel } from '@/features/countries/presentation/models/Count
 import { GarageViewModel } from '@/features/garages/presentation/models/GarageViewModel';
 import { OrganizationMemberViewModel } from '@/features/organizations/presentation/models/OrganizationMemberViewmodel';
 import { computed, onMounted, reactive, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { formatDate as formatIntlDate, intlLocale } from '@/app/i18n/formatters';
+import { bodyMaterialLabel, bodyPartLabel, repairTypeLabel } from '@/features/carRepairSettings/presentation/utils/carRepairLabels';
 import { useRouter } from 'vue-router';
 import { useTheme } from 'vuetify';
+import { EMPTY_INVOICE_ERROR } from '@/features/invoices/application/useCases/SendInvoiceUseCase';
 
 // ── Services ──────────────────────────────────────────────────────────────────
 const { regionManager, useEditInvoiceState } = useEditInvoicePageDependencies();
@@ -781,6 +785,7 @@ const {
 } = useEditInvoiceState;
 
 const router = useRouter();
+const { t } = useI18n();
 const statusLoading = ref(false);
 const sending = ref(false);
 const snackbar = reactive({ show: false, message: '', color: 'success' });
@@ -794,9 +799,9 @@ const initials = (name: string) => {
   if (!name) return '?';
   return name.split(' ').map(n => n[0]).slice(0, 2).join('').toUpperCase();
 };
-const formatDate = (d: string | Date) => new Date(d).toLocaleDateString('fr-FR');
+const formatDate = (d: string | Date) => formatIntlDate(d);
 const formatSentAt = (d: Date) =>
-  new Date(d).toLocaleString('fr-FR', { dateStyle: 'short', timeStyle: 'short' });
+  new Date(d).toLocaleString(intlLocale(), { dateStyle: 'short', timeStyle: 'short' });
 
 const statusColor = (status?: string) => ({
   pending: 'orange',
@@ -809,13 +814,13 @@ const statusColor = (status?: string) => ({
 } as Record<string, string>)[status ?? ''] ?? 'default';
 
 const statusLabel = (status?: string) => ({
-  pending: 'En attente de paiement',
-  validated: 'Payée',
-  accepted: 'Acceptée',
-  signed: 'Signée',
-  sent: 'Envoyée',
-  draft: 'Brouillon',
-  cancel: 'Annulée',
+  pending: t('invoices.status.awaitingPayment'),
+  validated: t('invoices.status.paid'),
+  accepted: t('invoices.status.accepted'),
+  signed: t('invoices.status.signed'),
+  sent: t('invoices.status.sent'),
+  draft: t('invoices.status.draft'),
+  cancel: t('invoices.status.cancelled'),
 } as Record<string, string>)[status ?? ''] ?? (status ?? '');
 
 // ── Handlers form ─────────────────────────────────────────────────────────────
@@ -841,9 +846,9 @@ const onMarkPaid = async () => {
   statusLoading.value = true;
   try {
     await updateInvoiceStatus('validated');
-    showSnack('Facture marquée comme payée.');
+    showSnack(t('invoices.messages.markedPaid'));
   } catch (e) {
-    showSnack(e instanceof Error ? e.message : 'Impossible de mettre à jour le statut.', 'error');
+    showSnack(e instanceof Error ? e.message : t('invoices.edit.updateStatusError'), 'error');
   } finally {
     statusLoading.value = false;
   }
@@ -858,9 +863,9 @@ const onSendBtnClick = async () => {
     await updateInvoice();
     await sendInvoice();
     await init(getInvoiceId());
-    showSnack('Facture envoyée avec succès.');
+    showSnack(t('invoices.messages.sent'));
   } catch (e) {
-    showSnack(e instanceof Error ? e.message : "Impossible d'envoyer la facture.", 'error');
+    showSnack(e instanceof Error ? (e.message === EMPTY_INVOICE_ERROR ? t('invoices.messages.emptyInvoice') : e.message) : t('invoices.edit.sendError'), 'error');
   } finally {
     sending.value = false;
   }
@@ -878,7 +883,7 @@ const onUpdateBtnClick = async () => {
     router.push('/invoices/');
   } catch (e) {
     // validation errors — stay on page
-    showSnack(e instanceof Error ? e.message : 'Impossible de sauvegarder la facture.', 'error');
+    showSnack(e instanceof Error ? e.message : t('invoices.edit.saveError'), 'error');
   }
 };
 

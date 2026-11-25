@@ -18,10 +18,10 @@
         </v-btn>
         <div class="ml-3">
           <div class="text-h6 font-weight-bold">
-            Nouvelle facture
+            {{ t('invoices.create.title') }}
           </div>
           <div class="text-caption text-medium-emphasis">
-            Le numéro sera attribué à l'enregistrement
+            {{ t('invoices.create.numberHint') }}
           </div>
         </div>
         <v-chip
@@ -55,7 +55,7 @@
                     mdi-receipt-text-outline
                   </v-icon>
                 </div>
-                <span class="text-subtitle-1 font-weight-bold">Origine de la facture</span>
+                <span class="text-subtitle-1 font-weight-bold">{{ t('invoices.create.source') }}</span>
               </div>
               <div class="source-choices">
                 <div
@@ -66,7 +66,7 @@
                   <v-icon size="18">
                     mdi-pencil-outline
                   </v-icon>
-                  Facture libre
+                  {{ t('invoices.create.freeInvoice') }}
                 </div>
                 <div
                   class="source-choice"
@@ -76,11 +76,11 @@
                   <v-icon size="18">
                     mdi-file-document-outline
                   </v-icon>
-                  Depuis un devis accepté
+                  {{ t('invoices.create.fromQuote') }}
                 </div>
               </div>
               <div class="text-caption text-medium-emphasis mt-2">
-                Un devis n'est pas obligatoire. Choisir un devis pré-remplit le client, le véhicule et les éléments.
+                {{ t('invoices.create.sourceHint') }}
               </div>
             </div>
 
@@ -95,7 +95,7 @@
                     mdi-calendar-outline
                   </v-icon>
                 </div>
-                <span class="text-subtitle-1 font-weight-bold">Dates</span>
+                <span class="text-subtitle-1 font-weight-bold">{{ t('invoices.form.dates') }}</span>
               </div>
               <v-row dense>
                 <v-col
@@ -104,7 +104,7 @@
                 >
                   <v-text-field
                     v-model="invoiceInformations.date"
-                    label="Date de facturation"
+                    :label="t('invoices.form.invoiceDate')"
                     type="date"
                     variant="outlined"
                     density="comfortable"
@@ -117,7 +117,7 @@
                 >
                   <v-text-field
                     :model-value="expirationDate"
-                    label="Échéance"
+                    :label="t('invoices.form.dueDate')"
                     type="date"
                     variant="outlined"
                     density="comfortable"
@@ -145,7 +145,7 @@
                         mdi-account-wrench-outline
                       </v-icon>
                     </div>
-                    <span class="text-subtitle-1 font-weight-bold">Technicien</span>
+                    <span class="text-subtitle-1 font-weight-bold">{{ t('invoices.form.technician') }}</span>
                   </div>
                   <v-autocomplete
                     :model-value="selectedTechnician"
@@ -153,7 +153,7 @@
                     :item-title="item => `${item.users.first_name} ${item.users.last_name}`"
                     item-value="id"
                     return-object
-                    label="Sélectionner un technicien"
+                    :label="t('invoices.form.selectTechnician')"
                     variant="outlined"
                     density="comfortable"
                     clearable
@@ -208,7 +208,7 @@
                         mdi-garage
                       </v-icon>
                     </div>
-                    <span class="text-subtitle-1 font-weight-bold">Garage</span>
+                    <span class="text-subtitle-1 font-weight-bold">{{ t('invoices.create.garage') }}</span>
                   </div>
                   <v-autocomplete
                     :model-value="selectedGarage"
@@ -216,7 +216,7 @@
                     item-title="name"
                     item-value="id"
                     return-object
-                    label="Sélectionner un garage"
+                    :label="t('invoices.form.selectGarage')"
                     variant="outlined"
                     density="comfortable"
                     clearable
@@ -245,7 +245,7 @@
                     </template>
                   </v-autocomplete>
                   <div class="text-caption text-medium-emphasis mt-2">
-                    Commission {{ commissionRate }} % · {{ selectedCountry?.code || 'FR' }} · TVA {{ selectedCountry?.taxRate ? `${selectedCountry.taxRate} %` : 'non applicable' }}
+                    {{ t('invoices.create.commissionLine', { rate: commissionRate, code: selectedCountry?.code || 'FR', vat: selectedCountry?.taxRate ? `${selectedCountry.taxRate} %` : t('invoices.create.vatNotApplicable') }) }}
                   </div>
                 </div>
               </v-col>
@@ -262,7 +262,7 @@
                     mdi-car
                   </v-icon>
                 </div>
-                <span class="text-subtitle-1 font-weight-bold">Informations véhicule :</span>
+                <span class="text-subtitle-1 font-weight-bold">{{ t('invoices.form.vehicleInfo') }}</span>
               </div>
               <v-row dense>
                 <v-col
@@ -271,7 +271,7 @@
                 >
                   <v-text-field
                     v-model="carInformations.immatriculation"
-                    label="Immatriculation"
+                    :label="t('invoices.form.plate')"
                     variant="outlined"
                     density="comfortable"
                     hide-details="auto"
@@ -285,7 +285,7 @@
                 >
                   <v-text-field
                     v-model="carInformations.brand"
-                    label="Marque"
+                    :label="t('invoices.form.brand')"
                     variant="outlined"
                     density="comfortable"
                     hide-details="auto"
@@ -299,7 +299,7 @@
                 >
                   <v-text-field
                     v-model="carInformations.dateEntryCirculation"
-                    label="Année"
+                    :label="t('invoices.form.year')"
                     variant="outlined"
                     density="comfortable"
                     hide-details="auto"
@@ -321,7 +321,7 @@
                     mdi-format-list-bulleted
                   </v-icon>
                 </div>
-                <span class="text-subtitle-1 font-weight-bold">Éléments de la facture</span>
+                <span class="text-subtitle-1 font-weight-bold">{{ t('invoices.form.items') }}</span>
                 <v-spacer />
                 <v-chip
                   size="x-small"
@@ -334,10 +334,10 @@
               </div>
               <div class="empty-items text-center py-6 text-medium-emphasis">
                 <div class="text-body-2">
-                  Aucun élément pour le moment.
+                  {{ t('invoices.create.noItems') }}
                 </div>
                 <div class="text-body-2">
-                  Enregistrez le brouillon puis ajoutez au moins un élément pour pouvoir envoyer la facture.
+                  {{ t('invoices.create.saveThenAdd') }}
                 </div>
               </div>
             </div>
@@ -360,7 +360,7 @@
                       mdi-flag-outline
                     </v-icon>
                   </div>
-                  <span class="text-subtitle-1 font-weight-bold">Statut de la facture</span>
+                  <span class="text-subtitle-1 font-weight-bold">{{ t('invoices.form.invoiceStatus') }}</span>
                   <v-spacer />
                   <v-chip
                     size="small"
@@ -376,10 +376,10 @@
                   prepend-icon="mdi-send-outline"
                   disabled
                 >
-                  Envoyer au client
+                  {{ t('invoices.form.sendToClient') }}
                 </v-btn>
                 <div class="text-caption text-medium-emphasis mt-2">
-                  Enregistrez le brouillon puis ajoutez au moins un élément avant l'envoi.
+                  {{ t('invoices.create.saveThenAddBeforeSend') }}
                 </div>
               </div>
 
@@ -394,12 +394,12 @@
                       mdi-tune-variant
                     </v-icon>
                   </div>
-                  <span class="text-subtitle-1 font-weight-bold">Options</span>
+                  <span class="text-subtitle-1 font-weight-bold">{{ t('invoices.form.options') }}</span>
                 </div>
 
                 <div class="mb-3">
                   <div class="text-caption text-medium-emphasis mb-1 font-weight-medium">
-                    Pays &amp; TVA
+                    {{ t('invoices.form.countryVat') }}
                   </div>
                   <CountrySelect
                     :model-value="selectedCountry"
@@ -412,10 +412,10 @@
                 <div class="d-flex align-center justify-space-between py-2">
                   <div>
                     <div class="text-body-2 font-weight-medium">
-                      Mode forfait
+                      {{ t('invoices.form.flatRate') }}
                     </div>
                     <div class="text-caption text-medium-emphasis">
-                      Remplacer les lignes par un montant fixe
+                      {{ t('invoices.form.flatRateHint') }}
                     </div>
                   </div>
                   <v-switch
@@ -432,10 +432,10 @@
                   <div class="d-flex align-center justify-space-between py-2">
                     <div>
                       <div class="text-body-2 font-weight-medium">
-                        Prix unitaires visibles
+                        {{ t('invoices.form.unitPrices') }}
                       </div>
                       <div class="text-caption text-medium-emphasis">
-                        Afficher le détail sur la facture
+                        {{ t('invoices.form.unitPricesHint') }}
                       </div>
                     </div>
                     <v-switch
@@ -450,10 +450,10 @@
                   <div class="d-flex align-center justify-space-between py-2">
                     <div>
                       <div class="text-body-2 font-weight-medium">
-                        Commission hors dégarnissage
+                        {{ t('invoices.form.commissionExclStripping') }}
                       </div>
                       <div class="text-caption text-medium-emphasis">
-                        Exclure le dégarnissage de la base de commission
+                        {{ t('invoices.form.commissionExclStrippingHint') }}
                       </div>
                     </div>
                     <v-switch
@@ -478,10 +478,10 @@
                       mdi-calculator-variant-outline
                     </v-icon>
                   </div>
-                  <span class="text-subtitle-1 font-weight-bold">Récapitulatif</span>
+                  <span class="text-subtitle-1 font-weight-bold">{{ t('common.totals.summary') }}</span>
                 </div>
                 <div class="text-caption text-medium-emphasis">
-                  Total TTC
+                  {{ t('common.totals.inclTax') }}
                 </div>
                 <div class="recap-total text-primary mb-2">
                   {{ zero }}
@@ -489,24 +489,24 @@
                 <div class="recap-divider" />
                 <div class="totals-list">
                   <div class="total-row text-medium-emphasis">
-                    <span>Total H.T</span><span>{{ zero }}</span>
+                    <span>{{ t('common.totals.exclTax') }}</span><span>{{ zero }}</span>
                   </div>
                   <div class="total-row text-medium-emphasis">
-                    <span>Dégarnissage</span><span>{{ zero }}</span>
+                    <span>{{ t('common.totals.stripping') }}</span><span>{{ zero }}</span>
                   </div>
                   <div class="total-row text-medium-emphasis">
-                    <span>H.T + dégarnissage</span><span>{{ zero }}</span>
+                    <span>{{ t('common.totals.exclTaxPlusStripping') }}</span><span>{{ zero }}</span>
                   </div>
                   <div class="total-row text-medium-emphasis">
-                    <span>TVA ({{ selectedCountry?.taxRate || 0 }} %)</span><span>{{ zero }}</span>
+                    <span>{{ t('common.totals.vat', { rate: selectedCountry?.taxRate || 0 }) }}</span><span>{{ zero }}</span>
                   </div>
                   <div class="total-row text-orange">
-                    <span>Commission ({{ commissionRate }} %)</span><span>{{ zero }}</span>
+                    <span>{{ t('common.totals.commission', { rate: commissionRate }) }}</span><span>{{ zero }}</span>
                   </div>
                 </div>
                 <div class="recap-divider" />
                 <div class="total-row font-weight-bold">
-                  <span>Net technicien</span><span>{{ zero }}</span>
+                  <span>{{ t('invoices.form.technicianNet') }}</span><span>{{ zero }}</span>
                 </div>
 
                 <div class="d-none d-md-flex flex-column ga-2 mt-3">
@@ -517,14 +517,14 @@
                     prepend-icon="mdi-content-save-outline"
                     @click="onSaveBtnClick"
                   >
-                    Sauvegarder le brouillon
+                    {{ t('invoices.form.saveDraft') }}
                   </v-btn>
                   <v-btn
                     variant="outlined"
                     class="cancel-btn"
                     @click="$router.back()"
                   >
-                    Annuler
+                    {{ t('common.cancel') }}
                   </v-btn>
                 </div>
               </div>
@@ -545,7 +545,7 @@
           elevation="0"
           @click="onSaveBtnClick"
         >
-          Sauvegarder le brouillon
+          {{ t('invoices.form.saveDraft') }}
         </v-btn>
       </div>
     </v-container>
@@ -579,8 +579,11 @@ import { OrganizationMemberViewModel } from '@/features/organizations/presentati
 import router from '@/app/router/index';
 import { computed, onMounted, reactive, ref, watch } from 'vue';
 import { useTheme } from 'vuetify';
+import { useI18n } from 'vue-i18n';
+import { intlLocale } from '@/app/i18n/formatters';
 
 const { useCreateInvoiceState } = useCreateInvoicePageDependencies();
+const { t } = useI18n();
 const isDark = computed(() => useTheme().current.value.dark);
 
 const {
@@ -630,7 +633,7 @@ const onQuoteError = (message: string) => {
   snackbar.show = true;
 };
 const commissionRate = computed(() => selectedGarage.value?.percentageCommission ?? 0);
-const zero = computed(() => `0,00 ${selectedCountry.value?.currencySymbol || '€'}`);
+const zero = computed(() => `${(0).toLocaleString(intlLocale(), { minimumFractionDigits: 2 })} ${selectedCountry.value?.currencySymbol || '€'}`);
 
 const initials = (name: string) => {
   if (!name) return '?';
@@ -655,7 +658,7 @@ const onSaveBtnClick = async () => {
     if (invoice.value?.id) setSelectedInvoiceGuid(invoice.value.id);
     router.push('/invoices/edit');
   } catch (e) {
-    snackbar.message = e instanceof Error ? e.message : 'Impossible de créer la facture.';
+    snackbar.message = e instanceof Error ? e.message : t('invoices.create.createError');
     snackbar.show = true;
   } finally {
     loading.value = false;

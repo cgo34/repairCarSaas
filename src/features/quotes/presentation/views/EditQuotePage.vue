@@ -464,8 +464,8 @@
                 <div class="d-flex flex-column ga-2">
                   <v-btn
                     v-if="canDecide"
-                    color="primary"
-                    variant="flat"
+                    color="success"
+                    variant="tonal"
                     prepend-icon="mdi-check-circle-outline"
                     @click="onAcceptedBtnClick"
                   >
@@ -473,7 +473,8 @@
                   </v-btn>
                   <v-btn
                     v-if="canDecide"
-                    variant="outlined"
+                    color="error"
+                    variant="tonal"
                     prepend-icon="mdi-close-circle-outline"
                     @click="onRefusedBtnClick"
                   >
@@ -481,8 +482,8 @@
                   </v-btn>
                   <v-btn
                     v-if="!isReadOnly && !isFreePlan"
-                    :color="isSent ? undefined : 'primary'"
-                    :variant="isSent ? 'outlined' : 'flat'"
+                    color="blue"
+                    variant="tonal"
                     prepend-icon="mdi-send-outline"
                     :disabled="!hasItems"
                     :loading="sending"
@@ -502,7 +503,7 @@
                   <v-btn
                     v-if="canDelete"
                     color="error"
-                    variant="outlined"
+                    variant="tonal"
                     prepend-icon="mdi-delete-outline"
                     @click="onDeleteBtnClick"
                   >

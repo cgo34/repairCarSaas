@@ -11,10 +11,10 @@
             class="text-h5 font-weight-bold mb-0"
             style="font-family:'Space Grotesk',sans-serif"
           >
-            Factures
+            {{ t('invoices.list.title') }}
           </h1>
           <p class="text-body-2 text-medium-emphasis mb-0">
-            {{ monthLabel }} · {{ invoices.length }} facture{{ invoices.length > 1 ? 's' : '' }}
+            {{ t('invoices.list.summary', { month: monthLabel, count: invoices.length }) }}
           </p>
         </div>
         <v-btn
@@ -23,7 +23,7 @@
           prepend-icon="mdi-plus"
           @click="onAddInvoice"
         >
-          Nouvelle facture
+          {{ t('invoices.list.newInvoice') }}
         </v-btn>
       </div>
 
@@ -52,13 +52,13 @@
             </v-avatar>
             <div>
               <div class="stat-label">
-                CA encaissé · {{ currentMonthShort }}
+                {{ t('invoices.kpi.collectedAmount', { month: currentMonthShort }) }}
               </div>
               <div class="stat-value">
                 {{ formatCurrency(kpiCaEncaisse) }}
               </div>
               <div class="stat-sub">
-                encaissé ce mois
+                {{ t('invoices.kpi.collectedSub') }}
               </div>
             </div>
           </v-card>
@@ -84,13 +84,13 @@
             </v-avatar>
             <div>
               <div class="stat-label">
-                En attente de paiement
+                {{ t('invoices.kpi.pending') }}
               </div>
               <div class="stat-value">
                 {{ formatCurrency(kpiEnAttente) }}
               </div>
               <div class="stat-sub">
-                {{ kpiEnAttenteCount }} facture{{ kpiEnAttenteCount > 1 ? 's' : '' }} envoyée{{ kpiEnAttenteCount > 1 ? 's' : '' }}
+                {{ t('invoices.kpi.sentCount', kpiEnAttenteCount) }}
               </div>
             </div>
           </v-card>
@@ -116,13 +116,13 @@
             </v-avatar>
             <div>
               <div class="stat-label">
-                Payées ce mois
+                {{ t('invoices.kpi.paidMonth') }}
               </div>
               <div class="stat-value">
                 {{ kpiPayees }}
               </div>
               <div class="stat-sub">
-                factures réglées
+                {{ t('invoices.kpi.settled') }}
               </div>
             </div>
           </v-card>
@@ -149,7 +149,7 @@
             </v-avatar>
             <div>
               <div class="stat-label">
-                En retard
+                {{ t('invoices.kpi.late') }}
               </div>
               <div
                 class="stat-value"
@@ -158,7 +158,7 @@
                 {{ formatCurrency(kpiEnRetardMontant) }}
               </div>
               <div class="stat-sub">
-                {{ kpiLateInvoices.length > 0 ? kpiLateInvoices.length + ' à relancer' : 'Aucune facture en retard' }}
+                {{ kpiLateInvoices.length > 0 ? t('invoices.kpi.toChase', { count: kpiLateInvoices.length }) : t('invoices.kpi.noneLate') }}
               </div>
             </div>
           </v-card>
@@ -172,7 +172,7 @@
           <v-text-field
             v-model="search"
             prepend-inner-icon="mdi-magnify"
-            placeholder="Rechercher une facture, un client…"
+            :placeholder="t('invoices.list.search')"
             density="compact"
             variant="outlined"
             hide-details
@@ -215,7 +215,7 @@
           <template v-if="activePreset === 'custom'">
             <v-text-field
               v-model="dateFrom"
-              label="Du"
+              :label="t('common.period.from')"
               type="date"
               density="compact"
               variant="outlined"
@@ -224,7 +224,7 @@
             />
             <v-text-field
               v-model="dateTo"
-              label="Au"
+              :label="t('common.period.to')"
               type="date"
               density="compact"
               variant="outlined"
@@ -238,7 +238,7 @@
             size="small"
             @click="resetFilters"
           >
-            Réinitialiser
+            {{ t('common.reset') }}
           </v-btn>
           <v-spacer />
           <v-btn
@@ -248,7 +248,7 @@
             :loading="downloading"
             @click="onBulkDownload"
           >
-            Exporter
+            {{ t('common.export') }}
           </v-btn>
         </div>
         <v-divider />
@@ -261,7 +261,8 @@
           show-select
           item-value="id"
           return-object
-          no-data-text="Aucune facture trouvée"
+          :no-data-text="t('invoices.list.noData')"
+          :items-per-page-text="t('common.table.itemsPerPage')"
           hover
           class="invoices-table"
           @click:row="onRowClick"
@@ -353,7 +354,7 @@
               v-else
               class="text-body-2 text-disabled"
             >
-              Non envoyée
+              {{ t('invoices.list.notSent') }}
             </span>
           </template>
 
@@ -375,23 +376,23 @@
                 <!-- Pas de suppression : une facture est un document comptable -->
                 <v-list-item
                   prepend-icon="mdi-send-outline"
-                  title="Envoyer"
+                  :title="t('invoices.actions.send')"
                   @click="onSendBtnClick(item.id)"
                 />
                 <v-list-item
                   prepend-icon="mdi-file-pdf-box"
-                  title="Voir PDF"
+                  :title="t('invoices.actions.viewPdf')"
                   @click="onViewPdfBtnClick(item.id)"
                 />
                 <v-list-item
                   :prepend-icon="isDraft(item) ? 'mdi-pencil-outline' : 'mdi-eye-outline'"
-                  :title="isDraft(item) ? 'Modifier' : 'Consulter'"
+                  :title="isDraft(item) ? t('invoices.actions.edit') : t('invoices.actions.view')"
                   @click="isDraft(item) ? onEditInvoice(item.id) : onViewInvoice(item.id)"
                 />
                 <v-list-item
                   v-if="canMarkPaid(item)"
                   prepend-icon="mdi-cash-check"
-                  title="Marquer payée"
+                  :title="t('invoices.actions.markPaid')"
                   @click="onMarkPaid(item.id)"
                 />
               </v-list>
@@ -423,11 +424,14 @@ import { LineItemMapper } from '@/features/lineItems/presentation/mappers/LineIt
 import { InvoiceViewModel } from '@/features/invoices/presentation/models/InvoiceViewModel';
 import JSZip from 'jszip';
 import { computed, onMounted, reactive, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { capitalize, formatCurrency, formatDate } from '@/app/i18n/formatters';
 import { useRouter } from 'vue-router';
 
   const { authState, useInvoiceState, generatePdfUseCase, organizationProfileUseCase, sendInvoiceUseCase } = useInvoicesPageDependencies();
 
 const router = useRouter();
+const { t } = useI18n();
 const { init, invoices, markAsPaid } = useInvoiceState;
 
 const {
@@ -443,11 +447,11 @@ const garageFilter = ref('all');
 type InvoiceTab = 'all' | 'pending' | 'paid' | 'late';
 const activeTab = ref<InvoiceTab>('all');
 const sentFilter = ref<'all' | 'sent' | 'notSent'>('all');
-const sentOptions = [
-  { title: 'Envoyées / non envoyées', value: 'all' },
-  { title: 'Envoyées', value: 'sent' },
-  { title: 'Non envoyées', value: 'notSent' },
-];
+const sentOptions = computed(() => [
+  { title: t('invoices.list.sent.all'), value: 'all' },
+  { title: t('invoices.list.sent.sent'), value: 'sent' },
+  { title: t('invoices.list.sent.notSent'), value: 'notSent' },
+]);
 const _company = ref<OrganizationProfileDto | null>(null);
 
 const snackbar = reactive({ show: false, message: '', color: 'success' });
@@ -495,22 +499,22 @@ const kpiEnRetardMontant= computed(() => kpiLateInvoices.value.reduce((s, i) => 
 const tabSource = computed(() => hasActiveFilter.value ? periodFiltered.value : invoices.value);
 
 const tabs = computed<{ key: InvoiceTab; label: string; count: number }[]>(() => [
-  { key: 'all',     label: 'Toutes',     count: tabSource.value.length },
-  { key: 'pending', label: 'En attente', count: tabSource.value.filter(isPending).length },
-  { key: 'paid',  label: 'Payées',    count: tabSource.value.filter(isPaid).length },
-  { key: 'late',  label: 'En retard', count: tabSource.value.filter(isLate).length },
+  { key: 'all',     label: t('invoices.list.tabs.all'), count: tabSource.value.length },
+  { key: 'pending', label: t('invoices.list.tabs.pending'), count: tabSource.value.filter(isPending).length },
+  { key: 'paid',  label: t('invoices.list.tabs.paid'), count: tabSource.value.filter(isPaid).length },
+  { key: 'late',  label: t('invoices.list.tabs.late'), count: tabSource.value.filter(isLate).length },
 ]);
 
-const statusOptions = computed(() => tabs.value.map(tab => ({ title: `${tab.key === 'all' ? 'Tous les statuts' : tab.label} · ${tab.count}`, value: tab.key })));
-const periodOptions = [
-  ...datePresets.map(preset => ({ title: preset.key === 'all' ? 'Toutes les dates' : preset.label, value: preset.key })),
-  { title: 'Personnalisée', value: 'custom' as const },
-];
+const statusOptions = computed(() => tabs.value.map(tab => ({ title: `${tab.key === 'all' ? t('invoices.list.allStatuses') : tab.label} · ${tab.count}`, value: tab.key })));
+const periodOptions = computed(() => [
+  ...datePresets.map(preset => ({ title: preset.key === 'all' ? t('common.period.allDates') : preset.label, value: preset.key })),
+  { title: t('common.period.custom'), value: 'custom' as const },
+]);
 
 const invoiceGarageName = (inv: InvoiceViewModel) => inv.garage?.name ?? inv.garageName ?? '';
 
 const garageOptions = computed(() => [
-  { title: 'Tous les garages', value: 'all' },
+  { title: t('invoices.list.allGarages'), value: 'all' },
   ...[...new Set(invoices.value.map(invoiceGarageName).filter(Boolean))].sort().map(name => ({ title: name, value: name })),
 ]);
 
@@ -569,41 +573,37 @@ const techColor = (item: TechSource) => {
 
 // ─── Chip statut ──────────────────────────────────────────────
 const chipInfo = (item: InvoiceViewModel): { label: string; color: string } => {
-  if (isCancelled(item))    return { label: 'Annulée',   color: 'default' };
-  if (isDraft(item))        return { label: 'Brouillon', color: 'default' };
-  if (isLate(item))         return { label: 'En retard', color: 'error' };
-  if (isPaid(item))         return { label: 'Payée',     color: 'success' };
-  return { label: 'En attente', color: 'warning' };
+  if (isCancelled(item))    return { label: t('invoices.status.cancelled'), color: 'default' };
+  if (isDraft(item))        return { label: t('invoices.status.draft'), color: 'default' };
+  if (isLate(item))         return { label: t('invoices.status.late'), color: 'error' };
+  if (isPaid(item))         return { label: t('invoices.status.paid'), color: 'success' };
+  return { label: t('invoices.status.pending'), color: 'warning' };
 };
 const chipLabel    = (item: InvoiceViewModel) => chipInfo(item).label;
 const chipColor    = (item: InvoiceViewModel) => chipInfo(item).color;
 
 // ─── Formatage ────────────────────────────────────────────────
-const formatCurrency = (val: number) =>
-  new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(val);
-
 const formatDateShort = (d?: string) => {
   if (!d) return '—';
-  return new Date(d).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' });
+  return formatDate(d, { day: 'numeric', month: 'long' });
 };
 
-const MONTHS = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
 const now = new Date();
-const monthLabel      = computed(() => `${MONTHS[now.getMonth()]} ${now.getFullYear()}`);
-const currentMonthShort = MONTHS[now.getMonth()].toLowerCase();
+const monthLabel        = computed(() => capitalize(formatDate(now, { month: 'long', year: 'numeric' })));
+const currentMonthShort = computed(() => formatDate(now, { month: 'long' }).toLowerCase());
 
 // ─── Table headers ────────────────────────────────────────────
-const tableHeaders = [
-  { title: 'N° FACTURE',   key: 'invoiceNumber', sortable: true  },
-  { title: 'CLIENT',       key: 'client',        sortable: false },
-  { title: 'VÉHICULE',     key: 'vehicle',       sortable: false },
-  { title: 'DATE',         key: 'createdAt',     sortable: true  },
-  { title: 'TECHNICIEN',   key: 'technician',    sortable: false },
-  { title: 'MONTANT TTC',  key: 'total',         align: 'end' as const, sortable: true },
-  { title: 'ENVOYÉE',      key: 'sentAt',        sortable: false },
-  { title: 'STATUT',       key: 'status',        sortable: false },
+const tableHeaders = computed(() => [
+  { title: t('invoices.list.headers.invoiceNumber'),   key: 'invoiceNumber', sortable: true  },
+  { title: t('invoices.list.headers.client'),       key: 'client',        sortable: false },
+  { title: t('invoices.list.headers.vehicle'),     key: 'vehicle',       sortable: false },
+  { title: t('invoices.list.headers.date'),         key: 'createdAt',     sortable: true  },
+  { title: t('invoices.list.headers.technician'),   key: 'technician',    sortable: false },
+  { title: t('invoices.list.headers.totalInclTax'),  key: 'total',         align: 'end' as const, sortable: true },
+  { title: t('invoices.list.headers.sent'),      key: 'sentAt',        sortable: false },
+  { title: t('invoices.list.headers.status'),       key: 'status',        sortable: false },
   { title: '',             key: 'actions',       sortable: false },
-];
+]);
 
 // ─── Actions ──────────────────────────────────────────────────
 const onAddInvoice     = () => router.push('/invoices/new');
@@ -627,9 +627,9 @@ const onMarkPaid = async (id?: string) => {
   if (!id) return;
   try {
     await markAsPaid(id);
-    showSnack('Facture marquée comme payée.');
+    showSnack(t('invoices.messages.markedPaid'));
   } catch {
-    showSnack('Erreur lors du changement de statut.', 'error');
+    showSnack(t('invoices.messages.statusError'), 'error');
   }
 };
 
@@ -637,10 +637,10 @@ const onSendBtnClick = async (id?: string) => {
   if (!id) return;
   try {
     await sendInvoiceUseCase.execute(id);
-    showSnack('Facture envoyée avec succès.');
+    showSnack(t('invoices.messages.sent'));
     await init();
   } catch {
-    showSnack("Erreur lors de l'envoi de la facture.", 'error');
+    showSnack(t('invoices.messages.sendError'), 'error');
   }
 };
 
@@ -660,13 +660,13 @@ const onBulkDownload = async () => {
         success++;
       } catch (e) { console.error(`Erreur PDF facture ${invoice.invoiceNumber}:`, e); }
     }
-    if (success === 0) { showSnack("Aucun PDF n'a pu être généré.", 'error'); return; }
+    if (success === 0) { showSnack(t('invoices.messages.noPdf'), 'error'); return; }
     const link = document.createElement('a');
     link.href = URL.createObjectURL(await zip.generateAsync({ type: 'blob' }));
     link.download = `factures_${new Date().toISOString().split('T')[0]}.zip`;
     link.click();
     URL.revokeObjectURL(link.href);
-    showSnack(`${success} facture(s) téléchargée(s).`);
+    showSnack(t('invoices.messages.downloaded', success));
     selectedInvoices.value = [];
   } finally { downloading.value = false; }
 };

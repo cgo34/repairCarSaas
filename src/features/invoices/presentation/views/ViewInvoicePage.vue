@@ -19,14 +19,14 @@
           </v-btn>
           <div class="ml-3">
             <div class="text-h6 font-weight-bold">
-              Facture n° {{ invoice?.invoiceNumber ?? '' }}
+              {{ t('invoices.view.title', { number: invoice?.invoiceNumber ?? '' }) }}
             </div>
             <div class="text-caption text-medium-emphasis">
               <template v-if="invoice?.createdAt">
-                Créée le {{ formatDate(invoice.createdAt) }}
+                {{ t('invoices.view.createdOn', { date: formatDate(invoice.createdAt) }) }}
               </template>
               <template v-if="invoice?.quoteNumber">
-                · Issue du devis n° {{ invoice.quoteNumber }}
+                · {{ t('invoices.view.fromQuote', { number: invoice.quoteNumber }) }}
               </template>
             </div>
           </div>
@@ -50,7 +50,7 @@
             :disabled="!pdfUrl"
             @click="onDownloadBtnClick"
           >
-            Télécharger
+            {{ t('common.download') }}
           </v-btn>
           <v-btn
             color="primary"
@@ -61,7 +61,7 @@
             :loading="sending"
             @click="onSendBtnClick"
           >
-            Envoyer
+            {{ t('invoices.actions.send') }}
           </v-btn>
         </div>
       </div>
@@ -73,8 +73,7 @@
           icon="mdi-lock-outline"
         />
         <span>
-          Cette facture est un document comptable : elle n'est plus modifiable.
-          Tu peux consulter, télécharger ou renvoyer le PDF.
+          {{ t('invoices.view.locked') }}
         </span>
       </div>
 
@@ -82,7 +81,7 @@
         <!-- Viewer PDF -->
         <div class="q-card viewer">
           <div class="viewer-bar">
-            <span class="text-subtitle-1 font-weight-bold">Aperçu du PDF</span>
+            <span class="text-subtitle-1 font-weight-bold">{{ t('invoices.view.pdfPreview') }}</span>
             <div class="zoom-controls">
               <button
                 type="button"
@@ -147,52 +146,52 @@
         <div class="side">
           <div class="q-card pa-5">
             <div class="text-caption text-medium-emphasis">
-              Total TTC
+              {{ t('common.totals.inclTax') }}
             </div>
             <div class="recap-total text-primary">
               {{ money(total) }}
             </div>
             <div class="mini-row mt-3">
-              <span class="text-medium-emphasis">Total H.T.</span>
+              <span class="text-medium-emphasis">{{ t('common.totals.exclTax') }}</span>
               <span>{{ money(subtotal) }}</span>
             </div>
             <div
               v-if="totalDegarnissage"
               class="mini-row"
             >
-              <span class="text-medium-emphasis">Dégarnissage</span>
+              <span class="text-medium-emphasis">{{ t('common.totals.stripping') }}</span>
               <span>{{ money(totalDegarnissage) }}</span>
             </div>
             <div
               v-if="taxRate"
               class="mini-row"
             >
-              <span class="text-medium-emphasis">TVA ({{ taxRate }}%)</span>
+              <span class="text-medium-emphasis">{{ t('common.totals.vat', { rate: taxRate }) }}</span>
               <span>{{ money(totalTax) }}</span>
             </div>
           </div>
 
           <div class="q-card pa-5">
             <div class="text-subtitle-1 font-weight-bold mb-3">
-              Informations
+              {{ t('invoices.view.information') }}
             </div>
             <div class="mini-row no-border">
-              <span class="text-medium-emphasis">Client</span>
+              <span class="text-medium-emphasis">{{ t('invoices.view.client') }}</span>
               <strong>{{ invoice?.garage?.name ?? invoice?.garageName ?? '—' }}</strong>
             </div>
             <div class="mini-row">
-              <span class="text-medium-emphasis">Véhicule</span>
+              <span class="text-medium-emphasis">{{ t('invoices.view.vehicle') }}</span>
               <strong>{{ vehicle }}</strong>
             </div>
             <div class="mini-row">
-              <span class="text-medium-emphasis">Technicien</span>
+              <span class="text-medium-emphasis">{{ t('invoices.view.technician') }}</span>
               <strong>{{ technician }}</strong>
             </div>
           </div>
 
           <div class="q-card pa-5">
             <div class="text-subtitle-1 font-weight-bold mb-3">
-              Historique
+              {{ t('invoices.view.history') }}
             </div>
             <v-timeline
               side="end"
@@ -239,11 +238,15 @@ import { getSelectedInvoiceGuid } from '@/features/invoices/presentation/utils/i
 import { useViewInvoicePageDependencies } from '@/features/invoices/composition/useViewInvoicePageDependencies';
 import MainLayout from '@/app/layouts/MainLayout.vue';
 import { computed, nextTick, onMounted, reactive, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { formatCurrency, formatDate } from '@/app/i18n/formatters';
 import { getDocument, GlobalWorkerOptions, type PDFDocumentProxy } from 'pdfjs-dist';
 import pdfWorkerUrl from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
 import { useTheme } from 'vuetify';
 
 GlobalWorkerOptions.workerSrc = pdfWorkerUrl;
+
+const { t } = useI18n();
 
 const { useViewInvoiceState } = useViewInvoicePageDependencies();
 const {
@@ -342,20 +345,18 @@ const isLate = computed(() => {
 });
 
 const statusInfo = computed(() => {
-  if (isPaid.value) return { label: 'Payée', color: 'success' };
-  if (isCancelled.value) return { label: 'Annulée', color: 'error' };
-  if (isLate.value) return { label: 'En retard', color: 'error' };
+  if (isPaid.value) return { label: t('invoices.status.paid'), color: 'success' };
+  if (isCancelled.value) return { label: t('invoices.status.cancelled'), color: 'error' };
+  if (isLate.value) return { label: t('invoices.status.late'), color: 'error' };
   return invoice.value?.isSent
-    ? { label: 'En attente', color: 'warning' }
-    : { label: 'Brouillon', color: 'default' };
+    ? { label: t('invoices.status.pending'), color: 'warning' }
+    : { label: t('invoices.status.draft'), color: 'default' };
 });
 
 // --- Formatage ---
-const formatDate = (d: string | Date) => new Date(d).toLocaleDateString('fr-FR');
 const longDate = (d?: string | Date) =>
-  d ? new Date(d).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' }) : '';
-const money = (n: number) =>
-  new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(n);
+  d ? formatDate(d, { day: 'numeric', month: 'long' }) : '';
+const money = (n: number) => formatCurrency(n);
 
 const vehicle = computed(
   () => [invoice.value?.carBrand, invoice.value?.carImmatriculation].filter(Boolean).join(' · ') || '—'
@@ -371,10 +372,10 @@ const history = computed(() => {
   const inv = invoice.value;
   if (!inv) return [];
   const items: { label: string; date?: string; ok?: boolean }[] = [
-    { label: 'Créée', date: longDate(inv.createdAt) },
+    { label: t('invoices.view.created'), date: longDate(inv.createdAt) },
   ];
-  if (inv.isSent) items.push({ label: 'Envoyée au client', date: longDate(inv.sentAt) });
-  if (isPaid.value) items.push({ label: 'Payée', ok: true });
+  if (inv.isSent) items.push({ label: t('invoices.view.sentToClient'), date: longDate(inv.sentAt) });
+  if (isPaid.value) items.push({ label: t('invoices.status.paid'), ok: true });
   return items;
 });
 
@@ -390,9 +391,9 @@ const onSendBtnClick = async () => {
   sending.value = true;
   try {
     await sendInvoice();
-    showSnack('Facture envoyée avec succès.');
+    showSnack(t('invoices.messages.sent'));
   } catch {
-    showSnack("Erreur lors de l'envoi de la facture.", 'error');
+    showSnack(t('invoices.messages.sendError'), 'error');
   } finally {
     sending.value = false;
   }
