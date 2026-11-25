@@ -1,0 +1,10 @@
+{
+  "subscription": {
+    "breadcrumb": {
+      "root": "Subscription",
+      "mine": "My subscription",
+      "usage": "Usage",
+      "invoices": "Invoices"
+    }
+  }
+}

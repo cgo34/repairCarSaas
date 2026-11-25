@@ -1,0 +1,12 @@
+{
+  "invoices": {
+    "breadcrumb": {
+      "list": "Invoices",
+      "new": "New invoice",
+      "view": "View invoice",
+      "preview": "PDF preview",
+      "edit": "Edit invoice",
+      "items": "Invoice items"
+    }
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "quotes": {
+    "breadcrumb": {
+      "list": "Quotes",
+      "new": "New quote",
+      "view": "View quote",
+      "preview": "PDF preview",
+      "edit": "Edit quote",
+      "items": "Quote items"
+    }
+  }
+}

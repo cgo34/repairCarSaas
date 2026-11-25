@@ -1,6 +1,12 @@
 {
   "common": {
     "home": "Tableau de bord",
-    "back": "Retour"
+    "back": "Retour",
+    "menu": {
+      "account": "Mon compte",
+      "darkTheme": "Thème sombre",
+      "language": "Langue",
+      "logout": "Déconnexion"
+    }
   }
 }

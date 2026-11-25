@@ -1,0 +1,12 @@
+{
+  "common": {
+    "home": "Dashboard",
+    "back": "Back",
+    "menu": {
+      "account": "My account",
+      "darkTheme": "Dark theme",
+      "language": "Language",
+      "logout": "Log out"
+    }
+  }
+}
