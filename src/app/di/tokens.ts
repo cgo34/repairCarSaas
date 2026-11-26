@@ -82,6 +82,12 @@ const SYMBOLS = {
       LogoutUseCase: Symbol.for(SYMBOL_NAMES.LOGOUT_USE_CASE),
       RegisterUseCase: Symbol.for(SYMBOL_NAMES.REGISTER_USE_CASE),
       GetAuthenticatedUserContextUseCase: Symbol.for(SYMBOL_NAMES.GET_AUTHENTICATED_USER_CONTEXT_USE_CASE),
+      ProvisionOrganizationUseCase: Symbol.for(SYMBOL_NAMES.PROVISION_ORGANIZATION_USE_CASE),
+    },
+    ProfileSwitcher: {
+      ListDemoProfilesUseCase: Symbol.for(SYMBOL_NAMES.LIST_DEMO_PROFILES_USE_CASE),
+      SwitchDemoProfileUseCase: Symbol.for(SYMBOL_NAMES.SWITCH_DEMO_PROFILE_USE_CASE),
+      ClearDemoProfileUseCase: Symbol.for(SYMBOL_NAMES.CLEAR_DEMO_PROFILE_USE_CASE),
     },
     // -- Subscription UseCases
     Subscription: {
@@ -91,7 +97,6 @@ const SYMBOLS = {
     // -- User UseCases
     UserUseCase: Symbol.for(SYMBOL_NAMES.USER_USE_CASE),
     User: {
-      CreateUserUseCase: Symbol.for(SYMBOL_NAMES.CREATE_USER_USE_CASE),
       CreateUserWithOrganizationUseCase: Symbol.for(SYMBOL_NAMES.CREATE_USER_WITH_ORGANIZATION_USE_CASE),
     },
     OrganizationProfileUseCase: Symbol.for(SYMBOL_NAMES.ORGANIZATION_PROFILE_USE_CASE),

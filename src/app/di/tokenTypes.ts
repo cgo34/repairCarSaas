@@ -73,9 +73,14 @@ export enum SYMBOL_NAMES {
     LOGOUT_USE_CASE = 'LogoutUseCase',
     REGISTER_USE_CASE = 'RegisterUseCase',
     GET_AUTHENTICATED_USER_CONTEXT_USE_CASE = 'GetAuthenticatedUserContextUseCase',
+    PROVISION_ORGANIZATION_USE_CASE = 'ProvisionOrganizationUseCase',
+    // -- Profile switcher (super_admin demo profiles)
+    DEMO_PROFILE_REPOSITORY = 'DemoProfileRepository',
+    LIST_DEMO_PROFILES_USE_CASE = 'ListDemoProfilesUseCase',
+    SWITCH_DEMO_PROFILE_USE_CASE = 'SwitchDemoProfileUseCase',
+    CLEAR_DEMO_PROFILE_USE_CASE = 'ClearDemoProfileUseCase',
     // -- User UseCases
     USER_USE_CASE = 'UserUseCase',
-    CREATE_USER_USE_CASE = 'CreateUserUseCase',
     CREATE_USER_WITH_ORGANIZATION_USE_CASE = 'CreateUserWithOrganizationUseCase',
     // -- Organization Member UseCases
     ORGANIZATION_PROFILE_USE_CASE = 'OrganizationProfileUseCase',

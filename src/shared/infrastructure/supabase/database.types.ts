@@ -1544,6 +1544,7 @@ export type Database = {
           last_name: string | null
           percentage_commission: number | null
           phone: string | null
+          platform_role: Database["public"]["Enums"]["platform_role"]
           profile_picture_url: string | null
         }
         Insert: {
@@ -1555,6 +1556,7 @@ export type Database = {
           last_name?: string | null
           percentage_commission?: number | null
           phone?: string | null
+          platform_role?: Database["public"]["Enums"]["platform_role"]
           profile_picture_url?: string | null
         }
         Update: {
@@ -1628,18 +1630,29 @@ export type Database = {
       }
     }
     Functions: {
-      ensure_user_profile: {
-        Args: {
-          email: string
-          full_name: string
-          role: string
-          user_id: string
-        }
-        Returns: undefined
-      }
       is_organization_admin: {
         Args: { target_organization_id: string }
         Returns: boolean
+      }
+      is_super_admin: {
+        Args: Record<PropertyKey, never>
+        Returns: boolean
+      }
+      provision_organization: {
+        Args: { p_name: string }
+        Returns: string
+      }
+      switch_demo_profile: {
+        Args: { p_profile_id: string }
+        Returns: undefined
+      }
+      clear_demo_profile: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
+      get_demo_profile_context: {
+        Args: Record<PropertyKey, never>
+        Returns: { profile_id: string; organization_id: string; role: string }[]
       }
       set_user_blocked: {
         Args: { blocked: boolean; target_user_id: string }
@@ -1648,6 +1661,7 @@ export type Database = {
     }
     Enums: {
       organization_member_status: "pending" | "active" | "blocked" | "archived"
+      platform_role: "user" | "super_admin"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -1776,6 +1790,7 @@ export const Constants = {
   public: {
     Enums: {
       organization_member_status: ["pending", "active", "blocked", "archived"],
+      platform_role: ["user", "super_admin"],
     },
   },
 } as const

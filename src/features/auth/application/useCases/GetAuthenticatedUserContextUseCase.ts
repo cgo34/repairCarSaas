@@ -5,6 +5,9 @@ import { IOrganizationRepository } from '@/features/organizations/application/po
 import { IOrganizationMemberRepository } from '@/features/organizations/application/ports/repositories/IOrganizationMemberRepository';
 import { ISubscriptionRepository } from '@/features/subscription/application/ports/repositories/ISubscriptionRepository';
 import { AuthenticatedUserDto } from '@/features/auth/application/dtos/AuthenticatedUserDto';
+import { IProvisionOrganizationUseCase } from '@/features/auth/application/useCases/ProvisionOrganizationUseCase';
+import { PlatformRole } from '@/features/users/domain/enums/PlatformRole';
+import { UserDto } from '@/features/users/application/dtos/UserDto';
 
 export interface IAuthenticatedUserContextUseCase {
   execute(): Promise<AuthenticatedUserDto>;
@@ -20,6 +23,8 @@ export class GetAuthenticatedUserContextUseCase implements IAuthenticatedUserCon
     private organizationMemberRepository: IOrganizationMemberRepository,
 
     private subscriptionRepository: ISubscriptionRepository,
+
+    private provisionOrganizationUseCase: IProvisionOrganizationUseCase,
   ) {}
 
   async hasActiveSession(): Promise<boolean> {
@@ -50,12 +55,31 @@ export class GetAuthenticatedUserContextUseCase implements IAuthenticatedUserCon
     // ───────────────────────────────────────────────────────
     // Get organization membership
     // ───────────────────────────────────────────────────────
-    const membership =
+    const platformRole: PlatformRole = userProfile?.platformRole ?? 'user';
+    const isSuperAdmin = platformRole === 'super_admin';
+
+    let memberships =
       await this.organizationMemberRepository.getByMemberId(authUser.id);
 
-    const member = membership[0];
+    // Self-registered account whose provisioning did not complete at sign-up
+    // (email confirmation, transient failure): idempotent server-side retry.
+    if (memberships.length === 0 && !isSuperAdmin) {
+      await this.provisionOrganizationUseCase.execute(
+        userProfile?.fullName ?? authUser.user_metadata?.fullName ?? ''
+      );
+      memberships = await this.organizationMemberRepository.getByMemberId(authUser.id);
+    }
+
+    // A super_admin acts through the demo profile whose membership is active.
+    // Without any, the context is global (no organization scope).
+    const member = isSuperAdmin
+      ? memberships.find(m => m.status === 'active')
+      : memberships[0];
 
     if (!member?.id) {
+      if (isSuperAdmin) {
+        return this.buildGlobalContext(authUser.id, authUser.email ?? '', userProfile);
+      }
       throw new Error('Organization membership not found');
     }
 
@@ -92,6 +116,8 @@ export class GetAuthenticatedUserContextUseCase implements IAuthenticatedUserCon
       fullName: authUser?.user_metadata?.fullName ?? '',
       firstName: userProfile?.firstName ?? '',
       lastName: userProfile?.lastName ?? '',
+      platformRole,
+      isGlobalContext: false,
 
       organization: {
         id: member.organization_id,
@@ -106,6 +132,23 @@ export class GetAuthenticatedUserContextUseCase implements IAuthenticatedUserCon
         plan: subscription.subscriptionPlan.name,
         status: subscription.status,
       },
+    };
+  }
+
+  private buildGlobalContext(id: string, email: string, profile: UserDto | null): AuthenticatedUserDto {
+    return {
+      id,
+      email,
+      fullName: profile?.fullName ?? '',
+      firstName: profile?.firstName ?? '',
+      lastName: profile?.lastName ?? '',
+      platformRole: 'super_admin',
+      isGlobalContext: true,
+      // Placeholders: no organization scope. Lowest business role, no data access
+      // is granted server-side without an active membership.
+      organization: { id: '', name: '' },
+      membership: { id: '', percentage_commission: 0, status: 'active', role: 'technician' },
+      subscription: { id: '', plan: '', status: 'none' },
     };
   }
 }

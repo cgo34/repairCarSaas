@@ -15,14 +15,7 @@ export class UserMapper {
       subscription: api.subscription,
       percentageCommission: api.percentage_commission,
       isBlocked: api.is_blocked,
-    };
-  }
-
-  static dtoToApiInsert(dto: UserDto): Partial<UserApiModel> & Pick<UserApiModel, 'id' | 'email'> {
-    return {
-      ...UserMapper.dtoToApi(dto),
-      id: dto.id,
-      email: dto.email,
+      platformRole: api.platform_role,
     };
   }
 

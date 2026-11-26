@@ -12,7 +12,6 @@ export interface IUseUserState {
 
   selectUser(user: UserViewModel): void;
   resetSelectedUser(): void;
-  addUser(user: UserViewModel): Promise<UserViewModel>;
   updateUser(user: UserViewModel): Promise<UserViewModel>;
   deleteUser(id: string): Promise<void>;
 }

@@ -458,7 +458,6 @@ const roleColor = (role?: string) => {
     case 'admin': return 'red';
     case 'garage': return 'blue';
     case 'technician': return 'green';
-    case 'independant_technician': return 'orange';
     default: return 'grey';
   }
 };

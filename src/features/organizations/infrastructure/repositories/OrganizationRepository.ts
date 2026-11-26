@@ -40,4 +40,13 @@ export class OrganizationRepository implements IOrganizationRepository {
     if (error) throw new Error('Error creating organization');
     return OrganizationMapper.apiToDto(data);
   }
+
+  async provision(name: string): Promise<string> {
+    const { data, error } = await this.clientProvider
+      .getClient()
+      .rpc('provision_organization', { p_name: name });
+
+    if (error || !data) throw new Error('Error provisioning organization');
+    return data;
+  }
 }

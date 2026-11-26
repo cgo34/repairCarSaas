@@ -47,15 +47,14 @@
 import { useResetPasswordPageDependencies } from '@/features/auth/composition/useResetPasswordPageDependencies';
 import AuthLayout from '@/features/auth/presentation/layouts/AuthLayout.vue';
 import { onMounted, ref } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
+import { useRouter } from 'vue-router';
 
   const { clientProvider } = useResetPasswordPageDependencies();
   const supabase = clientProvider.getClient();
 
-const route = useRoute();
 const router = useRouter();
 
-const token = ref<string | null>(null);
+const hasRecoverySession = ref(false);
 const newPassword = ref('');
 const errorMessage = ref<string | null>(null);
 const successMessage = ref<string | null>(null);
@@ -63,17 +62,23 @@ const loading = ref(false);
 
 const passwordRule = (v: string) => v.length >= 8 || 'Le mot de passe doit contenir au moins 8 caractères';
 
-onMounted(() => {
-  const queryToken = route.query.token as string | undefined;
-  if (!queryToken) {
-    errorMessage.value = "Lien invalide ou expiré.";
+// The email link carries the recovery session in the URL; the Supabase client
+// (detectSessionInUrl) turns it into a session, which authorizes updateUser.
+onMounted(async () => {
+  const hashParams = new URLSearchParams(window.location.hash.replace(/^#/, ''));
+  const linkError = hashParams.get('error_description');
+  const { data } = await supabase.auth.getSession();
+  if (!data.session) {
+    errorMessage.value = linkError
+      ? `Lien invalide ou expiré (${linkError.replace(/\+/g, ' ')}).`
+      : "Lien invalide ou expiré.";
     return;
   }
-  token.value = queryToken;
+  hasRecoverySession.value = true;
 });
 
 const handleResetPassword = async () => {
-  if (!token.value || !newPassword.value) {
+  if (!hasRecoverySession.value || !newPassword.value) {
     errorMessage.value = "Veuillez fournir un mot de passe valide.";
     return;
   }

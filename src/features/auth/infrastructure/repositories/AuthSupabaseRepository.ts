@@ -7,7 +7,7 @@ import { Session } from '@supabase/supabase-js';
 import { SupabaseClient } from '@/shared/infrastructure/supabase/SupabaseClient';
 import { UserApiModel } from '@/features/users/infrastructure/api/UserApiModel';
 
-const USER_PROFILE_SELECT = 'id, email, full_name, first_name, last_name, is_blocked';
+const USER_PROFILE_SELECT = 'id, email, full_name, first_name, last_name, is_blocked, platform_role';
 
 export class AuthSupabaseRepository implements IAuthRepository {
   constructor(private clientProvider: IClientProvider<SupabaseClient>) {}

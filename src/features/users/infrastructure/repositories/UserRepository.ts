@@ -35,21 +35,6 @@ export class UserRepository implements IUserRepository {
     return data ? UserMapper.apiToDto(data) : null;
   }
   
-  async createUser(user: UserDto): Promise<UserDto> {
-    const apiModel = UserMapper.dtoToApiInsert(user);
-
-    const { data, error } = await this.clientProvider.getClient()
-      .from('users')
-      .insert(apiModel)
-      .select('*')
-      .maybeSingle<UserApiModel>();
-
-    if (error) throw new Error('Error inserting user');
-    if (!data) throw new Error('No data returned after insert');
-
-    return UserMapper.apiToDto(data);
-  }
-  
   async updateUser(id: string, user: Partial<UserDto>): Promise<void> {
     const { id: _excluded, ...updateFields } = user as UserDto;
     const apiModel = UserMapper.dtoToApi(updateFields);

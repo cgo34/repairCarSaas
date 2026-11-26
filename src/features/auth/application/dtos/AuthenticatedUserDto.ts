@@ -1,9 +1,16 @@
+import { PlatformRole } from '@/features/users/domain/enums/PlatformRole';
+
 export type AuthenticatedUserDto = {
   id: string;
   email: string;
   fullName: string;
   firstName: string;
   lastName: string;
+
+  /** Global platform role, independent from any organization. */
+  platformRole: PlatformRole;
+  /** True for a super_admin with no active demo profile: no organization scope. */
+  isGlobalContext: boolean;
 
   organization: {
     id: string;

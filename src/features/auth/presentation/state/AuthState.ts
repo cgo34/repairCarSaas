@@ -2,7 +2,6 @@ import { AuthError } from '@/features/auth/domain/errors/AuthError';
 import { IAuthUseCase } from '@/features/auth/application/useCases/AuthUseCase';
 import { ISettingPriceUseCase } from '@/features/priceSettings/application/useCases/SettingPriceUseCase';
 import { IGetCurrentSubscriptionUseCase } from '@/features/subscription/application/useCases/GetCurrentSubscriptionUseCase';
-import { ICreateUserUseCase } from '@/features/users/application/useCases/CreateUserUseCase';
 import { AuthErrorCode } from '@/features/auth/domain/valueObjects/AuthErrorCode';
 import { UserDto } from '@/features/users/application/dtos/UserDto';
 import { UserViewModel } from '@/features/users/presentation/models/UserViewModel';
@@ -38,7 +37,6 @@ export class AuthState implements IAuthState {
     private authUseCase: IAuthUseCase,
     private loginUseCase: ILoginUseCase,
     private logoutUseCase: ILogoutUseCase,
-    private createUserUseCase: ICreateUserUseCase,
     private createUserWithOrganizationUseCase: IRegisterUserWithOrganizationUseCase,
     private settingPriceUseCase: ISettingPriceUseCase,
   ) {
