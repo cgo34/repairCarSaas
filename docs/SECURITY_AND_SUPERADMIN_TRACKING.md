@@ -20,10 +20,14 @@
   - Nouvelle fonction `is_organization_member()` utilisée par les policies `quotes` / `invoices` / `quote_details`.
   - Audit blocs 3-8 (grants, fonctions, triggers, FK, `user_profiles`, orphelins) encore à fournir.
 
+## Phases 4-6 — implémentées (en attente d'application SQL + test)
+- Migration `supabase/migrations/20260701_04_demo_profiles.sql` : tables `demo_profiles`, `demo_profile_context`, `profile_switch_log` (RLS, lecture super_admin, écriture uniquement via RPC) ; RPC `security definer` `list_demo_profiles`, `get_demo_profile_context`, `switch_demo_profile`, `clear_demo_profile` (contrôle `is_super_admin()` interne) ; `guard_organization_member_update` autorise le super_admin.
+- Mécanisme : le super_admin reçoit une ligne `organization_members` stable dans l'org démo avec le rôle choisi ; les autres memberships **démo** sont archivés, les vrais memberships ne sont jamais touchés.
+- Seed `supabase/seed/20260701_demo_profiles_seed.sql` (idempotent) : renomme les orgs des comptes `...demofree@` / `...demopremium@` en « Demo Free » / « Demo Premium », passe Premium en PREMIUM, crée 6 profils (2 orgs × admin/manager/technician). Les comptes doivent s'être connectés une fois.
+- Front : feature `profileSwitcher` (use cases interface+classe, repository RPC, state, page `/admin/profiles`, DI) ; `GetAuthenticatedUserContextUseCase` lit le contexte démo ; `authGuard` gère `meta.platformAdmin` et redirige le contexte global vers `/admin/profiles` ; entrée « Profils de démonstration » dans le menu utilisateur (super_admin).
+
 ## Restant
-- Phase 4 : garde de route `meta.platformAdmin`, redirection du contexte global vers `/admin/profiles`.
-- Phase 5 : seed Demo Free / Demo Premium + 5 profils (schéma `user_profiles` à confirmer via l'audit #8).
-- Phase 6 : `demo_profile_context`, `profile_switch_log`, RPC `switch_demo_profile` / `clear_demo_profile` / `get_demo_profile_context`, feature front `profileSwitcher`.
+- Appliquer `_04` puis le seed (Supabase SQL Editor), puis tester.
 - Tests (Vitest non configuré).
 
 ## Décisions / hypothèses

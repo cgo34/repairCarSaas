@@ -1654,6 +1654,36 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: { profile_id: string; organization_id: string; role: string }[]
       }
+      get_platform_stats: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          organizations_total: number
+          free_organizations: number
+          premium_organizations: number
+          new_organizations_30d: number
+          users_total: number
+          new_users_30d: number
+          blocked_users: number
+          mrr_cents: number
+          quotes_total: number
+          invoices_total: number
+          signups_6m: Json
+          near_quota_organizations: number
+          expiring_subscriptions: number
+          recent_organizations: Json
+        }[]
+      }
+      list_demo_profiles: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          profile_id: string
+          organization_id: string
+          organization_name: string
+          plan_code: string | null
+          role: string
+          label: string
+        }[]
+      }
       set_user_blocked: {
         Args: { blocked: boolean; target_user_id: string }
         Returns: undefined

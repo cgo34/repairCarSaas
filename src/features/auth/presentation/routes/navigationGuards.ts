@@ -32,6 +32,27 @@ export const authGuard = async (
   }
 
   // ─────────────────────────────────────
+  // Platform administration (super_admin only)
+  // ─────────────────────────────────────
+  const userContext = authState.userContext.value;
+  const isSuperAdmin = userContext?.platformRole === 'super_admin';
+
+  if (to.meta.platformAdmin && !isSuperAdmin) {
+    return next('/403');
+  }
+
+  // A super_admin without a chosen demo profile has no organization scope
+  const publicPaths = ['/login', '/logout', '/forgot-password', '/reset-password'];
+  if (
+    isSuperAdmin &&
+    userContext?.isGlobalContext &&
+    !to.meta.platformAdmin &&
+    !publicPaths.some(p => to.path.startsWith(p))
+  ) {
+    return next('/platform/dashboard');
+  }
+
+  // ─────────────────────────────────────
   // Check roles
   // ─────────────────────────────────────
   const authorizedRoles =

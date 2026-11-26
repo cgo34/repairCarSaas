@@ -1,0 +1,57 @@
+{
+  "platformAdmin": {
+    "nav": {
+      "dashboard": "Dashboard",
+      "demoProfiles": "Demo profiles"
+    },
+    "dashboard": {
+      "breadcrumb": "Platform dashboard",
+      "title": "Platform dashboard",
+      "subtitle": "Overview of real customers (demo organizations excluded).",
+      "loadError": "Unable to load statistics",
+      "stats": {
+        "organizations": "Organizations",
+        "users": "Users",
+        "blockedUsers": "Blocked users",
+        "newOrganizations": "New organizations (30 d)",
+        "freeOrganizations": "Free organizations",
+        "premiumOrganizations": "Premium organizations",
+        "garages": "Garages",
+        "newUsers": "New users (30 d)",
+        "mrr": "Estimated MRR",
+        "quotes": "Quotes",
+        "invoices": "Invoices"
+      },
+      "recent": {
+        "title": "Latest organizations",
+        "empty": "No organization yet.",
+        "created": "Created on",
+        "viewAll": "View all →",
+        "name": "Organization",
+        "plan": "Plan",
+        "members": "Members",
+        "garages": "Garages"
+      },
+      "demo": {
+        "title": "Quick access — demo",
+        "empty": "No demo profile.",
+        "hint": "One click = \"View as\" this profile."
+      },
+      "plans": {
+        "title": "Plan distribution",
+        "free": "Free",
+        "premium": "Premium"
+      },
+      "signups": {
+        "title": "Sign-ups (6 months)"
+      },
+      "alerts": {
+        "title": "Watch list",
+        "none": "Nothing to report.",
+        "blockedUsers": "{count} blocked user | {count} blocked users",
+        "nearQuota": "{count} organization close to its seat quota | {count} organizations close to their seat quota",
+        "expiring": "{count} subscription expires within 7 days | {count} subscriptions expire within 7 days"
+      }
+    }
+  }
+}

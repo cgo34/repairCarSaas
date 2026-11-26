@@ -1,0 +1,13 @@
+{
+  "profileSwitcher": {
+    "breadcrumb": "Profils de démonstration",
+    "title": "Choisir un profil de démonstration",
+    "subtitle": "Explorez l'application comme un administrateur, un manager ou un technicien.",
+    "empty": "Aucun profil de démonstration. Exécutez le script de seed.",
+    "loadError": "Impossible de charger les profils",
+    "switchError": "Impossible de changer de profil",
+    "plan": { "FREE": "Gratuit", "PREMIUM": "Premium" },
+    "roles": { "admin": "Administrateur", "manager": "Manager", "technician": "Technicien" },
+    "actions": { "enter": "Entrer", "backToGlobal": "Super Admin" }
+  }
+}

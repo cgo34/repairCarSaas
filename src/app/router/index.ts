@@ -12,6 +12,8 @@ import { quoteRoutes } from '@/features/quotes/presentation/routes/quoteRoutes';
 import { usersRoutes } from '@/features/users/presentation/routes/userRoutes';
 import { organizationRoutes } from '@/features/organizations/presentation/routes/organizationRoutes';
 import { subscriptionRoutes } from '@/features/subscription/presentation/routes/subscription';
+import { profileSwitcherRoutes } from '@/features/profileSwitcher/presentation/routes/profileSwitcherRoutes';
+import { platformAdminRoutes } from '@/features/platformAdmin/presentation/routes/platformAdminRoutes';
 import { weatherRoutes } from '@/features/weather/presentation/routes/weatherRoutes';
 
 const routes: RouteRecordRaw[] = [
@@ -25,6 +27,8 @@ const routes: RouteRecordRaw[] = [
   ...settingPriceRoutes,
   ...accountRoutes,
   ...subscriptionRoutes,
+  ...profileSwitcherRoutes,
+  ...platformAdminRoutes,
   ...weatherRoutes,
   // Legacy URLs kept so old bookmarks still work
   { path: '/quotes/add', redirect: '/quotes/new' },

@@ -79,6 +79,9 @@ export enum SYMBOL_NAMES {
     LIST_DEMO_PROFILES_USE_CASE = 'ListDemoProfilesUseCase',
     SWITCH_DEMO_PROFILE_USE_CASE = 'SwitchDemoProfileUseCase',
     CLEAR_DEMO_PROFILE_USE_CASE = 'ClearDemoProfileUseCase',
+    // -- Platform admin (super_admin)
+    PLATFORM_STATS_REPOSITORY = 'PlatformStatsRepository',
+    GET_PLATFORM_STATS_USE_CASE = 'GetPlatformStatsUseCase',
     // -- User UseCases
     USER_USE_CASE = 'UserUseCase',
     CREATE_USER_WITH_ORGANIZATION_USE_CASE = 'CreateUserWithOrganizationUseCase',

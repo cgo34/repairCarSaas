@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { SelectorIcon } from 'vue-tabler-icons';
+import { computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { container } from '@/app/di/container';
 import { SYMBOLS } from '@/app/di/tokens';
 import { IAuthState } from '@/features/auth/presentation/state/IAuthState';
@@ -9,6 +11,16 @@ import ProfileDD from '@/app/layouts/vertical-header/ProfileDD.vue';
 defineProps<{ compact?: boolean }>();
 
 const { userContext } = container.get<IAuthState>(SYMBOLS.States.AuthState);
+const { t } = useI18n();
+
+// Only a super_admin acting through a demo profile sees the active role
+const demoRoleLabel = computed(() => {
+  const ctx = userContext.value;
+  if (ctx?.platformRole !== 'super_admin') return '';
+  return ctx.isGlobalContext
+    ? t('profileSwitcher.actions.backToGlobal')
+    : t(`profileSwitcher.roles.${ctx.membership.role}`);
+});
 </script>
 
 <template>
@@ -23,8 +35,8 @@ const { userContext } = container.get<IAuthState>(SYMBOLS.States.AuthState);
         variant="text"
         rounded="lg"
         block
-        :height="54"
-        class="sidebar-user justify-start px-2 mb-1"
+        :height="68"
+        class="sidebar-user justify-start px-3 mb-1 py-2"
         style="background: rgba(255, 255, 255, 0.06);"
       >
         <v-avatar
@@ -44,6 +56,12 @@ const { userContext } = container.get<IAuthState>(SYMBOLS.States.AuthState);
             </div>
             <div class="text-caption text-truncate sidebar-user__sub">
               {{ userContext?.firstName }} {{ userContext?.lastName }}
+            </div>
+            <div
+              v-if="demoRoleLabel"
+              class="text-caption text-truncate sidebar-user__role"
+            >
+              {{ demoRoleLabel }}
             </div>
           </div>
           <SelectorIcon
@@ -97,6 +115,10 @@ const { userContext } = container.get<IAuthState>(SYMBOLS.States.AuthState);
 }
 .sidebar-user__sub {
   color: rgba(255, 255, 255, 0.6);
+}
+.sidebar-user__role {
+  color: rgb(var(--v-theme-warning));
+  font-weight: 600;
 }
 .min-w-0 {
   min-width: 0;

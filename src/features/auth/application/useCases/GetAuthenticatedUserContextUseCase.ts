@@ -8,6 +8,8 @@ import { AuthenticatedUserDto } from '@/features/auth/application/dtos/Authentic
 import { IProvisionOrganizationUseCase } from '@/features/auth/application/useCases/ProvisionOrganizationUseCase';
 import { PlatformRole } from '@/features/users/domain/enums/PlatformRole';
 import { UserDto } from '@/features/users/application/dtos/UserDto';
+import { IDemoProfileRepository } from '@/features/profileSwitcher/application/ports/repositories/IDemoProfileRepository';
+import { OrganizationMemberDto } from '@/features/organizations/application/dtos/OrganizationMemberDto';
 
 export interface IAuthenticatedUserContextUseCase {
   execute(): Promise<AuthenticatedUserDto>;
@@ -25,6 +27,8 @@ export class GetAuthenticatedUserContextUseCase implements IAuthenticatedUserCon
     private subscriptionRepository: ISubscriptionRepository,
 
     private provisionOrganizationUseCase: IProvisionOrganizationUseCase,
+
+    private demoProfileRepository: IDemoProfileRepository,
   ) {}
 
   async hasActiveSession(): Promise<boolean> {
@@ -70,11 +74,15 @@ export class GetAuthenticatedUserContextUseCase implements IAuthenticatedUserCon
       memberships = await this.organizationMemberRepository.getByMemberId(authUser.id);
     }
 
-    // A super_admin acts through the demo profile whose membership is active.
-    // Without any, the context is global (no organization scope).
-    const member = isSuperAdmin
-      ? memberships.find(m => m.status === 'active')
-      : memberships[0];
+    // A super_admin acts through the chosen demo profile. Without one,
+    // the context is global (no organization scope).
+    let member: OrganizationMemberDto | undefined = memberships[0];
+    if (isSuperAdmin) {
+      const demoContext = await this.demoProfileRepository.getContext();
+      member = demoContext
+        ? memberships.find(m => m.status === 'active' && m.organization_id === demoContext.organizationId)
+        : undefined;
+    }
 
     if (!member?.id) {
       if (isSuperAdmin) {

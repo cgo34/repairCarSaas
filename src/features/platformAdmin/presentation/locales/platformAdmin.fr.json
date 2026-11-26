@@ -1,0 +1,57 @@
+{
+  "platformAdmin": {
+    "nav": {
+      "dashboard": "Tableau de bord",
+      "demoProfiles": "Profils de démonstration"
+    },
+    "dashboard": {
+      "breadcrumb": "Tableau de bord plateforme",
+      "title": "Tableau de bord plateforme",
+      "subtitle": "Vue d'ensemble des clients réels (organisations de démonstration exclues).",
+      "loadError": "Impossible de charger les statistiques",
+      "stats": {
+        "organizations": "Organisations",
+        "users": "Utilisateurs",
+        "blockedUsers": "Utilisateurs bloqués",
+        "newOrganizations": "Nouvelles organisations (30 j)",
+        "freeOrganizations": "Organisations Free",
+        "premiumOrganizations": "Organisations Premium",
+        "garages": "Garages",
+        "newUsers": "Nouveaux utilisateurs (30 j)",
+        "mrr": "MRR estimé",
+        "quotes": "Devis",
+        "invoices": "Factures"
+      },
+      "recent": {
+        "title": "Dernières organisations",
+        "empty": "Aucune organisation pour le moment.",
+        "created": "Créée le",
+        "viewAll": "Voir toutes →",
+        "name": "Organisation",
+        "plan": "Plan",
+        "members": "Membres",
+        "garages": "Garages"
+      },
+      "demo": {
+        "title": "Accès rapide — démo",
+        "empty": "Aucun profil de démonstration.",
+        "hint": "Un clic = « Voir en tant que » ce profil."
+      },
+      "plans": {
+        "title": "Répartition des plans",
+        "free": "Free",
+        "premium": "Premium"
+      },
+      "signups": {
+        "title": "Inscriptions (6 mois)"
+      },
+      "alerts": {
+        "title": "À surveiller",
+        "none": "Rien à signaler.",
+        "blockedUsers": "{count} utilisateur bloqué | {count} utilisateurs bloqués",
+        "nearQuota": "{count} organisation proche du quota de sièges | {count} organisations proches du quota de sièges",
+        "expiring": "{count} abonnement expire sous 7 jours | {count} abonnements expirent sous 7 jours"
+      }
+    }
+  }
+}

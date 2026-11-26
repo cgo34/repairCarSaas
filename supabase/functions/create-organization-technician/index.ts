@@ -102,6 +102,7 @@ serve(async (req) => {
           organization_id: body.organization_id,
           role,
           percentage_commission: body.percentage_commission,
+          created_by: callerId,
         })
         .select(`
           id,

@@ -22,6 +22,7 @@
     "menu": {
       "account": "My account",
       "darkTheme": "Dark theme",
+      "demoProfiles": "Demo profiles",
       "language": "Language",
       "logout": "Log out"
     },

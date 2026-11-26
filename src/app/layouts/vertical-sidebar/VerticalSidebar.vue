@@ -120,6 +120,7 @@ import { filterMenuByRole } from '@/app/layouts/menu/filterMenuByRole';
 import { hailActiveCount } from '@/features/weather/presentation/composables/useHailMonitoringState';
 
 import { menu } from '@/app/layouts/vertical-sidebar/menu/adminMenu';
+import { superAdminMenu } from '@/app/layouts/vertical-sidebar/menu/superAdminMenu';
 
 import NavCollapse from '@/app/layouts/vertical-sidebar/NavCollapse/NavCollapse.vue';
 import NavGroup from '@/app/layouts/vertical-sidebar/NavGroup/NavGroup.vue';
@@ -146,7 +147,14 @@ const {
 } = useCustomizerState();
 
 const sidebarMenu = computed(() => {
-  const role = userContext.value?.membership.role ?? '';
+  if (
+    userContext.value?.platformRole === 'super_admin' &&
+    userContext.value.isGlobalContext
+  ) {
+    return superAdminMenu;
+  }
+
+  const role = userContext.value?.membership?.role ?? '';
   const filtered = filterMenuByRole(menu, role);
 
   // Injecter le badge dynamique sur l'entrée Météo grêle

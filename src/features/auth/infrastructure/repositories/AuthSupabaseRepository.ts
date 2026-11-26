@@ -123,6 +123,7 @@ export class AuthSupabaseRepository implements IAuthRepository {
       first_name: userProfile?.first_name,
       last_name: userProfile?.last_name,
       is_blocked: userProfile?.is_blocked,
+     platform_role: userProfile?.platform_role,
     })
   }
 
