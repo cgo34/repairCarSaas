@@ -72,6 +72,7 @@
       "markedPaid": "Facture marquée comme payée.",
       "statusError": "Erreur lors du changement de statut.",
       "sent": "Facture envoyée avec succès.",
+      "saved": "Facture enregistrée.",
       "sendError": "Erreur lors de l'envoi de la facture.",
       "noPdf": "Aucun PDF n'a pu être généré.",
       "downloaded": "{count} facture téléchargée. | {count} facture téléchargée. | {count} factures téléchargées.",

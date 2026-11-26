@@ -84,6 +84,7 @@
     },
     "messages": {
       "sent": "Devis envoyé avec succès !",
+      "saved": "Devis enregistré.",
       "emptyQuote": "Ajoutez au moins un élément avant d'envoyer le devis.",
       "sendError": "Erreur lors de l'envoi du devis.",
       "markedAccepted": "Devis marqué comme accepté.",

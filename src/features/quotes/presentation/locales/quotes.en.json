@@ -84,6 +84,7 @@
     },
     "messages": {
       "sent": "Quote sent successfully!",
+      "saved": "Quote saved.",
       "emptyQuote": "Add at least one item before sending the quote.",
       "sendError": "Error while sending the quote.",
       "markedAccepted": "Quote marked as accepted.",

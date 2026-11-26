@@ -103,10 +103,7 @@ export class InvoiceRepository implements IInvoiceRepository {
     if (role === 'technician') {
 
       query = query.or(
-        `
-        assigned_member_id.eq.${memberId},
-        created_by_member_id.eq.${memberId}
-        `
+        `assigned_member_id.eq.${memberId},created_by_member_id.eq.${memberId}`
       );
     }
 

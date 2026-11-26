@@ -39,7 +39,15 @@ export class UserRepository implements IUserRepository {
     const { id: _excluded, ...updateFields } = user as UserDto;
     const apiModel = UserMapper.dtoToApi(updateFields);
 
-    // Si on modifie is_blocked, on passe par le RPC SECURITY DEFINER
+    // Le RPC n'est appelé que si le statut bloqué change réellement
+    // (un formulaire de profil renvoie is_blocked inchangé, et le RPC refuse l'auto-blocage)
+    if (apiModel.is_blocked !== undefined) {
+      const current = await this.getUserById(id);
+      if (current && current.isBlocked === apiModel.is_blocked) {
+        delete apiModel.is_blocked;
+      }
+    }
+
     if (apiModel.is_blocked !== undefined) {
       const { error } = await this.clientProvider.getClient()
         .rpc('set_user_blocked', { target_user_id: id, blocked: apiModel.is_blocked });

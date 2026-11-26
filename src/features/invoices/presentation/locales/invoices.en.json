@@ -72,6 +72,7 @@
       "markedPaid": "Invoice marked as paid.",
       "statusError": "Error while changing the status.",
       "sent": "Invoice sent successfully.",
+      "saved": "Invoice saved.",
       "sendError": "Error while sending the invoice.",
       "noPdf": "No PDF could be generated.",
       "downloaded": "{count} invoice downloaded. | {count} invoice downloaded. | {count} invoices downloaded.",

@@ -880,7 +880,7 @@ const onConfirmDeleteInvoice = () => {
 const onUpdateBtnClick = async () => {
   try {
     await updateInvoice();
-    router.push('/invoices/');
+    showSnack(t('invoices.messages.saved'));
   } catch (e) {
     // validation errors — stay on page
     showSnack(e instanceof Error ? e.message : t('invoices.edit.saveError'), 'error');

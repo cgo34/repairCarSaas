@@ -66,12 +66,19 @@ export function createUseProfileState(deps: UseProfileStateDependencies): IUsePr
       }
 
       // 2. Toujours mettre à jour public.users (firstName, lastName, et email si changé)
-      const dto = UserMapper.viewToDto({
+      // Seuls les champs autorisés par les grants colonnes de public.users sont envoyés
+      const merged = UserMapper.viewToDto({
         ..._profile.value!,
         ...vm,
         id,
-        email: emailChanged ? newEmail : currentEmail,
       });
+      const dto = {
+        firstName: merged.first_name,
+        lastName: merged.last_name,
+        fullName: merged.full_name,
+        phone: merged.phone,
+        email: emailChanged ? newEmail : currentEmail,
+      };
       await userUseCase.updateUser(id, dto);
 
       // 3. Mettre à jour le state local

@@ -765,8 +765,7 @@
 
   <v-snackbar
     v-model="snackbar.show"
-    color="error"
-    timeout="4000"
+    :color="snackbar.color"
     location="bottom right"
   >
     {{ snackbar.message }}
@@ -866,7 +865,7 @@ const { t } = useI18n();
   const theme = useTheme();
   const isDark = computed(() => theme.current.value.dark);
   const sending = ref(false);
-  const snackbar = reactive({ show: false, message: '' });
+  const snackbar = reactive({ show: false, message: '', color: 'error' });
 
   // ── Helpers ───────────────────────────────────────────────────────────────────
   const initials = (name: string) => {
@@ -929,6 +928,7 @@ const { t } = useI18n();
       await sendQuote();
     } catch (e) {
       snackbar.message = e instanceof Error && e.message !== EMPTY_QUOTE_ERROR ? e.message : t('quotes.messages.emptyQuote');
+      snackbar.color = 'error';
       snackbar.show = true;
     } finally {
       sending.value = false;
@@ -952,7 +952,9 @@ const { t } = useI18n();
   const onUpdateBtnClick = async () => {
     try {
       await updateQuote();
-      router.push('/quotes/');
+      snackbar.message = t('quotes.messages.saved');
+      snackbar.color = 'success';
+      snackbar.show = true;
     } catch {
       // validation errors — stay on page
     }
