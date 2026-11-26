@@ -219,7 +219,9 @@ async function enter(profile: DemoProfileDto) {
             class="h-100"
           >
             <div class="d-flex align-center justify-space-between pa-4 pb-2">
-              <span class="text-h5">{{ t('platformAdmin.dashboard.recent.title') }}</span>
+              <v-card-title class="pa-0">
+                {{ t('platformAdmin.dashboard.recent.title') }}
+              </v-card-title>
               <v-btn
                 variant="text"
                 color="primary"
