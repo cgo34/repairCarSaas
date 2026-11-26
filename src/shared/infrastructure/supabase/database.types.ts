@@ -1673,6 +1673,33 @@ export type Database = {
           recent_organizations: Json
         }[]
       }
+      list_platform_organizations: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          id: string
+          name: string
+          created_at: string | null
+          plan_code: string | null
+          subscription_status: string | null
+          members_count: number
+          garages_count: number
+          quotes_count: number
+          invoices_count: number
+        }[]
+      }
+      list_platform_users: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          id: string
+          full_name: string | null
+          email: string
+          is_blocked: boolean
+          role: string
+          organization_name: string
+          organizations_count: number
+          created_at: string | null
+        }[]
+      }
       list_demo_profiles: {
         Args: Record<PropertyKey, never>
         Returns: {

@@ -82,6 +82,10 @@ export enum SYMBOL_NAMES {
     // -- Platform admin (super_admin)
     PLATFORM_STATS_REPOSITORY = 'PlatformStatsRepository',
     GET_PLATFORM_STATS_USE_CASE = 'GetPlatformStatsUseCase',
+    PLATFORM_ORGANIZATION_REPOSITORY = 'PlatformOrganizationRepository',
+    PLATFORM_USER_REPOSITORY = 'PlatformUserRepository',
+    LIST_PLATFORM_ORGANIZATIONS_USE_CASE = 'ListPlatformOrganizationsUseCase',
+    LIST_PLATFORM_USERS_USE_CASE = 'ListPlatformUsersUseCase',
     // -- User UseCases
     USER_USE_CASE = 'UserUseCase',
     CREATE_USER_WITH_ORGANIZATION_USE_CASE = 'CreateUserWithOrganizationUseCase',

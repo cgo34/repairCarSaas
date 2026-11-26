@@ -2,7 +2,37 @@
   "platformAdmin": {
     "nav": {
       "dashboard": "Tableau de bord",
+      "organizations": "Organisations",
+      "users": "Utilisateurs",
+      "subscriptions": "Abonnements",
       "demoProfiles": "Profils de démonstration"
+    },
+    "comingSoon": {
+      "title": "Bientôt disponible",
+      "message": "Cette page est en cours de construction."
+    },
+    "organizations": {
+      "title": "Organisations",
+      "subtitle": "Clients réels de la plateforme (organisations de démonstration exclues).",
+      "searchPlaceholder": "Rechercher une organisation…",
+      "allPlans": "Tous les plans",
+      "empty": "Aucune organisation.",
+      "loadError": "Impossible de charger les organisations"
+    },
+    "users": {
+      "title": "Utilisateurs",
+      "subtitle": "Utilisateurs des clients réels (comptes de démonstration et super admin exclus).",
+      "searchPlaceholder": "Rechercher un utilisateur…",
+      "allStatuses": "Tous les statuts",
+      "active": "Actif",
+      "blocked": "Bloqué",
+      "user": "Utilisateur",
+      "organization": "Organisation",
+      "role": "Rôle",
+      "status": "Statut",
+      "createdAt": "Inscrit le",
+      "empty": "Aucun utilisateur.",
+      "loadError": "Impossible de charger les utilisateurs"
     },
     "dashboard": {
       "breadcrumb": "Tableau de bord plateforme",

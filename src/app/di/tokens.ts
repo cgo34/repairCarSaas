@@ -18,6 +18,8 @@ const SYMBOLS = {
     SubscriptionRepository: Symbol.for(SYMBOL_NAMES.SUBSCRIPTION_REPOSITORY),
     DemoProfileRepository: Symbol.for(SYMBOL_NAMES.DEMO_PROFILE_REPOSITORY),
     PlatformStatsRepository: Symbol.for(SYMBOL_NAMES.PLATFORM_STATS_REPOSITORY),
+    PlatformOrganizationRepository: Symbol.for(SYMBOL_NAMES.PLATFORM_ORGANIZATION_REPOSITORY),
+    PlatformUserRepository: Symbol.for(SYMBOL_NAMES.PLATFORM_USER_REPOSITORY),
     GarageRepository: Symbol.for(SYMBOL_NAMES.GARAGE_REPOSITORY),
     VehicleRepository: Symbol.for(SYMBOL_NAMES.VEHICLE_REPOSITORY),
 
@@ -93,6 +95,8 @@ const SYMBOLS = {
     },
     PlatformAdmin: {
       GetPlatformStatsUseCase: Symbol.for(SYMBOL_NAMES.GET_PLATFORM_STATS_USE_CASE),
+      ListPlatformOrganizationsUseCase: Symbol.for(SYMBOL_NAMES.LIST_PLATFORM_ORGANIZATIONS_USE_CASE),
+      ListPlatformUsersUseCase: Symbol.for(SYMBOL_NAMES.LIST_PLATFORM_USERS_USE_CASE),
     },
     // -- Subscription UseCases
     Subscription: {

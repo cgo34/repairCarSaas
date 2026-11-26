@@ -2,7 +2,37 @@
   "platformAdmin": {
     "nav": {
       "dashboard": "Dashboard",
+      "organizations": "Organizations",
+      "users": "Users",
+      "subscriptions": "Subscriptions",
       "demoProfiles": "Demo profiles"
+    },
+    "comingSoon": {
+      "title": "Coming soon",
+      "message": "This page is under construction."
+    },
+    "organizations": {
+      "title": "Organizations",
+      "subtitle": "Real platform customers (demo organizations excluded).",
+      "searchPlaceholder": "Search an organization…",
+      "allPlans": "All plans",
+      "empty": "No organizations.",
+      "loadError": "Unable to load organizations"
+    },
+    "users": {
+      "title": "Users",
+      "subtitle": "Users of real customers (demo accounts and super admin excluded).",
+      "searchPlaceholder": "Search a user…",
+      "allStatuses": "All statuses",
+      "active": "Active",
+      "blocked": "Blocked",
+      "user": "User",
+      "organization": "Organization",
+      "role": "Role",
+      "status": "Status",
+      "createdAt": "Signed up",
+      "empty": "No users.",
+      "loadError": "Unable to load users"
     },
     "dashboard": {
       "breadcrumb": "Platform dashboard",
