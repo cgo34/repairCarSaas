@@ -152,7 +152,13 @@ export function createUseAdminDashboardState(deps: UseAdminDashboardStateDepende
       ]);
 
       if (garagesResult.status === 'fulfilled') totalGarages.value = garagesResult.value.length;
-      if (usersResult.status === 'fulfilled') totalUsers.value = usersResult.value.length;
+      // The platform super_admin only borrows a membership: it does not use a seat
+      if (usersResult.status === 'fulfilled') {
+        totalUsers.value = usersResult.value.filter((m) => {
+          const user = m.users as { platformRole?: string; platform_role?: string } | undefined;
+          return (user?.platformRole ?? user?.platform_role) !== 'super_admin';
+        }).length;
+      }
       if (quotesResult.status === 'fulfilled') _quotes.value = quotesResult.value.map(QuoteMapper.dtoToView);
       if (invoicesResult.status === 'fulfilled') _invoices.value = invoicesResult.value.map(InvoiceMapper.dtoToView);
 

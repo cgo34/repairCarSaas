@@ -60,7 +60,13 @@ export function createUseSubscriptionSeats(deps: UseSubscriptionSeatsDependencie
     if (conversions.status === 'fulfilled') conversionsUsed.value = conversions.value;
     if (quotes.status === 'fulfilled') quotesUsed.value = quotes.value;
     if (invoices.status === 'fulfilled') invoicesUsed.value = invoices.value;
-    if (members.status === 'fulfilled') seatsUsed.value = members.value.length;
+    // The platform super_admin only borrows a membership: it does not use a seat
+    if (members.status === 'fulfilled') {
+      seatsUsed.value = members.value.filter((m) => {
+        const user = m.users as { platformRole?: string; platform_role?: string } | undefined;
+        return (user?.platformRole ?? user?.platform_role) !== 'super_admin';
+      }).length;
+    }
     if (garages.status === 'fulfilled') garagesUsed.value = garages.value.length;
   };
 

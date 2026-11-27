@@ -109,7 +109,7 @@
         v-if="seatsLimit > 0"
         class="mb-4"
         kind="members"
-        :used="members.length"
+        :used="realMembers.length"
         :limit-override="seatsLimit"
       />
       <!-- STATS -->
@@ -362,7 +362,7 @@ const members = computed<OrganizationMemberViewModel[]>(() => {
   const visibleProfiles = activeRole === 'manager'
     ? demoProfiles.value.filter(p => p.role !== 'admin')
     : demoProfiles.value;
-  return visibleProfiles.map(p => ({
+  const profileRows: OrganizationMemberViewModel[] = visibleProfiles.map(p => ({
     id: p.profileId,
     organization_id: p.organizationId,
     user_id: '',
@@ -377,8 +377,9 @@ const members = computed<OrganizationMemberViewModel[]>(() => {
       email,
     },
   }));
+  // Real members (e.g. the organization owner) stay visible next to the demo profiles
+  return [...realMembers.value, ...profileRows];
 });
-
 
 const {
   members: realMembers,
@@ -401,7 +402,7 @@ const {
 const dialog = ref<boolean>(false);
 
 const seatsLimit = computed(() => subscriptionState.subscription.value?.seatsLimit ?? 0);
-const seatLimitReached = computed(() => seatsLimit.value > 0 && members.value.length >= seatsLimit.value);
+const seatLimitReached = computed(() => seatsLimit.value > 0 && realMembers.value.length >= seatsLimit.value);
 
 const search = ref<string | null>('');
 const roleFilter = ref<string>('all');
