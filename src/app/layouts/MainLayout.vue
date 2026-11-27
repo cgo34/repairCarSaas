@@ -83,6 +83,7 @@
             value="new-quote"
             to="/quotes/new"
             class="fab-btn"
+            :disabled="newQuoteDisabled"
           >
             <v-icon size="28">
               mdi-plus
@@ -119,9 +120,11 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import { useDisplay } from 'vuetify';
+import { useFeatureAccess } from '@/features/featureAccess/composition/useFeatureAccess';
+import { usePlanUsage } from '@/features/featureAccess/composition/usePlanUsage';
 import { hailActiveCount } from '@/features/weather/presentation/composables/useHailMonitoringState';
 
 
@@ -153,6 +156,13 @@ const {
 
 const { mobile } = useDisplay();
 const activeBottomNav = ref(route.name);
+
+const { isLimitReached } = useFeatureAccess();
+const { quotesUsed, load: loadPlanUsage } = usePlanUsage();
+const newQuoteDisabled = computed(() => isLimitReached('max_quotes_per_month', quotesUsed.value));
+
+// Les compteurs changent après chaque création : on les relit à chaque navigation
+watch(() => route.fullPath, () => { void loadPlanUsage(); }, { immediate: true });
 </script>
 
 <style>
