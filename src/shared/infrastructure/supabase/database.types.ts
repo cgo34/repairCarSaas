@@ -1698,6 +1698,61 @@ export type Database = {
           invoices_month_count: number
         }[]
       }
+      list_platform_plans: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          plan_id: string
+          plan_code: string
+          plan_name: string
+          price_cents: number
+          orgs_count: number
+          feature_key: string
+          feature_type: string
+          feature_name: string
+          feature_description: string | null
+          is_addon: boolean
+          has_value: boolean
+          value: Json | null
+        }[]
+      }
+      set_plan_feature: {
+        Args: { p_plan_id: string; p_feature_key: string; p_value: Json }
+        Returns: undefined
+      }
+      preview_plan_changes: {
+        Args: { p_changes: Json }
+        Returns: {
+          plan_id: string
+          plan_code: string
+          feature_key: string
+          feature_name: string
+          feature_type: string
+          old_value: Json | null
+          new_value: Json | null
+          orgs_on_plan: number
+          orgs_affected: number
+          is_risky: boolean
+        }[]
+      }
+      apply_plan_changes: {
+        Args: { p_changes: Json }
+        Returns: number
+      }
+      list_plan_change_log: {
+        Args: { p_limit?: number }
+        Returns: {
+          id: string
+          changed_at: string
+          changed_by: string | null
+          plan_code: string
+          feature_key: string
+          feature_name: string | null
+          old_value: Json | null
+          new_value: Json | null
+          orgs_on_plan: number
+          orgs_affected: number
+        }[]
+      }
       list_platform_users: {
         Args: Record<PropertyKey, never>
         Returns: {

@@ -11,8 +11,19 @@ import { ListPlatformOrganizationsUseCase, type IListPlatformOrganizationsUseCas
 import { GrantPremiumUseCase, type IGrantPremiumUseCase } from '@/features/platformAdmin/application/useCases/GrantPremiumUseCase';
 import { GrantFeatureUseCase, type IGrantFeatureUseCase } from '@/features/platformAdmin/application/useCases/GrantFeatureUseCase';
 import { ListPlatformUsersUseCase, type IListPlatformUsersUseCase } from '@/features/platformAdmin/application/useCases/ListPlatformUsersUseCase';
+import type { IPlatformPlanRepository } from '@/features/platformAdmin/application/ports/repositories/IPlatformPlanRepository';
+import { PlatformPlanRepository } from '@/features/platformAdmin/infrastructure/repositories/PlatformPlanRepository';
+import { ListPlatformPlansUseCase, type IListPlatformPlansUseCase } from '@/features/platformAdmin/application/useCases/ListPlatformPlansUseCase';
+import { PreviewPlanChangesUseCase, type IPreviewPlanChangesUseCase } from '@/features/platformAdmin/application/useCases/PreviewPlanChangesUseCase';
+import { ApplyPlanChangesUseCase, type IApplyPlanChangesUseCase } from '@/features/platformAdmin/application/useCases/ApplyPlanChangesUseCase';
+import { ListPlanChangeLogUseCase, type IListPlanChangeLogUseCase } from '@/features/platformAdmin/application/useCases/ListPlanChangeLogUseCase';
 
 export function registerPlatformAdminBindings(container: Container): void {
+  container.bind<IPlatformPlanRepository>(SYMBOLS.Repositories.PlatformPlanRepository).toDynamicValue(ctx => new PlatformPlanRepository(ctx.container.get(SYMBOLS.Providers.ClientProvider))).inSingletonScope();
+  container.bind<IListPlatformPlansUseCase>(SYMBOLS.UseCases.PlatformAdmin.ListPlatformPlansUseCase).toDynamicValue(ctx => new ListPlatformPlansUseCase(ctx.container.get(SYMBOLS.Repositories.PlatformPlanRepository))).inSingletonScope();
+  container.bind<IPreviewPlanChangesUseCase>(SYMBOLS.UseCases.PlatformAdmin.PreviewPlanChangesUseCase).toDynamicValue(ctx => new PreviewPlanChangesUseCase(ctx.container.get(SYMBOLS.Repositories.PlatformPlanRepository))).inSingletonScope();
+  container.bind<IApplyPlanChangesUseCase>(SYMBOLS.UseCases.PlatformAdmin.ApplyPlanChangesUseCase).toDynamicValue(ctx => new ApplyPlanChangesUseCase(ctx.container.get(SYMBOLS.Repositories.PlatformPlanRepository))).inSingletonScope();
+  container.bind<IListPlanChangeLogUseCase>(SYMBOLS.UseCases.PlatformAdmin.ListPlanChangeLogUseCase).toDynamicValue(ctx => new ListPlanChangeLogUseCase(ctx.container.get(SYMBOLS.Repositories.PlatformPlanRepository))).inSingletonScope();
   container.bind<IPlatformStatsRepository>(SYMBOLS.Repositories.PlatformStatsRepository).toDynamicValue(ctx => new PlatformStatsRepository(ctx.container.get(SYMBOLS.Providers.ClientProvider))).inSingletonScope();
   container.bind<IPlatformOrganizationRepository>(SYMBOLS.Repositories.PlatformOrganizationRepository).toDynamicValue(ctx => new PlatformOrganizationRepository(ctx.container.get(SYMBOLS.Providers.ClientProvider))).inSingletonScope();
   container.bind<IPlatformUserRepository>(SYMBOLS.Repositories.PlatformUserRepository).toDynamicValue(ctx => new PlatformUserRepository(ctx.container.get(SYMBOLS.Providers.ClientProvider))).inSingletonScope();

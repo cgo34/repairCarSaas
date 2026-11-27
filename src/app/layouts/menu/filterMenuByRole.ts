@@ -11,6 +11,7 @@ export interface MenuItem {
   chip?: string;
   chipColor?: string;
   chipVariant?: string;
+  alert?: boolean;
 }
 
 export const filterMenuByRole = (

@@ -21,11 +21,19 @@
           color="primary"
           variant="flat"
           prepend-icon="mdi-plus"
+          :disabled="invoicesLimitReached"
           @click="onAddInvoice"
         >
           {{ t('invoices.list.newInvoice') }}
         </v-btn>
       </div>
+
+      <PlanLimitAlert
+        class="mb-5"
+        limit-key="max_invoices_per_month"
+        kind="invoices"
+        :used="invoicesUsed"
+      />
 
       <!-- KPI CARDS -->
       <v-row
@@ -427,6 +435,8 @@ import { setSelectedInvoiceGuid } from '@/features/invoices/presentation/utils/i
 import { useInvoicesPageDependencies } from '@/features/invoices/composition/useInvoicesPageDependencies';
 import { OrganizationProfileDto } from '@/features/organizations/application/dtos/OrganizationProfileDto';
 import MainLayout from '@/app/layouts/MainLayout.vue';
+import PlanLimitAlert from '@/features/featureAccess/presentation/components/PlanLimitAlert.vue';
+import { usePlanUsage } from '@/features/featureAccess/composition/usePlanUsage';
 import { usePeriodFilter } from '@/shared/presentation/composables/usePeriodFilter';
 import { InvoiceMapper } from '@/features/invoices/presentation/mappers/InvoiceMapper';
 import { LineItemMapper } from '@/features/lineItems/presentation/mappers/LineItemMapper';
@@ -439,7 +449,7 @@ import { useRouter } from 'vue-router';
 import { useFeatureAccess } from '@/features/featureAccess/composition/useFeatureAccess';
 
   const { authState, useInvoiceState, generatePdfUseCase, organizationProfileUseCase, sendInvoiceUseCase } = useInvoicesPageDependencies();
-const { can } = useFeatureAccess();
+const { can, isLimitReached } = useFeatureAccess();
 
 const router = useRouter();
 const { t } = useI18n();
@@ -684,10 +694,14 @@ const onBulkDownload = async () => {
   } finally { downloading.value = false; }
 };
 
+const { invoicesUsed, load: loadPlanUsage } = usePlanUsage();
+const invoicesLimitReached = computed(() => isLimitReached('max_invoices_per_month', invoicesUsed.value));
+
 onMounted(async () => {
   const organizationId = authState.userContext?.value?.organization?.id;
   await Promise.all([
     init(),
+    loadPlanUsage(),
     organizationId ? organizationProfileUseCase.getProfile(organizationId).then(c => { _company.value = c; }) : Promise.resolve(),
   ]);
 });

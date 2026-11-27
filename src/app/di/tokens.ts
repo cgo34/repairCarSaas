@@ -21,6 +21,7 @@ const SYMBOLS = {
     PlatformStatsRepository: Symbol.for(SYMBOL_NAMES.PLATFORM_STATS_REPOSITORY),
     PlatformOrganizationRepository: Symbol.for(SYMBOL_NAMES.PLATFORM_ORGANIZATION_REPOSITORY),
     PlatformUserRepository: Symbol.for(SYMBOL_NAMES.PLATFORM_USER_REPOSITORY),
+    PlatformPlanRepository: Symbol.for(SYMBOL_NAMES.PLATFORM_PLAN_REPOSITORY),
     GarageRepository: Symbol.for(SYMBOL_NAMES.GARAGE_REPOSITORY),
     VehicleRepository: Symbol.for(SYMBOL_NAMES.VEHICLE_REPOSITORY),
 
@@ -102,6 +103,10 @@ const SYMBOLS = {
       GrantPremiumUseCase: Symbol.for(SYMBOL_NAMES.GRANT_PREMIUM_USE_CASE),
       GrantFeatureUseCase: Symbol.for(SYMBOL_NAMES.GRANT_FEATURE_USE_CASE),
       ListPlatformUsersUseCase: Symbol.for(SYMBOL_NAMES.LIST_PLATFORM_USERS_USE_CASE),
+      ListPlatformPlansUseCase: Symbol.for(SYMBOL_NAMES.LIST_PLATFORM_PLANS_USE_CASE),
+      PreviewPlanChangesUseCase: Symbol.for(SYMBOL_NAMES.PREVIEW_PLAN_CHANGES_USE_CASE),
+      ApplyPlanChangesUseCase: Symbol.for(SYMBOL_NAMES.APPLY_PLAN_CHANGES_USE_CASE),
+      ListPlanChangeLogUseCase: Symbol.for(SYMBOL_NAMES.LIST_PLAN_CHANGE_LOG_USE_CASE),
     },
     FeatureAccess: {
       GetFeatureAccessUseCase: Symbol.for(SYMBOL_NAMES.GET_FEATURE_ACCESS_USE_CASE),

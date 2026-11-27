@@ -5,7 +5,7 @@
     variant="tonal"
     density="comfortable"
     class="plan-limit-alert"
-    icon="mdi-crown-outline"
+    :icon="state === 'reached' ? 'mdi-alert-outline' : 'mdi-information-outline'"
   >
     <div class="font-weight-medium">
       {{ state === 'reached' ? t(`common.planLimit.${kind}`, { limit }) : t('common.planLimit.usage', { used, limit, label: t(`common.planLimit.label.${kind}`) }) }}
@@ -16,8 +16,7 @@
     <template #append>
       <v-btn
         size="small"
-        variant="flat"
-        color="primary"
+        variant="text"
         to="/subscription"
       >
         {{ t('common.planLimit.upgrade') }}
@@ -33,20 +32,39 @@ import { useFeatureAccess } from '@/features/featureAccess/composition/useFeatur
 import type { FeatureKey } from '@/features/featureAccess/domain/types/FeatureKey';
 import type { PlanLimitKind } from '@/features/featureAccess/domain/errors/PlanLimitError';
 
-const props = defineProps<{ limitKey: FeatureKey; kind: PlanLimitKind; used: number }>();
+const props = defineProps<{ limitKey?: FeatureKey; kind: PlanLimitKind; used: number; limitOverride?: number }>();
 
 const NEAR_LIMIT_RATIO = 0.8;
 
 const { t } = useI18n();
 const { limitOf, isLoading } = useFeatureAccess();
 
-const limit = computed(() => limitOf(props.limitKey));
+const limit = computed(() => props.limitOverride ?? (props.limitKey ? limitOf(props.limitKey) : null));
 
 // Nothing is shown for unlimited plans, while features load, or when the quota is far from being used
 const state = computed<'ok' | 'near' | 'reached'>(() => {
   const max = limit.value;
-  if (max === null || isLoading.value) return 'ok';
+  if (max === null || (props.limitOverride === undefined && isLoading.value)) return 'ok';
   if (props.used >= max) return 'reached';
-  return props.used >= max * NEAR_LIMIT_RATIO ? 'near' : 'ok';
+  return props.kind !== 'members' && props.used >= max * NEAR_LIMIT_RATIO ? 'near' : 'ok';
 });
 </script>
+
+<style scoped>
+.plan-limit-alert {
+  grid-template-areas: "prepend content append close" "prepend content append close";
+  align-items: center;
+}
+
+.plan-limit-alert :deep(.v-alert__prepend),
+.plan-limit-alert :deep(.v-alert__append) {
+  align-self: center !important;
+  align-items: center;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+}
+
+.plan-limit-alert :deep(.v-alert__content) {
+  align-self: center;
+}
+</style>

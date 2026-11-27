@@ -4,8 +4,47 @@
       "dashboard": "Dashboard",
       "organizations": "Organizations",
       "users": "Users",
-      "subscriptions": "Subscriptions",
+      "subscriptions": "Plans & features",
       "demoProfiles": "Demo profiles"
+    },
+    "plans": {
+      "title": "Plans & features",
+      "subtitle": "Limits and feature availability per plan. Changes only apply after confirmation.",
+      "unlimited": "Unlimited",
+      "organizations": "{n} organization(s)",
+      "perMonth": "/ month",
+      "tabs": { "compare": "Comparison", "log": "Change log" },
+      "groups": { "limits": "Limits", "features": "Features", "addons": "Add-ons" },
+      "edit": "Edit plans",
+      "editBanner": "Edit mode: changes are drafted and applied to all organizations of the plan only after confirmation.",
+      "readOnlyInfo": "Changes apply to all organizations of a plan. Lowering a limit deletes nothing: organizations already at the limit just can't create new items.",
+      "modified": "modified",
+      "pending": "{n} pending change(s)",
+      "cancel": "Cancel",
+      "review": "Check impact",
+      "save": "Save",
+      "confirm": {
+        "title": "Confirm plan changes",
+        "affected": "{n} of {total} organization(s) already reach or exceed this limit and will be blocked until next month.",
+        "lostFeature": "{n} organization(s) will lose access to this feature immediately.",
+        "typeToConfirm": "Type {word} to confirm",
+        "apply": "Apply changes",
+        "cancel": "Cancel",
+        "close": "Close",
+        "previewTitle": "Impact of the changes (preview, nothing is saved)",
+        "word": "CONFIRM",
+        "on": "On", "off": "Off",
+        "noImpact": "No organization affected (0 of {total}: none has reached this limit yet this month)."
+      },
+      "saved": "Plans updated.",
+      "log": {
+        "empty": "No change recorded.",
+        "when": "Date",
+        "by": "By",
+        "plan": "Plan",
+        "change": "Change",
+        "impact": "Impact"
+      }
     },
     "comingSoon": {
       "title": "Coming soon",
@@ -21,6 +60,7 @@
       "empty": "No organizations.",
       "loadError": "Unable to load organizations",
       "actions": "Actions",
+      "totalShort": "total {n}",
       "grantPremium": {
         "menu": "Offer Premium",
         "title": "Offer Premium",

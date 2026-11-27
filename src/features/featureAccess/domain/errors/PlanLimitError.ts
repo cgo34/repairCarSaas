@@ -1,4 +1,4 @@
-export type PlanLimitKind = 'garages' | 'quotes' | 'invoices' | 'conversions';
+export type PlanLimitKind = 'garages' | 'quotes' | 'invoices' | 'conversions' | 'members';
 
 const PLAN_LIMIT_PATTERN = /PLAN_LIMIT_(GARAGES|QUOTES|INVOICES|CONVERSIONS)\b(?::\s*limite de (\d+))?/;
 

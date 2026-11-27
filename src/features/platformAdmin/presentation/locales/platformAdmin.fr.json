@@ -4,8 +4,47 @@
       "dashboard": "Tableau de bord",
       "organizations": "Organisations",
       "users": "Utilisateurs",
-      "subscriptions": "Abonnements",
+      "subscriptions": "Plans & fonctionnalités",
       "demoProfiles": "Profils de démonstration"
+    },
+    "plans": {
+      "title": "Plans & fonctionnalités",
+      "subtitle": "Limites et disponibilité des fonctionnalités par plan. Les modifications ne sont appliquées qu'après confirmation.",
+      "unlimited": "Illimité",
+      "organizations": "{n} organisation(s)",
+      "perMonth": "/ mois",
+      "tabs": { "compare": "Vue comparée", "log": "Journal des modifications" },
+      "groups": { "limits": "Limites", "features": "Fonctionnalités", "addons": "Options" },
+      "edit": "Modifier les plans",
+      "editBanner": "Mode édition : les changements sont préparés en brouillon et appliqués à toutes les organisations du plan uniquement après confirmation.",
+      "readOnlyInfo": "Les modifications s'appliquent à toutes les organisations d'un plan. Baisser une limite n'efface rien : les organisations déjà à la limite ne peuvent simplement plus créer de nouveaux éléments.",
+      "modified": "modifié",
+      "pending": "{n} modification(s) en attente",
+      "cancel": "Annuler",
+      "review": "Vérifier l'impact",
+      "save": "Enregistrer",
+      "confirm": {
+        "title": "Confirmer les modifications des plans",
+        "affected": "{n} organisation(s) sur {total} atteignent ou dépassent déjà cette limite et seront bloquées jusqu'au mois prochain.",
+        "lostFeature": "{n} organisation(s) perdront immédiatement l'accès à cette fonctionnalité.",
+        "typeToConfirm": "Saisissez {word} pour confirmer",
+        "apply": "Appliquer les modifications",
+        "cancel": "Annuler",
+        "close": "Fermer",
+        "previewTitle": "Impact des modifications (aperçu, rien n'est enregistré)",
+        "word": "CONFIRMER",
+        "on": "Activé", "off": "Désactivé",
+        "noImpact": "Aucune organisation impactée (0 sur {total} : aucune n'a encore atteint cette limite ce mois-ci)."
+      },
+      "saved": "Plans mis à jour.",
+      "log": {
+        "empty": "Aucune modification enregistrée.",
+        "when": "Date",
+        "by": "Par",
+        "plan": "Plan",
+        "change": "Modification",
+        "impact": "Impact"
+      }
     },
     "comingSoon": {
       "title": "Bientôt disponible",
@@ -21,6 +60,7 @@
       "empty": "Aucune organisation.",
       "loadError": "Impossible de charger les organisations",
       "actions": "Actions",
+      "totalShort": "total {n}",
       "grantPremium": {
         "menu": "Offrir le Premium",
         "title": "Offrir le Premium",

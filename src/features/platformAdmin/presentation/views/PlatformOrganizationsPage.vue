@@ -156,10 +156,18 @@
 
           <template #item.quotesCount="{ item }">
             <span :class="usageClass(item, 'quotes')">{{ usageText(item, 'quotes') }}</span>
+            <span
+              v-if="item.planCode === 'FREE'"
+              class="text-caption text-medium-emphasis ml-1"
+            >({{ t('platformAdmin.organizations.totalShort', { n: item.quotesCount }) }})</span>
           </template>
 
           <template #item.invoicesCount="{ item }">
             <span :class="usageClass(item, 'invoices')">{{ usageText(item, 'invoices') }}</span>
+            <span
+              v-if="item.planCode === 'FREE'"
+              class="text-caption text-medium-emphasis ml-1"
+            >({{ t('platformAdmin.organizations.totalShort', { n: item.invoicesCount }) }})</span>
           </template>
 
           <template #item.createdAt="{ item }">

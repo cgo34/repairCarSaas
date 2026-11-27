@@ -35,6 +35,7 @@
     },
     "planLimit": {
       "garages": "Vous avez atteint la limite de {limit} garage(s) de votre offre.",
+      "members": "Limite d'utilisateurs atteinte ({limit} / {limit}) pour votre offre.",
       "quotes": "Vous avez atteint la limite de {limit} devis par mois de votre offre.",
       "invoices": "Vous avez atteint la limite de {limit} facture(s) par mois de votre offre.",
       "conversions": "Vous avez atteint la limite de {limit} conversion(s) devis en facture par mois de votre offre.",
@@ -47,10 +48,11 @@
         "quotes": "devis",
         "invoices": "factures",
         "conversions": "conversions",
-        "garages": "garages"
+        "garages": "garages",
+        "members": "utilisateurs"
       },
       "upgradeHint": "Passez à l'offre Premium pour lever cette limite.",
-      "upgrade": "Voir les offres"
+      "upgrade": "Gérer l'abonnement"
     },
     "reset": "Réinitialiser",
     "required": "Champ obligatoire",

@@ -105,24 +105,13 @@
         </v-dialog>
       </div>
 
-      <v-alert
-        v-if="seatLimitReached"
-        type="warning"
-        variant="tonal"
-        density="compact"
+      <PlanLimitAlert
+        v-if="seatsLimit > 0"
         class="mb-4"
-      >
-        {{ t('organizations.members.seatLimit', { used: members.length, limit: seatsLimit }) }}
-        <template #append>
-          <v-btn
-            size="small"
-            variant="text"
-            to="/subscription"
-          >
-            {{ t('organizations.members.manageSubscription') }}
-          </v-btn>
-        </template>
-      </v-alert>
+        kind="members"
+        :used="members.length"
+        :limit-override="seatsLimit"
+      />
       <!-- STATS -->
       <v-row
         dense
@@ -341,6 +330,7 @@
 import { useOrganizationMemberPageDependencies } from '@/features/organizations/composition/useOrganizationMemberPageDependencies';
 import SubscriptionOverlay from '@/features/subscription/presentation/components/SubscriptionOverlay.vue';
 import MainLayout from '@/app/layouts/MainLayout.vue';
+import PlanLimitAlert from '@/features/featureAccess/presentation/components/PlanLimitAlert.vue';
 import { OrganizationMemberViewModel } from '@/features/organizations/presentation/models/OrganizationMemberViewmodel';
 import router from '@/app/router/index';
 import ConfirmDialog from '@/shared/presentation/ui/components/ConfirmDialog.vue';

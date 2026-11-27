@@ -35,6 +35,7 @@
     },
     "planLimit": {
       "garages": "You have reached your plan's limit of {limit} garage(s).",
+      "members": "User limit reached ({limit} / {limit}) for your plan.",
       "quotes": "You have reached your plan's limit of {limit} quote(s) per month.",
       "invoices": "You have reached your plan's limit of {limit} invoice(s) per month.",
       "conversions": "You have reached your plan's limit of {limit} quote-to-invoice conversion(s) per month.",
@@ -47,10 +48,11 @@
         "quotes": "quotes",
         "invoices": "invoices",
         "conversions": "conversions",
-        "garages": "garages"
+        "garages": "garages",
+        "members": "users"
       },
       "upgradeHint": "Upgrade to Premium to lift this limit.",
-      "upgrade": "See plans"
+      "upgrade": "Manage subscription"
     },
     "reset": "Reset",
     "required": "Required field",

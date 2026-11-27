@@ -104,7 +104,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import {
   Menu2Icon
 } from 'vue-tabler-icons';
@@ -118,6 +118,7 @@ import { SYMBOLS } from '@/app/di/tokens';
 import { useCustomizerState } from '@/app/layouts/useCustomizerState';
 import { filterMenuByRole } from '@/app/layouts/menu/filterMenuByRole';
 import { hailActiveCount } from '@/features/weather/presentation/composables/useHailMonitoringState';
+import { useOrganizationProfileCompleteness } from '@/features/organizations/composition/useOrganizationProfileCompleteness';
 
 import { menu } from '@/app/layouts/vertical-sidebar/menu/adminMenu';
 import { superAdminMenu } from '@/app/layouts/vertical-sidebar/menu/superAdminMenu';
@@ -135,6 +136,7 @@ const authState = container.get<IAuthState>(
 );
 
 const { userContext } = authState;
+const { isComplete: profileComplete, refresh: refreshProfileCompleteness } = useOrganizationProfileCompleteness();
 
 const { mobile } = useDisplay()
 
@@ -167,9 +169,20 @@ const sidebarMenu = computed(() => {
         chipVariant: 'flat',
       };
     }
+    if (item.to === '/organization/profile') {
+      return { ...item, alert: profileComplete.value === false };
+    }
     return item;
   });
 });
+
+watch(
+  () => [userContext.value?.organization?.id, userContext.value?.membership?.role],
+  ([organizationId, role]) => {
+    if (organizationId && role === 'admin') refreshProfileCompleteness();
+  },
+  { immediate: true },
+);
 </script>
 
 <style scoped lang="scss">

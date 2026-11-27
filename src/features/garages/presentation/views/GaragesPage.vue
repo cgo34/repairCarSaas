@@ -30,6 +30,7 @@
             <v-btn
               color="primary"
               prepend-icon="mdi-plus"
+              :disabled="garagesLimitReached"
               v-bind="props"
             >
               {{ t('garages.add') }}
@@ -140,6 +141,13 @@
           </v-card>
         </v-dialog>
       </div>
+
+      <PlanLimitAlert
+        class="mb-4"
+        limit-key="max_garages"
+        kind="garages"
+        :used="garages.length"
+      />
 
       <v-row
         dense
@@ -334,6 +342,8 @@
 import { useGaragesPageDependencies } from '@/features/garages/composition/useGaragesPageDependencies';
 import { computed, onMounted, reactive, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
+import PlanLimitAlert from '@/features/featureAccess/presentation/components/PlanLimitAlert.vue';
+import { useFeatureAccess } from '@/features/featureAccess/composition/useFeatureAccess';
 import { planLimitMessage } from '@/features/featureAccess/presentation/utils/planLimitMessage';
 
 
@@ -356,6 +366,7 @@ import { GarageViewModel } from '@/features/garages/presentation/models/GarageVi
 
 const { isFreePlan } = authState;
 const { t } = useI18n();
+const { isLimitReached } = useFeatureAccess();
 
 const {
   garages,
@@ -374,6 +385,8 @@ const {
 
   resetSelectedGarageForm,
 } = useGarageState;
+
+const garagesLimitReached = computed(() => isLimitReached('max_garages', garages.value.length));
 
 /**
  * ============================================================

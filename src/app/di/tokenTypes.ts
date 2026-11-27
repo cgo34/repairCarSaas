@@ -91,6 +91,11 @@ export enum SYMBOL_NAMES {
     GRANT_PREMIUM_USE_CASE = 'GrantPremiumUseCase',
     GRANT_FEATURE_USE_CASE = 'GrantFeatureUseCase',
     LIST_PLATFORM_USERS_USE_CASE = 'ListPlatformUsersUseCase',
+    PLATFORM_PLAN_REPOSITORY = 'PlatformPlanRepository',
+    LIST_PLATFORM_PLANS_USE_CASE = 'ListPlatformPlansUseCase',
+    PREVIEW_PLAN_CHANGES_USE_CASE = 'PreviewPlanChangesUseCase',
+    APPLY_PLAN_CHANGES_USE_CASE = 'ApplyPlanChangesUseCase',
+    LIST_PLAN_CHANGE_LOG_USE_CASE = 'ListPlanChangeLogUseCase',
     // -- User UseCases
     USER_USE_CASE = 'UserUseCase',
     CREATE_USER_WITH_ORGANIZATION_USE_CASE = 'CreateUserWithOrganizationUseCase',

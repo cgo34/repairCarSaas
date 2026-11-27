@@ -6,6 +6,7 @@ export const accountRoutes: RouteRecordRaw[] = [
     component: () => import('@/features/account/presentation/views/UserSettingsPage.vue'),
     meta: {
       requiresAuth: true,
+      allowInGlobalContext: true,
       breadcrumb: [
         { title: 'account.breadcrumb.profile', href: '/profile' },
       ],

@@ -47,6 +47,7 @@ export const authGuard = async (
     isSuperAdmin &&
     userContext?.isGlobalContext &&
     !to.meta.platformAdmin &&
+    !to.meta.allowInGlobalContext &&
     !publicPaths.some(p => to.path.startsWith(p))
   ) {
     return next('/platform/dashboard');

@@ -21,11 +21,19 @@
           color="primary"
           variant="flat"
           prepend-icon="mdi-plus"
+          :disabled="quotesLimitReached"
           @click="onAddQuote"
         >
           {{ t('quotes.list.newQuote') }}
         </v-btn>
       </div>
+
+      <PlanLimitAlert
+        class="mb-5"
+        limit-key="max_quotes_per_month"
+        kind="quotes"
+        :used="quotesUsed"
+      />
 
       <!-- KPI CARDS -->
       <v-row
@@ -515,6 +523,8 @@ import { setSelectedInvoiceGuid } from '@/features/invoices/presentation/utils/i
 import { useQuotesPageDependencies } from '@/features/quotes/composition/useQuotesPageDependencies';
 import { OrganizationProfileDto } from '@/features/organizations/application/dtos/OrganizationProfileDto';
 import MainLayout from '@/app/layouts/MainLayout.vue';
+import PlanLimitAlert from '@/features/featureAccess/presentation/components/PlanLimitAlert.vue';
+import { usePlanUsage } from '@/features/featureAccess/composition/usePlanUsage';
 import { ConfirmDialogExposed } from '@/shared/presentation/ui/components/ConfirmDialog';
 import ConfirmDialog from '@/shared/presentation/ui/components/ConfirmDialog.vue';
 import { usePeriodFilter } from '@/shared/presentation/composables/usePeriodFilter';
@@ -532,7 +542,7 @@ import { useFeatureAccess } from '@/features/featureAccess/composition/useFeatur
 import { planLimitMessage } from '@/features/featureAccess/presentation/utils/planLimitMessage';
 
   const { authState, useQuoteState, generatePdfUseCase, organizationProfileUseCase } = useQuotesPageDependencies();
-const { can } = useFeatureAccess();
+const { can, isLimitReached } = useFeatureAccess();
 
 const router = useRouter();
 const { t } = useI18n();
@@ -807,10 +817,14 @@ const onBulkDownload = async () => {
   } finally { downloading.value = false; }
 };
 
+const { quotesUsed, load: loadPlanUsage } = usePlanUsage();
+const quotesLimitReached = computed(() => isLimitReached('max_quotes_per_month', quotesUsed.value));
+
 onMounted(async () => {
   const organizationId = authState.userContext?.value?.organization?.id;
   await Promise.all([
     init(),
+    loadPlanUsage(),
     organizationId ? organizationProfileUseCase.getProfile(organizationId).then(c => { _company.value = c; }) : Promise.resolve(),
   ]);
 });

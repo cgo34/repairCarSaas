@@ -33,17 +33,14 @@ export const platformAdminRoutes: RouteRecordRaw[] = [
       breadcrumb: [{ title: 'platformAdmin.nav.users', disabled: true, href: '#' }],
     },
   },
-  ...[
-    { path: 'subscriptions', name: 'subscriptions', key: 'subscriptions' },
-  ].map((item): RouteRecordRaw => ({
-    path: `/platform/${item.path}`,
-    name: `platform-${item.name}`,
-    component: () => import('@/features/platformAdmin/presentation/views/PlatformComingSoonPage.vue'),
+  {
+    path: '/platform/subscriptions',
+    name: 'platform-subscriptions',
+    component: () => import('@/features/platformAdmin/presentation/views/PlatformPlansPage.vue'),
     meta: {
       requiresAuth: true,
       platformAdmin: true,
-      titleKey: `platformAdmin.nav.${item.key}`,
-      breadcrumb: [{ title: `platformAdmin.nav.${item.key}`, disabled: true, href: '#' }],
+      breadcrumb: [{ title: 'platformAdmin.nav.subscriptions', disabled: true, href: '#' }],
     },
-  })),
+  },
 ];

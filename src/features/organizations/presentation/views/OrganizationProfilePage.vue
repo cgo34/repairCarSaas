@@ -386,8 +386,10 @@ import MainLayout from '@/app/layouts/MainLayout.vue';
 
 import { OrganizationProfileViewModel } from '@/features/organizations/presentation/models/OrganizationProfileViewModel';
 import { useOrganizationProfilePageDependencies } from '@/features/organizations/composition/useOrganizationProfilePageDependencies';
+import { useOrganizationProfileCompleteness } from '@/features/organizations/composition/useOrganizationProfileCompleteness';
 
 const { t } = useI18n();
+const { update: updateCompleteness } = useOrganizationProfileCompleteness();
 
 const { useOrganizationProfileState } = useOrganizationProfilePageDependencies();
 
@@ -506,6 +508,7 @@ const onSave = async () => {
     await updateProfile();
 
     takeSnapshot();
+    updateCompleteness(profile.value);
 
     saved.value = true;
 
