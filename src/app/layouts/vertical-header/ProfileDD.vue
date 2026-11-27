@@ -50,7 +50,7 @@ async function enter(profile: DemoProfileDto) {
 }
 
 async function goGlobal() {
-  if (await switcher.clear()) window.location.assign('/admin/profiles');
+  if (await switcher.clear()) window.location.assign('/');
 }
 
 // Native names, so a user can always find their language.

@@ -94,6 +94,8 @@ export class OrganizationMemberMapper {
       email: user.email,
 
       isBlocked: user.isBlocked ?? (user as UserDto & { is_blocked?: boolean }).is_blocked,
+
+      isSuperAdmin: (user.platformRole ?? (user as UserDto & { platform_role?: string }).platform_role) === 'super_admin',
     };
   }
 }

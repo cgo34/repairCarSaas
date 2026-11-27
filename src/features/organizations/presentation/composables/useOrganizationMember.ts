@@ -83,9 +83,10 @@ export function createUseOrganizationMember(deps: UseOrganizationMemberDependenc
           organizationId
         );
 
-      _members.value = data.map(dto =>
-        OrganizationMemberMapper.dtoToView(dto)
-      );
+      // The platform super_admin only borrows a demo membership: never list it as a member
+      _members.value = data
+        .map(dto => OrganizationMemberMapper.dtoToView(dto))
+        .filter(member => !member.users?.isSuperAdmin);
 
       return _members.value;
     } catch (e) {

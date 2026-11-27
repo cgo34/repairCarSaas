@@ -7,6 +7,7 @@ export type OrganizationMemberUserViewModel = {
   last_name: string;
   email: string;
   isBlocked?: boolean;
+  isSuperAdmin?: boolean;
 };
 
 export type OrganizationMemberViewModel = {

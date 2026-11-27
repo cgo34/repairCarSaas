@@ -6,9 +6,14 @@ import { ListDemoProfilesUseCase, type IListDemoProfilesUseCase } from '@/featur
 import { SwitchDemoProfileUseCase, type ISwitchDemoProfileUseCase } from '@/features/profileSwitcher/application/useCases/SwitchDemoProfileUseCase';
 import { ClearDemoProfileUseCase, type IClearDemoProfileUseCase } from '@/features/profileSwitcher/application/useCases/ClearDemoProfileUseCase';
 
+import { CreateDemoProfileUseCase, type ICreateDemoProfileUseCase } from '@/features/profileSwitcher/application/useCases/CreateDemoProfileUseCase';
+import { DeleteDemoProfileUseCase, type IDeleteDemoProfileUseCase } from '@/features/profileSwitcher/application/useCases/DeleteDemoProfileUseCase';
+
 export function registerProfileSwitcherBindings(container: Container): void {
   container.bind<IDemoProfileRepository>(SYMBOLS.Repositories.DemoProfileRepository).toDynamicValue(ctx => new DemoProfileRepository(ctx.container.get(SYMBOLS.Providers.ClientProvider))).inSingletonScope();
   container.bind<IListDemoProfilesUseCase>(SYMBOLS.UseCases.ProfileSwitcher.ListDemoProfilesUseCase).toDynamicValue(ctx => new ListDemoProfilesUseCase(ctx.container.get(SYMBOLS.Repositories.DemoProfileRepository))).inSingletonScope();
   container.bind<ISwitchDemoProfileUseCase>(SYMBOLS.UseCases.ProfileSwitcher.SwitchDemoProfileUseCase).toDynamicValue(ctx => new SwitchDemoProfileUseCase(ctx.container.get(SYMBOLS.Repositories.DemoProfileRepository))).inSingletonScope();
   container.bind<IClearDemoProfileUseCase>(SYMBOLS.UseCases.ProfileSwitcher.ClearDemoProfileUseCase).toDynamicValue(ctx => new ClearDemoProfileUseCase(ctx.container.get(SYMBOLS.Repositories.DemoProfileRepository))).inSingletonScope();
+  container.bind<ICreateDemoProfileUseCase>(SYMBOLS.UseCases.ProfileSwitcher.CreateDemoProfileUseCase).toDynamicValue(ctx => new CreateDemoProfileUseCase(ctx.container.get(SYMBOLS.Repositories.DemoProfileRepository))).inSingletonScope();
+  container.bind<IDeleteDemoProfileUseCase>(SYMBOLS.UseCases.ProfileSwitcher.DeleteDemoProfileUseCase).toDynamicValue(ctx => new DeleteDemoProfileUseCase(ctx.container.get(SYMBOLS.Repositories.DemoProfileRepository))).inSingletonScope();
 }

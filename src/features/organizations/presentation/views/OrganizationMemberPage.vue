@@ -255,6 +255,7 @@
           <!-- #REGION -> ITEM ACTIONS -->
           <template #item.actions="{ item }">
             <div
+              v-if="!isDemoRow(item)"
               class="d-flex justify-end"
               @click.stop
             >
@@ -348,15 +349,49 @@ import AssignGarageDialog from '@/features/technicians/presentation/components/A
 import { computed, onMounted, reactive, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { setSelectedMemberId } from '@/features/technicians/presentation/utils/memberSelection';
+import { useProfileSwitcher } from '@/features/profileSwitcher/composition/useProfileSwitcher';
 
 // Injection du state depuis Inversify
   const { useOrganizationMember, authState, subscriptionState } = useOrganizationMemberPageDependencies();
 const { isFreePlan } = authState
 const { t, te } = useI18n();
+const isSuperAdmin = computed(() => authState.userContext.value?.platformRole === 'super_admin');
+
+// Super admin in a demo organization: the switch profiles stand in for the members
+const profileSwitcher = useProfileSwitcher();
+const demoProfiles = computed(() => isSuperAdmin.value
+  ? profileSwitcher.profiles.value.filter(p => p.organizationId === authState.userContext.value?.organization.id)
+  : []);
+const isDemoMode = computed(() => demoProfiles.value.length > 0);
+const isDemoRow = (m: OrganizationMemberViewModel) => demoProfiles.value.some(p => p.profileId === m.id);
+
+const members = computed<OrganizationMemberViewModel[]>(() => {
+  if (!isDemoMode.value) return realMembers.value;
+  const activeRole = authState.userContext.value?.membership.role;
+  const email = authState.userContext.value?.email ?? '';
+  const visibleProfiles = activeRole === 'manager'
+    ? demoProfiles.value.filter(p => p.role !== 'admin')
+    : demoProfiles.value;
+  return visibleProfiles.map(p => ({
+    id: p.profileId,
+    organization_id: p.organizationId,
+    user_id: '',
+    role: p.role,
+    percentage_commission: 0,
+    status: 'active',
+    users: {
+      id: '',
+      full_name: p.label,
+      first_name: p.role === activeRole ? `${p.label} (${t('profileSwitcher.members.active')})` : p.label,
+      last_name: '',
+      email,
+    },
+  }));
+});
 
 
 const {
-  members,
+  members: realMembers,
   garages,
   selectedMemberForm,
 
@@ -479,6 +514,8 @@ const formTitle = computed(() =>
 );
 
 const onRowClick = (_event: Event, { item }: { item: OrganizationMemberViewModel }) => {
+  // Demo profile rows are read-only; switching is done from the user menu
+  if (isDemoRow(item)) return;
   setSelectedMemberId(item.user_id);
   router.push('/organization/members/detail');
 };
@@ -579,6 +616,7 @@ const onDeleteBtnClick = (item: OrganizationMemberViewModel) => {
 onMounted(async () => {
   const orgId = authState.userContext.value?.organization.id;
   if (orgId) subscriptionState.loadForOrganization(orgId);
+  if (isSuperAdmin.value) profileSwitcher.load();
   await init();
 });
 </script>

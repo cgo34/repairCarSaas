@@ -8,6 +8,8 @@
     "switchError": "Unable to switch profile",
     "plan": { "FREE": "Free", "PREMIUM": "Premium" },
     "roles": { "admin": "Administrator", "manager": "Manager", "technician": "Technician" },
-    "actions": { "enter": "Enter", "backToGlobal": "Super Admin" }
+    "actions": { "enter": "Enter", "backToGlobal": "Super Admin", "delete": "Delete profile" },
+    "add": { "role": "Role", "label": "Profile name (optional)", "submit": "Add a profile" },
+    "members": { "title": "Demo profiles", "subtitle": "Same account, one profile per role. Click to switch.", "active": "Active" }
   }
 }

@@ -43,4 +43,18 @@ export class DemoProfileRepository implements IDemoProfileRepository {
     const { error } = await this.clientProvider.getClient().rpc('clear_demo_profile');
     if (error) throw error;
   }
+
+  async create(organizationId: string, role: DemoProfileRole, label?: string): Promise<void> {
+    const { error } = await this.clientProvider.getClient().rpc('create_demo_profile', {
+      p_organization_id: organizationId,
+      p_role: role,
+      p_label: label,
+    });
+    if (error) throw error;
+  }
+
+  async delete(profileId: string): Promise<void> {
+    const { error } = await this.clientProvider.getClient().rpc('delete_demo_profile', { p_profile_id: profileId });
+    if (error) throw error;
+  }
 }

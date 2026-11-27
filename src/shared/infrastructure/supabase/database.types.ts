@@ -1650,6 +1650,14 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: undefined
       }
+      create_demo_profile: {
+        Args: { p_organization_id: string; p_role: string; p_label?: string }
+        Returns: string
+      }
+      delete_demo_profile: {
+        Args: { p_profile_id: string }
+        Returns: undefined
+      }
       get_demo_profile_context: {
         Args: Record<PropertyKey, never>
         Returns: { profile_id: string; organization_id: string; role: string }[]

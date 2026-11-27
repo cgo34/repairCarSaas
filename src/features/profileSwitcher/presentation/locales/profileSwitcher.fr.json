@@ -8,6 +8,8 @@
     "switchError": "Impossible de changer de profil",
     "plan": { "FREE": "Gratuit", "PREMIUM": "Premium" },
     "roles": { "admin": "Administrateur", "manager": "Manager", "technician": "Technicien" },
-    "actions": { "enter": "Entrer", "backToGlobal": "Super Admin" }
+    "actions": { "enter": "Entrer", "backToGlobal": "Super Admin", "delete": "Supprimer le profil" },
+    "add": { "role": "Rôle", "label": "Nom du profil (optionnel)", "submit": "Ajouter un profil" },
+    "members": { "title": "Profils de démonstration", "subtitle": "Même compte, un profil par rôle. Clique pour basculer.", "active": "Actif" }
   }
 }

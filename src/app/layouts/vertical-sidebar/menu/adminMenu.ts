@@ -81,7 +81,7 @@ export const adminMenu: MenuItem[] = [
   // ─────────────────────────────────────────────────────────
   {
     header: 'common.nav.organization',
-    roles: ['admin'],
+    roles: ['admin', 'manager'],
   },
 
   {
@@ -89,7 +89,7 @@ export const adminMenu: MenuItem[] = [
     icon: UserIcon,
     to: '/organization/members',
     chip: isFreePlan ? 'common.nav.premium' : '',
-    roles: ['admin'],
+    roles: ['admin', 'manager'],
   },
 
   {

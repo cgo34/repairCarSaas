@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { computed, onMounted } from 'vue';
+import { computed, onMounted, reactive } from 'vue';
 import { useI18n } from 'vue-i18n';
 import MainLayout from '@/app/layouts/MainLayout.vue';
 import { useProfileSwitcher } from '@/features/profileSwitcher/composition/useProfileSwitcher';
-import type { DemoProfileDto } from '@/features/profileSwitcher/application/dtos/DemoProfileDto';
+import type { DemoProfileDto, DemoProfileRole } from '@/features/profileSwitcher/application/dtos/DemoProfileDto';
 
 const { t } = useI18n();
 const state = useProfileSwitcher();
@@ -20,9 +20,24 @@ const organizations = computed(() => {
 
 onMounted(() => state.load());
 
+const ALL_ROLES: DemoProfileRole[] = ['admin', 'manager', 'technician'];
+type OrgEntry = { id: string; profiles: DemoProfileDto[] };
+const drafts = reactive<Record<string, { role: DemoProfileRole | null; label: string }>>({});
+
+const draft = (orgId: string) => (drafts[orgId] ??= { role: null, label: '' });
+const missingRoles = (org: OrgEntry) => ALL_ROLES.filter(r => !org.profiles.some(p => p.role === r));
+
+async function addProfile(orgId: string) {
+  const d = draft(orgId);
+  if (!d.role) return;
+  if (await state.createProfile(orgId, d.role, d.label)) {
+    drafts[orgId] = { role: null, label: '' };
+  }
+}
+
 async function backToGlobal() {
   if (await state.clear()) {
-    window.location.assign('/admin/profiles');
+    window.location.assign('/');
   }
 }
 
@@ -104,7 +119,19 @@ async function enter(profile: DemoProfileDto) {
             elevation="0"
             class="bg-surface"
           >
-            <v-card-title>{{ t(`profileSwitcher.roles.${profile.role}`) }}</v-card-title>
+            <v-card-title class="d-flex align-center">
+              <span>{{ profile.label }}</span>
+              <v-spacer />
+              <v-btn
+                icon="mdi-delete-outline"
+                size="small"
+                variant="text"
+                :title="t('profileSwitcher.actions.delete')"
+                :disabled="state.isLoading.value || org.profiles.length <= 1"
+                @click="state.deleteProfile(profile.profileId)"
+              />
+            </v-card-title>
+            <v-card-subtitle>{{ t(`profileSwitcher.roles.${profile.role}`) }}</v-card-subtitle>
             <v-card-actions>
               <v-btn
                 color="primary"
@@ -115,6 +142,40 @@ async function enter(profile: DemoProfileDto) {
                 {{ t('profileSwitcher.actions.enter') }}
               </v-btn>
             </v-card-actions>
+          </v-card>
+        </v-col>
+        <v-col
+          v-if="missingRoles(org).length"
+          cols="12"
+          md="4"
+        >
+          <v-card
+            elevation="0"
+            class="bg-surface"
+          >
+            <v-card-text class="d-flex flex-column ga-2">
+              <v-select
+                v-model="draft(org.id).role"
+                :items="missingRoles(org).map(r => ({ value: r, title: t(`profileSwitcher.roles.${r}`) }))"
+                :label="t('profileSwitcher.add.role')"
+                density="compact"
+                hide-details
+              />
+              <v-text-field
+                v-model="draft(org.id).label"
+                :label="t('profileSwitcher.add.label')"
+                density="compact"
+                hide-details
+              />
+              <v-btn
+                variant="tonal"
+                prepend-icon="mdi-plus"
+                :disabled="state.isLoading.value"
+                @click="addProfile(org.id)"
+              >
+                {{ t('profileSwitcher.add.submit') }}
+              </v-btn>
+            </v-card-text>
           </v-card>
         </v-col>
       </v-row>
