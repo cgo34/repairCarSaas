@@ -223,6 +223,18 @@
           </template>
           <!-- #ENDREGION -->
 
+          <!-- #REGION -> ACCOUNT TYPE -->
+          <template #item.accountType="{ item }">
+            <v-chip
+              :color="isDemoRow(item) ? 'purple' : 'default'"
+              size="small"
+              variant="tonal"
+            >
+              {{ isDemoRow(item) ? t('organizations.members.table.accountTypePlatform') : t('organizations.members.table.accountTypeUser') }}
+            </v-chip>
+          </template>
+          <!-- #ENDREGION -->
+
           <!-- #REGION -> COMMISSION -->
           <template #item.percentage_commission="{ item }">
             {{ item.percentage_commission ? `${item.percentage_commission} %` : '—' }}
@@ -462,6 +474,7 @@ const headers = computed(() => [
   { title: t('organizations.members.table.member'), align: 'start', key: 'users.first_name' },
   { title: t('organizations.members.form.email'), key: 'users.email' },
   { title: t('organizations.members.form.role'), key: 'role', sortable: false },
+  ...(isDemoMode.value ? [{ title: t('organizations.members.table.accountType'), key: 'accountType', sortable: false }] : []),
   { title: t('organizations.members.table.commission'), key: 'percentage_commission', align: 'end', sortable: false },
   { title: t('organizations.members.table.status'), key: 'status', sortable: false },
   { title: '', sortable: false, key: 'actions', align: 'end', width: 56 },

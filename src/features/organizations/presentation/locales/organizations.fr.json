@@ -21,7 +21,10 @@
       "table": {
         "member": "Membre",
         "commission": "Commission",
-        "status": "Statut"
+        "status": "Statut",
+        "accountType": "Type de compte",
+        "accountTypeUser": "Utilisateur",
+        "accountTypePlatform": "Super admin (plateforme)"
       },
       "roles": {
         "technician": "Technicien",
