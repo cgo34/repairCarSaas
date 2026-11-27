@@ -158,8 +158,10 @@ const { mobile } = useDisplay();
 const activeBottomNav = ref(route.name);
 
 const { isLimitReached } = useFeatureAccess();
-const { quotesUsed, load: loadPlanUsage } = usePlanUsage();
-const newQuoteDisabled = computed(() => isLimitReached('max_quotes_per_month', quotesUsed.value));
+const { quotesUsed, invoicesUsed, load: loadPlanUsage } = usePlanUsage();
+const newQuoteDisabled = computed(() =>
+  isLimitReached('max_quotes_per_month', quotesUsed.value)
+  || isLimitReached('max_invoices_per_month', invoicesUsed.value));
 
 // Les compteurs changent après chaque création : on les relit à chaque navigation
 watch(() => route.fullPath, () => { void loadPlanUsage(); }, { immediate: true });
