@@ -102,6 +102,7 @@ const SYMBOLS = {
       ListPlatformOrganizationsUseCase: Symbol.for(SYMBOL_NAMES.LIST_PLATFORM_ORGANIZATIONS_USE_CASE),
       GrantPremiumUseCase: Symbol.for(SYMBOL_NAMES.GRANT_PREMIUM_USE_CASE),
       GrantFeatureUseCase: Symbol.for(SYMBOL_NAMES.GRANT_FEATURE_USE_CASE),
+      SetOrganizationDemoUseCase: Symbol.for(SYMBOL_NAMES.SET_ORGANIZATION_DEMO_USE_CASE),
       ListPlatformUsersUseCase: Symbol.for(SYMBOL_NAMES.LIST_PLATFORM_USERS_USE_CASE),
       ListPlatformPlansUseCase: Symbol.for(SYMBOL_NAMES.LIST_PLATFORM_PLANS_USE_CASE),
       PreviewPlanChangesUseCase: Symbol.for(SYMBOL_NAMES.PREVIEW_PLAN_CHANGES_USE_CASE),

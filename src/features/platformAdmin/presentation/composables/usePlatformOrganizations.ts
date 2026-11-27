@@ -3,6 +3,7 @@ import type { PlatformOrganizationDto } from '@/features/platformAdmin/applicati
 import type { IListPlatformOrganizationsUseCase } from '@/features/platformAdmin/application/useCases/ListPlatformOrganizationsUseCase';
 import type { IGrantPremiumUseCase } from '@/features/platformAdmin/application/useCases/GrantPremiumUseCase';
 import type { IGrantFeatureUseCase } from '@/features/platformAdmin/application/useCases/GrantFeatureUseCase';
+import type { ISetOrganizationDemoUseCase } from '@/features/platformAdmin/application/useCases/SetOrganizationDemoUseCase';
 import type { FeatureGrantDuration } from '@/features/platformAdmin/application/dtos/FeatureGrant';
 import type { PremiumGrantDuration } from '@/features/platformAdmin/application/dtos/PremiumGrantDuration';
 
@@ -13,9 +14,11 @@ export interface IUsePlatformOrganizations {
   load(): Promise<void>;
   grantPremium(organizationId: string, duration: PremiumGrantDuration): Promise<boolean>;
   grantFeature(organizationId: string, featureKey: string, duration: FeatureGrantDuration): Promise<boolean>;
+  setDemo(organizationId: string, isDemo: boolean): Promise<boolean>;
 }
 
 export interface UsePlatformOrganizationsDependencies {
+  setOrganizationDemoUseCase: ISetOrganizationDemoUseCase;
   listPlatformOrganizationsUseCase: IListPlatformOrganizationsUseCase;
   grantPremiumUseCase: IGrantPremiumUseCase;
   grantFeatureUseCase: IGrantFeatureUseCase;
@@ -64,5 +67,17 @@ export function createUsePlatformOrganizations(deps: UsePlatformOrganizationsDep
     return true;
   };
 
-  return { organizations, isLoading, error, load, grantPremium, grantFeature };
+  const setDemo = async (organizationId: string, isDemo: boolean): Promise<boolean> => {
+    error.value = null;
+    try {
+      await deps.setOrganizationDemoUseCase.execute(organizationId, isDemo);
+    } catch (e) {
+      error.value = toMessage(e);
+      return false;
+    }
+    await load();
+    return true;
+  };
+
+  return { organizations, isLoading, error, load, grantPremium, grantFeature, setDemo };
 }

@@ -40,6 +40,14 @@ export class PlatformOrganizationRepository implements IPlatformOrganizationRepo
     if (error) throw error;
   }
 
+  async setDemo(organizationId: string, isDemo: boolean): Promise<void> {
+    const { error } = await this.clientProvider.getClient().rpc('set_organization_demo', {
+      p_organization_id: organizationId,
+      p_is_demo: isDemo,
+    });
+    if (error) throw error;
+  }
+
   async grantFeature(organizationId: string, featureKey: string, duration: FeatureGrantDuration): Promise<void> {
     const { error } = await this.clientProvider.getClient().rpc('grant_feature', {
       p_organization_id: organizationId,

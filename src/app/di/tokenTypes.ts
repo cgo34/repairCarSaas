@@ -90,6 +90,7 @@ export enum SYMBOL_NAMES {
     LIST_PLATFORM_ORGANIZATIONS_USE_CASE = 'ListPlatformOrganizationsUseCase',
     GRANT_PREMIUM_USE_CASE = 'GrantPremiumUseCase',
     GRANT_FEATURE_USE_CASE = 'GrantFeatureUseCase',
+    SET_ORGANIZATION_DEMO_USE_CASE = 'SetOrganizationDemoUseCase',
     LIST_PLATFORM_USERS_USE_CASE = 'ListPlatformUsersUseCase',
     PLATFORM_PLAN_REPOSITORY = 'PlatformPlanRepository',
     LIST_PLATFORM_PLANS_USE_CASE = 'ListPlatformPlansUseCase',

@@ -10,6 +10,7 @@ import { GetPlatformStatsUseCase, type IGetPlatformStatsUseCase } from '@/featur
 import { ListPlatformOrganizationsUseCase, type IListPlatformOrganizationsUseCase } from '@/features/platformAdmin/application/useCases/ListPlatformOrganizationsUseCase';
 import { GrantPremiumUseCase, type IGrantPremiumUseCase } from '@/features/platformAdmin/application/useCases/GrantPremiumUseCase';
 import { GrantFeatureUseCase, type IGrantFeatureUseCase } from '@/features/platformAdmin/application/useCases/GrantFeatureUseCase';
+import { SetOrganizationDemoUseCase, type ISetOrganizationDemoUseCase } from '@/features/platformAdmin/application/useCases/SetOrganizationDemoUseCase';
 import { ListPlatformUsersUseCase, type IListPlatformUsersUseCase } from '@/features/platformAdmin/application/useCases/ListPlatformUsersUseCase';
 import type { IPlatformPlanRepository } from '@/features/platformAdmin/application/ports/repositories/IPlatformPlanRepository';
 import { PlatformPlanRepository } from '@/features/platformAdmin/infrastructure/repositories/PlatformPlanRepository';
@@ -31,5 +32,6 @@ export function registerPlatformAdminBindings(container: Container): void {
   container.bind<IListPlatformOrganizationsUseCase>(SYMBOLS.UseCases.PlatformAdmin.ListPlatformOrganizationsUseCase).toDynamicValue(ctx => new ListPlatformOrganizationsUseCase(ctx.container.get(SYMBOLS.Repositories.PlatformOrganizationRepository))).inSingletonScope();
   container.bind<IGrantPremiumUseCase>(SYMBOLS.UseCases.PlatformAdmin.GrantPremiumUseCase).toDynamicValue(ctx => new GrantPremiumUseCase(ctx.container.get(SYMBOLS.Repositories.PlatformOrganizationRepository))).inSingletonScope();
   container.bind<IGrantFeatureUseCase>(SYMBOLS.UseCases.PlatformAdmin.GrantFeatureUseCase).toDynamicValue(ctx => new GrantFeatureUseCase(ctx.container.get(SYMBOLS.Repositories.PlatformOrganizationRepository))).inSingletonScope();
+  container.bind<ISetOrganizationDemoUseCase>(SYMBOLS.UseCases.PlatformAdmin.SetOrganizationDemoUseCase).toDynamicValue(ctx => new SetOrganizationDemoUseCase(ctx.container.get(SYMBOLS.Repositories.PlatformOrganizationRepository))).inSingletonScope();
   container.bind<IListPlatformUsersUseCase>(SYMBOLS.UseCases.PlatformAdmin.ListPlatformUsersUseCase).toDynamicValue(ctx => new ListPlatformUsersUseCase(ctx.container.get(SYMBOLS.Repositories.PlatformUserRepository))).inSingletonScope();
 }

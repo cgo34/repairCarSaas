@@ -41,8 +41,8 @@ begin
     raise exception 'PREMIUM plan not found';
   end if;
 
-  update public.organizations set name = 'Demo Free',    updated_at = now() where id = v_free_org;
-  update public.organizations set name = 'Demo Premium', updated_at = now() where id = v_premium_org;
+  update public.organizations set name = 'Demo Free',    is_demo = true, updated_at = now() where id = v_free_org;
+  update public.organizations set name = 'Demo Premium', is_demo = true, updated_at = now() where id = v_premium_org;
 
   update public.subscriptions
      set plan_id = v_premium_plan, source = 'manual', status = 'active', end_date = null

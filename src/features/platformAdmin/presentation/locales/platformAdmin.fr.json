@@ -61,6 +61,12 @@
       "loadError": "Impossible de charger les organisations",
       "actions": "Actions",
       "totalShort": "total {n}",
+      "demoToggle": {
+        "mark": "Marquer comme démo",
+        "unmark": "Retirer le statut démo",
+        "markedSuccess": "{name} est maintenant une organisation de démo.",
+        "unmarkedSuccess": "{name} n'est plus une organisation de démo."
+      },
       "grantPremium": {
         "menu": "Offrir le Premium",
         "title": "Offrir le Premium",

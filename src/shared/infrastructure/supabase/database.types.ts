@@ -1677,6 +1677,10 @@ export type Database = {
         Args: { p_organization_id: string; p_duration: string }
         Returns: undefined
       }
+      set_organization_demo: {
+        Args: { p_organization_id: string; p_is_demo: boolean }
+        Returns: undefined
+      }
       list_platform_organizations: {
         Args: Record<PropertyKey, never>
         Returns: {

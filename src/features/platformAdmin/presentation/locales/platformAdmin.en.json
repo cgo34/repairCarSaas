@@ -61,6 +61,12 @@
       "loadError": "Unable to load organizations",
       "actions": "Actions",
       "totalShort": "total {n}",
+      "demoToggle": {
+        "mark": "Mark as demo",
+        "unmark": "Remove demo status",
+        "markedSuccess": "{name} is now a demo organization.",
+        "unmarkedSuccess": "{name} is no longer a demo organization."
+      },
       "grantPremium": {
         "menu": "Offer Premium",
         "title": "Offer Premium",

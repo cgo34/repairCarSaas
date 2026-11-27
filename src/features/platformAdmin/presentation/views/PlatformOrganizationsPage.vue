@@ -196,6 +196,11 @@
                   :title="t('platformAdmin.organizations.grantFeature.menu')"
                   @click="openFeatureDialog(item)"
                 />
+                <v-list-item
+                  :prepend-icon="item.isDemo ? 'mdi-flask-off-outline' : 'mdi-flask-outline'"
+                  :title="t(item.isDemo ? 'platformAdmin.organizations.demoToggle.unmark' : 'platformAdmin.organizations.demoToggle.mark')"
+                  @click="toggleDemo(item)"
+                />
               </v-list>
             </v-menu>
           </template>
@@ -321,7 +326,7 @@ import { FEATURE_GRANT_DURATIONS, GRANTABLE_FEATURES, type FeatureGrantDuration,
 import { PREMIUM_GRANT_DURATIONS, type PremiumGrantDuration } from '@/features/platformAdmin/application/dtos/PremiumGrantDuration';
 
 const { t, locale } = useI18n();
-const { organizations, isLoading, error, load, grantPremium, grantFeature } = usePlatformOrganizations();
+const { organizations, isLoading, error, load, grantPremium, grantFeature, setDemo } = usePlatformOrganizations();
 
 const search = ref<string | null>('');
 const planFilter = ref<string>('all');
@@ -393,6 +398,19 @@ async function confirmGrant(): Promise<void> {
 }
 
 const featureDialog = ref(false);
+const isTogglingDemo = ref(false);
+
+async function toggleDemo(org: PlatformOrganizationDto): Promise<void> {
+  if (isTogglingDemo.value) return;
+  isTogglingDemo.value = true;
+  const next = !org.isDemo;
+  const ok = await setDemo(org.id, next);
+  isTogglingDemo.value = false;
+  if (ok) {
+    snackbarText.value = t(next ? 'platformAdmin.organizations.demoToggle.markedSuccess' : 'platformAdmin.organizations.demoToggle.unmarkedSuccess', { name: org.name });
+    snackbar.value = true;
+  }
+}
 const featureTarget = ref<PlatformOrganizationDto | null>(null);
 const featureKey = ref<GrantableFeature>(GRANTABLE_FEATURES[0]);
 const featureDuration = ref<FeatureGrantDuration>('month');
