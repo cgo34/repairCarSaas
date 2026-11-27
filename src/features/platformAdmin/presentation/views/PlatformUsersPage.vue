@@ -85,6 +85,14 @@
             hide-details
             style="max-width: 180px;"
           />
+          <v-switch
+            v-model="hideDemo"
+            class="ml-auto"
+            :label="t('platformAdmin.users.hideDemo')"
+            color="primary"
+            density="compact"
+            hide-details
+          />
         </div>
         <v-divider />
         <v-data-table
@@ -119,6 +127,34 @@
             </div>
           </template>
 
+          <template #item.organizationName="{ item }">
+            {{ item.organizationName ?? '—' }}
+          </template>
+
+          <template #item.role="{ item }">
+            <v-chip
+              :color="roleColor(item.role)"
+              size="small"
+              variant="tonal"
+            >
+              {{ roleLabel(item.role) }}
+            </v-chip>
+          </template>
+
+          <template #item.isDemo="{ item }">
+            <v-avatar
+              :color="item.isDemo ? 'success' : 'error'"
+              size="28"
+              variant="tonal"
+              :aria-label="t('platformAdmin.users.demo')"
+            >
+              <v-icon
+                :icon="item.isDemo ? 'mdi-check' : 'mdi-close'"
+                size="18"
+              />
+            </v-avatar>
+          </template>
+
           <template #item.isBlocked="{ item }">
             <v-chip
               :color="item.isBlocked ? 'error' : 'success'"
@@ -149,10 +185,12 @@ const { users, isLoading, error, load } = usePlatformUsers();
 
 const search = ref<string | null>('');
 const statusFilter = ref<string>('all');
+const hideDemo = ref(false);
 
 const headers = computed(() => [
   { title: t('platformAdmin.users.user'), align: 'start', key: 'fullName' },
   { title: t('platformAdmin.users.organization'), key: 'organizationName' },
+  { title: t('platformAdmin.users.demo'), key: 'isDemo', align: 'center' },
   { title: t('platformAdmin.users.role'), key: 'role' },
   { title: t('platformAdmin.users.status'), key: 'isBlocked' },
   { title: t('platformAdmin.users.createdAt'), key: 'createdAt' },
@@ -164,17 +202,39 @@ const statusFilterOptions = computed(() => [
   { title: t('platformAdmin.users.blocked'), value: 'blocked' },
 ]);
 
+const roleLabel = (role: string) => {
+  switch (role) {
+    case 'super_admin': return t('platformAdmin.users.superAdmin');
+    case 'admin':
+    case 'manager':
+    case 'technician': return t(`organizations.members.roles.${role}`);
+    default: return role || '—';
+  }
+};
+
+const roleColor = (role: string) => {
+  switch (role) {
+    case 'super_admin': return 'purple';
+    case 'admin': return 'red';
+    case 'manager': return 'blue';
+    case 'technician': return 'green';
+    default: return 'grey';
+  }
+};
+
+const visibleUsers = computed(() => users.value.filter(u => !(hideDemo.value && u.isDemo)));
+
 const filteredUsers = computed(() => {
   const term = (search.value ?? '').trim().toLowerCase();
-  return users.value.filter(u => {
+  return visibleUsers.value.filter(u => {
     if (statusFilter.value === 'active' && u.isBlocked) return false;
     if (statusFilter.value === 'blocked' && !u.isBlocked) return false;
-    return !term || `${u.fullName ?? ''} ${u.email} ${u.organizationName}`.toLowerCase().includes(term);
+    return !term || `${u.fullName ?? ''} ${u.email} ${u.organizationName ?? ''}`.toLowerCase().includes(term);
   });
 });
 
 const statCards = computed(() => {
-  const list = users.value;
+  const list = visibleUsers.value;
   const blocked = list.filter(u => u.isBlocked).length;
   return [
     { label: t('platformAdmin.dashboard.stats.users'), value: list.length, icon: 'mdi-account-group-outline', color: 'primary' },

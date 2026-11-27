@@ -105,7 +105,10 @@
     },
     "users": {
       "title": "Utilisateurs",
-      "subtitle": "Utilisateurs des clients réels (comptes de démonstration et super admin exclus).",
+      "subtitle": "Tous les utilisateurs de la plateforme (démos et super admin compris).",
+      "hideDemo": "Masquer les démos",
+      "demo": "Démo",
+      "superAdmin": "Super admin",
       "searchPlaceholder": "Rechercher un utilisateur…",
       "allStatuses": "Tous les statuts",
       "active": "Actif",

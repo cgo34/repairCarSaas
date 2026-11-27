@@ -1765,9 +1765,10 @@ export type Database = {
           email: string
           is_blocked: boolean
           role: string
-          organization_name: string
+          organization_name: string | null
           organizations_count: number
           created_at: string | null
+          is_demo: boolean
         }[]
       }
       list_demo_profiles: {

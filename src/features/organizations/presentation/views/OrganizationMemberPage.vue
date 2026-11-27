@@ -456,7 +456,7 @@ const filteredMembers = computed(() => {
 });
 
 const statCards = computed(() => {
-  const list = members.value;
+  const list = realMembers.value;
   const blocked = list.filter(m => m.users?.isBlocked).length;
   const active = list.filter(m => !m.users?.isBlocked && m.status === 'active').length;
   const avg = list.length
@@ -495,7 +495,7 @@ const roleFilterOptions = computed(() => [
 const roleColor = (role?: string) => {
   switch (role) {
     case 'admin': return 'red';
-    case 'garage': return 'blue';
+    case 'manager': return 'blue';
     case 'technician': return 'green';
     default: return 'grey';
   }

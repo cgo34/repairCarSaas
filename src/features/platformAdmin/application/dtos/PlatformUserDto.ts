@@ -4,7 +4,8 @@ export interface PlatformUserDto {
   email: string;
   isBlocked: boolean;
   role: string;
-  organizationName: string;
+  organizationName: string | null;
   organizationsCount: number;
   createdAt: string | null;
+  isDemo: boolean;
 }

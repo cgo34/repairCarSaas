@@ -19,6 +19,7 @@ export class PlatformUserRepository implements IPlatformUserRepository {
       organizationName: row.organization_name,
       organizationsCount: Number(row.organizations_count),
       createdAt: row.created_at,
+      isDemo: row.is_demo,
     }));
   }
 }

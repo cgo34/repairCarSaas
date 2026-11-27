@@ -105,7 +105,10 @@
     },
     "users": {
       "title": "Users",
-      "subtitle": "Users of real customers (demo accounts and super admin excluded).",
+      "subtitle": "All platform users (demo accounts and super admin included).",
+      "hideDemo": "Hide demos",
+      "demo": "Demo",
+      "superAdmin": "Super admin",
       "searchPlaceholder": "Search a user…",
       "allStatuses": "All statuses",
       "active": "Active",
