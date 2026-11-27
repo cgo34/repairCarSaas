@@ -596,6 +596,7 @@ export function createUseCreateInvoiceState(deps: UseCreateInvoiceStateDependenc
   };
 
   const save = async () => {
+    error.value = undefined;
 
     if (
       !authState.userContext.value

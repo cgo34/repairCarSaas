@@ -481,16 +481,34 @@
                     {{ t('quotes.actions.markRefused') }}
                   </v-btn>
                   <v-btn
-                    v-if="!isReadOnly && !isFreePlan"
-                    color="blue"
-                    variant="tonal"
-                    prepend-icon="mdi-send-outline"
+                    v-if="!isReadOnly && !isSent && !can('quote_email_sending')"
+                    color="primary"
+                    variant="flat"
+                    block
+                    prepend-icon="mdi-check-circle-outline"
                     :disabled="!hasItems"
                     :loading="sending"
-                    @click="onSendBtnClick"
+                    @click="onAskValidate"
                   >
-                    {{ t(isSent ? 'quotes.edit.resendToGarage' : 'quotes.edit.sendToGarage') }}
+                    {{ t('quotes.edit.validate') }}
                   </v-btn>
+                  <FeatureGate
+                    v-if="!isReadOnly"
+                    v-slot="{ locked }"
+                    feature="quote_email_sending"
+                  >
+                    <v-btn
+                      color="blue"
+                      variant="tonal"
+                      block
+                      prepend-icon="mdi-send-outline"
+                      :disabled="locked || !hasItems"
+                      :loading="sending"
+                      @click="onSendBtnClick"
+                    >
+                      {{ t(isSent ? 'quotes.edit.resendToGarage' : 'quotes.edit.sendToGarage') }}
+                    </v-btn>
+                  </FeatureGate>
                   <v-btn
                     v-if="isAccepted && !quote?.convertToInvoice"
                     color="primary"
@@ -780,11 +798,23 @@
     type="warning"
     @confirm="onConfirmDeleteQuote"
   />
+
+  <ConfirmDialog
+    ref="validateQuoteConfirmDialogRef"
+    :title="t('quotes.edit.validate')"
+    :message="t('quotes.edit.validateMessage')"
+    :confirm-label="t('quotes.edit.validate')"
+    :cancel-label="t('common.cancel')"
+    type="warning"
+    @confirm="onValidateBtnClick"
+  />
 </template>
 
   <script setup lang="ts">
 import { setSelectedInvoiceGuid } from '@/features/invoices/presentation/utils/invoiceSelection';
   import { useEditQuotePageDependencies } from '@/features/quotes/composition/useEditQuotePageDependencies';
+  import { useFeatureAccess } from '@/features/featureAccess/composition/useFeatureAccess';
+  import FeatureGate from '@/features/featureAccess/presentation/components/FeatureGate.vue';
   import MainLayout from '@/app/layouts/MainLayout.vue';
   import { ConfirmDialogExposed } from '@/shared/presentation/ui/components/ConfirmDialog';
   import ConfirmDialog from '@/shared/presentation/ui/components/ConfirmDialog.vue';
@@ -803,12 +833,13 @@ import { useI18n } from 'vue-i18n';
 import { formatDate as formatIntlDate, intlLocale } from '@/app/i18n/formatters';
 
   // ── Services ─────────────────────────────────────────────────────────────────
-  const { regionManager, authState, useEditQuoteState } = useEditQuotePageDependencies();
-  const { isFreePlan } = authState;
+  const { regionManager, useEditQuoteState } = useEditQuotePageDependencies();
+  const { can } = useFeatureAccess();
 
   // ── Refs dialogs ─────────────────────────────────────────────────────────────
   const garageDialogRef = ref<GarageDialogExposed>();
   const deleteQuoteConfirmDialogRef = ref<ConfirmDialogExposed>();
+  const validateQuoteConfirmDialogRef = ref<ConfirmDialogExposed>();
 
   // ── State ─────────────────────────────────────────────────────────────────────
 
@@ -855,6 +886,7 @@ import { formatDate as formatIntlDate, intlLocale } from '@/app/i18n/formatters'
     canDecide,
     canDelete,
     sendQuote,
+    finalizeQuote,
     quote,
     // isRefused,
     updateQuoteStatus,
@@ -931,6 +963,22 @@ const { t } = useI18n();
       snackbar.color = 'error';
       snackbar.show = true;
     } finally {
+      sending.value = false;
+    }
+  };
+  const onAskValidate = () => validateQuoteConfirmDialogRef.value?.open();
+  const onValidateBtnClick = async () => {
+    sending.value = true;
+    try {
+      await updateQuote();
+      await finalizeQuote();
+      snackbar.message = t('quotes.messages.validated');
+      snackbar.color = 'success';
+    } catch (e) {
+      snackbar.message = e instanceof Error && e.message === EMPTY_QUOTE_ERROR ? t('quotes.messages.emptyQuote') : t('quotes.messages.validateError');
+      snackbar.color = 'error';
+    } finally {
+      snackbar.show = true;
       sending.value = false;
     }
   };

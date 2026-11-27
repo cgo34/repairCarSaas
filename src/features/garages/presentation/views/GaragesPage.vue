@@ -318,14 +318,23 @@
         @confirm="onConfirmDelete"
         @cancel="pendingGarage = null"
       />
+
+      <v-snackbar
+        v-model="snackbar.show"
+        color="error"
+        timeout="5000"
+      >
+        {{ snackbar.message }}
+      </v-snackbar>
     </v-container>
   </MainLayout>
 </template>
 
 <script setup lang="ts">
 import { useGaragesPageDependencies } from '@/features/garages/composition/useGaragesPageDependencies';
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted, reactive, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { planLimitMessage } from '@/features/featureAccess/presentation/utils/planLimitMessage';
 
 
 
@@ -488,18 +497,26 @@ const onCloseEditDialogBtnClick =
     dialog.value = false;
   };
 
+const snackbar = reactive({ show: false, message: '' });
+
 const onSaveEditDialogBtnClick =
   async () => {
-    if (
-      selectedGarageForm.value?.id
-    ) {
-      await updateGarage(
-        selectedGarageForm.value
-      );
-    } else {
-      await addGarage(
-        selectedGarageForm.value
-      );
+    try {
+      if (
+        selectedGarageForm.value?.id
+      ) {
+        await updateGarage(
+          selectedGarageForm.value
+        );
+      } else {
+        await addGarage(
+          selectedGarageForm.value
+        );
+      }
+    } catch (e) {
+      snackbar.message = planLimitMessage(e, t) ?? (e instanceof Error ? e.message : String(e));
+      snackbar.show = true;
+      return;
     }
 
     dialog.value = false;

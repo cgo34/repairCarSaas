@@ -145,6 +145,7 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { planLimitMessage } from '@/features/featureAccess/presentation/utils/planLimitMessage';
 import { formatCurrency as formatMoney, formatDate as formatIntlDate } from '@/app/i18n/formatters';
 import { useSelectQuoteDialogDependencies } from '@/features/invoices/composition/useSelectQuoteDialogDependencies';
 import { QuoteViewModel } from '@/features/quotes/presentation/models/QuoteViewModel';
@@ -204,7 +205,7 @@ const onConfirm = async () => {
     const invoiceId = await convertToInvoice(selectedId.value);
     emit('converted', invoiceId);
   } catch (e) {
-    emit('error', e instanceof Error ? e.message : t('invoices.selectQuote.error'));
+    emit('error', planLimitMessage(e, t) ?? (e instanceof Error ? e.message : t('invoices.selectQuote.error')));
   } finally {
     converting.value = false;
   }

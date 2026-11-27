@@ -35,6 +35,13 @@
         <v-spacer />
       </div>
 
+      <PlanLimitAlert
+        class="mx-3 mb-3"
+        limit-key="max_invoices_per_month"
+        kind="invoices"
+        :used="invoicesUsed"
+      />
+
       <v-form
         ref="form"
         class="px-3 pt-3 pb-28"
@@ -580,10 +587,16 @@ import router from '@/app/router/index';
 import { computed, onMounted, reactive, ref, watch } from 'vue';
 import { useTheme } from 'vuetify';
 import { useI18n } from 'vue-i18n';
+import PlanLimitAlert from '@/features/featureAccess/presentation/components/PlanLimitAlert.vue';
+import { useFeatureAccess } from '@/features/featureAccess/composition/useFeatureAccess';
+import { usePlanUsage } from '@/features/featureAccess/composition/usePlanUsage';
+import { planLimitMessage } from '@/features/featureAccess/presentation/utils/planLimitMessage';
 import { intlLocale } from '@/app/i18n/formatters';
 
 const { useCreateInvoiceState } = useCreateInvoicePageDependencies();
 const { t } = useI18n();
+const { isLimitReached, limitOf, isLoading: featuresLoading } = useFeatureAccess();
+const { invoicesUsed, load: loadPlanUsage } = usePlanUsage();
 const isDark = computed(() => useTheme().current.value.dark);
 
 const {
@@ -610,6 +623,7 @@ const {
   selectCountry,
   selectedCountry,
   save,
+  error,
 } = useCreateInvoiceState;
 
 const loading = ref(false);
@@ -652,13 +666,19 @@ const onSelectCountry = (c: CountryViewModel | undefined) => { if (c) selectCoun
 
 // Crée le brouillon puis ouvre la page d'édition, où les éléments pourront être gérés
 const onSaveBtnClick = async () => {
+  if (!featuresLoading.value && isLimitReached('max_invoices_per_month', invoicesUsed.value)) {
+    snackbar.message = t('common.planLimit.invoices', { limit: limitOf('max_invoices_per_month') });
+    snackbar.show = true;
+    return;
+  }
   loading.value = true;
   try {
     await save();
+    if (error.value) throw error.value;
     if (invoice.value?.id) setSelectedInvoiceGuid(invoice.value.id);
     router.push('/invoices/edit');
   } catch (e) {
-    snackbar.message = e instanceof Error ? e.message : t('invoices.create.createError');
+    snackbar.message = planLimitMessage(e, t) ?? (e instanceof Error ? e.message : t('invoices.create.createError'));
     snackbar.show = true;
   } finally {
     loading.value = false;
@@ -666,7 +686,7 @@ const onSaveBtnClick = async () => {
 };
 
 onMounted(async () => {
-  await init();
+  await Promise.all([init(), loadPlanUsage()]);
 });
 </script>
 

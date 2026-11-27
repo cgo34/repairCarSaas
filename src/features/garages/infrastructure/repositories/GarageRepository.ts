@@ -4,6 +4,7 @@ import { SupabaseClient } from '@/shared/infrastructure/supabase/SupabaseClient'
 import { GarageDto } from '@/features/garages/application/dtos/GarageDto';
 import { IClientProvider } from '@/shared/infrastructure/supabase/IClientProvider';
 import { GarageMapper } from '@/features/garages/infrastructure/mappers/GarageMapper';
+import { PlanLimitError } from '@/features/featureAccess/domain/errors/PlanLimitError';
 
 export class GarageRepository implements IGarageRepository {
   constructor(private clientProvider: IClientProvider<SupabaseClient>) {}
@@ -44,7 +45,7 @@ export class GarageRepository implements IGarageRepository {
         .select('*')
         .single<GarageApiModel>();
 
-    if (error) throw new Error('Error creating garage');
+    if (error) throw PlanLimitError.from(error) ?? new Error('Error creating garage');
 
     return GarageMapper.apiToDto(data);
   }

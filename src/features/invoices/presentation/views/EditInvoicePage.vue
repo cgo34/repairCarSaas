@@ -432,16 +432,34 @@
 
                 <div class="d-flex flex-column ga-2">
                   <!-- Brouillon : envoi définitif (au moins un élément requis) -->
-                  <v-btn
+                  <FeatureGate
                     v-if="!isReadOnly"
-                    color="blue"
-                    variant="tonal"
-                    prepend-icon="mdi-send-outline"
+                    v-slot="{ locked }"
+                    feature="invoice_email_sending"
+                  >
+                    <v-btn
+                      color="blue"
+                      variant="tonal"
+                      block
+                      prepend-icon="mdi-send-outline"
+                      :disabled="locked || !hasItems"
+                      :loading="sending"
+                      @click="onAskSend"
+                    >
+                      {{ t('invoices.form.sendToClient') }}
+                    </v-btn>
+                  </FeatureGate>
+                  <v-btn
+                    v-if="!isReadOnly && !can('invoice_email_sending')"
+                    color="primary"
+                    variant="flat"
+                    block
+                    prepend-icon="mdi-check-circle-outline"
                     :disabled="!hasItems"
                     :loading="sending"
-                    @click="onAskSend"
+                    @click="onAskFinalize"
                   >
-                    {{ t('invoices.form.sendToClient') }}
+                    {{ t('invoices.edit.finalize') }}
                   </v-btn>
                   <div
                     v-if="!isReadOnly && !hasItems"
@@ -704,6 +722,16 @@
     @confirm="onSendBtnClick"
   />
 
+  <ConfirmDialog
+    ref="finalizeInvoiceConfirmDialogRef"
+    :title="t('invoices.edit.finalize')"
+    :message="t('invoices.edit.finalizeMessage')"
+    :confirm-label="t('invoices.edit.finalize')"
+    :cancel-label="t('common.cancel')"
+    type="warning"
+    @confirm="onFinalizeBtnClick"
+  />
+
   <v-snackbar
     v-model="snackbar.show"
     :color="snackbar.color"
@@ -731,6 +759,8 @@ import { bodyMaterialLabel, bodyPartLabel, repairTypeLabel } from '@/features/ca
 import { useRouter } from 'vue-router';
 import { useTheme } from 'vuetify';
 import { EMPTY_INVOICE_ERROR } from '@/features/invoices/application/useCases/SendInvoiceUseCase';
+import { useFeatureAccess } from '@/features/featureAccess/composition/useFeatureAccess';
+import FeatureGate from '@/features/featureAccess/presentation/components/FeatureGate.vue';
 
 // ── Services ──────────────────────────────────────────────────────────────────
 const { regionManager, useEditInvoiceState } = useEditInvoicePageDependencies();
@@ -739,6 +769,7 @@ const isDark = computed(() => useTheme().current.value.dark);
 // ── Refs dialogs ──────────────────────────────────────────────────────────────
 const deleteInvoiceConfirmDialogRef = ref<ConfirmDialogExposed>();
 const sendInvoiceConfirmDialogRef = ref<ConfirmDialogExposed>();
+const finalizeInvoiceConfirmDialogRef = ref<ConfirmDialogExposed>();
 
 // ── State ─────────────────────────────────────────────────────────────────────
 const {
@@ -782,7 +813,9 @@ const {
   updateInvoiceStatus,
   deleteInvoice,
   sendInvoice,
+  finalizeInvoice,
 } = useEditInvoiceState;
+const { can } = useFeatureAccess();
 
 const router = useRouter();
 const { t } = useI18n();
@@ -855,6 +888,22 @@ const onMarkPaid = async () => {
 };
 
 const onAskSend = () => sendInvoiceConfirmDialogRef.value?.open();
+const onAskFinalize = () => finalizeInvoiceConfirmDialogRef.value?.open();
+
+// Sauvegarde le brouillon, finalise sans email, puis recharge en lecture seule
+const onFinalizeBtnClick = async () => {
+  sending.value = true;
+  try {
+    await updateInvoice();
+    await finalizeInvoice();
+    await init(getInvoiceId());
+    showSnack(t('invoices.messages.finalized'));
+  } catch (e) {
+    showSnack(e instanceof Error ? (e.message === EMPTY_INVOICE_ERROR ? t('invoices.messages.emptyInvoice') : e.message) : t('invoices.edit.finalizeError'), 'error');
+  } finally {
+    sending.value = false;
+  }
+};
 
 // Sauvegarde le brouillon, envoie, puis recharge pour passer en lecture seule
 const onSendBtnClick = async () => {

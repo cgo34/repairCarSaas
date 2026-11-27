@@ -77,4 +77,5 @@ export interface IUseEditInvoiceState {
   updateInvoiceStatus(status: InvoiceStatusViewType): Promise<void>;
   deleteInvoice(): void;
   sendInvoice(): Promise<void>;
+  finalizeInvoice(): Promise<void>;
 }

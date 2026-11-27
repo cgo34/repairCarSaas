@@ -84,6 +84,8 @@
     },
     "messages": {
       "sent": "Quote sent successfully!",
+      "validated": "Quote validated.",
+      "validateError": "Error while validating the quote.",
       "saved": "Quote saved.",
       "emptyQuote": "Add at least one item before sending the quote.",
       "sendError": "Error while sending the quote.",
@@ -131,6 +133,8 @@
       "year": "Year",
       "quoteStatus": "Quote status",
       "sentOn": "Sent on {date}",
+      "validate": "Validate quote",
+      "validateMessage": "The quote will move to “Pending” without any email being sent (handed over in person or as a PDF). You can then mark it accepted or refused. Confirm?",
       "sentTo": "to {name}",
       "resendToGarage": "Resend to garage",
       "sendToGarage": "Send to garage",

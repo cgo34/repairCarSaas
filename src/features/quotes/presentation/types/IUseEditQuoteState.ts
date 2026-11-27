@@ -21,6 +21,7 @@ export interface IUseEditQuoteState {
   canDecide: ComputedRef<boolean>;
   canDelete: ComputedRef<boolean>;
   sendQuote(): Promise<void>;
+  finalizeQuote(): Promise<void>;
   isRefused: ComputedRef<boolean>;
 
   init(id: string): Promise<void>;

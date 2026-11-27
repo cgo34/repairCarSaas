@@ -106,7 +106,6 @@ export function createUseAdminDashboardState(deps: UseAdminDashboardStateDepende
   const seatsLimit = computed(() => subscription.value?.seatsLimit ?? 0);
   const seatsUsed = computed(() => totalUsers.value);
   const seatLimitReached = computed(() => seatsLimit.value > 0 && seatsUsed.value >= seatsLimit.value);
-  const extraSeatPrice = computed(() => subscription.value?.extraSeatPrice ?? 0);
   const missingProfileFields = computed(() => {
     const p = profileState.profile.value;
     const missing: string[] = [];
@@ -201,7 +200,6 @@ export function createUseAdminDashboardState(deps: UseAdminDashboardStateDepende
     seatsLimit,
     seatsUsed,
     seatLimitReached,
-    extraSeatPrice,
     missingProfileFields,
     companySummary,
     loading,

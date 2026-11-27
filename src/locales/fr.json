@@ -29,6 +29,29 @@
     "save": "Enregistrer",
     "saved": "Enregistré",
     "cancel": "Annuler",
+    "featureGate": {
+      "premiumTitle": "Fonctionnalité Premium",
+      "premiumHint": "Disponible avec l'offre Premium."
+    },
+    "planLimit": {
+      "garages": "Vous avez atteint la limite de {limit} garage(s) de votre offre.",
+      "quotes": "Vous avez atteint la limite de {limit} devis par mois de votre offre.",
+      "invoices": "Vous avez atteint la limite de {limit} facture(s) par mois de votre offre.",
+      "conversions": "Vous avez atteint la limite de {limit} conversion(s) devis en facture par mois de votre offre.",
+      "garagesReached": "Vous avez atteint la limite de garages de votre offre.",
+      "quotesReached": "Vous avez atteint la limite de devis par mois de votre offre.",
+      "invoicesReached": "Vous avez atteint la limite de factures par mois de votre offre.",
+      "conversionsReached": "Vous avez atteint la limite de conversions devis en facture par mois de votre offre.",
+      "usage": "{used} / {limit} {label} ce mois-ci : vous approchez de la limite de votre offre.",
+      "label": {
+        "quotes": "devis",
+        "invoices": "factures",
+        "conversions": "conversions",
+        "garages": "garages"
+      },
+      "upgradeHint": "Passez à l'offre Premium pour lever cette limite.",
+      "upgrade": "Voir les offres"
+    },
     "reset": "Réinitialiser",
     "required": "Champ obligatoire",
     "invalidEmail": "Email invalide",

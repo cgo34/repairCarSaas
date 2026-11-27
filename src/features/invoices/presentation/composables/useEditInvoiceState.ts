@@ -17,6 +17,7 @@ import { IDeleteInvoiceUseCase } from '@/features/invoices/application/useCases/
 import { IGetInvoiceDetailUseCase } from '@/features/invoices/application/useCases/GetInvoiceDetailUseCase';
 import { IGetInvoiceUseCase } from '@/features/invoices/application/useCases/GetInvoiceUseCase';
 import { ISendInvoiceUseCase } from '@/features/invoices/application/useCases/SendInvoiceUseCase';
+import { IFinalizeInvoiceUseCase } from '@/features/invoices/application/useCases/FinalizeInvoiceUseCase';
 import { IUpdateInvoiceUseCase } from '@/features/invoices/application/useCases/UpdateInvoiceUseCase';
 
 import { IOrganizationMemberUseCase } from '@/features/organizations/application/useCases/OrganizationMemberUseCase';
@@ -58,6 +59,7 @@ export interface UseEditInvoiceStateDependencies {
   getInvoiceDetailUseCase: IGetInvoiceDetailUseCase;
   deleteInvoiceUseCase: IDeleteInvoiceUseCase;
   sendInvoiceUseCase: ISendInvoiceUseCase;
+  finalizeInvoiceUseCase: IFinalizeInvoiceUseCase;
   updateInvoiceUseCase: IUpdateInvoiceUseCase;
   garageUseCase: IGarageUseCase;
   technicianUseCase: IOrganizationMemberUseCase;
@@ -74,7 +76,7 @@ export interface UseEditInvoiceStateDependencies {
 
 export function createUseEditInvoiceState(deps: UseEditInvoiceStateDependencies) {
   // #region -> DEPENDENCIES
-  const { authState, getInvoiceUseCase, getInvoiceDetailUseCase, deleteInvoiceUseCase, sendInvoiceUseCase, updateInvoiceUseCase, garageUseCase, technicianUseCase, bodyPartUseCase, bodyMaterialUseCase, repairTypeUseCase, priceParamsUseCase, getDocumentStatuseUseCase, calculateLineCostUseCase, addInvoiceDetailsUseCase, deleteLineItemUseCase, updateLineItemUseCase } = deps;
+  const { authState, getInvoiceUseCase, getInvoiceDetailUseCase, deleteInvoiceUseCase, sendInvoiceUseCase, finalizeInvoiceUseCase, updateInvoiceUseCase, garageUseCase, technicianUseCase, bodyPartUseCase, bodyMaterialUseCase, repairTypeUseCase, priceParamsUseCase, getDocumentStatuseUseCase, calculateLineCostUseCase, addInvoiceDetailsUseCase, deleteLineItemUseCase, updateLineItemUseCase } = deps;
 
 
 
@@ -670,6 +672,14 @@ export function createUseEditInvoiceState(deps: UseEditInvoiceStateDependencies)
 
     await sendInvoiceUseCase.execute(_invoiceId.value);
   };
+
+  const finalizeInvoice = async () => {
+    if (!_invoiceId.value) {
+      throw new Error('Invoice ID not found');
+    }
+
+    await finalizeInvoiceUseCase.execute(_invoiceId.value);
+  };
   // #endregion
 
   return {
@@ -742,5 +752,6 @@ export function createUseEditInvoiceState(deps: UseEditInvoiceStateDependencies)
     updateInvoiceStatus,
     deleteInvoice,
     sendInvoice,
+    finalizeInvoice,
   };
 }

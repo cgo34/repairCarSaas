@@ -15,6 +15,7 @@ import { registerPlatformAdminBindings } from '@/app/di/bindings/platformAdmin.b
 import { registerPriceSettingsBindings } from '@/app/di/bindings/priceSettings.bindings';
 import { registerQuotesBindings } from '@/app/di/bindings/quotes.bindings';
 import { registerSharedBindings } from '@/app/di/bindings/shared.bindings';
+import { registerFeatureAccessBindings } from '@/app/di/bindings/featureAccess.bindings';
 import { registerSubscriptionBindings } from '@/app/di/bindings/subscription.bindings';
 import { registerTechniciansBindings } from '@/app/di/bindings/technicians.bindings';
 import { registerUsersBindings } from '@/app/di/bindings/users.bindings';
@@ -37,6 +38,7 @@ registerPriceSettingsBindings(container);
 registerQuotesBindings(container);
 registerSharedBindings(container);
 registerSubscriptionBindings(container);
+registerFeatureAccessBindings(container);
 registerProfileSwitcherBindings(container);
 registerPlatformAdminBindings(container);
 registerTechniciansBindings(container);

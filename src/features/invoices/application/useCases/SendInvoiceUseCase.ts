@@ -61,8 +61,12 @@ export class SendInvoiceUseCase implements ISendInvoiceUseCase {
       throw new Error('Invoice number not found');
     }
 
+    if (!invoice.organization_id) {
+      throw new Error('Organization not found');
+    }
+
     const pdfBase64 = await this.urlToBase64(pdfUrl);
-    await this.emailService.sendInvoiceEmail(recipientEmail, invoice.invoiceNumber, pdfBase64);
+    await this.emailService.sendInvoiceEmail(recipientEmail, invoice.invoiceNumber, pdfBase64, invoice.organization_id);
     await this.invoiceRepository.markAsSent(invoiceId);
 
     // L'envoi rend la facture définitive : le brouillon passe « En attente » (de paiement)

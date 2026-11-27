@@ -19,7 +19,43 @@
       "demo": "Démo",
       "hideDemo": "Masquer les démos",
       "empty": "Aucune organisation.",
-      "loadError": "Impossible de charger les organisations"
+      "loadError": "Impossible de charger les organisations",
+      "actions": "Actions",
+      "grantPremium": {
+        "menu": "Offrir le Premium",
+        "title": "Offrir le Premium",
+        "description": "Choisis la durée pendant laquelle {name} bénéficie gratuitement du plan Premium.",
+        "durations": {
+          "minute": "1 minute (test)",
+          "week": "1 semaine",
+          "month": "1 mois",
+          "unlimited": "Illimité"
+        },
+        "confirm": "Offrir",
+        "cancel": "Annuler",
+        "success": "Premium offert à {name}."
+      },
+      "grantFeature": {
+        "menu": "Offrir une fonctionnalité",
+        "title": "Offrir une fonctionnalité",
+        "description": "Choisis la fonctionnalité et la durée pendant laquelle {name} en bénéficie gratuitement.",
+        "feature": "Fonctionnalité",
+        "duration": "Durée",
+        "features": {
+          "quote_email_sending": "Envoi des devis par email",
+          "invoice_email_sending": "Envoi des factures par email",
+          "car_view": "Vue voiture"
+        },
+        "durations": {
+          "minutes5": "5 minutes (test)",
+          "week": "1 semaine",
+          "month": "1 mois",
+          "unlimited": "Illimité"
+        },
+        "confirm": "Offrir",
+        "cancel": "Annuler",
+        "success": "Fonctionnalité offerte à {name}."
+      }
     },
     "users": {
       "title": "Utilisateurs",

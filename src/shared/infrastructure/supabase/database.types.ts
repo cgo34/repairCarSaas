@@ -1475,11 +1475,7 @@ export type Database = {
         Row: {
           created_at: string | null
           end_date: string | null
-          extra_seat_price: number
-          extra_seats: number
           id: string
-          included_seats: number
-          max_seats: number | null
           organization_id: string
           plan_id: string
           source: string
@@ -1490,11 +1486,7 @@ export type Database = {
         Insert: {
           created_at?: string | null
           end_date?: string | null
-          extra_seat_price?: number
-          extra_seats?: number
           id?: string
-          included_seats?: number
-          max_seats?: number | null
           organization_id: string
           plan_id: string
           source?: string
@@ -1505,11 +1497,7 @@ export type Database = {
         Update: {
           created_at?: string | null
           end_date?: string | null
-          extra_seat_price?: number
-          extra_seats?: number
           id?: string
-          included_seats?: number
-          max_seats?: number | null
           organization_id?: string
           plan_id?: string
           source?: string
@@ -1681,6 +1669,14 @@ export type Database = {
           recent_organizations: Json
         }[]
       }
+      grant_feature: {
+        Args: { p_organization_id: string; p_feature_key: string; p_duration: string }
+        Returns: undefined
+      }
+      grant_premium: {
+        Args: { p_organization_id: string; p_duration: string }
+        Returns: undefined
+      }
       list_platform_organizations: {
         Args: Record<PropertyKey, never>
         Returns: {
@@ -1694,6 +1690,12 @@ export type Database = {
           quotes_count: number
           invoices_count: number
           is_demo: boolean
+          members_limit: number | null
+          garages_limit: number | null
+          quotes_limit: number | null
+          invoices_limit: number | null
+          quotes_month_count: number
+          invoices_month_count: number
         }[]
       }
       list_platform_users: {

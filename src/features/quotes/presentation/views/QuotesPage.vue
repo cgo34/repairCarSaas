@@ -197,6 +197,7 @@
             style="max-width: 200px;"
           />
           <v-select
+            v-if="can('quote_email_sending')"
             v-model="sentFilter"
             :items="sentOptions"
             density="compact"
@@ -292,9 +293,15 @@
 
           <!-- CLIENT -->
           <template #item.client="{ item }">
-            <span class="font-weight-medium">
+            <div class="font-weight-medium">
               {{ item.garage?.name ?? '—' }}
-            </span>
+            </div>
+            <div
+              v-if="item.garage?.zip_code || item.garage?.city"
+              class="text-caption text-medium-emphasis"
+            >
+              {{ [item.garage?.zip_code, item.garage?.city].filter(Boolean).join(' ') }}
+            </div>
           </template>
 
           <!-- VÉHICULE -->
@@ -423,6 +430,8 @@
                   v-if="amount(item) > 0"
                   prepend-icon="mdi-send-outline"
                   :title="t('quotes.actions.send')"
+                  :subtitle="can('quote_email_sending') ? undefined : t('common.featureGate.premiumTitle')"
+                  :disabled="!can('quote_email_sending')"
                   @click="onSendBtnClick(item.id)"
                 />
                 <v-list-item
@@ -519,8 +528,11 @@ import { useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import { capitalize, formatCurrency, formatDate } from '@/app/i18n/formatters';
 import { EMPTY_QUOTE_ERROR } from '@/features/quotes/application/useCases/SendQuoteUseCase';
+import { useFeatureAccess } from '@/features/featureAccess/composition/useFeatureAccess';
+import { planLimitMessage } from '@/features/featureAccess/presentation/utils/planLimitMessage';
 
   const { authState, useQuoteState, generatePdfUseCase, organizationProfileUseCase } = useQuotesPageDependencies();
+const { can } = useFeatureAccess();
 
 const router = useRouter();
 const { t } = useI18n();
@@ -696,16 +708,18 @@ const monthLabel        = computed(() => capitalize(formatDate(now, { month: 'lo
 const currentMonthShort = computed(() => formatDate(now, { month: 'long' }).toLowerCase());
 
 const tableHeaders = computed(() => [
-  { title: t('quotes.list.headers.quoteNumber'),   key: 'quoteNumber', sortable: true  },
-  { title: t('quotes.list.headers.client'),     key: 'client',      sortable: false },
-  { title: t('quotes.list.headers.vehicle'),   key: 'vehicle',     sortable: false },
-  { title: t('quotes.list.headers.date'),       key: 'createdAt',   sortable: true  },
-  { title: t('quotes.list.headers.technician'), key: 'technician',  sortable: false },
-  { title: t('quotes.list.headers.totalExclTax'), key: 'total',       align: 'end' as const, sortable: true },
-  { title: t('quotes.list.headers.sent'),     key: 'sentAt',      sortable: false },
-  { title: t('quotes.list.headers.status'),     key: 'status',      sortable: false },
-  { title: t('quotes.list.headers.converted'), key: 'converted',   sortable: false, align: 'center' as const },
-  { title: '',           key: 'actions',     sortable: false },
+  { title: t('quotes.list.headers.quoteNumber'),   key: 'quoteNumber', sortable: true, width: '9%' },
+  { title: t('quotes.list.headers.client'),     key: 'client',      sortable: false, width: '22%' },
+  { title: t('quotes.list.headers.vehicle'),   key: 'vehicle',     sortable: false, width: '18%' },
+  { title: t('quotes.list.headers.date'),       key: 'createdAt',   sortable: true, width: '11%' },
+  { title: t('quotes.list.headers.technician'), key: 'technician',  sortable: false, width: '14%' },
+  { title: t('quotes.list.headers.totalExclTax'), key: 'total',       align: 'end' as const, sortable: true, width: '10%' },
+  ...(can('quote_email_sending')
+    ? [{ title: t('quotes.list.headers.sent'), key: 'sentAt', sortable: false, width: '10%' }]
+    : []),
+  { title: t('quotes.list.headers.status'),     key: 'status',      sortable: false, width: '9%' },
+  { title: t('quotes.list.headers.converted'), key: 'converted',   sortable: false, align: 'center' as const, width: '11%' },
+  { title: '',           key: 'actions',     sortable: false, width: '3%' },
 ]);
 
 const onAddQuote        = () => router.push('/quotes/new');
@@ -761,8 +775,8 @@ const onConvertToInvoice = async (quoteId?: string) => {
     showSnack(t('quotes.messages.converted'));
     setSelectedInvoiceGuid(invoiceId);
     router.push('/invoices/edit');
-  } catch {
-    showSnack(t('quotes.messages.convertError'), 'error');
+  } catch (e) {
+    showSnack(planLimitMessage(e, t) ?? t('quotes.messages.convertError'), 'error');
   }
 };
 
@@ -809,6 +823,7 @@ onMounted(async () => {
   font-weight: 600 !important;
   letter-spacing: 0.06em !important;
   text-transform: uppercase !important;
+  white-space: nowrap;
   color: rgb(var(--v-theme-lightText)) !important;
 }
 

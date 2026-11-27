@@ -72,18 +72,23 @@
           >
             {{ t('common.download') }}
           </v-btn>
-          <v-btn
-            v-if="!isFreePlan"
-            color="primary"
-            variant="flat"
-            height="40"
-            class="px-5"
-            prepend-icon="mdi-send"
-            :loading="sending"
-            @click="onSendBtnClick"
+          <FeatureGate
+            v-slot="{ locked }"
+            feature="quote_email_sending"
           >
-            {{ t('quotes.actions.send') }}
-          </v-btn>
+            <v-btn
+              color="primary"
+              variant="flat"
+              height="40"
+              class="px-5"
+              prepend-icon="mdi-send"
+              :disabled="locked"
+              :loading="sending"
+              @click="onSendBtnClick"
+            >
+              {{ t('quotes.actions.send') }}
+            </v-btn>
+          </FeatureGate>
         </div>
       </div>
 
@@ -259,6 +264,7 @@
 
 <script setup lang="ts">
 import { useViewQuotePageDependencies } from '@/features/quotes/composition/useViewQuotePageDependencies';
+import FeatureGate from '@/features/featureAccess/presentation/components/FeatureGate.vue';
 import MainLayout from '@/app/layouts/MainLayout.vue';
 import { computed, nextTick, onMounted, reactive, ref, watch } from 'vue';
 import { getDocument, GlobalWorkerOptions, type PDFDocumentProxy } from 'pdfjs-dist';
@@ -272,8 +278,7 @@ import { getSelectedQuoteGuid } from '@/features/quotes/presentation/utils/quote
 
 GlobalWorkerOptions.workerSrc = pdfWorkerUrl;
 
-const { useViewQuoteState, authState } = useViewQuotePageDependencies();
-const { isFreePlan } = authState;
+const { useViewQuoteState } = useViewQuotePageDependencies();
 const {
   init,
   sendQuote,

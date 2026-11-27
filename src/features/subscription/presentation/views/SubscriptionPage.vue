@@ -529,7 +529,7 @@ const offerDetails = computed(() => [
 
 const {
   seatsUsed, seatsLimit, garagesUsed, garagesLimit,
-  quotesUsed, quotesLimit, invoicesUsed, invoicesLimit,
+  quotesUsed, quotesLimit, invoicesUsed, invoicesLimit, conversionsUsed, conversionsLimit,
   features, isFreePlan, load,
 } = useSubscriptionSeats()
 
@@ -558,6 +558,7 @@ const kpis = computed(() => [
   quotaKpi(t('subscription.page.kpi.garages'), 'mdi-warehouse', garagesUsed.value, garagesLimit.value, t('subscription.page.kpi.garagesLimit')),
   quotaKpi(t('subscription.page.kpi.quotesMonth'), 'mdi-file-document-edit-outline', quotesUsed.value, quotesLimit.value, t('subscription.page.kpi.createdThisMonth')),
   quotaKpi(t('subscription.page.kpi.invoicesMonth'), 'mdi-file-document-outline', invoicesUsed.value, invoicesLimit.value, t('subscription.page.kpi.createdThisMonth')),
+    quotaKpi(t('subscription.page.kpi.conversionsMonth'), 'mdi-swap-horizontal', conversionsUsed.value, conversionsLimit.value, t('subscription.page.kpi.convertedThisMonth')),
 ])
 
 const nearLimitLabels = computed(() =>
@@ -577,18 +578,21 @@ const includedFeatures = computed(() => [
   { key: 'max_quotes_per_month', enabled: true, label: `${limitText('max_quotes_per_month', t('subscription.page.feature.quote'), t('subscription.page.feature.quotes'))} ${t('subscription.page.feature.perMonth')}` },
   { key: 'max_invoices_per_month', enabled: true, label: `${limitText('max_invoices_per_month', t('subscription.page.feature.invoice'), t('subscription.page.feature.invoices'))} ${t('subscription.page.feature.perMonth')}` },
   { key: 'quote_to_invoice', enabled: features.value.quote_to_invoice === true, label: t('subscription.page.feature.quoteToInvoice') },
+  { key: 'max_conversions_per_month', enabled: features.value.quote_to_invoice === true, label: `${limitText('max_conversions_per_month', t('subscription.page.feature.conversion'), t('subscription.page.feature.conversions'))} ${t('subscription.page.feature.perMonth')}` },
   { key: 'quote_email_sending', enabled: features.value.quote_email_sending === true, label: t('subscription.page.feature.emailSending') },
+  { key: 'invoice_email_sending', enabled: features.value.invoice_email_sending === true, label: t('subscription.page.feature.invoiceEmailSending') },
   { key: 'car_view', enabled: features.value.car_view === true, label: t('subscription.page.feature.carView') },
 ].sort((a, b) => Number(b.enabled) - Number(a.enabled)))
 
 const unlimited = computed(() => t('subscription.page.kpi.unlimited'))
 const compareRows = computed(() => [
   { label: t('subscription.page.feature.users'), free: 2, premium: 10 },
-  { label: t('subscription.page.feature.garages'), free: 5, premium: unlimited.value },
-  { label: t('subscription.page.kpi.quotesMonth'), free: 5, premium: unlimited.value },
+  { label: t('subscription.page.feature.garages'), free: 1, premium: unlimited.value },
+  { label: t('subscription.page.kpi.quotesMonth'), free: 10, premium: unlimited.value },
   { label: t('subscription.page.kpi.invoicesMonth'), free: 5, premium: unlimited.value },
-  { label: t('subscription.page.feature.quoteToInvoice'), free: true, premium: true },
+  { label: t('subscription.page.kpi.conversionsMonth'), free: 3, premium: unlimited.value },
   { label: t('subscription.page.feature.emailSending'), free: false, premium: true },
+  { label: t('subscription.page.feature.invoiceEmailSending'), free: false, premium: true },
   { label: t('subscription.page.feature.carView'), free: false, premium: true },
 ])
 

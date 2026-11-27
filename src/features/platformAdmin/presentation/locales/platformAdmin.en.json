@@ -19,7 +19,43 @@
       "demo": "Demo",
       "hideDemo": "Hide demos",
       "empty": "No organizations.",
-      "loadError": "Unable to load organizations"
+      "loadError": "Unable to load organizations",
+      "actions": "Actions",
+      "grantPremium": {
+        "menu": "Offer Premium",
+        "title": "Offer Premium",
+        "description": "Choose how long {name} gets the Premium plan for free.",
+        "durations": {
+          "minute": "1 minute (test)",
+          "week": "1 week",
+          "month": "1 month",
+          "unlimited": "Unlimited"
+        },
+        "confirm": "Offer",
+        "cancel": "Cancel",
+        "success": "Premium offered to {name}."
+      },
+      "grantFeature": {
+        "menu": "Offer a feature",
+        "title": "Offer a feature",
+        "description": "Choose the feature and how long {name} gets it for free.",
+        "feature": "Feature",
+        "duration": "Duration",
+        "features": {
+          "quote_email_sending": "Quote email sending",
+          "invoice_email_sending": "Invoice email sending",
+          "car_view": "Car view"
+        },
+        "durations": {
+          "minutes5": "5 minutes (test)",
+          "week": "1 week",
+          "month": "1 month",
+          "unlimited": "Unlimited"
+        },
+        "confirm": "Offer",
+        "cancel": "Cancel",
+        "success": "Feature offered to {name}."
+      }
     },
     "users": {
       "title": "Users",

@@ -10,20 +10,13 @@ export class SubscriptionMapper {
     api: SubscriptionApiModel,
     features: Record<string, number | boolean | null> = {},
   ): SubscriptionDto {
-    const legacySeats = api.max_seats ?? (api.included_seats + api.extra_seats);
-    const seatsLimit = 'max_seats' in features
-      ? (features.max_seats === null ? 0 : Number(features.max_seats))
-      : legacySeats;
+    const seatsLimit = features.max_seats == null ? 0 : Number(features.max_seats);
     return {
       id: api.id,
       organizationId: api.organization_id,
       planId: api.plan_id,
       stripeSubscriptionId: api.stripe_subscription_id ?? undefined,
       status: api.status,
-      includedSeats: api.included_seats,
-      extraSeats: api.extra_seats,
-      extraSeatPrice: Number(api.extra_seat_price),
-      maxSeats: api.max_seats,
       features,
       seatsLimit,
       startDate: api.start_date,
@@ -51,10 +44,6 @@ export class SubscriptionMapper {
       plan_id: dto.planId,
       stripe_subscription_id: dto.stripeSubscriptionId ?? null,
       status: dto.status,
-      included_seats: dto.includedSeats,
-      extra_seats: dto.extraSeats,
-      extra_seat_price: dto.extraSeatPrice,
-      max_seats: dto.maxSeats,
       start_date: dto.startDate,
       end_date: dto.endDate,
       created_at: dto.createdAt,

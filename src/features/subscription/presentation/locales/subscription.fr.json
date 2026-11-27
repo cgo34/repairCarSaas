@@ -42,6 +42,9 @@
         "invoice": "facture",
         "invoices": "factures",
         "perMonth": "par mois",
+        "conversion": "conversion devis en facture",
+        "conversions": "conversions devis en facture",
+        "invoiceEmailSending": "Envoi des factures par e-mail",
         "quoteToInvoice": "Transformation d'un devis en facture",
         "emailSending": "Envoi des devis par e-mail",
         "carView": "Vue véhicule"
@@ -114,6 +117,8 @@
         "quotesMonth": "Devis du mois",
         "invoicesMonth": "Factures du mois",
         "createdThisMonth": "créés ce mois-ci",
+        "conversionsMonth": "Conversions du mois",
+        "convertedThisMonth": "devis convertis ce mois-ci",
         "billing": "Facturation",
         "noneFem": "Aucune",
         "freeCaption": "Plan gratuit · {price} / mois",

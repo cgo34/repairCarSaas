@@ -20,6 +20,7 @@
       </v-chip>
       <v-spacer />
       <v-btn-toggle
+        v-if="carViewEnabled"
         v-model="viewMode"
         mandatory
         density="comfortable"
@@ -53,7 +54,7 @@
     </v-alert>
 
     <!-- Mode 1 : vue éléments -->
-    <template v-else-if="viewMode === 'list'">
+    <template v-else-if="currentViewMode === 'list'">
       <div class="parts-grid">
         <div
           v-for="row in partRows"
@@ -270,6 +271,7 @@ const props = defineProps<{
   availableBodyParts: BodyPartViewModel[];
   isForfait: boolean;
   isReadOnly: boolean;
+  carViewEnabled: boolean;
   currency: string;
   onAdd: (line: LineItemViewModel) => Promise<void>;
   onUpdate: (line: LineItemViewModel) => Promise<void>;
@@ -281,6 +283,8 @@ const addLineItemDialogRef = ref<AddLineItemDialogExposed>();
 const editedLine = ref<LineItemViewModel>();
 const saving = ref(false);
 const viewMode = ref<'list' | 'car'>('list');
+// La vue voiture est une fonctionnalité : sans elle, on reste en liste même si le droit expire en cours de route
+const currentViewMode = computed(() => (props.carViewEnabled ? viewMode.value : 'list'));
 const snackbar = reactive({ show: false, message: '' });
 
 const canEdit = computed(() => !props.isReadOnly && !props.isForfait);

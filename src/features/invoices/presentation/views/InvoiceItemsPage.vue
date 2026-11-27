@@ -64,6 +64,7 @@
             :available-body-parts="availableBodyParts"
             :is-forfait="isForfait"
             :is-read-only="isReadOnly"
+            :car-view-enabled="can('car_view')"
             :currency="currency"
             :on-add="addLine"
             :on-update="updateLine"
@@ -146,6 +147,7 @@ import { useI18n } from 'vue-i18n';
 import { useTheme } from 'vuetify';
 import MainLayout from '@/app/layouts/MainLayout.vue';
 import { useEditInvoicePageDependencies } from '@/features/invoices/composition/useEditInvoicePageDependencies';
+import { useFeatureAccess } from '@/features/featureAccess/composition/useFeatureAccess';
 import DocumentItemsPanel from '@/features/lineItems/presentation/components/DocumentItemsPanel.vue';
 
 const router = useRouter();
@@ -153,6 +155,7 @@ const { t } = useI18n();
 const theme = useTheme();
 const isDark = computed(() => theme.current.value.dark);
 const { regionManager, useEditInvoiceState } = useEditInvoicePageDependencies();
+const { can } = useFeatureAccess();
 
 const {
   init,

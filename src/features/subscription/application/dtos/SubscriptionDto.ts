@@ -5,10 +5,6 @@ export interface SubscriptionDto {
   planId: string;
   stripeSubscriptionId?: string;
   status: string;
-  includedSeats: number;
-  extraSeats: number;
-  extraSeatPrice: number;
-  maxSeats: number | null;
   /** Effective feature values (plan + grants). number = limit, null = unlimited, boolean = flag. */
   features: Record<string, number | boolean | null>;
   /** Effective seat limit from `max_seats` feature; 0 = unlimited. */

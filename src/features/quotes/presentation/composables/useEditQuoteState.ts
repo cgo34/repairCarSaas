@@ -8,6 +8,8 @@ import { IBodyPartUseCase } from '@/features/carRepairSettings/application/useCa
 import { IDentRepairTypeUseCase } from '@/features/carRepairSettings/application/useCases/DentRepairTypeUSeCase';
 import { ICalculateLineCostUseCase } from '@/features/costCalculation/application/useCases/CalculateLineCostUseCase';
 import { ISendQuoteUseCase } from '@/features/quotes/application/useCases/SendQuoteUseCase';
+import { IFinalizeQuoteUseCase } from '@/features/quotes/application/useCases/FinalizeQuoteUseCase';
+import { DocumentStatusDto } from '@/features/documentStatuses/application/dtos/DocumentStatusDto';
 import { IUpdateQuoteLineItemUseCase } from '@/features/quotes/application/useCases/UpdateQuoteLineItemUseCase';
 import { IDeleteLineItemUseCase } from '@/features/lineItems/application/useCases/DeleteLineItemUseCase';
 import { IAddQuoteLineItemUseCase } from '@/features/quotes/application/useCases/AddQuoteLineItemUseCase';
@@ -60,12 +62,13 @@ export interface UseEditQuoteStateDependencies {
   deleteLineItemUseCase: IDeleteLineItemUseCase;
   updateLineItemUseCase: IUpdateQuoteLineItemUseCase;
   sendQuoteUseCase: ISendQuoteUseCase;
+  finalizeQuoteUseCase: IFinalizeQuoteUseCase;
   duplicateQuoteToInvoiceUseCase: IDuplicateQuoteToInvoiceUseCase;
 }
 
 export function createUseEditQuoteState(deps: UseEditQuoteStateDependencies) {
   // #region -> DEPENDENCIES
-  const { authState, getDocumentStatuseUseCase, getQuoteUseCase, getQuoteDetailUseCase, deleteQuoteUseCase, garageUseCase, technicianUseCase, bodyPartUseCase, bodyMaterialUseCase, repairTypeUseCase, priceParamsUseCase, updateQuoteUseCase, calculateLineCostUseCase, addQuoteDetailsUseCase, deleteLineItemUseCase, updateLineItemUseCase, sendQuoteUseCase, duplicateQuoteToInvoiceUseCase } = deps;
+  const { authState, getDocumentStatuseUseCase, getQuoteUseCase, getQuoteDetailUseCase, deleteQuoteUseCase, garageUseCase, technicianUseCase, bodyPartUseCase, bodyMaterialUseCase, repairTypeUseCase, priceParamsUseCase, updateQuoteUseCase, calculateLineCostUseCase, addQuoteDetailsUseCase, deleteLineItemUseCase, updateLineItemUseCase, sendQuoteUseCase, finalizeQuoteUseCase, duplicateQuoteToInvoiceUseCase } = deps;
 
 
 
@@ -531,6 +534,17 @@ export function createUseEditQuoteState(deps: UseEditQuoteStateDependencies) {
   const sendQuote = async () => {
     if (!_quote.value?.id || !canSend.value) return;
     const status = await sendQuoteUseCase.execute(_quote.value.id);
+    applySentStatus(status);
+  }
+
+  const finalizeQuote = async () => {
+    if (!_quote.value?.id || !canSend.value) return;
+    const status = await finalizeQuoteUseCase.execute(_quote.value.id);
+    applySentStatus(status);
+  }
+
+  const applySentStatus = (status: DocumentStatusDto) => {
+    if (!_quote.value) return;
     _quote.value.isSent = true;
     _quote.value.sentAt = new Date();
     _quote.value.status_id = status.id;
@@ -617,6 +631,7 @@ export function createUseEditQuoteState(deps: UseEditQuoteStateDependencies) {
     canDecide,
     canDelete,
     sendQuote,
+    finalizeQuote,
     isAccepted,
     isRefused
   };

@@ -15,6 +15,7 @@ import { IAddQuoteLineItemUseCase } from '@/features/quotes/application/useCases
 import { IUpdateQuoteLineItemUseCase } from '@/features/quotes/application/useCases/UpdateQuoteLineItemUseCase';
 import { IDeleteLineItemUseCase } from '@/features/lineItems/application/useCases/DeleteLineItemUseCase';
 import { ISendQuoteUseCase } from '@/features/quotes/application/useCases/SendQuoteUseCase';
+import { IFinalizeQuoteUseCase } from '@/features/quotes/application/useCases/FinalizeQuoteUseCase';
 import { IDuplicateQuoteToInvoiceUseCase } from '@/features/quotes/application/useCases/DuplicateQuoteToInvoiceUseCase';
 import { container } from '@/app/di/container';
 import { SYMBOLS } from '@/app/di/tokens';
@@ -39,6 +40,7 @@ export function useEditQuoteState() {
     deleteLineItemUseCase: container.get<IDeleteLineItemUseCase>(SYMBOLS.UseCases.Quote.DeleteLineItemUseCase),
     updateLineItemUseCase: container.get<IUpdateQuoteLineItemUseCase>(SYMBOLS.UseCases.Quote.UpdateLineItemUseCase),
     sendQuoteUseCase: container.get<ISendQuoteUseCase>(SYMBOLS.UseCases.Quote.SendQuoteUseCase),
+    finalizeQuoteUseCase: container.get<IFinalizeQuoteUseCase>(SYMBOLS.UseCases.Quote.FinalizeQuoteUseCase),
     duplicateQuoteToInvoiceUseCase: container.get<IDuplicateQuoteToInvoiceUseCase>(SYMBOLS.UseCases.Quote.DuplicateQuoteToInvoiceUseCase),
   });
 }

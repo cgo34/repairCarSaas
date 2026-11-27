@@ -52,17 +52,23 @@
           >
             {{ t('common.download') }}
           </v-btn>
-          <v-btn
-            color="primary"
-            variant="flat"
-            height="40"
-            class="px-5"
-            prepend-icon="mdi-send"
-            :loading="sending"
-            @click="onSendBtnClick"
+          <FeatureGate
+            v-slot="{ locked }"
+            feature="invoice_email_sending"
           >
-            {{ t('invoices.actions.send') }}
-          </v-btn>
+            <v-btn
+              color="primary"
+              variant="flat"
+              height="40"
+              class="px-5"
+              prepend-icon="mdi-send"
+              :disabled="locked"
+              :loading="sending"
+              @click="onSendBtnClick"
+            >
+              {{ t('invoices.actions.send') }}
+            </v-btn>
+          </FeatureGate>
         </div>
       </div>
 
@@ -243,6 +249,7 @@ import { formatCurrency, formatDate } from '@/app/i18n/formatters';
 import { getDocument, GlobalWorkerOptions, type PDFDocumentProxy } from 'pdfjs-dist';
 import pdfWorkerUrl from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
 import { useTheme } from 'vuetify';
+import FeatureGate from '@/features/featureAccess/presentation/components/FeatureGate.vue';
 
 GlobalWorkerOptions.workerSrc = pdfWorkerUrl;
 

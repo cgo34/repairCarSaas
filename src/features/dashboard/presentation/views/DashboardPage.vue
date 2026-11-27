@@ -116,7 +116,9 @@
                   <th class="text-right">
                     {{ t('dashboard.table.amountHt') }}
                   </th>
-                  <th>{{ t('dashboard.table.sent') }}</th>
+                  <th v-if="showSentColumn">
+                    {{ t('dashboard.table.sent') }}
+                  </th>
                   <th>{{ t('dashboard.table.status') }}</th>
                   <th
                     v-if="tab === 'quotes'"
@@ -130,7 +132,7 @@
               <tbody>
                 <tr v-if="loading">
                   <td
-                    :colspan="tab === 'quotes' ? 10 : 9"
+                    :colspan="colspan"
                     class="text-center py-4"
                   >
                     {{ t('dashboard.loading') }}
@@ -138,7 +140,7 @@
                 </tr>
                 <tr v-else-if="rows.length === 0">
                   <td
-                    :colspan="tab === 'quotes' ? 10 : 9"
+                    :colspan="colspan"
                     class="text-center py-4 text-disabled"
                   >
                     {{ tab === 'quotes' ? t('dashboard.noQuote') : t('dashboard.noInvoice') }}
@@ -154,7 +156,13 @@
                     {{ r.number }}
                   </td>
                   <td class="font-weight-medium">
-                    {{ r.garage }}
+                    <div>{{ r.garage }}</div>
+                    <div
+                      v-if="r.garageLocation"
+                      class="text-caption text-medium-emphasis"
+                    >
+                      {{ r.garageLocation }}
+                    </div>
                   </td>
                   <td class="text-medium-emphasis">
                     {{ r.vehicle }}
@@ -176,7 +184,7 @@
                     {{ euro(r.amount) }}
                   </td>
                   <!-- Envoyé : date d'envoi (avant le statut, ordre chronologique) -->
-                  <td>
+                  <td v-if="showSentColumn">
                     <v-chip
                       v-if="r.sentAt"
                       size="small"
@@ -402,7 +410,7 @@
               v-if="seatLimitReached"
               class="text-caption text-warning mb-3"
             >
-              {{ t('dashboard.subscription.limitReached') }}<span v-if="extraSeatPrice"> · {{ t('dashboard.subscription.extraSeat', { price: euro(extraSeatPrice) }) }}</span>
+              {{ t('dashboard.subscription.limitReached') }}
             </div>
             <v-btn
               class="mt-2"
@@ -432,9 +440,11 @@ import { useAdminDashboardState } from '@/features/dashboard/composition/useAdmi
 import { quoteStatusChip, invoiceStatusChip } from '@/features/dashboard/presentation/labels/documentStatusLabels';
 import HailAlertWidget from '@/features/dashboard/presentation/components/HailAlertWidget.vue';
 import { useAuthState } from '@/features/auth/composition/useAuthState';
+import { useFeatureAccess } from '@/features/featureAccess/composition/useFeatureAccess';
 
 useAuthState();
 const { t } = useI18n();
+const { can } = useFeatureAccess();
 
 const router = useRouter();
 const openQuote = (id: string | undefined, path: string) => {
@@ -479,7 +489,6 @@ const {
   seatsLimit,
   seatsUsed,
   seatLimitReached,
-  extraSeatPrice,
   missingProfileFields,
   companySummary,
   loading,
@@ -487,6 +496,12 @@ const {
 } = useAdminDashboardState();
 
 const tab = ref<'quotes' | 'invoices'>('quotes');
+const garageLocation = (g?: { zip_code?: string | null; city?: string | null } | null) =>
+  [g?.zip_code, g?.city].filter(Boolean).join(' ');
+const showSentColumn = computed(() =>
+  can(tab.value === 'quotes' ? 'quote_email_sending' : 'invoice_email_sending'),
+);
+const colspan = computed(() => (tab.value === 'quotes' ? 10 : 9) - (showSentColumn.value ? 0 : 1));
 
 const euro = (n: number) =>
   formatCurrency(n);
@@ -568,6 +583,7 @@ const rows = computed(() =>
         id: q.id,
         number: q.quoteNumber,
         garage: q.garage?.name ?? q.garageName ?? '—',
+        garageLocation: garageLocation(q.garage),
         ...commonColumns(q),
         status: chip.label,
         color: chip.color,
@@ -583,6 +599,7 @@ const rows = computed(() =>
         id: i.id,
         number: i.invoiceNumber,
         garage: i.garage?.name ?? i.garageName ?? '—',
+        garageLocation: garageLocation(i.garage),
         ...commonColumns(i),
         status: chip.label,
         color: chip.color,

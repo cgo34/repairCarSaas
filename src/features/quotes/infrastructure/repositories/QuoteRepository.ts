@@ -4,6 +4,7 @@ import { SupabaseClient } from '@/shared/infrastructure/supabase/SupabaseClient'
 import { QuoteDto } from '@/features/quotes/application/dtos/QuoteDto';
 import { IClientProvider } from '@/shared/infrastructure/supabase/IClientProvider';
 import { QuoteMapper } from '@/features/quotes/infrastructure/mappers/QuoteMapper';
+import { PlanLimitError } from '@/features/featureAccess/domain/errors/PlanLimitError';
 
 export class QuoteRepository implements IQuoteRepository {
   constructor(private clientProvider: IClientProvider<SupabaseClient>) {}
@@ -97,12 +98,12 @@ export class QuoteRepository implements IQuoteRepository {
 
         assigned_member:organization_members!quotes_assigned_member_id_fkey(
           *,
-          users(*)
+          users!organization_members_user_id_fkey(*)
         ),
 
         created_by_member:organization_members!quotes_created_by_member_id_fkey(
           *,
-          users(*)
+          users!organization_members_user_id_fkey(*)
         ),
 
         garage:garages(*),
@@ -149,12 +150,12 @@ export class QuoteRepository implements IQuoteRepository {
 
           created_by_member:organization_members!quotes_created_by_member_id_fkey(
             *,
-            users(*)
+            users!organization_members_user_id_fkey(*)
           ),
 
           assigned_member:organization_members!quotes_assigned_member_id_fkey(
             *,
-            users(*)
+            users!organization_members_user_id_fkey(*)
           ),
 
           garage:garages(*),
@@ -200,7 +201,7 @@ export class QuoteRepository implements IQuoteRepository {
       .single<QuoteApiModel>();
 
     if (error)
-      throw new Error('Error creating quote');
+      throw PlanLimitError.from(error) ?? new Error('Error creating quote');
 
     return QuoteMapper.apiToDto(data);
   }
@@ -235,12 +236,12 @@ export class QuoteRepository implements IQuoteRepository {
 
           assigned_member:organization_members!quotes_assigned_member_id_fkey(
             *,
-            users(*)
+            users!organization_members_user_id_fkey(*)
           ),
 
           created_by_member:organization_members!quotes_created_by_member_id_fkey(
             *,
-            users(*)
+            users!organization_members_user_id_fkey(*)
           ),
 
           garage:garages(*),

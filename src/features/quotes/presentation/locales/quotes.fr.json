@@ -84,6 +84,8 @@
     },
     "messages": {
       "sent": "Devis envoyé avec succès !",
+      "validated": "Devis validé.",
+      "validateError": "Erreur lors de la validation du devis.",
       "saved": "Devis enregistré.",
       "emptyQuote": "Ajoutez au moins un élément avant d'envoyer le devis.",
       "sendError": "Erreur lors de l'envoi du devis.",
@@ -131,6 +133,8 @@
       "year": "Année",
       "quoteStatus": "Statut du devis",
       "sentOn": "Envoyé le {date}",
+      "validate": "Valider le devis",
+      "validateMessage": "Le devis passera « En attente » sans envoi d'email (remise en main propre ou par PDF). Vous pourrez ensuite le marquer accepté ou refusé. Confirmer ?",
       "sentTo": "à {name}",
       "resendToGarage": "Renvoyer au garage",
       "sendToGarage": "Envoyer au garage",

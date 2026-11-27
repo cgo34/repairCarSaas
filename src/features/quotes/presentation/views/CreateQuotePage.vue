@@ -49,6 +49,13 @@
         </v-btn>
       </div>
 
+      <PlanLimitAlert
+        class="mx-3 mb-3"
+        limit-key="max_quotes_per_month"
+        kind="quotes"
+        :used="quotesUsed"
+      />
+
       <v-form
         ref="form"
         class="px-3 pt-3 pb-28"
@@ -606,10 +613,16 @@ import { setSelectedQuoteGuid } from '@/features/quotes/presentation/utils/quote
 import { computed, onMounted, reactive, ref } from 'vue';
 import { useTheme } from 'vuetify';
 import { useI18n } from 'vue-i18n';
+import PlanLimitAlert from '@/features/featureAccess/presentation/components/PlanLimitAlert.vue';
+import { useFeatureAccess } from '@/features/featureAccess/composition/useFeatureAccess';
+import { usePlanUsage } from '@/features/featureAccess/composition/usePlanUsage';
+import { planLimitMessage } from '@/features/featureAccess/presentation/utils/planLimitMessage';
 
 // ─── State ────────────────────────────────────────────────────────────────────
 const { useCreateQuoteState } = useCreateQuotePageDependencies();
 const { t } = useI18n();
+const { isLimitReached, limitOf, isLoading: featuresLoading } = useFeatureAccess();
+const { quotesUsed, load: loadPlanUsage } = usePlanUsage();
 const isDark = computed(() => useTheme().current.value.dark);
 
 const {
@@ -677,6 +690,11 @@ const onSelectCountry = (country: CountryViewModel | undefined) => {
 
 // Crée le devis puis ouvre la gestion des éléments (ou la liste en mode forfait)
 const onSaveBtnClick = async () => {
+  if (!featuresLoading.value && isLimitReached('max_quotes_per_month', quotesUsed.value)) {
+    snackbar.message = t('common.planLimit.quotes', { limit: limitOf('max_quotes_per_month') });
+    snackbar.show = true;
+    return;
+  }
   loading.value = true;
   try {
     await save();
@@ -686,7 +704,7 @@ const onSaveBtnClick = async () => {
       router.push(isForfait.value ? '/quotes' : '/quotes/items');
     }
   } catch (e) {
-    snackbar.message = e instanceof Error ? e.message : String(e ?? t('quotes.create.submit'));
+    snackbar.message = planLimitMessage(e, t) ?? (e instanceof Error ? e.message : String(e ?? t('quotes.create.submit')));
     snackbar.show = true;
   } finally {
     loading.value = false;
@@ -694,7 +712,7 @@ const onSaveBtnClick = async () => {
 };
 
 onMounted(async () => {
-  await init();
+  await Promise.all([init(), loadPlanUsage()]);
 });
 </script>
 

@@ -16,6 +16,7 @@ const SYMBOLS = {
     UserRepository: Symbol.for(SYMBOL_NAMES.USER_REPOSITORY),
     // Subscription Repositories
     SubscriptionRepository: Symbol.for(SYMBOL_NAMES.SUBSCRIPTION_REPOSITORY),
+    FeatureAccessRepository: Symbol.for(SYMBOL_NAMES.FEATURE_ACCESS_REPOSITORY),
     DemoProfileRepository: Symbol.for(SYMBOL_NAMES.DEMO_PROFILE_REPOSITORY),
     PlatformStatsRepository: Symbol.for(SYMBOL_NAMES.PLATFORM_STATS_REPOSITORY),
     PlatformOrganizationRepository: Symbol.for(SYMBOL_NAMES.PLATFORM_ORGANIZATION_REPOSITORY),
@@ -98,7 +99,12 @@ const SYMBOLS = {
     PlatformAdmin: {
       GetPlatformStatsUseCase: Symbol.for(SYMBOL_NAMES.GET_PLATFORM_STATS_USE_CASE),
       ListPlatformOrganizationsUseCase: Symbol.for(SYMBOL_NAMES.LIST_PLATFORM_ORGANIZATIONS_USE_CASE),
+      GrantPremiumUseCase: Symbol.for(SYMBOL_NAMES.GRANT_PREMIUM_USE_CASE),
+      GrantFeatureUseCase: Symbol.for(SYMBOL_NAMES.GRANT_FEATURE_USE_CASE),
       ListPlatformUsersUseCase: Symbol.for(SYMBOL_NAMES.LIST_PLATFORM_USERS_USE_CASE),
+    },
+    FeatureAccess: {
+      GetFeatureAccessUseCase: Symbol.for(SYMBOL_NAMES.GET_FEATURE_ACCESS_USE_CASE),
     },
     // -- Subscription UseCases
     Subscription: {
@@ -160,12 +166,14 @@ const SYMBOLS = {
       // -- Pdf UseCases
       GenerateQuotePdfUseCase: Symbol.for(SYMBOL_NAMES.GENERATE_QUOTE_PDF_USE_CASE),
       SendQuoteUseCase: Symbol.for(SYMBOL_NAMES.SEND_QUOTE_USE_CASE),
+      FinalizeQuoteUseCase: Symbol.for(SYMBOL_NAMES.FINALIZE_QUOTE_USE_CASE),
     },
     Invoice: {
       InvoiceUseCase: Symbol.for(SYMBOL_NAMES.INVOICE_USE_CASE),
       GetInvoiceUseCase: Symbol.for(SYMBOL_NAMES.GET_INVOICE_USE_CASE),
       GetInvoicesUseCase: Symbol.for(SYMBOL_NAMES.GET_INVOICES_USE_CASE),
       CountInvoicesThisMonthUseCase: Symbol.for(SYMBOL_NAMES.COUNT_INVOICES_THIS_MONTH_USE_CASE),
+      CountConversionsThisMonthUseCase: Symbol.for(SYMBOL_NAMES.COUNT_CONVERSIONS_THIS_MONTH_USE_CASE),
       ViewInvoiceUseCase: Symbol.for(SYMBOL_NAMES.VIEW_INVOICE_USE_CASE),
       CreateInvoiceUseCase: Symbol.for(SYMBOL_NAMES.CREATE_INVOICE_USE_CASE),
       InsertInvoiceUseCase: Symbol.for(SYMBOL_NAMES.INSERT_INVOICE_USE_CASE),
@@ -182,11 +190,13 @@ const SYMBOLS = {
       // -- Pdf UseCases
       GenerateInvoicePdfUseCase: Symbol.for(SYMBOL_NAMES.GENERATE_INVOICE_PDF_USE_CASE),
       SendInvoiceUseCase: Symbol.for(SYMBOL_NAMES.SEND_INVOICE_USE_CASE),
+      FinalizeInvoiceUseCase: Symbol.for(SYMBOL_NAMES.FINALIZE_INVOICE_USE_CASE),
     },
   },
   States: {
     AuthState: Symbol.for(SYMBOL_NAMES.AUTH_STATE),
     SubscriptionState: Symbol.for(SYMBOL_NAMES.SUBSCRIPTION_STATE),
+    FeatureAccessState: Symbol.for(SYMBOL_NAMES.FEATURE_ACCESS_STATE),
     // -- User States
     UserState: Symbol.for(SYMBOL_NAMES.USER_STATE),
     OrganizationProfileState: Symbol.for(SYMBOL_NAMES.ORGANIZATION_PROFILE_STATE),

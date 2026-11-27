@@ -3,6 +3,7 @@ import { InvoiceDto } from '@/features/invoices/application/dtos/InvoiceDto';
 export interface IInvoiceRepository {
   generateInvoiceNumber(organizationId: string): Promise<string>;
   countCreatedSince(organizationId: string, sinceIso: string): Promise<number>;
+  countConversionsSince(organizationId: string, sinceIso: string): Promise<number>;
   
   getAllByOrganizationMemberId(organizationId: string, memberId: string, role: 'admin' | 'manager' | 'technician'): Promise<InvoiceDto[]>;
   getById(id: string): Promise<InvoiceDto | null>;

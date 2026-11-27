@@ -196,6 +196,7 @@
             style="max-width: 200px;"
           />
           <v-select
+            v-if="can('invoice_email_sending')"
             v-model="sentFilter"
             :items="sentOptions"
             density="compact"
@@ -280,9 +281,15 @@
 
           <!-- CLIENT -->
           <template #item.client="{ item }">
-            <span class="font-weight-medium">
+            <div class="font-weight-medium">
               {{ item.garage?.name ?? item.garageName ?? '—' }}
-            </span>
+            </div>
+            <div
+              v-if="item.garage?.zip_code || item.garage?.city"
+              class="text-caption text-medium-emphasis"
+            >
+              {{ [item.garage?.zip_code, item.garage?.city].filter(Boolean).join(' ') }}
+            </div>
           </template>
 
           <!-- VÉHICULE -->
@@ -377,6 +384,8 @@
                 <v-list-item
                   prepend-icon="mdi-send-outline"
                   :title="t('invoices.actions.send')"
+                  :subtitle="can('invoice_email_sending') ? undefined : t('common.featureGate.premiumTitle')"
+                  :disabled="!can('invoice_email_sending')"
                   @click="onSendBtnClick(item.id)"
                 />
                 <v-list-item
@@ -427,8 +436,10 @@ import { computed, onMounted, reactive, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { capitalize, formatCurrency, formatDate } from '@/app/i18n/formatters';
 import { useRouter } from 'vue-router';
+import { useFeatureAccess } from '@/features/featureAccess/composition/useFeatureAccess';
 
   const { authState, useInvoiceState, generatePdfUseCase, organizationProfileUseCase, sendInvoiceUseCase } = useInvoicesPageDependencies();
+const { can } = useFeatureAccess();
 
 const router = useRouter();
 const { t } = useI18n();
@@ -594,15 +605,17 @@ const currentMonthShort = computed(() => formatDate(now, { month: 'long' }).toLo
 
 // ─── Table headers ────────────────────────────────────────────
 const tableHeaders = computed(() => [
-  { title: t('invoices.list.headers.invoiceNumber'),   key: 'invoiceNumber', sortable: true  },
-  { title: t('invoices.list.headers.client'),       key: 'client',        sortable: false },
-  { title: t('invoices.list.headers.vehicle'),     key: 'vehicle',       sortable: false },
-  { title: t('invoices.list.headers.date'),         key: 'createdAt',     sortable: true  },
-  { title: t('invoices.list.headers.technician'),   key: 'technician',    sortable: false },
-  { title: t('invoices.list.headers.totalInclTax'),  key: 'total',         align: 'end' as const, sortable: true },
-  { title: t('invoices.list.headers.sent'),      key: 'sentAt',        sortable: false },
-  { title: t('invoices.list.headers.status'),       key: 'status',        sortable: false },
-  { title: '',             key: 'actions',       sortable: false },
+  { title: t('invoices.list.headers.invoiceNumber'),   key: 'invoiceNumber', sortable: true, width: '9%' },
+  { title: t('invoices.list.headers.client'),       key: 'client',        sortable: false, width: '22%' },
+  { title: t('invoices.list.headers.vehicle'),     key: 'vehicle',       sortable: false, width: '18%' },
+  { title: t('invoices.list.headers.date'),         key: 'createdAt',     sortable: true, width: '11%' },
+  { title: t('invoices.list.headers.technician'),   key: 'technician',    sortable: false, width: '14%' },
+  { title: t('invoices.list.headers.totalInclTax'),  key: 'total',         align: 'end' as const, sortable: true, width: '10%' },
+  ...(can('invoice_email_sending')
+    ? [{ title: t('invoices.list.headers.sent'), key: 'sentAt', sortable: false, width: '10%' }]
+    : []),
+  { title: t('invoices.list.headers.status'),       key: 'status',        sortable: false, width: '9%' },
+  { title: '',             key: 'actions',       sortable: false, width: '3%' },
 ]);
 
 // ─── Actions ──────────────────────────────────────────────────
@@ -687,6 +700,7 @@ onMounted(async () => {
   font-weight: 600 !important;
   letter-spacing: 0.06em !important;
   text-transform: uppercase !important;
+  white-space: nowrap;
   color: rgb(var(--v-theme-lightText)) !important;
 }
 

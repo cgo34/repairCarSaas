@@ -10,10 +10,13 @@ export interface SendEmailParams {
   htmlContent: string;
   textContent?: string;
   attachments?: EmailAttachment[];
+  /** Used by the server to check the plan feature before sending. */
+  documentType: 'quote' | 'invoice';
+  organizationId: string;
 }
 
 export interface IEmailService {
   sendEmail(params: SendEmailParams): Promise<void>;
-  sendInvoiceEmail(to: string, invoiceNumber: string, pdfBase64: string): Promise<void>;
-  sendQuoteEmail(to: string, quoteNumber: string, pdfBase64: string): Promise<void>;
+  sendInvoiceEmail(to: string, invoiceNumber: string, pdfBase64: string, organizationId: string): Promise<void>;
+  sendQuoteEmail(to: string, quoteNumber: string, pdfBase64: string, organizationId: string): Promise<void>;
 }

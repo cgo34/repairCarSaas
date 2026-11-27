@@ -56,8 +56,12 @@ export class SendQuoteUseCase implements ISendQuoteUseCase {
       throw new Error('Garage email not found');
     }
 
+    if (!quote.organization_id) {
+      throw new Error('Organization not found');
+    }
+
     const pdfBase64 = await this.urlToBase64(pdfDataUrl);
-    await this.emailService.sendQuoteEmail(recipientEmail, quote.quoteNumber, pdfBase64);
+    await this.emailService.sendQuoteEmail(recipientEmail, quote.quoteNumber, pdfBase64, quote.organization_id);
     await this.quoteRepository.markAsSent(quoteId);
 
     const pendingStatus = await this.getDocumentStatusUseCase.getByCode('pending');

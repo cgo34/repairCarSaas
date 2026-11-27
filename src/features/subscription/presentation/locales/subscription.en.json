@@ -42,6 +42,9 @@
         "invoice": "invoice",
         "invoices": "invoices",
         "perMonth": "per month",
+        "conversion": "quote-to-invoice conversion",
+        "conversions": "quote-to-invoice conversions",
+        "invoiceEmailSending": "Send invoices by email",
         "quoteToInvoice": "Convert a quote into an invoice",
         "emailSending": "Send quotes by email",
         "carView": "Vehicle view"
@@ -114,6 +117,8 @@
         "quotesMonth": "Quotes this month",
         "invoicesMonth": "Invoices this month",
         "createdThisMonth": "created this month",
+        "conversionsMonth": "Conversions this month",
+        "convertedThisMonth": "quotes converted this month",
         "billing": "Billing",
         "noneFem": "None",
         "freeCaption": "Free plan · {price} / month",

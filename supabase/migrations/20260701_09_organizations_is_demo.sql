@@ -26,7 +26,13 @@ returns table (
   garages_count       bigint,
   quotes_count        bigint,
   invoices_count      bigint,
-  is_demo             boolean
+  is_demo             boolean,
+  members_limit       integer,
+  garages_limit       integer,
+  quotes_limit        integer,
+  invoices_limit      integer,
+  quotes_month_count  bigint,
+  invoices_month_count bigint
 )
 language plpgsql
 stable
@@ -38,12 +44,13 @@ begin
     raise exception 'Forbidden' using errcode = '42501';
   end if;
 
+  -- Limits come from the effective features (plan fallback + gifts); null = unlimited
   return query
   select
     o.id,
     o.name::text,
     o.created_at,
-    sp.code::text,
+    (case when s.end_date is null or s.end_date > now() then sp.code else 'FREE' end)::text,
     s.status::text,
     (select count(*) from public.organization_members m
        where m.organization_id = o.id and m.status = 'active'
@@ -51,7 +58,19 @@ begin
     (select count(*) from public.garages g where g.organization_id = o.id),
     (select count(*) from public.quotes q where q.organization_id = o.id),
     (select count(*) from public.invoices i where i.organization_id = o.id),
-    o.is_demo
+    o.is_demo,
+    (select nullif(e.value::text, 'null')::integer from public.organization_effective_features e
+       where e.organization_id = o.id and e.feature_key = 'max_seats'),
+    (select nullif(e.value::text, 'null')::integer from public.organization_effective_features e
+       where e.organization_id = o.id and e.feature_key = 'max_garages'),
+    (select nullif(e.value::text, 'null')::integer from public.organization_effective_features e
+       where e.organization_id = o.id and e.feature_key = 'max_quotes_per_month'),
+    (select nullif(e.value::text, 'null')::integer from public.organization_effective_features e
+       where e.organization_id = o.id and e.feature_key = 'max_invoices_per_month'),
+    (select count(*) from public.quotes q
+       where q.organization_id = o.id and q.created_at >= date_trunc('month', now())),
+    (select count(*) from public.invoices i
+       where i.organization_id = o.id and i.created_at >= date_trunc('month', now()))
   from public.organizations o
   left join public.subscriptions s on s.organization_id = o.id
   left join public.subscription_plans sp on sp.id = s.plan_id
@@ -99,7 +118,11 @@ begin
     where not o.is_demo
   ),
   org_plan as (
-    select r.id, sp.code, sp.price_cents, s.status
+    -- an expired subscription counts as FREE (no revenue)
+    select r.id,
+           case when s.end_date is null or s.end_date > now() then sp.code else 'FREE' end as code,
+           case when s.end_date is null or s.end_date > now() then sp.price_cents else 0 end as price_cents,
+           s.status
     from real_orgs r
     left join public.subscriptions s on s.organization_id = r.id
     left join public.subscription_plans sp on sp.id = s.plan_id
@@ -137,12 +160,14 @@ begin
     (select count(*)
        from public.subscriptions s
        join real_orgs r on r.id = s.organization_id
+       join public.organization_effective_features ef
+         on ef.organization_id = r.id and ef.feature_key = 'max_seats'
        where s.status = 'active'
-         and s.max_seats is not null
+         and nullif(ef.value::text, 'null') is not null
          and (select count(*) from public.organization_members m
                 where m.organization_id = r.id and m.status = 'active'
                   and m.user_id not in (select su.id from public.users su where su.platform_role = 'super_admin')
-             ) >= s.max_seats * 0.8),
+             ) >= nullif(ef.value::text, 'null')::integer * 0.8),
     (select count(*)
        from public.subscriptions s
        join real_orgs r on r.id = s.organization_id
@@ -153,7 +178,8 @@ begin
     coalesce((
       select jsonb_agg(x order by x.created_at desc)
       from (
-        select o.id, o.name, o.created_at, o.is_demo, sp.code as plan,
+        select o.id, o.name, o.created_at, o.is_demo,
+          case when s.end_date is null or s.end_date > now() then sp.code else 'FREE' end as plan,
           (select count(*) from public.organization_members m
              where m.organization_id = o.id and m.status = 'active'
                and m.user_id not in (select su.id from public.users su where su.platform_role = 'super_admin')

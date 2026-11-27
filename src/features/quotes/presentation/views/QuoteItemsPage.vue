@@ -66,6 +66,7 @@
             :available-body-parts="availableBodyParts"
             :is-forfait="isForfait"
             :is-read-only="isReadOnly"
+            :car-view-enabled="can('car_view')"
             :currency="currency"
             :on-add="addLine"
             :on-update="updateLine"
@@ -148,6 +149,7 @@ import { useTheme } from 'vuetify';
 import MainLayout from '@/app/layouts/MainLayout.vue';
 import DocumentItemsPanel from '@/features/lineItems/presentation/components/DocumentItemsPanel.vue';
 import { useEditQuotePageDependencies } from '@/features/quotes/composition/useEditQuotePageDependencies';
+import { useFeatureAccess } from '@/features/featureAccess/composition/useFeatureAccess';
 import { getSelectedQuoteGuid } from '@/features/quotes/presentation/utils/quoteSelection';
 
 const router = useRouter();
@@ -155,6 +157,7 @@ const { t } = useI18n();
 const theme = useTheme();
 const isDark = computed(() => theme.current.value.dark);
 const { regionManager, useEditQuoteState } = useEditQuotePageDependencies();
+const { can } = useFeatureAccess();
 
 const {
   init,

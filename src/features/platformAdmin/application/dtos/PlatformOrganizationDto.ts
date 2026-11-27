@@ -9,4 +9,10 @@ export interface PlatformOrganizationDto {
   quotesCount: number;
   invoicesCount: number;
   isDemo: boolean;
+  membersLimit: number | null;
+  garagesLimit: number | null;
+  quotesLimit: number | null;
+  invoicesLimit: number | null;
+  quotesMonthCount: number;
+  invoicesMonthCount: number;
 }

@@ -29,6 +29,29 @@
     "save": "Save",
     "saved": "Saved",
     "cancel": "Cancel",
+    "featureGate": {
+      "premiumTitle": "Premium feature",
+      "premiumHint": "Available with the Premium plan."
+    },
+    "planLimit": {
+      "garages": "You have reached your plan's limit of {limit} garage(s).",
+      "quotes": "You have reached your plan's limit of {limit} quote(s) per month.",
+      "invoices": "You have reached your plan's limit of {limit} invoice(s) per month.",
+      "conversions": "You have reached your plan's limit of {limit} quote-to-invoice conversion(s) per month.",
+      "garagesReached": "You have reached your plan's garage limit.",
+      "quotesReached": "You have reached your plan's monthly quote limit.",
+      "invoicesReached": "You have reached your plan's monthly invoice limit.",
+      "conversionsReached": "You have reached your plan's monthly quote-to-invoice conversion limit.",
+      "usage": "{used} / {limit} {label} this month: you are close to your plan's limit.",
+      "label": {
+        "quotes": "quotes",
+        "invoices": "invoices",
+        "conversions": "conversions",
+        "garages": "garages"
+      },
+      "upgradeHint": "Upgrade to Premium to lift this limit.",
+      "upgrade": "See plans"
+    },
     "reset": "Reset",
     "required": "Required field",
     "invalidEmail": "Invalid email",

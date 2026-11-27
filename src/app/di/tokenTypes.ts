@@ -18,6 +18,7 @@ export enum SYMBOL_NAMES {
     ORGANIZATION_MEMBER_REPOSITORY = 'OrganizationMemberRepository',
     // -- Subscription REPOSITORIES
     SUBSCRIPTION_REPOSITORY = 'SubscriptionRepository',
+    FEATURE_ACCESS_REPOSITORY = 'FeatureAccessRepository',
 
     GARAGE_REPOSITORY = 'GarageRepository',
     VEHICLE_REPOSITORY = 'VehicleRepository',
@@ -87,6 +88,8 @@ export enum SYMBOL_NAMES {
     PLATFORM_ORGANIZATION_REPOSITORY = 'PlatformOrganizationRepository',
     PLATFORM_USER_REPOSITORY = 'PlatformUserRepository',
     LIST_PLATFORM_ORGANIZATIONS_USE_CASE = 'ListPlatformOrganizationsUseCase',
+    GRANT_PREMIUM_USE_CASE = 'GrantPremiumUseCase',
+    GRANT_FEATURE_USE_CASE = 'GrantFeatureUseCase',
     LIST_PLATFORM_USERS_USE_CASE = 'ListPlatformUsersUseCase',
     // -- User UseCases
     USER_USE_CASE = 'UserUseCase',
@@ -137,12 +140,14 @@ export enum SYMBOL_NAMES {
     // -- Pdf UseCases
     GENERATE_QUOTE_PDF_USE_CASE = 'GenerateQuotePdfUseCase',
     SEND_QUOTE_USE_CASE = 'SendQuoteUseCase',
+    FINALIZE_QUOTE_USE_CASE = 'FinalizeQuoteUseCase',
 
     // -- Invoice UseCases
     INVOICE_USE_CASE = 'InvoiceUseCase',
     GET_INVOICE_USE_CASE = 'GetInvoiceUseCase',
     GET_INVOICES_USE_CASE = 'GetInvoicesUseCase',
     COUNT_INVOICES_THIS_MONTH_USE_CASE = 'CountInvoicesThisMonthUseCase',
+    COUNT_CONVERSIONS_THIS_MONTH_USE_CASE = 'CountConversionsThisMonthUseCase',
     VIEW_INVOICE_USE_CASE = 'ViewInvoiceUseCase',
     CREATE_INVOICE_USE_CASE = 'CreateInvoiceUseCase',
     INSERT_INVOICE_USE_CASE = 'InsertInvoiceUseCase',
@@ -159,15 +164,19 @@ export enum SYMBOL_NAMES {
     // -- Pdf UseCases
     GENERATE_INVOICE_PDF_USE_CASE = 'GenerateInvoicePdfUseCase',
     SEND_INVOICE_USE_CASE = 'SendInvoiceUseCase',
+    FINALIZE_INVOICE_USE_CASE = 'FinalizeInvoiceUseCase',
     
     // -- Subscription UseCases
     SUBSCRIBE_TO_FREE_PLAN_USE_CASE = 'SubscribeToFreePlan',
     GET_CURRENT_SUBSCRIPTION_USE_CASE = 'GetCurrentSubscriptionUseCase',
+    // -- Feature access UseCases
+    GET_FEATURE_ACCESS_USE_CASE = 'GetFeatureAccessUseCase',
     // #endregion
 
     // #region -> STATES
     AUTH_STATE = 'AuthState',
     SUBSCRIPTION_STATE = 'SubscriptionState',
+    FEATURE_ACCESS_STATE = 'FeatureAccessState',
     // -- User States
     USER_STATE = 'UserState',
     ORGANIZATION_PROFILE_STATE = 'OrganizationProfileState',
