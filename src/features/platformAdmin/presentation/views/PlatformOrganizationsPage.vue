@@ -133,13 +133,17 @@
           </template>
 
           <template #item.isDemo="{ item }">
-            <v-chip
+            <v-avatar
               :color="item.isDemo ? 'success' : 'error'"
-              :prepend-icon="item.isDemo ? 'mdi-check' : 'mdi-close'"
-              size="small"
+              size="28"
               variant="tonal"
               :aria-label="t('platformAdmin.organizations.demo')"
-            />
+            >
+              <v-icon
+                :icon="item.isDemo ? 'mdi-check' : 'mdi-close'"
+                size="18"
+              />
+            </v-avatar>
           </template>
 
           <template #item.createdAt="{ item }">

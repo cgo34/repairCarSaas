@@ -153,16 +153,17 @@ begin
     coalesce((
       select jsonb_agg(x order by x.created_at desc)
       from (
-        select r.id, r.name, r.created_at, p.code as plan,
+        select o.id, o.name, o.created_at, o.is_demo, sp.code as plan,
           (select count(*) from public.organization_members m
-             where m.organization_id = r.id and m.status = 'active'
+             where m.organization_id = o.id and m.status = 'active'
                and m.user_id not in (select su.id from public.users su where su.platform_role = 'super_admin')
           ) as members_count,
-          (select count(*) from public.garages g where g.organization_id = r.id) as garages_count
-        from real_orgs r
-        left join org_plan p on p.id = r.id
-        order by r.created_at desc
-        limit 5
+          (select count(*) from public.garages g where g.organization_id = o.id) as garages_count
+        from public.organizations o
+        left join public.subscriptions s on s.organization_id = o.id
+        left join public.subscription_plans sp on sp.id = s.plan_id
+        order by o.created_at desc
+        limit 10
       ) x
     ), '[]'::jsonb);
 end;

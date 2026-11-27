@@ -10,6 +10,7 @@ interface RecentOrganizationRow {
   created_at: string | null;
   members_count: number;
   garages_count: number;
+  is_demo?: boolean;
 }
 
 export class PlatformStatsRepository implements IPlatformStatsRepository {
@@ -48,6 +49,7 @@ export class PlatformStatsRepository implements IPlatformStatsRepository {
         createdAt: o.created_at,
         membersCount: Number(o.members_count),
         garagesCount: Number(o.garages_count),
+        isDemo: o.is_demo ?? false,
       })),
     };
   }

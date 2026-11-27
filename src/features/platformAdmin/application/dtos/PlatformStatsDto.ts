@@ -5,6 +5,7 @@ export interface RecentOrganizationDto {
   createdAt: string | null;
   membersCount: number;
   garagesCount: number;
+  isDemo: boolean;
 }
 
 export interface MonthlySignupDto {

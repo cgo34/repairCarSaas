@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import {
   BuildingCommunityIcon,
@@ -22,6 +22,10 @@ const { t, n } = useI18n();
 const state = usePlatformDashboard();
 const { stats, isLoading, error } = state;
 const switcher = useProfileSwitcher();
+
+const hideDemo = ref(false);
+const visibleRecentOrganizations = computed(() =>
+  (stats.value?.recentOrganizations ?? []).filter(o => !(hideDemo.value && o.isDemo)).slice(0, 5));
 
 const mrr = computed(() =>
   stats.value ? new Intl.NumberFormat(undefined, { style: 'currency', currency: 'EUR' }).format(stats.value.mrrCents / 100) : '',
@@ -222,23 +226,25 @@ async function enter(profile: DemoProfileDto) {
               <v-card-title class="pa-0">
                 {{ t('platformAdmin.dashboard.recent.title') }}
               </v-card-title>
-              <v-btn
-                variant="text"
+              <v-switch
+                v-model="hideDemo"
+                :label="t('platformAdmin.organizations.hideDemo')"
                 color="primary"
-                size="small"
-                to="/platform/organizations"
-              >
-                {{ t('platformAdmin.dashboard.recent.viewAll') }}
-              </v-btn>
+                density="compact"
+                hide-details
+              />
             </div>
             <v-table
-              v-if="stats.recentOrganizations.length"
+              v-if="visibleRecentOrganizations.length"
               class="px-4 pb-2"
             >
               <thead>
                 <tr>
                   <th>{{ t('platformAdmin.dashboard.recent.name') }}</th>
                   <th>{{ t('platformAdmin.dashboard.recent.plan') }}</th>
+                  <th class="text-center">
+                    {{ t('platformAdmin.organizations.demo') }}
+                  </th>
                   <th>
                     {{ t('platformAdmin.dashboard.recent.members') }}
                   </th>
@@ -250,7 +256,7 @@ async function enter(profile: DemoProfileDto) {
               </thead>
               <tbody>
                 <tr
-                  v-for="org in stats.recentOrganizations"
+                  v-for="org in visibleRecentOrganizations"
                   :key="org.id"
                 >
                   <td>{{ org.name }}</td>
@@ -263,6 +269,19 @@ async function enter(profile: DemoProfileDto) {
                     >
                       {{ org.plan }}
                     </v-chip>
+                  </td>
+                  <td class="text-center">
+                    <v-avatar
+                      :color="org.isDemo ? 'success' : 'error'"
+                      size="28"
+                      variant="tonal"
+                      :aria-label="t('platformAdmin.organizations.demo')"
+                    >
+                      <v-icon
+                        :icon="org.isDemo ? 'mdi-check' : 'mdi-close'"
+                        size="18"
+                      />
+                    </v-avatar>
                   </td>
                   <td>
                     {{ n(org.membersCount) }}
@@ -280,6 +299,16 @@ async function enter(profile: DemoProfileDto) {
             >
               {{ t('platformAdmin.dashboard.recent.empty') }}
             </v-card-text>
+            <div class="d-flex justify-end px-4 pb-3">
+              <v-btn
+                variant="text"
+                color="primary"
+                size="small"
+                to="/platform/organizations"
+              >
+                {{ t('platformAdmin.dashboard.recent.viewAll') }}
+              </v-btn>
+            </div>
           </v-card>
         </v-col>
 
