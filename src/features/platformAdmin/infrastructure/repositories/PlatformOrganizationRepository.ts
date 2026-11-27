@@ -20,6 +20,7 @@ export class PlatformOrganizationRepository implements IPlatformOrganizationRepo
       garagesCount: Number(row.garages_count),
       quotesCount: Number(row.quotes_count),
       invoicesCount: Number(row.invoices_count),
+      isDemo: row.is_demo,
     }));
   }
 }

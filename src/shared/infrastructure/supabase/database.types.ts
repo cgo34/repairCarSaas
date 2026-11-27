@@ -1693,6 +1693,7 @@ export type Database = {
           garages_count: number
           quotes_count: number
           invoices_count: number
+          is_demo: boolean
         }[]
       }
       list_platform_users: {

@@ -16,6 +16,8 @@
       "subtitle": "Real platform customers (demo organizations excluded).",
       "searchPlaceholder": "Search an organization…",
       "allPlans": "All plans",
+      "demo": "Demo",
+      "hideDemo": "Hide demos",
       "empty": "No organizations.",
       "loadError": "Unable to load organizations"
     },

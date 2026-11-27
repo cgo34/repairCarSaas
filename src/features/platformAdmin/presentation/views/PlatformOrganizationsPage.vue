@@ -85,6 +85,14 @@
             hide-details
             style="max-width: 180px;"
           />
+          <v-switch
+            v-model="hideDemo"
+            class="ml-auto"
+            :label="t('platformAdmin.organizations.hideDemo')"
+            color="primary"
+            density="compact"
+            hide-details
+          />
         </div>
         <v-divider />
         <v-data-table
@@ -124,6 +132,16 @@
             </v-chip>
           </template>
 
+          <template #item.isDemo="{ item }">
+            <v-chip
+              :color="item.isDemo ? 'success' : 'error'"
+              :prepend-icon="item.isDemo ? 'mdi-check' : 'mdi-close'"
+              size="small"
+              variant="tonal"
+              :aria-label="t('platformAdmin.organizations.demo')"
+            />
+          </template>
+
           <template #item.createdAt="{ item }">
             {{ formatDate(item.createdAt) }}
           </template>
@@ -144,10 +162,12 @@ const { organizations, isLoading, error, load } = usePlatformOrganizations();
 
 const search = ref<string | null>('');
 const planFilter = ref<string>('all');
+const hideDemo = ref(false);
 
 const headers = computed(() => [
   { title: t('platformAdmin.dashboard.recent.name'), align: 'start', key: 'name' },
   { title: t('platformAdmin.dashboard.recent.plan'), key: 'planCode' },
+  { title: t('platformAdmin.organizations.demo'), key: 'isDemo', align: 'center' },
   { title: t('platformAdmin.dashboard.recent.members'), key: 'membersCount', align: 'start' },
   { title: t('platformAdmin.dashboard.recent.garages'), key: 'garagesCount', align: 'start' },
   { title: t('platformAdmin.dashboard.stats.quotes'), key: 'quotesCount', align: 'start' },
@@ -164,13 +184,14 @@ const planFilterOptions = computed(() => [
 const filteredOrganizations = computed(() => {
   const term = (search.value ?? '').trim().toLowerCase();
   return organizations.value.filter(o => {
+    if (hideDemo.value && o.isDemo) return false;
     if (planFilter.value !== 'all' && o.planCode !== planFilter.value) return false;
     return !term || o.name.toLowerCase().includes(term);
   });
 });
 
 const statCards = computed(() => {
-  const list = organizations.value;
+  const list = organizations.value.filter(o => !o.isDemo);
   const premium = list.filter(o => o.planCode === 'PREMIUM').length;
   return [
     { label: t('platformAdmin.dashboard.stats.organizations'), value: list.length, icon: 'mdi-domain', color: 'primary' },

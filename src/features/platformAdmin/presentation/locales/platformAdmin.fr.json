@@ -16,6 +16,8 @@
       "subtitle": "Clients réels de la plateforme (organisations de démonstration exclues).",
       "searchPlaceholder": "Rechercher une organisation…",
       "allPlans": "Tous les plans",
+      "demo": "Démo",
+      "hideDemo": "Masquer les démos",
       "empty": "Aucune organisation.",
       "loadError": "Impossible de charger les organisations"
     },

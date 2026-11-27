@@ -8,4 +8,5 @@ export interface PlatformOrganizationDto {
   garagesCount: number;
   quotesCount: number;
   invoicesCount: number;
+  isDemo: boolean;
 }
