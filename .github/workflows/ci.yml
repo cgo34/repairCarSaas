@@ -74,3 +74,5 @@ jobs:
         run: supabase start -x edge-runtime,imgproxy,logflare,vector,studio,mailpit
       - name: Replay migrations and seed
         run: supabase db reset
+      - name: Run pgTAP tests
+        run: supabase test db
