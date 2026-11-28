@@ -59,7 +59,7 @@ jobs:
           mkdir site
           tar -xzf release-candidate/dist.tar.gz -C site
           bash scripts/verify-artifact.sh site release-candidate/manifest.json
-          test "$(jq -r .commit release-candidate/manifest.json)" = "$SOURCE_SHA"
+          test "$(jq -r .runId release-candidate/manifest.json)" = "$SOURCE_RUN_ID"
 
       - name: Generate preview runtime config
         env:
