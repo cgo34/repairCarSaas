@@ -54,10 +54,26 @@ jobs:
       - run: npm ci
       - run: npm run build
 
+      - name: Package release candidate
+        run: bash scripts/package-artifact.sh dist release-candidate
+
+      - name: Verify runtime config injection keeps the artifact intact
+        env:
+          APP_ENV: ci
+          SUPABASE_URL: https://example.supabase.co
+          SUPABASE_PUBLISHABLE_KEY: sb_publishable_ci
+        run: |
+          mkdir work
+          tar -xzf release-candidate/dist.tar.gz -C work
+          bash scripts/generate-runtime-config.sh work
+          jq -e '.environment == "ci" and .supabase.url == "https://example.supabase.co"' work/config.json
+          bash scripts/verify-artifact.sh work release-candidate/manifest.json
+          (cd release-candidate && sha256sum -c dist.tar.gz.sha256)
+
       - uses: actions/upload-artifact@v4
         with:
-          name: dist
-          path: dist/
+          name: release-candidate
+          path: release-candidate/
           retention-days: 7
           if-no-files-found: error
 
