@@ -2,7 +2,7 @@
 -- FREE: 1 garage, 10 quotes, 5 invoices, 3 quote->invoice conversions per
 -- month; Premium lifts every limit. Fixtures are rolled back at the end.
 begin;
-select plan(17);
+select plan(16);
 
 insert into auth.users (id, email) values
   ('c0000000-0000-0000-0000-00000000000c', 'owner-c@test.invalid'),
