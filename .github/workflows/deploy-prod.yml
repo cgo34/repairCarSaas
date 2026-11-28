@@ -87,7 +87,7 @@ jobs:
           SUPABASE_PUBLISHABLE_KEY: ${{ vars.SUPABASE_PUBLISHABLE_KEY }}
         run: |
           test "$APP_ENV" = "production" || { echo "APP_ENV must be 'production'" >&2; exit 1; }
-          bash scripts/generate-runtime-config.sh site
+          APP_VERSION="$TAG" bash scripts/generate-runtime-config.sh site
 
       - name: Deploy to Cloudflare Pages (branch main)
         env:

@@ -2,6 +2,7 @@ import { z } from 'zod';
 
 const runtimeConfigSchema = z.object({
   environment: z.string().min(1),
+  version: z.string().min(1).optional(),
   supabase: z.object({
     url: z.url(),
     publishableKey: z.string().min(1),
