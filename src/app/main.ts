@@ -1,39 +1,31 @@
-// IoC
-import { container } from '@/app/di/container';
-import { SYMBOLS } from '@/app/di/tokens';
-import { DOWNLOAD_SERVICE_KEY } from '@/shared/presentation/injectionKeys';
-import { IDownloadService } from '@/shared/application/ports/IDownloadService';
-import { registerCompanyProfileDependencies } from '@/features/account/composition/useCompanyProfile';
-import 'reflect-metadata';
-import { createApp } from 'vue';
-import VueTablerIcons from 'vue-tabler-icons';
-import VueApexCharts from 'vue3-apexcharts';
-import { PerfectScrollbarPlugin } from 'vue3-perfect-scrollbar';
-import App from './App.vue';
+import { loadRuntimeConfig } from '@/shared/infrastructure/config/RuntimeConfig';
 
-// Plugins & configuration
-import vuetify from '@/app/plugins/vuetify';
-import router from '@/app/router/index';
-import { i18n } from '@/app/i18n';
+function renderStartupError(error: unknown): void {
+  const root = document.getElementById('app');
+  if (!root) return;
 
-// import { initAuth } from '@/app/plugins/auth';
+  const box = document.createElement('div');
+  box.style.cssText = 'font-family: sans-serif; max-width: 560px; margin: 15vh auto; padding: 24px; border: 1px solid #d32f2f; border-radius: 8px;';
 
-// Styles globaux
-import '@mdi/font/css/materialdesignicons.css';
-import '@/shared/presentation/ui/styles/main.scss';
-import '@/assets/scss/style.scss';
+  const title = document.createElement('h2');
+  title.textContent = "Impossible de demarrer l'application";
+  title.style.color = '#d32f2f';
 
-const app = createApp(App);
+  const message = document.createElement('p');
+  message.textContent = error instanceof Error ? error.message : String(error);
 
-// Initialiser l'auth avant le router
-// await initAuth();
-app.provide(DOWNLOAD_SERVICE_KEY, container.get<IDownloadService>(SYMBOLS.Services.DownloadService));
-registerCompanyProfileDependencies();
-app.use(router);
-app.use(i18n);
-app.use(PerfectScrollbarPlugin);
-app.use(VueTablerIcons);
-app.use(VueApexCharts);
-app.use(vuetify);
+  box.append(title, message);
+  root.replaceChildren(box);
+}
 
-app.mount('#app');
+async function start(): Promise<void> {
+  try {
+    await loadRuntimeConfig();
+    await import('@/app/app');
+  } catch (error) {
+    console.error(error);
+    renderStartupError(error);
+  }
+}
+
+void start();

@@ -1,3 +1,4 @@
+import { getRuntimeConfig } from '@/shared/infrastructure/config/RuntimeConfig';
 import { IClient } from '@/shared/infrastructure/supabase/IClient';
 import { Database } from '@/shared/infrastructure/supabase/database.types';
 import { SupabaseClient as BaseSupabaseClient, createClient } from '@supabase/supabase-js';
@@ -66,9 +67,10 @@ export class SupabaseClient implements IClient {
   private readonly client: BaseSupabaseClient<Database>;
 
   constructor() {
+    const { supabase } = getRuntimeConfig();
     this.client = createClient<Database>(
-      process.env.VITE_SUPABASE_URL as string,
-      process.env.VITE_SUPABASE_KEY as string,
+      supabase.url,
+      supabase.publishableKey,
       {
         db: {
           schema: 'public'

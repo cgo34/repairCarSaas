@@ -32,7 +32,8 @@
     "vue-tabler-icons": "^2.21.0",
     "vue3-apexcharts": "^1.8.0",
     "vue3-perfect-scrollbar": "^2.0.0",
-    "vuetify": "^3.3.0"
+    "vuetify": "^3.3.0",
+    "zod": "^4.6.7"
   },
   "devDependencies": {
     "@types/jszip": "^3.4.0",
