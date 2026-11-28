@@ -13,34 +13,44 @@
     @mouseleave="isHovered = false"
   >
     <!-- LOGO (mobile) -->
-    <div
+    <router-link
       v-if="mobile"
-      class="px-4 py-3"
+      to="/dashboard"
+      class="px-4 py-3 d-block"
     >
       <Logo />
-    </div>
+    </router-link>
 
     <!-- NAVIGATION -->
     <perfect-scrollbar class="scrollnavbar">
       <v-list class="pa-4">
         <!-- TOGGLE + LOGO -->
-        <v-list-item
+        <div
           v-if="!mobile"
-          rounded
-          class="mb-3 sidebar-toggle"
-          @click="setMiniSidebar(!miniSidebar)"
+          class="d-flex align-center mb-3 sidebar-toggle"
+          :class="miniSidebar && !isHovered ? 'justify-center' : ''"
+          style="height: 44px"
         >
-          <template #prepend>
+          <v-btn
+            icon
+            variant="text"
+            size="small"
+            class="flex-shrink-0"
+            @click="setMiniSidebar(!miniSidebar)"
+          >
             <Menu2Icon
               size="20"
               stroke-width="1.5"
-              class="mr-3"
             />
-          </template>
-          <v-list-item-title v-if="!miniSidebar || isHovered">
+          </v-btn>
+          <router-link
+            v-if="!miniSidebar || isHovered"
+            to="/dashboard"
+            class="ml-3 d-flex align-center"
+          >
             <Logo />
-          </v-list-item-title>
-        </v-list-item>
+          </router-link>
+        </div>
 
         <!-- MENU UTILISATEUR (sous le logo) -->
         <SidebarUserMenu :compact="miniSidebar && !isHovered && !mobile" />

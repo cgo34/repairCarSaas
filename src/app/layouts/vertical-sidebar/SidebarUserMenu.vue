@@ -36,7 +36,10 @@ const demoRoleLabel = computed(() => {
         rounded="lg"
         block
         :height="68"
-        class="sidebar-user justify-start px-3 mb-1 py-2"
+        :class="[
+          'sidebar-user mb-1 py-2',
+          compact ? 'sidebar-user--compact justify-center px-0' : 'justify-start px-3'
+        ]"
         style="background: rgba(255, 255, 255, 0.06);"
       >
         <v-avatar
@@ -112,6 +115,14 @@ const demoRoleLabel = computed(() => {
   color: #ffffff;
   text-transform: none;
   letter-spacing: normal;
+}
+.sidebar-user--compact {
+  min-width: 0;
+  width: 100%;
+}
+.sidebar-user--compact :deep(.v-btn__content) {
+  justify-content: center;
+  width: 100%;
 }
 .sidebar-user__sub {
   color: rgba(255, 255, 255, 0.6);

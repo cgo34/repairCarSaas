@@ -23,10 +23,16 @@ const props = defineProps({
   >
     <!---If icon-->
     <template #prepend>
-      <Icon
-        :item="props.item.icon"
-        :level="props.level"
-      />
+      <span class="position-relative d-inline-flex">
+        <Icon
+          :item="props.item.icon"
+          :level="props.level"
+        />
+        <span
+          v-if="item.alert"
+          class="profile-alert-dot"
+        >!</span>
+      </span>
     </template>
     <v-list-item-title>{{ $t(item.title) }}</v-list-item-title>
     <!---If Caption-->
@@ -38,19 +44,9 @@ const props = defineProps({
     </v-list-item-subtitle>
     <!---If any chip or label-->
     <template
-      v-if="item.chip || item.alert"
+      v-if="item.chip"
       #append
     >
-      <span
-        v-if="item.alert"
-        class="profile-alert-badge hide-menu"
-      >
-        <v-icon
-          icon="mdi-exclamation"
-          size="18"
-          color="white"
-        />
-      </span>
       <v-chip
         v-if="item.chip"
         :color="item.chipColor"
@@ -66,19 +62,20 @@ const props = defineProps({
 </template>
 
 <style scoped>
-.profile-alert-badge :deep(.v-icon) {
-  margin: 0 !important;
-  line-height: 1;
-}
-.profile-alert-badge {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  width: 28px;
-  height: 28px;
+/* Pastille "!" sur l'icône (sidebar ouverte ou réduite) */
+.profile-alert-dot {
+  position: absolute;
+  top: -6px;
+  right: -8px;
+  width: 15px;
+  height: 15px;
   border-radius: 50%;
   background: #ff8a00;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 15px;
+  text-align: center;
 }
 .v-list-item :deep(.v-list-item__append) {
   align-self: center;
