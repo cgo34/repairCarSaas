@@ -18,10 +18,10 @@
       <div class="auth-card">
         <div class="text-center mb-6">
           <h1 class="auth-title">
-            Bienvenue
+            {{ title }}
           </h1>
           <p class="auth-subtitle">
-            Connectez-vous à votre espace
+            {{ subtitle }}
           </p>
         </div>
         <slot />
@@ -32,6 +32,11 @@
 
 <script setup lang="ts">
 import logoUrl from '@/assets/images/logos/logo_car-dent-repair.png'
+
+withDefaults(defineProps<{ title?: string; subtitle?: string }>(), {
+  title: 'Bienvenue',
+  subtitle: 'Connectez-vous à votre espace',
+})
 </script>
 
 <style scoped>
