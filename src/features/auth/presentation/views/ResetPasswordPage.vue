@@ -1,45 +1,72 @@
 <template>
-  <AuthLayout>
-    <v-container class="reset-password-container">
-      <v-card class="reset-password-card">
-        <v-card-title class="text-h5">
-          Réinitialisation du mot de passe
-        </v-card-title>
+  <AuthLayout
+    title="Nouveau mot de passe"
+    subtitle="Choisissez un nouveau mot de passe pour votre compte"
+  >
+    <v-form @submit.prevent="handleResetPassword">
+      <v-alert
+        v-if="errorMessage"
+        type="error"
+        variant="tonal"
+        density="comfortable"
+        class="mb-4"
+      >
+        {{ errorMessage }}
+      </v-alert>
+      <v-alert
+        v-if="successMessage"
+        type="success"
+        variant="tonal"
+        density="comfortable"
+        class="mb-4"
+      >
+        {{ successMessage }}
+      </v-alert>
 
-        <v-card-text>
-          <v-alert
-            v-if="errorMessage"
-            type="error"
-          >
-            {{ errorMessage }}
-          </v-alert>
-          <v-alert
-            v-if="successMessage"
-            type="success"
-          >
-            {{ successMessage }}
-          </v-alert>
+      <v-text-field
+        v-model="newPassword"
+        label="Nouveau mot de passe"
+        required
+        :rules="[passwordRule]"
+        density="comfortable"
+        variant="outlined"
+        color="primary"
+        hide-details="auto"
+        prepend-inner-icon="mdi-lock-outline"
+        :append-inner-icon="showPassword ? 'mdi-eye-outline' : 'mdi-eye-off-outline'"
+        :type="showPassword ? 'text' : 'password'"
+        class="mb-5"
+        @click:append-inner="showPassword = !showPassword"
+      />
 
-          <v-text-field
-            v-model="newPassword"
-            label="Nouveau mot de passe"
-            type="password"
-            required
-            :rules="[passwordRule]"
-          />
-        </v-card-text>
+      <v-btn
+        color="primary"
+        block
+        variant="flat"
+        size="large"
+        type="submit"
+        rounded="lg"
+        :loading="loading"
+        style="font-family:Manrope,sans-serif; font-weight:600; letter-spacing:0.01em;"
+      >
+        Réinitialiser le mot de passe
+      </v-btn>
+    </v-form>
 
-        <v-card-actions>
-          <v-btn
-            color="primary"
-            :loading="loading"
-            @click="handleResetPassword"
-          >
-            Réinitialiser le mot de passe
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-container>
+    <div class="mt-5">
+      <v-divider class="mb-4" />
+      <div class="d-flex justify-center">
+        <v-btn
+          variant="text"
+          color="primary"
+          size="small"
+          to="/login"
+          prepend-icon="mdi-arrow-left"
+        >
+          Retour à la connexion
+        </v-btn>
+      </div>
+    </div>
   </AuthLayout>
 </template>
 
@@ -59,6 +86,7 @@ const newPassword = ref('');
 const errorMessage = ref<string | null>(null);
 const successMessage = ref<string | null>(null);
 const loading = ref(false);
+const showPassword = ref(false);
 
 const passwordRule = (v: string) => v.length >= 8 || 'Le mot de passe doit contenir au moins 8 caractères';
 
@@ -99,19 +127,3 @@ const handleResetPassword = async () => {
   loading.value = false;
 };
 </script>
-
-<style scoped>
-.reset-password-container {
-  max-width: 400px;
-  margin: auto;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-}
-
-.reset-password-card {
-  padding: 20px;
-  width: 100%;
-}
-</style>
