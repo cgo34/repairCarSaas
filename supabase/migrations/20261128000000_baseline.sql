@@ -2,7 +2,6 @@
 -- PostgreSQL database dump
 --
 
-
 -- Dumped from database version 17.6
 -- Dumped by pg_dump version 17.12
 
@@ -315,6 +314,55 @@ begin
         end if;
       end if;
     end if;
+  end if;
+
+  return new;
+end;
+$$;
+
+
+--
+-- Name: enforce_seats_limit(); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION public.enforce_seats_limit() RETURNS trigger
+    LANGUAGE plpgsql SECURITY DEFINER
+    SET search_path TO ''
+    AS $$
+declare
+  v_limit integer;
+  v_count bigint;
+  v_demo  boolean;
+begin
+  if new.status not in ('pending', 'active') then
+    return new;
+  end if;
+
+  if tg_op = 'UPDATE'
+     and old.status in ('pending', 'active')
+     and old.organization_id = new.organization_id then
+    return new;
+  end if;
+
+  select o.is_demo into v_demo from public.organizations o where o.id = new.organization_id;
+  if coalesce(v_demo, false) then
+    return new;
+  end if;
+
+  v_limit := public.org_limit(new.organization_id, 'max_seats');
+  if v_limit is null then
+    return new;
+  end if;
+
+  select count(*) into v_count
+    from public.organization_members m
+   where m.organization_id = new.organization_id
+     and m.status in ('pending', 'active')
+     and m.id <> new.id;
+
+  if v_count >= v_limit then
+    raise exception 'PLAN_LIMIT_SEATS: limite de % utilisateur(s) atteinte pour votre plan', v_limit
+      using errcode = 'P0001';
   end if;
 
   return new;
@@ -843,7 +891,7 @@ $$;
 -- Name: list_platform_users(); Type: FUNCTION; Schema: public; Owner: -
 --
 
-CREATE FUNCTION public.list_platform_users() RETURNS TABLE(id uuid, full_name text, email text, is_blocked boolean, role text, organization_name text, organizations_count bigint, created_at timestamp with time zone)
+CREATE FUNCTION public.list_platform_users() RETURNS TABLE(id uuid, full_name text, email text, is_blocked boolean, role text, organization_name text, organizations_count bigint, created_at timestamp with time zone, is_demo boolean)
     LANGUAGE plpgsql STABLE SECURITY DEFINER
     SET search_path TO ''
     AS $$
@@ -853,24 +901,38 @@ begin
   end if;
 
   return query
-  select distinct on (u.id)
+  select * from (
+    select distinct on (u.id)
+      u.id,
+      coalesce(nullif(u.full_name, ''), nullif(trim(coalesce(u.first_name, '') || ' ' || coalesce(u.last_name, '')), ''))::text as full_name,
+      u.email::text,
+      u.is_blocked,
+      m.role::text as role,
+      o.name::text as organization_name,
+      (select count(*) from public.organization_members mm where mm.user_id = u.id) as organizations_count,
+      au.created_at,
+      coalesce(o.is_demo, false) as is_demo
+    from public.users u
+    join public.organization_members m on m.user_id = u.id
+    join public.organizations o on o.id = m.organization_id
+    left join auth.users au on au.id = u.id
+    where u.platform_role <> 'super_admin'
+    order by u.id, o.created_at
+  ) members
+  union all
+  select
     u.id,
     coalesce(nullif(u.full_name, ''), nullif(trim(coalesce(u.first_name, '') || ' ' || coalesce(u.last_name, '')), ''))::text,
     u.email::text,
     u.is_blocked,
-    m.role::text,
-    o.name::text,
-    (select count(*) from public.organization_members mm
-       where mm.user_id = u.id
-         and mm.organization_id not in (select dp.organization_id from public.demo_profiles dp)),
-    au.created_at
+    'super_admin'::text,
+    null::text,
+    0::bigint,
+    au.created_at,
+    false
   from public.users u
-  join public.organization_members m on m.user_id = u.id
-  join public.organizations o on o.id = m.organization_id
   left join auth.users au on au.id = u.id
-  where u.platform_role <> 'super_admin'
-    and o.id not in (select dp.organization_id from public.demo_profiles dp)
-  order by u.id, o.created_at;
+  where u.platform_role = 'super_admin';
 end;
 $$;
 
@@ -1066,6 +1128,31 @@ BEGIN
 
   RETURN v_org_id;
 END;
+$$;
+
+
+--
+-- Name: set_organization_demo(uuid, boolean); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION public.set_organization_demo(p_organization_id uuid, p_is_demo boolean) RETURNS void
+    LANGUAGE plpgsql SECURITY DEFINER
+    SET search_path TO ''
+    AS $$
+begin
+  if not public.is_super_admin() then
+    raise exception 'Forbidden' using errcode = '42501';
+  end if;
+
+  update public.organizations o
+     set is_demo = coalesce(p_is_demo, false),
+         updated_at = now()
+   where o.id = p_organization_id;
+
+  if not found then
+    raise exception 'Organization not found' using errcode = 'P0002';
+  end if;
+end;
 $$;
 
 
@@ -2526,6 +2613,13 @@ CREATE TRIGGER trg_enforce_limit_invoices BEFORE INSERT ON public.invoices FOR E
 --
 
 CREATE TRIGGER trg_enforce_limit_quotes BEFORE INSERT ON public.quotes FOR EACH ROW EXECUTE FUNCTION public.enforce_plan_limit();
+
+
+--
+-- Name: organization_members trg_enforce_seats_limit; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER trg_enforce_seats_limit BEFORE INSERT OR UPDATE OF status, organization_id ON public.organization_members FOR EACH ROW EXECUTE FUNCTION public.enforce_seats_limit();
 
 
 --
@@ -4041,6 +4135,15 @@ GRANT ALL ON FUNCTION public.enforce_plan_limit() TO service_role;
 
 
 --
+-- Name: FUNCTION enforce_seats_limit(); Type: ACL; Schema: public; Owner: -
+--
+
+GRANT ALL ON FUNCTION public.enforce_seats_limit() TO anon;
+GRANT ALL ON FUNCTION public.enforce_seats_limit() TO authenticated;
+GRANT ALL ON FUNCTION public.enforce_seats_limit() TO service_role;
+
+
+--
 -- Name: FUNCTION expire_subscriptions(); Type: ACL; Schema: public; Owner: -
 --
 
@@ -4214,6 +4317,15 @@ GRANT ALL ON FUNCTION public.preview_plan_changes(p_changes jsonb) TO service_ro
 REVOKE ALL ON FUNCTION public.provision_organization(p_name text) FROM PUBLIC;
 GRANT ALL ON FUNCTION public.provision_organization(p_name text) TO authenticated;
 GRANT ALL ON FUNCTION public.provision_organization(p_name text) TO service_role;
+
+
+--
+-- Name: FUNCTION set_organization_demo(p_organization_id uuid, p_is_demo boolean); Type: ACL; Schema: public; Owner: -
+--
+
+REVOKE ALL ON FUNCTION public.set_organization_demo(p_organization_id uuid, p_is_demo boolean) FROM PUBLIC;
+GRANT ALL ON FUNCTION public.set_organization_demo(p_organization_id uuid, p_is_demo boolean) TO authenticated;
+GRANT ALL ON FUNCTION public.set_organization_demo(p_organization_id uuid, p_is_demo boolean) TO service_role;
 
 
 --
@@ -4704,5 +4816,4 @@ ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA public GRANT ALL ON TABLES 
 --
 -- PostgreSQL database dump complete
 --
-
 
