@@ -60,3 +60,17 @@ jobs:
           path: dist/
           retention-days: 7
           if-no-files-found: error
+
+  database:
+    name: Supabase migrations
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: supabase/setup-cli@v1
+        with:
+          version: latest
+      - name: Start local Supabase
+        run: supabase start -x edge-runtime,imgproxy,logflare,vector,studio,mailpit
+      - name: Replay migrations and seed
+        run: supabase db reset
