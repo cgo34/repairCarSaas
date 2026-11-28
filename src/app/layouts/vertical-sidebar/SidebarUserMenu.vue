@@ -40,7 +40,7 @@ const demoRoleLabel = computed(() => {
           'sidebar-user mb-1 py-2',
           compact ? 'sidebar-user--compact justify-center px-0' : 'justify-start px-3'
         ]"
-        style="background: rgba(255, 255, 255, 0.06);"
+        style="background: rgb(255 255 255 / 6%);"
       >
         <v-avatar
           size="36"
@@ -89,8 +89,8 @@ const demoRoleLabel = computed(() => {
 <style lang="scss">
 .sidebar-user-menu.v-sheet {
   background: rgb(var(--v-theme-navBg)) !important;
-  color: rgba(255, 255, 255, 0.85) !important;
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: rgb(255 255 255 / 85%) !important;
+  border: 1px solid rgb(255 255 255 / 12%);
   border-radius: 8px !important;
 
   .v-list,
@@ -98,39 +98,47 @@ const demoRoleLabel = computed(() => {
     background: transparent !important;
     color: inherit;
   }
+
   .v-list-item {
     border-radius: 6px !important;
   }
+
   .v-list-item:not(.text-error):hover {
-    color: #ffffff;
+    color: #fff;
   }
+
   .text-medium-emphasis {
-    color: rgba(255, 255, 255, 0.6) !important;
+    color: rgb(255 255 255 / 60%) !important;
   }
 }
 </style>
 
 <style scoped>
 .sidebar-user {
-  color: #ffffff;
+  color: #fff;
   text-transform: none;
   letter-spacing: normal;
 }
+
 .sidebar-user--compact {
   min-width: 0;
   width: 100%;
 }
+
 .sidebar-user--compact :deep(.v-btn__content) {
   justify-content: center;
   width: 100%;
 }
+
 .sidebar-user__sub {
-  color: rgba(255, 255, 255, 0.6);
+  color: rgb(255 255 255 / 60%);
 }
+
 .sidebar-user__role {
   color: rgb(var(--v-theme-warning));
   font-weight: 600;
 }
+
 .min-w-0 {
   min-width: 0;
 }

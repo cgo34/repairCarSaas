@@ -6,7 +6,9 @@
     scroll-threshold="60"
     scroll-behavior="hide"
     class="px-6"
-    style="--v-toolbar-background: transparent;"
+    style="
+
+--v-toolbar-background: transparent;"
   >
     <!-- LEFT -->
     <div class="d-flex align-center">
@@ -177,13 +179,16 @@ onBeforeUnmount(() => {
 .app-breadcrumb :deep(.v-breadcrumbs-item--disabled) {
   opacity: 1;
 }
+
 .app-breadcrumb :deep(.breadcrumb-current) {
   font-weight: 700;
   color: rgb(var(--v-theme-on-surface));
 }
+
 .app-breadcrumb :deep(.v-breadcrumbs-item:not(.breadcrumb-current)) {
-  color: rgba(var(--v-theme-on-surface), 0.7);
+  color: rgb(var(--v-theme-on-surface), 0.7);
 }
+
 .app-breadcrumb :deep(.v-breadcrumbs-divider) {
   padding: 0 6px;
 }

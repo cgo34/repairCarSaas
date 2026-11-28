@@ -94,6 +94,7 @@ const handleForgotPassword = async () => {
   align-items: center;
   height: 100vh;
 }
+
 .forgot-password-card {
   padding: 20px;
   width: 100%;

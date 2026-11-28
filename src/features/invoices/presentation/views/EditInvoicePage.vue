@@ -950,6 +950,7 @@ onMounted(async () => {
   --q-soft: #eef0f4;
   --q-text: #1f2330;
   --q-muted: #4b5563;
+
   min-height: 100dvh;
   background: var(--q-bg);
 }
@@ -957,11 +958,11 @@ onMounted(async () => {
 .edit-invoice-container.is-dark {
   --q-bg: transparent;
   --q-card: rgb(var(--v-theme-surface));
-  --q-border: rgba(255, 255, 255, 0.06);
-  --q-border-strong: rgba(255, 255, 255, 0.2);
-  --q-soft: rgba(255, 255, 255, 0.1);
-  --q-text: rgba(255, 255, 255, 0.92);
-  --q-muted: rgba(255, 255, 255, 0.7);
+  --q-border: rgb(255 255 255 / 6%);
+  --q-border-strong: rgb(255 255 255 / 20%);
+  --q-soft: rgb(255 255 255 / 10%);
+  --q-text: rgb(255 255 255 / 92%);
+  --q-muted: rgb(255 255 255 / 70%);
 }
 
 .sent-info {
@@ -1017,7 +1018,7 @@ onMounted(async () => {
   width: 32px;
   height: 32px;
   border-radius: 8px;
-  background: rgba(var(--v-theme-primary), 0.1);
+  background: rgb(var(--v-theme-primary), 0.1);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1025,7 +1026,7 @@ onMounted(async () => {
 }
 
 .line-summary + .line-summary {
-  border-top: 1px solid rgba(var(--v-border-color), 0.08);
+  border-top: 1px solid rgb(var(--v-border-color), 0.08);
 }
 
 .line-items-list {
@@ -1036,7 +1037,7 @@ onMounted(async () => {
 .line-item-card {
   border-radius: 12px;
   padding: 12px;
-  background: rgba(var(--v-theme-surface-variant), 0.1);
+  background: rgb(var(--v-theme-surface-variant), 0.1);
 }
 
 .totals-list {
@@ -1065,7 +1066,7 @@ onMounted(async () => {
   padding: 12px 16px;
   padding-bottom: max(12px, env(safe-area-inset-bottom));
   background: rgb(var(--v-theme-surface));
-  border-top: 1px solid rgba(var(--v-border-color), 0.12);
+  border-top: 1px solid rgb(var(--v-border-color), 0.12);
 }
 
 .equal-height-row > .v-col {

@@ -109,6 +109,7 @@ const handleResetPassword = async () => {
   align-items: center;
   height: 100vh;
 }
+
 .reset-password-card {
   padding: 20px;
   width: 100%;

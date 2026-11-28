@@ -433,20 +433,24 @@ onMounted(load);
 .feature-col {
   width: 42%;
 }
+
 .group-row td {
-  background: rgba(var(--v-theme-on-surface), 0.04);
+  background: rgb(var(--v-theme-on-surface), 0.04);
   font-size: 0.75rem;
   font-weight: 600;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: rgba(var(--v-theme-on-surface), 0.6);
+  color: rgb(var(--v-theme-on-surface), 0.6);
 }
+
 .changed-cell {
-  background: rgba(var(--v-theme-warning), 0.1);
+  background: rgb(var(--v-theme-warning), 0.1);
 }
+
 .limit-input {
   max-width: 100px;
 }
+
 .pending-bar {
   position: sticky;
   bottom: 16px;

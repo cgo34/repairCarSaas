@@ -77,6 +77,7 @@ const props = defineProps({
   line-height: 15px;
   text-align: center;
 }
+
 .v-list-item :deep(.v-list-item__append) {
   align-self: center;
   align-items: center;

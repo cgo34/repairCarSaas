@@ -45,7 +45,7 @@ const footerLink = shallowRef([
   align-items: center;
   justify-content: space-between;
   padding: 8px 24px;
-  border-top: 1px solid rgba(0, 0, 0, 0.08);
+  border-top: 1px solid rgb(0 0 0 / 8%);
 
   .footer-links {
     display: flex;

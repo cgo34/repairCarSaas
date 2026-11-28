@@ -171,6 +171,7 @@ watch(() => route.fullPath, () => { void loadPlanUsage(); }, { immediate: true }
 .mobile-bottom-nav {
   padding-bottom: env(safe-area-inset-bottom);
 }
+
 .mobile-bottom-nav .fab-btn .v-btn__content {
   background: rgb(var(--v-theme-primary));
   border-radius: 50%;
@@ -181,6 +182,6 @@ watch(() => route.fullPath, () => { void loadPlanUsage(); }, { immediate: true }
   justify-content: center;
   color: white;
   margin-bottom: 4px;
-  box-shadow: 0 4px 12px rgba(var(--v-theme-primary), 0.4);
+  box-shadow: 0 4px 12px rgb(var(--v-theme-primary), 0.4);
 }
 </style>

@@ -249,7 +249,7 @@ const languages = [
 
 <style>
 .org-subheader.v-list-subheader {
-  color: rgba(255, 255, 255, 0.85) !important;
+  color: rgb(255 255 255 / 85%) !important;
   opacity: 1;
 }
 </style>

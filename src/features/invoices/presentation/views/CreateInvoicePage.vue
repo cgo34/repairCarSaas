@@ -699,18 +699,19 @@ onMounted(async () => {
   --q-soft: #eef0f4;
   --q-muted: #4b5563;
   --q-text: #1f2330;
+
   min-height: 100dvh;
   background: var(--q-bg) !important;
 }
 
 .create-invoice-container.is-dark {
-  --q-text: rgba(255, 255, 255, 0.92);
+  --q-text: rgb(255 255 255 / 92%);
   --q-bg: transparent;
   --q-card: rgb(var(--v-theme-surface));
-  --q-border: rgba(255, 255, 255, 0.06);
-  --q-border-strong: rgba(255, 255, 255, 0.2);
-  --q-soft: rgba(255, 255, 255, 0.1);
-  --q-muted: rgba(255, 255, 255, 0.7);
+  --q-border: rgb(255 255 255 / 6%);
+  --q-border-strong: rgb(255 255 255 / 20%);
+  --q-soft: rgb(255 255 255 / 10%);
+  --q-muted: rgb(255 255 255 / 70%);
 }
 
 .header-back {
@@ -745,7 +746,7 @@ onMounted(async () => {
   width: 32px;
   height: 32px;
   border-radius: 8px;
-  background: rgba(var(--v-theme-primary), 0.1);
+  background: rgb(var(--v-theme-primary), 0.1);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -817,7 +818,7 @@ onMounted(async () => {
 }
 
 .source-choice.is-active {
-  background: rgba(var(--v-theme-primary), 0.12);
+  background: rgb(var(--v-theme-primary), 0.12);
   border-color: rgb(var(--v-theme-primary));
   color: rgb(var(--v-theme-primary));
 }
@@ -829,7 +830,7 @@ onMounted(async () => {
   padding: 12px 16px;
   padding-bottom: max(12px, env(safe-area-inset-bottom));
   background: rgb(var(--v-theme-surface));
-  border-top: 1px solid rgba(var(--v-border-color), 0.12);
+  border-top: 1px solid rgb(var(--v-border-color), 0.12);
 }
 
 .equal-height-row > .v-col {

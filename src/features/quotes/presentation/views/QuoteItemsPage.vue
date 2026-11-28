@@ -230,7 +230,8 @@ onMounted(async () => {
   --q-text: #1f2330;
   --q-muted: #6b7080;
   --q-faint: #9a9eae;
-  --q-part: rgba(160, 165, 180, 0.12);
+  --q-part: rgb(160 165 180 / 12%);
+
   min-height: 100dvh;
   background: var(--q-bg);
 }
@@ -238,13 +239,13 @@ onMounted(async () => {
 .items-quote-container.is-dark {
   --q-bg: transparent;
   --q-card: rgb(var(--v-theme-surface));
-  --q-border: rgba(255, 255, 255, 0.06);
-  --q-border-strong: rgba(255, 255, 255, 0.2);
-  --q-soft: rgba(255, 255, 255, 0.1);
-  --q-text: rgba(255, 255, 255, 0.92);
-  --q-muted: rgba(255, 255, 255, 0.7);
-  --q-faint: rgba(255, 255, 255, 0.5);
-  --q-part: rgba(255, 255, 255, 0.06);
+  --q-border: rgb(255 255 255 / 6%);
+  --q-border-strong: rgb(255 255 255 / 20%);
+  --q-soft: rgb(255 255 255 / 10%);
+  --q-text: rgb(255 255 255 / 92%);
+  --q-muted: rgb(255 255 255 / 70%);
+  --q-faint: rgb(255 255 255 / 50%);
+  --q-part: rgb(255 255 255 / 6%);
 }
 
 .page-header {
@@ -295,7 +296,7 @@ onMounted(async () => {
   width: 32px;
   height: 32px;
   border-radius: 8px;
-  background: rgba(var(--v-theme-primary), 0.1);
+  background: rgb(var(--v-theme-primary), 0.1);
   display: flex;
   align-items: center;
   justify-content: center;

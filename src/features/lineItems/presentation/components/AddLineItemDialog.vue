@@ -253,14 +253,14 @@ align-items: center;
 gap: 14px;
 padding-bottom: 16px;
 margin-bottom: 20px;
-border-bottom: 1px solid rgba(var(--v-theme-on-surface), 0.1);
+border-bottom: 1px solid rgb(var(--v-theme-on-surface), 0.1);
 }
 
 .dialog-icon {
 width: 44px;
 height: 44px;
 border-radius: 12px;
-background: rgba(var(--v-theme-primary), 0.1);
+background: rgb(var(--v-theme-primary), 0.1);
 display: flex;
 align-items: center;
 justify-content: center;
@@ -275,13 +275,13 @@ line-height: 1.2;
 
 .dialog-subtitle {
 font-size: 13px;
-color: rgba(var(--v-theme-on-surface), 0.6);
+color: rgb(var(--v-theme-on-surface), 0.6);
 margin-top: 2px;
 }
 
 .add-dialog-form :deep(.v-field) {
 border-radius: 12px;
-background: rgba(var(--v-theme-on-surface), 0.05);
+background: rgb(var(--v-theme-on-surface), 0.05);
 }
 
 .add-dialog-form :deep(.v-field--focused) {

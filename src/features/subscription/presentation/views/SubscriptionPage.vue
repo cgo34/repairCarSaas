@@ -608,7 +608,7 @@ onMounted(load)</script>
   break-inside: avoid;
 }
 
-@media (max-width: 959px) {
+@media (width <= 959px) {
   .included-list {
     column-count: 1;
   }

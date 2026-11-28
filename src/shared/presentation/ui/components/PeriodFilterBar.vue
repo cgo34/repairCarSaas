@@ -115,6 +115,7 @@ const onDateToChange = (value: string) => {
   padding-bottom: 4px;
   scrollbar-width: none;
 }
+
 .preset-scroll::-webkit-scrollbar {
   display: none;
 }

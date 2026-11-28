@@ -11,6 +11,7 @@
 .circle {
   position: relative;
   overflow: hidden;
+
   &.sm-circle {
     &::before {
       content: '';

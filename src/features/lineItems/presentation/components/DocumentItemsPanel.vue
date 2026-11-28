@@ -357,7 +357,7 @@ const onRemoveItemBtnClick = (line: LineItemViewModel) => run(() => props.onRemo
   width: 32px;
   height: 32px;
   border-radius: 8px;
-  background: rgba(var(--v-theme-primary), 0.1);
+  background: rgb(var(--v-theme-primary), 0.1);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -370,7 +370,7 @@ const onRemoveItemBtnClick = (line: LineItemViewModel) => run(() => props.onRemo
   gap: 10px;
 }
 
-@media (max-width: 700px) {
+@media (width <= 700px) {
   .parts-grid {
     grid-template-columns: 1fr;
   }
@@ -388,7 +388,7 @@ const onRemoveItemBtnClick = (line: LineItemViewModel) => run(() => props.onRemo
 }
 
 .part:hover {
-  background: rgba(59, 79, 216, 0.12);
+  background: rgb(59 79 216 / 12%);
 }
 
 .part.disabled {
@@ -433,7 +433,7 @@ const onRemoveItemBtnClick = (line: LineItemViewModel) => run(() => props.onRemo
 }
 
 .part.added .part-sub {
-  color: rgba(255, 255, 255, 0.8);
+  color: rgb(255 255 255 / 80%);
 }
 
 .part-actions {
@@ -442,7 +442,7 @@ const onRemoveItemBtnClick = (line: LineItemViewModel) => run(() => props.onRemo
 }
 
 .part-action {
-  background: rgba(255, 255, 255, 0.2) !important;
+  background: rgb(255 255 255 / 20%) !important;
   color: #fff !important;
 }
 
@@ -453,7 +453,7 @@ const onRemoveItemBtnClick = (line: LineItemViewModel) => run(() => props.onRemo
   align-items: start;
 }
 
-@media (max-width: 700px) {
+@media (width <= 700px) {
   .car-wrap {
     grid-template-columns: 1fr;
   }
@@ -480,7 +480,7 @@ const onRemoveItemBtnClick = (line: LineItemViewModel) => run(() => props.onRemo
   width: 15%;
   aspect-ratio: 1;
   border-radius: 50%;
-  background: rgba(160, 165, 180, 0.45);
+  background: rgb(160 165 180 / 45%);
   color: #fff;
   transform: translate(-50%, -50%);
   display: flex;
@@ -495,7 +495,7 @@ const onRemoveItemBtnClick = (line: LineItemViewModel) => run(() => props.onRemo
 }
 
 .dot:hover:not(.disabled) {
-  background: rgba(59, 79, 216, 0.6);
+  background: rgb(59 79 216 / 60%);
   transform: translate(-50%, -50%) scale(1.08);
 }
 
@@ -511,6 +511,6 @@ const onRemoveItemBtnClick = (line: LineItemViewModel) => run(() => props.onRemo
 
 .dot.on {
   background: #3b4fd8;
-  box-shadow: 0 2px 8px rgba(59, 79, 216, 0.4);
+  box-shadow: 0 2px 8px rgb(59 79 216 / 40%);
 }
 </style>

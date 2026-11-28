@@ -438,6 +438,7 @@ onMounted(async () => {
   --q-stage: #eceef5;
   --q-text: #1f2330;
   --q-muted: #4b5563;
+
   min-height: 100dvh;
   background: var(--q-bg);
 }
@@ -445,12 +446,12 @@ onMounted(async () => {
 .view-quote-container.is-dark {
   --q-bg: transparent;
   --q-card: rgb(var(--v-theme-surface));
-  --q-border: rgba(255, 255, 255, 0.06);
-  --q-border-strong: rgba(255, 255, 255, 0.2);
-  --q-soft: rgba(255, 255, 255, 0.1);
-  --q-stage: rgba(255, 255, 255, 0.04);
-  --q-text: rgba(255, 255, 255, 0.92);
-  --q-muted: rgba(255, 255, 255, 0.7);
+  --q-border: rgb(255 255 255 / 6%);
+  --q-border-strong: rgb(255 255 255 / 20%);
+  --q-soft: rgb(255 255 255 / 10%);
+  --q-stage: rgb(255 255 255 / 4%);
+  --q-text: rgb(255 255 255 / 92%);
+  --q-muted: rgb(255 255 255 / 70%);
 }
 
 .header-btn {
@@ -486,8 +487,8 @@ onMounted(async () => {
   padding: 12px 16px;
   border-radius: 12px;
   font-size: 13px;
-  background: rgba(var(--v-theme-primary), 0.1);
-  border: 1px solid rgba(var(--v-theme-primary), 0.25);
+  background: rgb(var(--v-theme-primary), 0.1);
+  border: 1px solid rgb(var(--v-theme-primary), 0.25);
   color: rgb(var(--v-theme-primary));
 }
 
@@ -577,7 +578,7 @@ onMounted(async () => {
   flex: none;
   border-radius: 4px;
   background: #fff;
-  box-shadow: 0 6px 24px rgba(31, 36, 51, 0.15);
+  box-shadow: 0 6px 24px rgb(31 36 51 / 15%);
 }
 
 .side {
@@ -607,7 +608,7 @@ onMounted(async () => {
   border-top: 0;
 }
 
-@media (max-width: 960px) {
+@media (width <= 960px) {
   .view-layout {
     grid-template-columns: 1fr;
   }

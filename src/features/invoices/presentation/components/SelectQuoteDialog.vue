@@ -227,16 +227,16 @@ watch(() => props.modelValue, async open => {
 }
 
 .quote-row {
-  border: 1px solid rgba(var(--v-border-color), 0.12);
+  border: 1px solid rgb(var(--v-border-color), 0.12);
   cursor: pointer;
 }
 
 .quote-row:hover {
-  background: rgba(var(--v-theme-primary), 0.05);
+  background: rgb(var(--v-theme-primary), 0.05);
 }
 
 .quote-row.is-selected {
   border-color: rgb(var(--v-theme-primary));
-  background: rgba(var(--v-theme-primary), 0.08);
+  background: rgb(var(--v-theme-primary), 0.08);
 }
 </style>

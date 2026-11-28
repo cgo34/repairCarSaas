@@ -214,20 +214,20 @@ watch(
   }
 
   :deep(.v-list) {
-    color: rgba(255, 255, 255, 0.75) !important;
+    color: rgb(255 255 255 / 75%) !important;
   }
 
   :deep(.v-list-item--active),
   :deep(.v-list-item--active .v-list-item-title) {
-    color: #ffffff !important;
+    color: #fff !important;
   }
 
   :deep(.v-list-item:hover) {
-    color: #ffffff !important;
+    color: #fff !important;
   }
 
   :deep(.smallCap) {
-    color: rgba(255, 255, 255, 0.4) !important;
+    color: rgb(255 255 255 / 40%) !important;
     font-size: 0.7rem;
     letter-spacing: 0.08em;
     text-transform: uppercase;
