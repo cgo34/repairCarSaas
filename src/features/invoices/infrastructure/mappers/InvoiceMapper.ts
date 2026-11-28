@@ -305,7 +305,7 @@ export class InvoiceMapper {
        */
 
       garage_id:
-        dto.garage?.id ?? null,
+        dto.garage?.id ?? dto.garageId ?? null,
 
       /**
        * ============================================================

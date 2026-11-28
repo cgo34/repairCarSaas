@@ -33,7 +33,7 @@ const props = defineProps({
         </template>
         <!---Title  -->
         <v-list-item-title class="mr-auto">
-          {{ item.title }}
+          {{ $t(item.title) }}
         </v-list-item-title>
         <!---If Caption-->
         <v-list-item-subtitle

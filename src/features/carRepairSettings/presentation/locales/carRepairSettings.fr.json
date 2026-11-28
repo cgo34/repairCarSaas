@@ -1,0 +1,29 @@
+{
+  "carRepairSettings": {
+    "bodyPart": "Élément",
+    "material": "Matériau",
+    "repair": "Réparation"
+  },
+  "bodyParts": {
+    "porte-arriere-gauche": "Porte arrière gauche",
+    "porte-arriere-droite": "Porte arrière droite",
+    "porte-avant-gauche": "Porte avant gauche",
+    "porte-avant-droite": "Porte avant droite",
+    "aile-arriere-gauche": "Aile arrière gauche",
+    "aile-arriere-droite": "Aile arrière droite",
+    "aile-avant-gauche": "Aile avant gauche",
+    "aile-avant-droite": "Aile avant droite",
+    "capot": "Capot",
+    "coffre": "Coffre",
+    "toit": "Toit"
+  },
+  "bodyMaterials": {
+    "aluminium": "Aluminium",
+    "tole": "Tôle"
+  },
+  "repairTypes": {
+    "echange": "Échange",
+    "dsp": "DSP",
+    "dap": "DAP"
+  }
+}

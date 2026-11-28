@@ -28,6 +28,7 @@ export function createUseViewInvoiceState(deps: UseViewInvoiceStateDependencies)
   const error = ref<Error | null>(null);
   const _invoice = ref<InvoiceViewModel | undefined>(undefined);
   const _pdfUrl = ref<string>('');
+  const _lines = ref<{ price?: number; dentRemovalPrice?: number }[]>([]);
   const _company = ref<import('@/features/organizations/application/dtos/OrganizationProfileDto').OrganizationProfileDto | null>(null);
   // #endregion
 
@@ -47,6 +48,7 @@ export function createUseViewInvoiceState(deps: UseViewInvoiceStateDependencies)
         throw new Error('Invoice or invoice details not found');
       }
 
+      _lines.value = lines;
       _invoice.value = InvoiceMapper.dtoToView(invoice);
       _pdfUrl.value = await generatePdfUseCase.execute(invoice, lines, company);
     } catch (e) {
@@ -61,6 +63,22 @@ export function createUseViewInvoiceState(deps: UseViewInvoiceStateDependencies)
   const filename = computed(() => {
     return `invoice-${_invoice.value?.invoiceNumber || 'document'}.pdf`;
   });
+
+  // Montants du panneau récapitulatif (même règle de calcul que la vue devis)
+  const subtotal = computed(() =>
+    _invoice.value?.isForfait
+      ? (_invoice.value.forfaitAmount ?? 0)
+      : _lines.value.reduce((sum, l) => sum + (l.price ?? 0), 0)
+  );
+  const totalDegarnissage = computed(() =>
+    _invoice.value?.isForfait ? 0 : _lines.value.reduce((sum, l) => sum + (l.dentRemovalPrice ?? 0), 0)
+  );
+  const taxRate = computed(() => {
+    const country = _invoice.value?.country;
+    return typeof country === 'object' && country ? (country.taxRate ?? 0) : 0;
+  });
+  const totalTax = computed(() => (subtotal.value + totalDegarnissage.value) * (taxRate.value / 100));
+  const total = computed(() => subtotal.value + totalDegarnissage.value + totalTax.value);
   // #endregion
 
   // #region -> METHODS
@@ -98,6 +116,11 @@ export function createUseViewInvoiceState(deps: UseViewInvoiceStateDependencies)
     downloadPdf,
     sendInvoice,
     filename,
+    subtotal,
+    totalDegarnissage,
+    taxRate,
+    totalTax,
+    total,
 
     invoice: computed(() => _invoice.value),
     pdfUrl: computed(() => _pdfUrl.value),

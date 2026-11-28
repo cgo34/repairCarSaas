@@ -2,6 +2,7 @@ import { QuoteDto } from '@/features/quotes/application/dtos/QuoteDto';
 
 export interface IQuoteRepository {
   generateQuoteNumber(userId: string): Promise<string>;
+  countCreatedSince(organizationId: string, sinceIso: string): Promise<number>;
   
   getAll(): Promise<QuoteDto[]>;
   getAllByUserId(userId: string): Promise<QuoteDto[]>;
@@ -18,4 +19,6 @@ export interface IQuoteRepository {
   updateCommission(quoteId: string, commissionRate: number | null, commissionPaid: boolean): Promise<void>;
   markAsSent(quoteId: string): Promise<void>;
   markAsConverted(quoteId: string): Promise<void>;
+  unmarkAsConverted(quoteId: string): Promise<void>;
+  markAsAccepted(quoteId: string): Promise<void>;
 }

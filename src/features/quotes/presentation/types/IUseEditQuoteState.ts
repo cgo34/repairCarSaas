@@ -1,4 +1,5 @@
 import { ComputedRef, Ref } from 'vue';
+import { QuoteViewModel } from '@/features/quotes/presentation/models/QuoteViewModel';
 import { BodyMaterialViewModel } from '@/features/carRepairSettings/presentation/models/BodyMaterialViewModel';
 import { BodyPartViewModel } from '@/features/carRepairSettings/presentation/models/BodyPartViewModel';
 import { DentRepairTypeViewModel } from '@/features/carRepairSettings/presentation/models/DentRepairTypeViewModel';
@@ -13,10 +14,19 @@ export interface IUseEditQuoteState {
   error: Ref<unknown>;
   isReadOnly: ComputedRef<boolean>;
   isAccepted: ComputedRef<boolean>;
+  isSent: ComputedRef<boolean>;
+  sentAt: ComputedRef<Date | undefined>;
+  hasItems: ComputedRef<boolean>;
+  canSend: ComputedRef<boolean>;
+  canDecide: ComputedRef<boolean>;
+  canDelete: ComputedRef<boolean>;
+  sendQuote(): Promise<void>;
+  finalizeQuote(): Promise<void>;
   isRefused: ComputedRef<boolean>;
 
   init(id: string): Promise<void>;
-  quoteInformations: ComputedRef<{ number: string; date: string, expirationDate: string; status: DocumentStatusViewModel | undefined; }>;
+  quote: ComputedRef<QuoteViewModel | undefined>;
+  quoteInformations: ComputedRef<{ number: string; date: string, expirationDate: string; status: DocumentStatusViewModel | undefined; isSent: boolean; }>;
   expirationDate: ComputedRef<string>;
 
   technicians: Ref<OrganizationMemberViewModel[]>;
@@ -54,8 +64,9 @@ export interface IUseEditQuoteState {
   selectedCountry: ComputedRef<CountryViewModel | undefined>;
 
   quoteLines: Ref<LineItemViewModel[]>;
-  addLine(line: LineItemViewModel): void;
-  removeLine(lineId: string | undefined): void;
+  addLine(line: LineItemViewModel): Promise<void>;
+  updateLine(line: LineItemViewModel): Promise<void>;
+  removeLine(lineId: string | undefined): Promise<void>;
 
   subtotal: ComputedRef<number>;
   subTotalWithDegarnissage: ComputedRef<number>;

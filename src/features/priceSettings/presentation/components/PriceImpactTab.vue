@@ -5,7 +5,7 @@
       type="info"
       icon="$info"
       variant="tonal"
-      text="Le nombre de bosses est traduit en Unités de temps (UT) paramétrables 1UT = 6 minutes"
+      :text="t('priceSettings.impact.info')"
     />
     <v-form>
       <v-row>
@@ -18,14 +18,14 @@
             :key="index"
           >
             <span v-if="line.impactCountMin === line.impactCountMax">
-              {{ line.impactCountMin }} impacts
+              {{ t('priceSettings.impact.count', line.impactCountMin) }}
             </span>
             <span v-else>
-              {{ line.impactCountMin }} - {{ line.impactCountMax }} impacts
+              {{ t('priceSettings.impact.range', { min: line.impactCountMin, max: line.impactCountMax }) }}
             </span>
             <v-text-field
               v-model="line.unitTime"
-              label="Unit time"
+              :label="t('priceSettings.fields.unitTime')"
               required
             />
           </div>
@@ -40,14 +40,14 @@
             :key="index"
           >
             <span v-if="line.impactCountMin === line.impactCountMax">
-              {{ line.impactCountMin }} impacts
+              {{ t('priceSettings.impact.count', line.impactCountMin) }}
             </span>
             <span v-else>
-              {{ line.impactCountMin }} - {{ line.impactCountMax }} impacts
+              {{ t('priceSettings.impact.range', { min: line.impactCountMin, max: line.impactCountMax }) }}
             </span>
             <v-text-field
               v-model="line.unitTime"
-              label="Unit time"
+              :label="t('priceSettings.fields.unitTime')"
               required
             />
           </div>
@@ -59,8 +59,11 @@
 
 <script setup lang="ts">
 import { usePriceSettingsDependencies } from '@/features/priceSettings/composition/usePriceSettingsDependencies';
+import { useI18n } from 'vue-i18n';
 import { usePriceTabForm } from '@/features/priceSettings/presentation/composables/usePriceTabForm';
 import { onMounted } from 'vue';
+
+const { t } = useI18n();
 
 const { useSettingPriceImpactCountToUtState } = usePriceSettingsDependencies();
 

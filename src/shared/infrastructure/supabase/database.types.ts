@@ -280,6 +280,36 @@ export type Database = {
         }
         Relationships: []
       }
+      features: {
+        Row: {
+          created_at: string
+          description: string | null
+          is_addon: boolean
+          key: string
+          name: string
+          stripe_price_id: string | null
+          type: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          is_addon?: boolean
+          key: string
+          name: string
+          stripe_price_id?: string | null
+          type: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          is_addon?: boolean
+          key?: string
+          name?: string
+          stripe_price_id?: string | null
+          type?: string
+        }
+        Relationships: []
+      }
       garage_members: {
         Row: {
           created_at: string | null
@@ -709,6 +739,63 @@ export type Database = {
           },
         ]
       }
+      organization_features: {
+        Row: {
+          created_at: string
+          expires_at: string | null
+          feature_key: string
+          granted_by: string | null
+          id: string
+          note: string | null
+          organization_id: string
+          source: string
+          starts_at: string
+          stripe_subscription_item_id: string | null
+          value: Json | null
+        }
+        Insert: {
+          created_at?: string
+          expires_at?: string | null
+          feature_key: string
+          granted_by?: string | null
+          id?: string
+          note?: string | null
+          organization_id: string
+          source: string
+          starts_at?: string
+          stripe_subscription_item_id?: string | null
+          value?: Json | null
+        }
+        Update: {
+          created_at?: string
+          expires_at?: string | null
+          feature_key?: string
+          granted_by?: string | null
+          id?: string
+          note?: string | null
+          organization_id?: string
+          source?: string
+          starts_at?: string
+          stripe_subscription_item_id?: string | null
+          value?: Json | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "organization_features_feature_key_fkey"
+            columns: ["feature_key"]
+            isOneToOne: false
+            referencedRelation: "features"
+            referencedColumns: ["key"]
+          },
+          {
+            foreignKeyName: "organization_features_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       organization_members: {
         Row: {
           created_at: string | null
@@ -924,6 +1011,39 @@ export type Database = {
         }
         Relationships: []
       }
+      plan_features: {
+        Row: {
+          feature_key: string
+          plan_id: string
+          value: Json | null
+        }
+        Insert: {
+          feature_key: string
+          plan_id: string
+          value?: Json | null
+        }
+        Update: {
+          feature_key?: string
+          plan_id?: string
+          value?: Json | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "plan_features_feature_key_fkey"
+            columns: ["feature_key"]
+            isOneToOne: false
+            referencedRelation: "features"
+            referencedColumns: ["key"]
+          },
+          {
+            foreignKeyName: "plan_features_plan_id_fkey"
+            columns: ["plan_id"]
+            isOneToOne: false
+            referencedRelation: "subscription_plans"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       quote_details: {
         Row: {
           body_material_id: string | null
@@ -991,6 +1111,7 @@ export type Database = {
       }
       quotes: {
         Row: {
+          accepted_at: string | null
           archived_at: string | null
           assigned_member_id: string | null
           car_brand: string | null
@@ -998,6 +1119,8 @@ export type Database = {
           car_year: number | null
           commission_paid: boolean
           commission_rate: number | null
+          convert_to_invoice: boolean
+          converted_at: string | null
           country: string | null
           created_at: string
           created_by_member_id: string
@@ -1020,13 +1143,13 @@ export type Database = {
           organization_id: string
           quote_number: string | null
           sent_at: string | null
-          convert_to_invoice: boolean
           start_date: string | null
           status_id: string | null
           total_ht: number | null
           updated_at: string | null
         }
         Insert: {
+          accepted_at?: string | null
           archived_at?: string | null
           assigned_member_id?: string | null
           car_brand?: string | null
@@ -1034,6 +1157,8 @@ export type Database = {
           car_year?: number | null
           commission_paid?: boolean
           commission_rate?: number | null
+          convert_to_invoice?: boolean
+          converted_at?: string | null
           country?: string | null
           created_at?: string
           created_by_member_id: string
@@ -1056,13 +1181,13 @@ export type Database = {
           organization_id: string
           quote_number?: string | null
           sent_at?: string | null
-          convert_to_invoice?: boolean
           start_date?: string | null
           status_id?: string | null
           total_ht?: number | null
           updated_at?: string | null
         }
         Update: {
+          accepted_at?: string | null
           archived_at?: string | null
           assigned_member_id?: string | null
           car_brand?: string | null
@@ -1070,6 +1195,8 @@ export type Database = {
           car_year?: number | null
           commission_paid?: boolean
           commission_rate?: number | null
+          convert_to_invoice?: boolean
+          converted_at?: string | null
           country?: string | null
           created_at?: string
           created_by_member_id?: string
@@ -1092,7 +1219,6 @@ export type Database = {
           organization_id?: string
           quote_number?: string | null
           sent_at?: string | null
-          convert_to_invoice?: boolean
           start_date?: string | null
           status_id?: string | null
           total_ht?: number | null
@@ -1349,13 +1475,10 @@ export type Database = {
         Row: {
           created_at: string | null
           end_date: string | null
-          extra_seat_price: number
-          extra_seats: number
           id: string
-          included_seats: number
-          max_seats: number | null
           organization_id: string
           plan_id: string
+          source: string
           start_date: string
           status: string
           stripe_subscription_id: string | null
@@ -1363,13 +1486,10 @@ export type Database = {
         Insert: {
           created_at?: string | null
           end_date?: string | null
-          extra_seat_price?: number
-          extra_seats?: number
           id?: string
-          included_seats?: number
-          max_seats?: number | null
           organization_id: string
           plan_id: string
+          source?: string
           start_date: string
           status: string
           stripe_subscription_id?: string | null
@@ -1377,13 +1497,10 @@ export type Database = {
         Update: {
           created_at?: string | null
           end_date?: string | null
-          extra_seat_price?: number
-          extra_seats?: number
           id?: string
-          included_seats?: number
-          max_seats?: number | null
           organization_id?: string
           plan_id?: string
+          source?: string
           start_date?: string
           status?: string
           stripe_subscription_id?: string | null
@@ -1415,6 +1532,7 @@ export type Database = {
           last_name: string | null
           percentage_commission: number | null
           phone: string | null
+          platform_role: Database["public"]["Enums"]["platform_role"]
           profile_picture_url: string | null
         }
         Insert: {
@@ -1426,6 +1544,7 @@ export type Database = {
           last_name?: string | null
           percentage_commission?: number | null
           phone?: string | null
+          platform_role?: Database["public"]["Enums"]["platform_role"]
           profile_picture_url?: string | null
         }
         Update: {
@@ -1488,21 +1607,180 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      organization_effective_features: {
+        Row: {
+          feature_key: string | null
+          organization_id: string | null
+          type: string | null
+          value: Json | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
-      ensure_user_profile: {
-        Args: {
-          email: string
-          full_name: string
-          role: string
-          user_id: string
-        }
-        Returns: undefined
-      }
       is_organization_admin: {
         Args: { target_organization_id: string }
         Returns: boolean
+      }
+      is_super_admin: {
+        Args: Record<PropertyKey, never>
+        Returns: boolean
+      }
+      provision_organization: {
+        Args: { p_name: string }
+        Returns: string
+      }
+      switch_demo_profile: {
+        Args: { p_profile_id: string }
+        Returns: undefined
+      }
+      clear_demo_profile: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
+      create_demo_profile: {
+        Args: { p_organization_id: string; p_role: string; p_label?: string }
+        Returns: string
+      }
+      delete_demo_profile: {
+        Args: { p_profile_id: string }
+        Returns: undefined
+      }
+      get_demo_profile_context: {
+        Args: Record<PropertyKey, never>
+        Returns: { profile_id: string; organization_id: string; role: string }[]
+      }
+      get_platform_stats: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          organizations_total: number
+          free_organizations: number
+          premium_organizations: number
+          new_organizations_30d: number
+          users_total: number
+          new_users_30d: number
+          blocked_users: number
+          mrr_cents: number
+          quotes_total: number
+          invoices_total: number
+          signups_6m: Json
+          near_quota_organizations: number
+          expiring_subscriptions: number
+          recent_organizations: Json
+        }[]
+      }
+      grant_feature: {
+        Args: { p_organization_id: string; p_feature_key: string; p_duration: string }
+        Returns: undefined
+      }
+      grant_premium: {
+        Args: { p_organization_id: string; p_duration: string }
+        Returns: undefined
+      }
+      set_organization_demo: {
+        Args: { p_organization_id: string; p_is_demo: boolean }
+        Returns: undefined
+      }
+      list_platform_organizations: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          id: string
+          name: string
+          created_at: string | null
+          plan_code: string | null
+          subscription_status: string | null
+          members_count: number
+          garages_count: number
+          quotes_count: number
+          invoices_count: number
+          is_demo: boolean
+          members_limit: number | null
+          garages_limit: number | null
+          quotes_limit: number | null
+          invoices_limit: number | null
+          quotes_month_count: number
+          invoices_month_count: number
+        }[]
+      }
+      list_platform_plans: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          plan_id: string
+          plan_code: string
+          plan_name: string
+          price_cents: number
+          orgs_count: number
+          feature_key: string
+          feature_type: string
+          feature_name: string
+          feature_description: string | null
+          is_addon: boolean
+          has_value: boolean
+          value: Json | null
+        }[]
+      }
+      set_plan_feature: {
+        Args: { p_plan_id: string; p_feature_key: string; p_value: Json }
+        Returns: undefined
+      }
+      preview_plan_changes: {
+        Args: { p_changes: Json }
+        Returns: {
+          plan_id: string
+          plan_code: string
+          feature_key: string
+          feature_name: string
+          feature_type: string
+          old_value: Json | null
+          new_value: Json | null
+          orgs_on_plan: number
+          orgs_affected: number
+          is_risky: boolean
+        }[]
+      }
+      apply_plan_changes: {
+        Args: { p_changes: Json }
+        Returns: number
+      }
+      list_plan_change_log: {
+        Args: { p_limit?: number }
+        Returns: {
+          id: string
+          changed_at: string
+          changed_by: string | null
+          plan_code: string
+          feature_key: string
+          feature_name: string | null
+          old_value: Json | null
+          new_value: Json | null
+          orgs_on_plan: number
+          orgs_affected: number
+        }[]
+      }
+      list_platform_users: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          id: string
+          full_name: string | null
+          email: string
+          is_blocked: boolean
+          role: string
+          organization_name: string | null
+          organizations_count: number
+          created_at: string | null
+          is_demo: boolean
+        }[]
+      }
+      list_demo_profiles: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          profile_id: string
+          organization_id: string
+          organization_name: string
+          plan_code: string | null
+          role: string
+          label: string
+        }[]
       }
       set_user_blocked: {
         Args: { blocked: boolean; target_user_id: string }
@@ -1511,6 +1789,7 @@ export type Database = {
     }
     Enums: {
       organization_member_status: "pending" | "active" | "blocked" | "archived"
+      platform_role: "user" | "super_admin"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -1639,6 +1918,7 @@ export const Constants = {
   public: {
     Enums: {
       organization_member_status: ["pending", "active", "blocked", "archived"],
+      platform_role: ["user", "super_admin"],
     },
   },
 } as const

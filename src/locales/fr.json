@@ -1,0 +1,96 @@
+{
+  "common": {
+    "home": "Tableau de bord",
+    "back": "Retour",
+    "nav": {
+      "dashboard": "Tableau de bord",
+      "hail": "Météo grêle",
+      "activity": "Activité",
+      "quotes": "Devis",
+      "invoices": "Factures",
+      "organization": "Organisation",
+      "garages": "Garages",
+      "members": "Utilisateurs",
+      "settings": "Paramètres",
+      "organizationSettings": "Organisation",
+      "pricing": "Tarification",
+      "subscription": "Abonnement",
+      "premium": "Premium",
+      "home": "Accueil",
+      "weather": "Météo"
+    },
+    "menu": {
+      "account": "Mon compte",
+      "darkTheme": "Thème sombre",
+      "demoProfiles": "Profils de démonstration",
+      "language": "Langue",
+      "logout": "Déconnexion"
+    },
+    "save": "Enregistrer",
+    "saved": "Enregistré",
+    "cancel": "Annuler",
+    "featureGate": {
+      "premiumTitle": "Fonctionnalité Premium",
+      "premiumHint": "Disponible avec l'offre Premium."
+    },
+    "planLimit": {
+      "garages": "Vous avez atteint la limite de {limit} garage(s) de votre offre.",
+      "members": "Limite d'utilisateurs atteinte ({limit} / {limit}) pour votre offre.",
+      "quotes": "Vous avez atteint la limite de {limit} devis par mois de votre offre.",
+      "invoices": "Vous avez atteint la limite de {limit} facture(s) par mois de votre offre.",
+      "conversions": "Vous avez atteint la limite de {limit} conversion(s) devis en facture par mois de votre offre.",
+      "garagesReached": "Vous avez atteint la limite de garages de votre offre.",
+      "quotesReached": "Vous avez atteint la limite de devis par mois de votre offre.",
+      "invoicesReached": "Vous avez atteint la limite de factures par mois de votre offre.",
+      "conversionsReached": "Vous avez atteint la limite de conversions devis en facture par mois de votre offre.",
+      "usage": "{used} / {limit} {label} ce mois-ci : vous approchez de la limite de votre offre.",
+      "label": {
+        "quotes": "devis",
+        "invoices": "factures",
+        "conversions": "conversions",
+        "garages": "garages",
+        "members": "utilisateurs"
+      },
+      "upgradeHint": "Passez à l'offre Premium pour lever cette limite.",
+      "upgrade": "Gérer l'abonnement"
+    },
+    "reset": "Réinitialiser",
+    "required": "Champ obligatoire",
+    "invalidEmail": "Email invalide",
+    "confirm": "Confirmer",
+    "delete": "Supprimer",
+    "export": "Exporter",
+    "period": {
+      "all": "Tout",
+      "today": "Aujourd'hui",
+      "week": "Cette semaine",
+      "month": "Ce mois",
+      "year": "Cette année",
+      "allDates": "Toutes les dates",
+      "custom": "Personnalisée",
+      "from": "Du",
+      "to": "Au"
+    },
+    "table": {
+      "itemsPerPage": "Lignes par page"
+    },
+    "download": "Télécharger",
+    "totals": {
+      "summary": "Récapitulatif",
+      "exclTax": "Total H.T",
+      "inclTax": "Total TTC",
+      "stripping": "Dégarnissage",
+      "totalStripping": "Total dégarnissage",
+      "exclTaxPlusStripping": "H.T + Dégarnissage",
+      "vat": "TVA ({rate}%)",
+      "commission": "Commission ({rate}%)"
+    },
+    "search": "Rechercher",
+    "timeAgo": {
+      "now": "à l'instant",
+      "minutes": "il y a {n} min",
+      "hours": "il y a {n} h",
+      "days": "il y a {n} j"
+    }
+  }
+}

@@ -33,8 +33,7 @@ export const authRoutes: RouteRecordRaw[] = [
     path: '/reset-password',
     name: 'ResetPassword',
     component: ResetPasswordPage,
-    props: route => ({ token: route.query.token }) // 🔥 Important pour garder le token
-  },  
+  },
   {
     path: '/logout',
     component: {},

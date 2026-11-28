@@ -1,0 +1,137 @@
+{
+  "subscription": {
+    "breadcrumb": {
+      "root": "Abonnement",
+      "mine": "Mon abonnement",
+      "usage": "Utilisation",
+      "invoices": "Factures"
+    },
+    "page": {
+      "title": "Mon abonnement",
+      "subtitle": "Gérez votre abonnement, mettez à jour vos informations de paiement et consultez l'historique de vos factures.",
+      "currentPlan": "Votre offre actuelle",
+      "plan": {
+        "freeName": "Offre Free",
+        "essentialName": "Offre Essentielle",
+        "freeBadge": "Offre gratuite",
+        "essentialBadge": "Offre de base",
+        "freeDescription": "Offre d'inscription avec fonctionnalités limitées.",
+        "essentialDescription": "Toutes les fonctionnalités essentielles pour gérer vos devis, factures et garages."
+      },
+      "changePlan": "Changer d'offre",
+      "pricing": "Tarification",
+      "seatsIncluded": "{count} utilisateurs inclus",
+      "extraSeatPrice": "{price} / mois / utilisateur supplémentaire",
+      "perUserMonth": "par utilisateur / mois",
+      "noBilling": "Sans facturation",
+      "monthlyBilling": "Facturation mensuelle",
+      "compare": "Comparer les offres",
+      "included": "Inclus dans votre offre",
+      "perMonthShort": " / mois",
+      "alert": {
+        "title": "Quota bientôt atteint",
+        "text": "Vous approchez de la limite de votre offre : {items}."
+      },
+      "feature": {
+        "user": "utilisateur",
+        "users": "utilisateurs",
+        "garage": "garage",
+        "garages": "garages",
+        "quote": "devis",
+        "quotes": "devis",
+        "invoice": "facture",
+        "invoices": "factures",
+        "perMonth": "par mois",
+        "conversion": "conversion devis en facture",
+        "conversions": "conversions devis en facture",
+        "invoiceEmailSending": "Envoi des factures par e-mail",
+        "quoteToInvoice": "Transformation d'un devis en facture",
+        "emailSending": "Envoi des devis par e-mail",
+        "carView": "Vue véhicule"
+      },
+      "yourPlan": "Votre offre",
+      "comingSoon": "Bientôt disponible",
+      "help": {
+        "title": "Besoin d'aide ?",
+        "text": "Notre équipe est là pour vous accompagner.",
+        "contact": "Contacter le support"
+      },
+      "invoices": {
+        "title": "Historique de factures",
+        "date": "Date",
+        "number": "N° de facture",
+        "period": "Période",
+        "amount": "Montant HT",
+        "status": "Statut",
+        "action": "Action",
+        "paid": "Payée",
+        "viewAll": "Voir toutes les factures"
+      },
+      "payment": {
+        "title": "Mode de paiement",
+        "expires": "Expire {date}",
+        "update": "Mettre à jour"
+      },
+      "secure": "Paiement 100% sécurisé. Vos données sont protégées.",
+      "details": {
+        "type": "Type d'abonnement",
+        "free": "Gratuit",
+        "monthly": "Mensuel",
+        "start": "Date de début",
+        "end": "Date de fin",
+        "none": "Aucune",
+        "noneMasc": "Aucun",
+        "nextDebit": "Prochain prélèvement"
+      },
+      "plans": {
+        "quotesInvoices": "Devis & factures",
+        "free": {
+          "name": "Free",
+          "unit": "pour toujours",
+          "badge": "Offre actuelle",
+          "f1": "3 utilisateurs inclus",
+          "f3": "Garages illimités"
+        },
+        "essential": {
+          "name": "Essentielle",
+          "f1": "Utilisateurs illimités",
+          "f3": "Support par e-mail"
+        },
+        "premium": {
+          "name": "Premium",
+          "f1": "Tout Essentielle",
+          "f2": "Statistiques avancées",
+          "f3": "Support prioritaire"
+        }
+      },
+      "kpi": {
+        "users": "Utilisateurs",
+        "activeUsers": "utilisateurs actifs",
+        "manageUsers": "Gérer les utilisateurs",
+        "extraUser": "Utilisateur supplémentaire",
+        "extraUserLimit": "par mois, au-delà de {count} utilisateurs inclus",
+        "garages": "Garages",
+        "unlimited": "Illimités",
+        "noGarageLimit": "aucune limite de garages",
+        "garagesLimit": "garages enregistrés",
+        "quotesMonth": "Devis du mois",
+        "invoicesMonth": "Factures du mois",
+        "createdThisMonth": "créés ce mois-ci",
+        "conversionsMonth": "Conversions du mois",
+        "convertedThisMonth": "devis convertis ce mois-ci",
+        "billing": "Facturation",
+        "noneFem": "Aucune",
+        "freeCaption": "Plan gratuit · {price} / mois",
+        "monthlyCost": "Coût mensuel",
+        "exclTaxMonth": "HT / mois",
+        "seeDetail": "Voir le détail",
+        "amountExclTax": "{amount} HT",
+        "seePayment": "Voir le mode de paiement"
+      },
+      "overlay": {
+        "message": "Cette fonctionnalité est réservée aux utilisateurs avec une souscription payante.",
+        "upgrade": "Mettre à niveau"
+      }
+    }
+  }
+}

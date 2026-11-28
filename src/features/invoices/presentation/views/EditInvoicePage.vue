@@ -2,730 +2,689 @@
   <MainLayout>
     <v-container
       fluid
-      class="pa-0 edit-invoice-container"
+      class="pa-0 mt-4 edit-invoice-container"
+      :class="{ 'is-dark': isDark }"
     >
       <!-- ═══════════════════════════════════════════════════
-           HEADER sticky
-      ════════════════════════════════════════════════════ -->
-      <div class="page-header px-3 py-2">
-        <div class="d-flex align-center justify-space-between">
-          <!-- Gauche : retour + titre -->
-          <div class="d-flex flex-column align-center gap-2 min-w-0">
-            <div class="d-flex min-w-0">
-              <v-btn
-                icon
-                variant="text"
-                size="small"
-                @click="$router.back()"
-              >
-                <v-icon>mdi-arrow-left</v-icon>
-              </v-btn>
-              <div class="d-flex flex-column  align-left gap-2 flex-wrap ml-5">
-                <div>
-                  <span class="text-subtitle-1 font-weight-bold text-truncate my-2">
-                    Facture numéro :
-                  </span>
-                  {{ invoiceInformations.number || 'Facture' }}
-                </div>
-                <div>
-                  <span class="text-subtitle-1 font-weight-bold text-truncate my-2">
-                    Statut :
-                  </span>
-                  <v-chip
-                    v-if="invoiceStatus"
-                    size="x-small"
-                    :color="paymentStatusColor(invoiceStatus)"
-                    variant="tonal"
-                    class="mt-0"
-                  >
-                    {{ paymentStatusLabel(invoiceStatus) }}
-                  </v-chip>
-                </div>
-              </div>
+            HEADER
+        ════════════════════════════════════════════════════ -->
+      <div class="page-header mx-3 mb-3 px-4 py-3 d-flex align-center justify-space-between flex-wrap gap-2">
+        <div class="d-flex align-center gap-3 min-w-0">
+          <v-btn
+            icon
+            variant="outlined"
+            size="small"
+            class="header-back"
+            @click="$router.back()"
+          >
+            <v-icon>mdi-arrow-left</v-icon>
+          </v-btn>
+          <div class="ml-3">
+            <div class="text-h6 font-weight-bold">
+              {{ t('invoices.view.title', { number: invoiceInformations.number || '' }) }}
+            </div>
+            <div
+              v-if="invoiceInformations.date"
+              class="text-caption text-medium-emphasis"
+            >
+              {{ t('invoices.view.createdOn', { date: formatDate(invoiceInformations.date) }) }}
+              <template v-if="invoiceInformations.quoteNumber">
+                · {{ t('invoices.view.fromQuote', { number: invoiceInformations.quoteNumber }) }}
+              </template>
             </div>
           </div>
+          <v-chip
+            v-if="invoiceStatus"
+            class="ml-3"
+            :color="statusColor(invoiceStatus)"
+            size="small"
+            variant="tonal"
+          >
+            {{ statusLabel(invoiceStatus) }}
+          </v-chip>
+        </div>
 
-          <!-- Droite : actions -->
-          <div class="d-flex align-center gap-1 flex-shrink-0">
-            <!-- PDF toujours visible -->
-            <v-btn
-              icon
-              variant="text"
-              size="small"
-              title="Aperçu PDF"
-              @click="onViewPdfBtnClick"
-            >
-              <v-icon>mdi-file-pdf-box</v-icon>
-            </v-btn>
-
-            <!-- Menu overflow -->
-            <v-menu location="bottom end">
-              <template #activator="{ props: menuProps }">
-                <v-btn
-                  icon
-                  variant="text"
-                  size="small"
-                  v-bind="menuProps"
-                >
-                  <v-icon>mdi-dots-vertical</v-icon>
-                </v-btn>
-              </template>
-              <v-list
-                density="compact"
-                rounded="lg"
-                min-width="200"
-              >
-                <v-list-item
-                  prepend-icon="mdi-send-outline"
-                  title="Envoyer"
-                  @click="onSendBtnClick"
-                />
-                <v-list-item
-                  prepend-icon="mdi-check-bold"
-                  title="Finaliser"
-                  @click="onFinalizeBtnClick"
-                />
-                <v-divider />
-                <v-list-item
-                  prepend-icon="mdi-delete-outline"
-                  title="Supprimer"
-                  class="text-error"
-                  base-color="error"
-                  @click="onDeleteBtnClick"
-                />
-              </v-list>
-            </v-menu>
-          </div>
+        <div class="d-flex align-center ga-3 flex-shrink-0">
+          <v-btn
+            variant="outlined"
+            height="40"
+            class="px-5 header-btn"
+            prepend-icon="mdi-file-pdf-box"
+            @click="onViewPdfBtnClick"
+          >
+            {{ t('invoices.actions.viewPdf') }}
+          </v-btn>
         </div>
       </div>
 
+      <!-- Bandeau : facture verrouillée dès qu'elle n'est plus un brouillon -->
+      <v-alert
+        v-if="isReadOnly"
+        class="mx-3 mb-3"
+        type="info"
+        variant="tonal"
+        density="comfortable"
+        icon="mdi-lock-outline"
+      >
+        {{ t('invoices.edit.final') }}
+      </v-alert>
+
       <!-- ═══════════════════════════════════════════════════
-           FORM
-      ════════════════════════════════════════════════════ -->
+            FORM
+        ════════════════════════════════════════════════════ -->
       <v-form
         ref="form"
         class="px-3 pt-3 pb-28"
       >
-        <!-- ── Section : Statut de paiement ── -->
-        <div class="section-card mb-4">
-          <div class="section-header mb-3">
-            <div class="section-icon">
-              <v-icon
-                size="18"
-                color="primary"
-              >
-                mdi-cash-check
-              </v-icon>
-            </div>
-            <span class="text-subtitle-2 font-weight-semibold">Statut de paiement</span>
-          </div>
-
-          <div class="d-flex gap-3">
-            <v-btn
-              :variant="invoiceStatus === 'pending' ? 'flat' : 'tonal'"
-              :color="invoiceStatus === 'pending' ? 'orange' : undefined"
-              class="flex-grow-1 status-btn"
-              :prepend-icon="invoiceStatus === 'pending' ? 'mdi-clock' : 'mdi-clock-outline'"
-              :loading="statusLoading && invoiceStatus !== 'pending'"
-              rounded="lg"
-              @click="onUpdateStatus('pending')"
-            >
-              En attente
-            </v-btn>
-            <v-btn
-              :variant="invoiceStatus === 'validated' ? 'flat' : 'tonal'"
-              :color="invoiceStatus === 'validated' ? 'success' : undefined"
-              class="flex-grow-1 status-btn"
-              :prepend-icon="invoiceStatus === 'validated' ? 'mdi-check-circle' : 'mdi-check-circle-outline'"
-              :loading="statusLoading && invoiceStatus !== 'validated'"
-              rounded="lg"
-              @click="onUpdateStatus('validated')"
-            >
-              Payé
-            </v-btn>
-          </div>
-
-          <div class="mt-2 text-caption text-medium-emphasis d-flex align-center gap-1">
-            <v-icon size="13">
-              mdi-information-outline
-            </v-icon>
-            Le statut est mis à jour immédiatement et reflété dans le tableau de bord.
-          </div>
-        </div>
-        
-        <!-- ── Section 1 : Dates ── -->
-        <div class="section-card mb-4">
-          <div class="section-header mb-3">
-            <div class="section-icon">
-              <v-icon
-                size="18"
-                color="primary"
-              >
-                mdi-calendar-outline
-              </v-icon>
-            </div>
-            <span class="text-subtitle-2 font-weight-semibold">Dates</span>
-          </div>
-          <v-row dense>
-            <v-col
-              cols="12"
-              sm="6"
-            >
-              <v-text-field
-                v-model="invoiceInformations.date"
-                label="Date de facturation"
-                type="date"
-                variant="outlined"
-                density="comfortable"
-                hide-details="auto"
-              />
-            </v-col>
-            <v-col
-              cols="12"
-              sm="6"
-            >
-              <v-text-field
-                :model-value="expirationDate"
-                label="Échéance"
-                type="date"
-                variant="outlined"
-                density="comfortable"
-                readonly
-                hide-details="auto"
-              />
-            </v-col>
-          </v-row>
-        </div>
-
-        <!-- ── Section 2 : Technicien ── -->
-        <div class="section-card mb-4">
-          <div class="section-header mb-3">
-            <div class="section-icon">
-              <v-icon
-                size="18"
-                color="primary"
-              >
-                mdi-account-wrench-outline
-              </v-icon>
-            </div>
-            <span class="text-subtitle-2 font-weight-semibold">Technicien</span>
-          </div>
-          <v-autocomplete
-            :model-value="selectedTechnician"
-            :items="technicians"
-            :item-title="item => `${item.users.first_name} ${item.users.last_name}`"
-            item-value="id"
-            return-object
-            label="Sélectionner un technicien"
-            variant="outlined"
-            density="comfortable"
-            clearable
-            hide-details="auto"
-            prepend-inner-icon="mdi-account-search-outline"
-            @update:model-value="onSelectTechnician"
+        <v-row>
+          <v-col
+            cols="12"
+            md="8"
           >
-            <template #item="{ props: itemProps, item }">
-              <v-list-item v-bind="itemProps">
-                <template #prepend>
-                  <v-avatar
-                    color="primary"
-                    size="36"
-                  >
-                    <span class="text-caption font-weight-bold text-white">
-                      {{ initials(item.raw.users.first_name + ' ' + item.raw.users.last_name) }}
-                    </span>
-                  </v-avatar>
-                </template>
-              </v-list-item>
-            </template>
-            <template #selection="{ item }">
-              <div class="d-flex align-center gap-2">
-                <v-avatar
-                  color="primary"
-                  size="24"
-                >
-                  <span
-                    style="font-size:10px"
-                    class="text-white"
-                  >{{ initials(item.raw.users.first_name + ' ' + item.raw.users.last_name) }}</span>
-                </v-avatar>
-                <span>{{ item.raw.users.first_name }} {{ item.raw.users.last_name }}</span>
-              </div>
-            </template>
-          </v-autocomplete>
-        </div>
-
-        <!-- ── Section 3 : Client / Garage ── -->
-        <div class="section-card mb-4">
-          <div class="section-header mb-3">
-            <div class="section-icon">
-              <v-icon
-                size="18"
-                color="primary"
-              >
-                mdi-garage
-              </v-icon>
-            </div>
-            <span class="text-subtitle-2 font-weight-semibold">Client / Garage</span>
-          </div>
-
-          <v-autocomplete
-            :model-value="selectedGarage"
-            :items="garages"
-            item-title="name"
-            item-value="id"
-            return-object
-            label="Sélectionner un garage"
-            variant="outlined"
-            density="comfortable"
-            clearable
-            hide-details="auto"
-            prepend-inner-icon="mdi-garage"
-            @update:model-value="onSelectGarage"
-          >
-            <template #item="{ props: itemProps, item }">
-              <v-list-item
-                v-bind="itemProps"
-                :subtitle="item.raw.city ?? ''"
-              >
-                <template #prepend>
-                  <v-icon color="primary">
-                    mdi-garage
-                  </v-icon>
-                </template>
-              </v-list-item>
-            </template>
-          </v-autocomplete>
-
-          <v-btn
-            variant="tonal"
-            color="primary"
-            size="small"
-            class="mt-2"
-            prepend-icon="mdi-pencil-outline"
-            @click="onEditCustomerBtnClick"
-          >
-            Modifier le client
-          </v-btn>
-
-          <v-expand-transition>
-            <div
-              v-if="selectedGarage"
-              class="mt-3"
-            >
-              <v-card
-                variant="tonal"
-                color="primary"
-                rounded="lg"
-                class="pa-3"
-              >
-                <div class="d-flex align-center gap-2 mb-1">
+            <!-- ── Dates ── -->
+            <div class="section-card mb-4">
+              <div class="section-header mb-3">
+                <div class="section-icon">
                   <v-icon
                     size="18"
                     color="primary"
                   >
-                    mdi-garage
+                    mdi-calendar-outline
                   </v-icon>
-                  <span class="text-body-2 font-weight-medium">{{ selectedGarage.name }}</span>
                 </div>
-                <div
-                  v-if="selectedGarage.address"
-                  class="text-caption text-medium-emphasis"
+                <span class="text-subtitle-1 font-weight-bold">{{ t('invoices.form.dates') }}</span>
+              </div>
+              <v-row dense>
+                <v-col
+                  cols="12"
+                  sm="6"
                 >
-                  {{ selectedGarage.address }}<span v-if="selectedGarage.zip_code">, {{ selectedGarage.zip_code }}</span><span v-if="selectedGarage.city"> {{ selectedGarage.city }}</span>
-                </div>
-                <div
-                  v-if="selectedGarage.percentageCommission"
-                  class="mt-1"
+                  <v-text-field
+                    v-model="invoiceInformations.date"
+                    :label="t('invoices.form.invoiceDate')"
+                    type="date"
+                    variant="outlined"
+                    density="comfortable"
+                    :readonly="isReadOnly"
+                    hide-details="auto"
+                  />
+                </v-col>
+                <v-col
+                  cols="12"
+                  sm="6"
                 >
-                  <v-chip
-                    size="x-small"
-                    color="orange"
-                    variant="tonal"
+                  <v-text-field
+                    :model-value="expirationDate"
+                    :label="t('invoices.form.dueDate')"
+                    type="date"
+                    variant="outlined"
+                    density="comfortable"
+                    readonly
+                    hide-details="auto"
+                  />
+                </v-col>
+              </v-row>
+            </div>
+
+            <v-row class="equal-height-row">
+              <v-col
+                cols="12"
+                md="6"
+                class="d-flex"
+              >
+                <!-- ── Technicien ── -->
+                <div class="section-card mb-4 flex-grow-1">
+                  <div class="section-header mb-3">
+                    <div class="section-icon">
+                      <v-icon
+                        size="18"
+                        color="primary"
+                      >
+                        mdi-account-wrench-outline
+                      </v-icon>
+                    </div>
+                    <span class="text-subtitle-1 font-weight-bold">{{ t('invoices.form.technician') }}</span>
+                  </div>
+                  <v-autocomplete
+                    :model-value="selectedTechnician"
+                    :items="technicians"
+                    :item-title="item => `${item.users.first_name} ${item.users.last_name}`"
+                    item-value="id"
+                    return-object
+                    :label="t('invoices.form.selectTechnician')"
+                    variant="outlined"
+                    density="comfortable"
+                    :readonly="isReadOnly"
+                    :clearable="!isReadOnly"
+                    hide-details="auto"
+                    prepend-inner-icon="mdi-account-search-outline"
+                    @update:model-value="onSelectTechnician"
                   >
-                    Commission {{ selectedGarage.percentageCommission }}%
-                  </v-chip>
+                    <template #item="{ props: itemProps, item }">
+                      <v-list-item v-bind="itemProps">
+                        <template #prepend>
+                          <v-avatar
+                            color="primary"
+                            size="36"
+                          >
+                            <span class="text-caption font-weight-bold text-white">
+                              {{ initials(item.raw.users.first_name + ' ' + item.raw.users.last_name) }}
+                            </span>
+                          </v-avatar>
+                        </template>
+                      </v-list-item>
+                    </template>
+                    <template #selection="{ item }">
+                      <div class="d-flex align-center gap-2">
+                        <v-avatar
+                          color="primary"
+                          size="24"
+                        >
+                          <span
+                            style="font-size:10px"
+                            class="text-white"
+                          >{{ initials(item.raw.users.first_name + ' ' + item.raw.users.last_name) }}</span>
+                        </v-avatar>
+                        <span>{{ item.raw.users.first_name }} {{ item.raw.users.last_name }}</span>
+                      </div>
+                    </template>
+                  </v-autocomplete>
                 </div>
-              </v-card>
-            </div>
-          </v-expand-transition>
-        </div>
-
-        <!-- ── Section 4 : Véhicule ── -->
-        <div class="section-card mb-4">
-          <div class="section-header mb-3">
-            <div class="section-icon">
-              <v-icon
-                size="18"
-                color="primary"
+              </v-col>
+              <v-col
+                cols="12"
+                md="6"
+                class="d-flex"
               >
-                mdi-car
-              </v-icon>
-            </div>
-            <span class="text-subtitle-2 font-weight-semibold">Véhicule</span>
-          </div>
-
-          <!-- <v-autocomplete
-            :model-value="selectedVehicle"
-            :items="vehiclesList"
-            :item-title="v => v.immatriculation + ' — ' + v.marque + (v.annee ? ' ' + v.annee : '')"
-            item-value="id"
-            return-object
-            label="Véhicule existant (optionnel)"
-            variant="outlined"
-            density="comfortable"
-            clearable
-            :disabled="!selectedGarage"
-            :no-data-text="selectedGarage ? 'Aucun véhicule trouvé' : 'Sélectionnez d\'abord un garage'"
-            hide-details="auto"
-            prepend-inner-icon="mdi-car-search-outline"
-            class="mb-3"
-            @update:model-value="onSelectVehicle"
-          /> -->
-
-          <div class="text-caption text-medium-emphasis mb-3 d-flex align-center gap-1">
-            <v-icon size="14">
-              mdi-information-outline
-            </v-icon>
-            Informations manuelles :
-          </div>
-
-          <v-row dense>
-            <v-col
-              cols="12"
-              sm="4"
-            >
-              <v-text-field
-                v-model="carInformations.immatriculation"
-                label="Immatriculation"
-                variant="outlined"
-                density="comfortable"
-                hide-details="auto"
-                prepend-inner-icon="mdi-card-text-outline"
-                @update:model-value="onCarImmatriculationUpdated"
-              />
-            </v-col>
-            <v-col
-              cols="12"
-              sm="4"
-            >
-              <v-text-field
-                v-model="carInformations.brand"
-                label="Marque"
-                variant="outlined"
-                density="comfortable"
-                hide-details="auto"
-                prepend-inner-icon="mdi-car-info"
-                @update:model-value="onCarBrandUpdated"
-              />
-            </v-col>
-            <v-col
-              cols="12"
-              sm="4"
-            >
-              <v-text-field
-                v-model="carInformations.dateEntryCirculation"
-                label="Année"
-                variant="outlined"
-                density="comfortable"
-                hide-details="auto"
-                prepend-inner-icon="mdi-calendar-range-outline"
-                @update:model-value="onCarYearUpdated"
-              />
-            </v-col>
-          </v-row>
-        </div>
-
-        <!-- ── Section 5 : Options ── -->
-        <div class="section-card mb-4">
-          <div class="section-header mb-3">
-            <div class="section-icon">
-              <v-icon
-                size="18"
-                color="primary"
-              >
-                mdi-tune-variant
-              </v-icon>
-            </div>
-            <span class="text-subtitle-2 font-weight-semibold">Options</span>
-          </div>
-
-          <div class="mb-3">
-            <div class="text-caption text-medium-emphasis mb-1 font-weight-medium">
-              Pays &amp; TVA
-            </div>
-            <CountrySelect
-              :model-value="selectedCountry"
-              @select="onSelectCountry"
-            />
-          </div>
-
-          <v-divider class="my-3" />
-
-          <div class="d-flex align-center justify-space-between py-2">
-            <div>
-              <div class="text-body-2 font-weight-medium">
-                Mode forfait
-              </div>
-              <div class="text-caption text-medium-emphasis">
-                Remplacer les lignes par un montant fixe
-              </div>
-            </div>
-            <v-switch
-              :model-value="isForfait"
-              color="primary"
-              inset
-              hide-details
-              @update:model-value="onUpdateIsForfait"
-            />
-          </div>
-
-          <v-expand-transition>
-            <div
-              v-if="isForfait"
-              class="pb-2"
-            >
-              <v-text-field
-                :model-value="forfaitAmount"
-                label="Montant du forfait (€)"
-                type="number"
-                variant="outlined"
-                density="comfortable"
-                hide-details="auto"
-                prepend-inner-icon="mdi-currency-eur"
-                @update:model-value="onUpdateForfaitAmount"
-              />
-            </div>
-          </v-expand-transition>
-
-          <template v-if="!isForfait">
-            <v-divider class="my-1" />
-            <div class="d-flex align-center justify-space-between py-2">
-              <div>
-                <div class="text-body-2 font-weight-medium">
-                  Prix unitaires visibles
-                </div>
-                <div class="text-caption text-medium-emphasis">
-                  Afficher le détail sur la facture
-                </div>
-              </div>
-              <v-switch
-                :model-value="isDisplayUnitPrice"
-                color="primary"
-                inset
-                hide-details
-                @update:model-value="onUpdateIsDisplayUnitPrice"
-              />
-            </div>
-
-            <v-divider class="my-1" />
-            <div class="d-flex align-center justify-space-between py-2">
-              <div>
-                <div class="text-body-2 font-weight-medium">
-                  Commission hors dégarnissage
-                </div>
-                <div class="text-caption text-medium-emphasis">
-                  Exclure le dégarnissage de la base de commission
-                </div>
-              </div>
-              <v-switch
-                :model-value="isComputeCommissionWithoutDentRemoval"
-                color="primary"
-                inset
-                hide-details
-                @update:model-value="onUpdateIsComputeCommissionWithoutDentRemoval"
-              />
-            </div>
-          </template>
-        </div>
-
-        <!-- ── Section 6 : Lignes de la facture ── -->
-        <div
-          v-if="!isForfait"
-          class="section-card mb-4"
-        >
-          <div class="section-header mb-3">
-            <div class="section-icon">
-              <v-icon
-                size="18"
-                color="primary"
-              >
-                mdi-format-list-bulleted
-              </v-icon>
-            </div>
-            <span class="text-subtitle-2 font-weight-semibold">Éléments de la facture</span>
-            <v-spacer />
-            <v-chip
-              size="x-small"
-              variant="tonal"
-              color="primary"
-            >
-              {{ invoiceLines.length }}
-            </v-chip>
-          </div>
-
-          <!-- Liste mobile des lignes -->
-          <div
-            v-if="invoiceLines.length > 0"
-            class="line-items-list"
-          >
-            <div
-              v-for="line in invoiceLines"
-              :key="line.id"
-              class="line-item-card"
-            >
-              <div class="d-flex align-center justify-space-between">
-                <div class="flex-grow-1 min-w-0">
-                  <!-- Pièce + matériau -->
-                  <div class="d-flex align-center gap-2 mb-1 flex-wrap">
-                    <span class="text-body-2 font-weight-medium">
-                      {{ line.bodyPart?.name ?? '—' }}
-                    </span>
-                    <v-chip
-                      v-if="line.bodyMaterial"
-                      size="x-small"
-                      variant="tonal"
-                      color="primary"
-                      class="ml-2"
-                    >
-                      {{ line.bodyMaterial.name }}
-                    </v-chip>
-                    <v-chip
-                      v-if="line.repairType"
-                      size="x-small"
-                      variant="tonal"
-                      color="primary"
-                      class="ml-2"
-                    >
-                      {{ line.repairType.name }}
-                    </v-chip>
+                <!-- ── Client / Garage (même rendu que la page devis) ── -->
+                <div class="section-card mb-4 flex-grow-1">
+                  <div class="section-header mb-3">
+                    <div class="section-icon">
+                      <v-icon
+                        size="18"
+                        color="primary"
+                      >
+                        mdi-garage
+                      </v-icon>
+                    </div>
+                    <span class="text-subtitle-1 font-weight-bold">{{ t('invoices.edit.clientGarage') }}</span>
                   </div>
-                  <!-- Impacts -->
-                  <div class="d-flex gap-3 text-caption text-medium-emphasis">
-                    <span>Ø 25 : <strong>{{ line.impactCount25 ?? 0 }}</strong></span>
-                    <span class="ml-2">Ø 35 : <strong>{{ line.impactCount35 ?? 0 }}</strong></span>
-                    <span
-                      v-if="line.dentRemovalPrice"
-                      class="ml-2"
-                    >
-                      Dégarnissage : <strong>{{ line.dentRemovalPrice.toFixed(2) }} {{ selectedCountry?.currencySymbol || '€' }}</strong>
-                    </span>
+
+                  <v-autocomplete
+                    :model-value="selectedGarage"
+                    :items="garages"
+                    item-title="name"
+                    item-value="id"
+                    return-object
+                    :label="t('invoices.form.selectGarage')"
+                    variant="outlined"
+                    density="comfortable"
+                    :clearable="!isReadOnly"
+                    :readonly="isReadOnly"
+                    hide-details="auto"
+                    prepend-inner-icon="mdi-garage"
+                    @update:model-value="onSelectGarage"
+                  >
+                    <template #item="{ props: itemProps, item }">
+                      <v-list-item
+                        v-bind="itemProps"
+                        :subtitle="[item.raw.address, item.raw.zip_code, item.raw.city].filter(Boolean).join(' ')"
+                      >
+                        <template #prepend>
+                          <v-icon color="primary">
+                            mdi-garage
+                          </v-icon>
+                        </template>
+                      </v-list-item>
+                    </template>
+                    <template #selection="{ item }">
+                      <span>{{ item.raw.name }}</span>
+                      <span
+                        v-if="item.raw.city"
+                        class="text-medium-emphasis ml-1"
+                      >· {{ item.raw.city }}</span>
+                    </template>
+                  </v-autocomplete>
+
+                  <div
+                    v-if="selectedGarage?.percentageCommission"
+                    class="text-caption text-medium-emphasis mt-2"
+                  >
+                    {{ t('invoices.form.commission', { rate: selectedGarage.percentageCommission }) }}
                   </div>
                 </div>
-                <!-- Prix + supprimer -->
-                <div class="d-flex align-center gap-1 ml-2 flex-shrink-0">
-                  <span class="text-body-1 font-weight-bold text-primary">
-                    {{ line.price?.toFixed(2) ?? '0.00' }} {{ selectedCountry?.currencySymbol || '€' }}
+              </v-col>
+            </v-row>
+
+            <!-- ── Véhicule ── -->
+            <div class="section-card mb-4">
+              <div class="section-header mb-3">
+                <div class="section-icon">
+                  <v-icon
+                    size="18"
+                    color="primary"
+                  >
+                    mdi-car
+                  </v-icon>
+                </div>
+                <span class="text-subtitle-1 font-weight-bold">{{ t('invoices.form.vehicleInfo') }}</span>
+              </div>
+
+              <v-row dense>
+                <v-col
+                  cols="12"
+                  sm="4"
+                >
+                  <v-text-field
+                    v-model="carInformations.immatriculation"
+                    :label="t('invoices.form.plate')"
+                    variant="outlined"
+                    density="comfortable"
+                    :readonly="isReadOnly"
+                    hide-details="auto"
+                    prepend-inner-icon="mdi-card-text-outline"
+                    @update:model-value="onCarImmatriculationUpdated"
+                  />
+                </v-col>
+                <v-col
+                  cols="12"
+                  sm="4"
+                >
+                  <v-text-field
+                    v-model="carInformations.brand"
+                    :label="t('invoices.form.brand')"
+                    variant="outlined"
+                    density="comfortable"
+                    :readonly="isReadOnly"
+                    hide-details="auto"
+                    prepend-inner-icon="mdi-car-info"
+                    @update:model-value="onCarBrandUpdated"
+                  />
+                </v-col>
+                <v-col
+                  cols="12"
+                  sm="4"
+                >
+                  <v-text-field
+                    v-model="carInformations.dateEntryCirculation"
+                    :label="t('invoices.form.year')"
+                    variant="outlined"
+                    density="comfortable"
+                    :readonly="isReadOnly"
+                    hide-details="auto"
+                    prepend-inner-icon="mdi-calendar-range-outline"
+                    @update:model-value="onCarYearUpdated"
+                  />
+                </v-col>
+              </v-row>
+            </div>
+
+            <!-- ── Éléments de la facture ── -->
+            <div
+              v-if="!isForfait"
+              class="section-card mb-4"
+            >
+              <div class="section-header mb-3">
+                <div class="section-icon">
+                  <v-icon
+                    size="18"
+                    color="primary"
+                  >
+                    mdi-format-list-bulleted
+                  </v-icon>
+                </div>
+                <span class="text-subtitle-1 font-weight-bold">{{ t('invoices.form.items') }}</span>
+                <v-chip
+                  size="x-small"
+                  variant="tonal"
+                  color="primary"
+                >
+                  {{ invoiceLines.length }}
+                </v-chip>
+                <v-spacer />
+                <v-btn
+                  v-if="!isReadOnly"
+                  variant="tonal"
+                  color="primary"
+                  size="small"
+                  prepend-icon="mdi-format-list-bulleted-square"
+                  @click="onManageItemsBtnClick"
+                >
+                  {{ t('invoices.edit.manageItems') }}
+                </v-btn>
+              </div>
+
+              <div
+                v-if="invoiceLines.length > 0"
+                class="line-items-list"
+              >
+                <div
+                  v-for="line in invoiceLines"
+                  :key="line.id"
+                  class="d-flex justify-space-between align-center py-2 line-summary"
+                >
+                  <span class="text-body-2">
+                    {{ line.bodyPart ? bodyPartLabel(line.bodyPart) : '—' }}
+                    <span class="text-medium-emphasis">
+                      · {{ line.bodyMaterial ? bodyMaterialLabel(line.bodyMaterial) : '' }} · {{ line.repairType ? repairTypeLabel(line.repairType) : '' }}
+                    </span>
                   </span>
-                  <v-btn
-                    icon
-                    variant="text"
-                    size="x-small"
-                    color="error"
-                    @click="onRemoveItemBtnClick(line)"
-                  >
-                    <v-icon size="16">
-                      mdi-delete-outline
+                  <span class="text-body-2 font-weight-bold flex-shrink-0 ml-2">
+                    {{ regionManager.formatNumber(line.price ?? 0) }} {{ selectedCountry?.currencySymbol || '€' }}
+                  </span>
+                </div>
+              </div>
+
+              <div
+                v-else
+                class="text-center py-6 text-medium-emphasis"
+              >
+                <v-icon
+                  size="40"
+                  class="mb-2 opacity-40"
+                >
+                  mdi-playlist-plus
+                </v-icon>
+                <div class="text-body-2">
+                  {{ t('invoices.edit.noItems') }}
+                </div>
+              </div>
+            </div>
+          </v-col>
+
+          <!-- ═════════════ Colonne droite ═════════════ -->
+          <v-col
+            cols="12"
+            md="4"
+          >
+            <div class="side-sticky">
+              <!-- ── Statut ── -->
+              <div class="section-card mb-4">
+                <div class="section-header mb-3">
+                  <div class="section-icon">
+                    <v-icon
+                      size="18"
+                      color="primary"
+                    >
+                      mdi-flag-outline
                     </v-icon>
+                  </div>
+                  <span class="text-subtitle-1 font-weight-bold">{{ t('invoices.form.invoiceStatus') }}</span>
+                </div>
+
+                <v-chip
+                  v-if="invoiceStatus"
+                  :color="statusColor(invoiceStatus)"
+                  size="small"
+                  variant="tonal"
+                  class="mb-3"
+                >
+                  {{ statusLabel(invoiceStatus) }}
+                </v-chip>
+
+                <div
+                  v-if="isSent"
+                  class="sent-info text-caption mb-3"
+                >
+                  {{ t('invoices.edit.sentOn', { date: sentAt ? formatSentAt(sentAt) : '' }) }}
+                  <span v-if="selectedGarage"> {{ t('invoices.edit.sentTo', { name: selectedGarage.name }) }}</span>
+                </div>
+
+                <div class="d-flex flex-column ga-2">
+                  <!-- Brouillon : envoi définitif (au moins un élément requis) -->
+                  <FeatureGate
+                    v-if="!isReadOnly"
+                    v-slot="{ locked }"
+                    feature="invoice_email_sending"
+                  >
+                    <v-btn
+                      color="blue"
+                      variant="tonal"
+                      block
+                      prepend-icon="mdi-send-outline"
+                      :disabled="locked || !hasItems"
+                      :loading="sending"
+                      @click="onAskSend"
+                    >
+                      {{ t('invoices.form.sendToClient') }}
+                    </v-btn>
+                  </FeatureGate>
+                  <v-btn
+                    v-if="!isReadOnly && !can('invoice_email_sending')"
+                    color="primary"
+                    variant="flat"
+                    block
+                    prepend-icon="mdi-check-circle-outline"
+                    :disabled="!hasItems"
+                    :loading="sending"
+                    @click="onAskFinalize"
+                  >
+                    {{ t('invoices.edit.finalize') }}
+                  </v-btn>
+                  <div
+                    v-if="!isReadOnly && !hasItems"
+                    class="text-caption text-medium-emphasis"
+                  >
+                    {{ t('invoices.edit.addAtLeastOne') }}
+                  </div>
+                  <!-- Facture verrouillée : seul le paiement peut évoluer -->
+                  <v-btn
+                    v-if="canMarkPaid"
+                    color="success"
+                    variant="tonal"
+                    prepend-icon="mdi-check-circle-outline"
+                    :loading="statusLoading"
+                    @click="onMarkPaid"
+                  >
+                    {{ t('invoices.actions.markPaid') }}
+                  </v-btn>
+                  <!-- Suppression : brouillon uniquement (une facture émise ne se supprime pas) -->
+                  <v-btn
+                    v-if="canDelete"
+                    color="error"
+                    variant="tonal"
+                    prepend-icon="mdi-delete-outline"
+                    @click="onDeleteBtnClick"
+                  >
+                    {{ t('invoices.edit.deleteDraft') }}
+                  </v-btn>
+                </div>
+              </div>
+
+              <!-- ── Options ── -->
+              <div class="section-card mb-4">
+                <div class="section-header mb-3">
+                  <div class="section-icon">
+                    <v-icon
+                      size="18"
+                      color="primary"
+                    >
+                      mdi-tune-variant
+                    </v-icon>
+                  </div>
+                  <span class="text-subtitle-1 font-weight-bold">{{ t('invoices.form.options') }}</span>
+                </div>
+
+                <div class="mb-3">
+                  <div class="text-caption text-medium-emphasis mb-1 font-weight-medium">
+                    {{ t('invoices.form.countryVat') }}
+                  </div>
+                  <CountrySelect
+                    :model-value="selectedCountry"
+                    :readonly="isReadOnly"
+                    @select="onSelectCountry"
+                  />
+                </div>
+
+                <v-divider class="my-3" />
+
+                <div class="d-flex align-center justify-space-between py-2">
+                  <div>
+                    <div class="text-body-2 font-weight-medium">
+                      {{ t('invoices.form.flatRate') }}
+                    </div>
+                    <div class="text-caption text-medium-emphasis">
+                      {{ t('invoices.form.flatRateHint') }}
+                    </div>
+                  </div>
+                  <v-switch
+                    :model-value="isForfait"
+                    color="primary"
+                    inset
+                    hide-details
+                    :readonly="isReadOnly"
+                    @update:model-value="onUpdateIsForfait"
+                  />
+                </div>
+
+                <v-expand-transition>
+                  <div
+                    v-if="isForfait"
+                    class="pb-2"
+                  >
+                    <v-text-field
+                      :model-value="forfaitAmount"
+                      :label="t('invoices.form.flatRateAmount')"
+                      type="number"
+                      variant="outlined"
+                      density="comfortable"
+                      :readonly="isReadOnly"
+                      hide-details="auto"
+                      prepend-inner-icon="mdi-currency-eur"
+                      @update:model-value="onUpdateForfaitAmount"
+                    />
+                  </div>
+                </v-expand-transition>
+
+                <template v-if="!isForfait">
+                  <v-divider class="my-1" />
+                  <div class="d-flex align-center justify-space-between py-2">
+                    <div>
+                      <div class="text-body-2 font-weight-medium">
+                        {{ t('invoices.form.unitPrices') }}
+                      </div>
+                      <div class="text-caption text-medium-emphasis">
+                        {{ t('invoices.form.unitPricesHint') }}
+                      </div>
+                    </div>
+                    <v-switch
+                      :model-value="isDisplayUnitPrice"
+                      color="primary"
+                      inset
+                      hide-details
+                      :readonly="isReadOnly"
+                      @update:model-value="onUpdateIsDisplayUnitPrice"
+                    />
+                  </div>
+
+                  <v-divider class="my-1" />
+                  <div class="d-flex align-center justify-space-between py-2">
+                    <div>
+                      <div class="text-body-2 font-weight-medium">
+                        {{ t('invoices.form.commissionExclStripping') }}
+                      </div>
+                      <div class="text-caption text-medium-emphasis">
+                        {{ t('invoices.form.commissionExclStrippingHint') }}
+                      </div>
+                    </div>
+                    <v-switch
+                      :model-value="isComputeCommissionWithoutDentRemoval"
+                      color="primary"
+                      inset
+                      hide-details
+                      :readonly="isReadOnly"
+                      @update:model-value="onUpdateIsComputeCommissionWithoutDentRemoval"
+                    />
+                  </div>
+                </template>
+              </div>
+
+              <!-- ── Récapitulatif ── -->
+              <div class="section-card mb-4">
+                <div class="section-header mb-3">
+                  <div class="section-icon">
+                    <v-icon
+                      size="18"
+                      color="primary"
+                    >
+                      mdi-calculator-variant-outline
+                    </v-icon>
+                  </div>
+                  <span class="text-subtitle-1 font-weight-bold">{{ t('common.totals.summary') }}</span>
+                </div>
+
+                <div class="recap-total text-primary mb-2">
+                  {{ regionManager.formatNumber(total) }} {{ selectedCountry?.currencySymbol || '€' }}
+                </div>
+
+                <div class="totals-list">
+                  <div class="total-row">
+                    <span class="text-body-2 text-medium-emphasis">{{ t('common.totals.exclTax') }}</span>
+                    <span class="text-body-2 font-weight-medium">
+                      {{ regionManager.formatNumber(subtotal) }} {{ selectedCountry?.currencySymbol || '€' }}
+                    </span>
+                  </div>
+                  <template v-if="!isForfait">
+                    <div class="total-row">
+                      <span class="text-body-2 text-medium-emphasis">{{ t('common.totals.totalStripping') }}</span>
+                      <span class="text-body-2 font-weight-medium">
+                        {{ regionManager.formatNumber(totalDegarnissage) }} {{ selectedCountry?.currencySymbol || '€' }}
+                      </span>
+                    </div>
+                    <div class="total-row">
+                      <span class="text-body-2 text-medium-emphasis">{{ t('common.totals.exclTaxPlusStripping') }}</span>
+                      <span class="text-body-2 font-weight-medium">
+                        {{ regionManager.formatNumber(subTotalWithDegarnissage) }} {{ selectedCountry?.currencySymbol || '€' }}
+                      </span>
+                    </div>
+                  </template>
+                  <div class="total-row">
+                    <span class="text-body-2 text-medium-emphasis">{{ t('common.totals.vat', { rate: selectedCountry?.taxRate || 0 }) }}</span>
+                    <span class="text-body-2 font-weight-medium">
+                      {{ regionManager.formatNumber(totalTaxRate) }} {{ selectedCountry?.currencySymbol || '€' }}
+                    </span>
+                  </div>
+                  <div
+                    v-if="selectedGarage?.percentageCommission"
+                    class="total-row text-orange"
+                  >
+                    <span class="text-body-2">{{ t('invoices.form.technicianNetRate', { rate: selectedGarage.percentageCommission }) }}</span>
+                    <span class="text-body-2 font-weight-medium">
+                      {{ regionManager.formatNumber(totalCommission) }} {{ selectedCountry?.currencySymbol || '€' }}
+                    </span>
+                  </div>
+                </div>
+
+                <!-- Actions : masquées quand la facture est verrouillée -->
+                <div
+                  v-if="!isReadOnly"
+                  class="d-none d-md-flex flex-column ga-2 mt-3"
+                >
+                  <v-btn
+                    color="primary"
+                    prepend-icon="mdi-content-save-outline"
+                    @click="onUpdateBtnClick"
+                  >
+                    {{ t('invoices.form.saveDraft') }}
+                  </v-btn>
+                  <v-btn
+                    variant="text"
+                    @click="$router.back()"
+                  >
+                    {{ t('common.cancel') }}
                   </v-btn>
                 </div>
               </div>
             </div>
-          </div>
-
-          <!-- État vide -->
-          <div
-            v-else
-            class="text-center py-6 text-medium-emphasis"
-          >
-            <v-icon
-              size="40"
-              class="mb-2 opacity-40"
-            >
-              mdi-playlist-plus
-            </v-icon>
-            <div class="text-body-2">
-              Aucun élément pour l'instant
-            </div>
-          </div>
-
-          <v-btn
-            variant="tonal"
-            color="primary"
-            block
-            class="mt-3"
-            prepend-icon="mdi-plus"
-            @click="onAddItemBtnClick"
-          >
-            Ajouter un élément
-          </v-btn>
-        </div>
-
-        <!-- ── Section 7 : Récapitulatif ── -->
-        <div class="section-card mb-4">
-          <div class="section-header mb-3">
-            <div class="section-icon">
-              <v-icon
-                size="18"
-                color="primary"
-              >
-                mdi-calculator-variant-outline
-              </v-icon>
-            </div>
-            <span class="text-subtitle-2 font-weight-semibold">Récapitulatif</span>
-          </div>
-
-          <div class="totals-list">
-            <div class="total-row">
-              <span class="text-body-2 text-medium-emphasis">Total H.T</span>
-              <span class="text-body-2 font-weight-medium">
-                {{ regionManager.formatNumber(subtotal) }} {{ selectedCountry?.currencySymbol || '€' }}
-              </span>
-            </div>
-            <template v-if="!isForfait">
-              <div class="total-row">
-                <span class="text-body-2 text-medium-emphasis">Total dégarnissage</span>
-                <span class="text-body-2 font-weight-medium">
-                  {{ regionManager.formatNumber(totalDegarnissage) }} {{ selectedCountry?.currencySymbol || '€' }}
-                </span>
-              </div>
-              <div class="total-row">
-                <span class="text-body-2 text-medium-emphasis">H.T + Dégarnissage</span>
-                <span class="text-body-2 font-weight-medium">
-                  {{ regionManager.formatNumber(subTotalWithDegarnissage) }} {{ selectedCountry?.currencySymbol || '€' }}
-                </span>
-              </div>
-            </template>
-            <div class="total-row">
-              <span class="text-body-2 text-medium-emphasis">TVA ({{ selectedCountry?.taxRate || 0 }}%)</span>
-              <span class="text-body-2 font-weight-medium">
-                {{ regionManager.formatNumber(totalTaxRate) }} {{ selectedCountry?.currencySymbol || '€' }}
-              </span>
-            </div>
-            <div
-              v-if="selectedGarage?.percentageCommission"
-              class="total-row text-orange"
-            >
-              <span class="text-body-2">Commission ({{ selectedGarage.percentageCommission }}%)</span>
-              <span class="text-body-2 font-weight-medium">
-                {{ regionManager.formatNumber(totalCommission) }} {{ selectedCountry?.currencySymbol || '€' }}
-              </span>
-            </div>
-            <v-divider class="my-2" />
-            <div class="total-row total-row--final">
-              <span class="text-subtitle-2 font-weight-bold">Total TTC</span>
-              <span class="text-subtitle-2 font-weight-bold text-primary">
-                {{ regionManager.formatNumber(total) }} {{ selectedCountry?.currencySymbol || '€' }}
-              </span>
-            </div>
-          </div>
-        </div>
+          </v-col>
+        </v-row>
       </v-form>
 
-      <!-- ═══════════════════════════════════════════════════
-           STICKY BOTTOM — Sauvegarder
-      ════════════════════════════════════════════════════ -->
-      <div class="sticky-bottom-bar">
+      <!-- Barre d'action mobile -->
+      <div
+        v-if="!isReadOnly"
+        class="sticky-bottom-bar d-md-none"
+      >
         <v-btn
           color="primary"
           size="large"
@@ -735,36 +694,42 @@
           prepend-icon="mdi-content-save-outline"
           @click="onUpdateBtnClick"
         >
-          Sauvegarder
+          {{ t('invoices.form.saveDraft') }}
         </v-btn>
       </div>
     </v-container>
   </MainLayout>
 
   <!-- ── Dialogs ── -->
-  <GarageDialog
-    ref="garageDialogRef"
-    title="Modifier le client"
-    persistent
-    :max-width="500"
-    @validated="onGarageValidated"
+  <ConfirmDialog
+    ref="deleteInvoiceConfirmDialogRef"
+    :title="t('invoices.edit.deleteDraft')"
+    :message="t('invoices.edit.deleteConfirm')"
+    :confirm-label="t('common.delete')"
+    :cancel-label="t('common.cancel')"
+    type="warning"
+    @confirm="onConfirmDeleteInvoice"
   />
 
-  <AddLineItemDialog
-    ref="addLineItemDialogRef"
-    title="Ajouter un élément"
-    :available-body-parts="availableBodyParts"
-    @add="onAddLineItem"
+  <!-- Confirmation avant envoi : l'envoi rend la facture définitive -->
+  <ConfirmDialog
+    ref="sendInvoiceConfirmDialogRef"
+    :title="t('invoices.edit.sendFinal')"
+    :message="t('invoices.edit.sendFinalMessage')"
+    :confirm-label="t('invoices.edit.sendFinal')"
+    :cancel-label="t('common.cancel')"
+    type="warning"
+    @confirm="onSendBtnClick"
   />
 
   <ConfirmDialog
-    ref="deleteInvoiceConfirmDialogRef"
-    title="Supprimer la facture"
-    message="Cette action est irréversible. Confirmer la suppression ?"
-    confirm-label="Supprimer"
-    cancel-label="Annuler"
+    ref="finalizeInvoiceConfirmDialogRef"
+    :title="t('invoices.edit.finalize')"
+    :message="t('invoices.edit.finalizeMessage')"
+    :confirm-label="t('invoices.edit.finalize')"
+    :cancel-label="t('common.cancel')"
     type="warning"
-    @confirm="onConfirmDeleteInvoice"
+    @confirm="onFinalizeBtnClick"
   />
 
   <v-snackbar
@@ -778,33 +743,35 @@
 </template>
 
 <script setup lang="ts">
+import { getSelectedInvoiceGuid } from '@/features/invoices/presentation/utils/invoiceSelection';
 import { useEditInvoicePageDependencies } from '@/features/invoices/composition/useEditInvoicePageDependencies';
 import MainLayout from '@/app/layouts/MainLayout.vue';
-import AddLineItemDialog from '@/features/lineItems/presentation/components/AddLineItemDialog.vue';
 import { ConfirmDialogExposed } from '@/shared/presentation/ui/components/ConfirmDialog';
 import ConfirmDialog from '@/shared/presentation/ui/components/ConfirmDialog.vue';
 import CountrySelect from '@/features/countries/presentation/components/CountrySelect.vue';
-import { GarageDialogExposed } from '@/features/garages/presentation/components/GarageDialog';
-import GarageDialog from '@/features/garages/presentation/components/GarageDialog.vue';
-import type { AddLineItemDialogExposed } from '@/shared/presentation/ui/components/components';
-import type { InvoiceStatusViewType } from '@/features/invoices/presentation/models/InvoiceStatusViewType';
 import { CountryViewModel } from '@/features/countries/presentation/models/CountryViewModel';
 import { GarageViewModel } from '@/features/garages/presentation/models/GarageViewModel';
-import { LineItemViewModel } from '@/features/lineItems/presentation/models/LineItemViewModel';
 import { OrganizationMemberViewModel } from '@/features/organizations/presentation/models/OrganizationMemberViewmodel';
-import { onMounted, reactive, ref } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
+import { computed, onMounted, reactive, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { formatDate as formatIntlDate, intlLocale } from '@/app/i18n/formatters';
+import { bodyMaterialLabel, bodyPartLabel, repairTypeLabel } from '@/features/carRepairSettings/presentation/utils/carRepairLabels';
+import { useRouter } from 'vue-router';
+import { useTheme } from 'vuetify';
+import { EMPTY_INVOICE_ERROR } from '@/features/invoices/application/useCases/SendInvoiceUseCase';
+import { useFeatureAccess } from '@/features/featureAccess/composition/useFeatureAccess';
+import FeatureGate from '@/features/featureAccess/presentation/components/FeatureGate.vue';
 
 // ── Services ──────────────────────────────────────────────────────────────────
-  const { regionManager, useEditInvoiceState } = useEditInvoicePageDependencies();
+const { regionManager, useEditInvoiceState } = useEditInvoicePageDependencies();
+const isDark = computed(() => useTheme().current.value.dark);
 
 // ── Refs dialogs ──────────────────────────────────────────────────────────────
-const garageDialogRef = ref<GarageDialogExposed>();
-const addLineItemDialogRef = ref<AddLineItemDialogExposed>();
 const deleteInvoiceConfirmDialogRef = ref<ConfirmDialogExposed>();
+const sendInvoiceConfirmDialogRef = ref<ConfirmDialogExposed>();
+const finalizeInvoiceConfirmDialogRef = ref<ConfirmDialogExposed>();
 
 // ── State ─────────────────────────────────────────────────────────────────────
-
 const {
   init,
   invoiceInformations,
@@ -815,12 +782,10 @@ const {
   selectedGarage,
   selectGarage,
   selectTechnician,
-  setGarage,
   carInformations,
   setCarImmatriculation,
   setCarBrand,
   setCarDateEntryCirculation,
-  availableBodyParts,
   isForfait,
   isDisplayUnitPrice,
   isComputeCommissionWithoutDentRemoval,
@@ -832,8 +797,6 @@ const {
   selectCountry,
   selectedCountry,
   invoiceLines,
-  addLine,
-  removeLine,
   subtotal,
   totalDegarnissage,
   subTotalWithDegarnissage,
@@ -841,25 +804,39 @@ const {
   totalCommission,
   total,
   invoiceStatus,
+  isReadOnly,
+  canDelete,
+  isSent,
+  sentAt,
+  hasItems,
   updateInvoice,
   updateInvoiceStatus,
   deleteInvoice,
   sendInvoice,
+  finalizeInvoice,
 } = useEditInvoiceState;
+const { can } = useFeatureAccess();
 
 const router = useRouter();
-const route = useRoute();
+const { t } = useI18n();
 const statusLoading = ref(false);
+const sending = ref(false);
 const snackbar = reactive({ show: false, message: '', color: 'success' });
 const showSnack = (message: string, color = 'success') => { snackbar.message = message; snackbar.color = color; snackbar.show = true; };
+
+// Paiement : possible uniquement sur une facture envoyée, non payée
+const canMarkPaid = computed(() => isReadOnly.value && invoiceStatus.value === 'pending');
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 const initials = (name: string) => {
   if (!name) return '?';
   return name.split(' ').map(n => n[0]).slice(0, 2).join('').toUpperCase();
 };
+const formatDate = (d: string | Date) => formatIntlDate(d);
+const formatSentAt = (d: Date) =>
+  new Date(d).toLocaleString(intlLocale(), { dateStyle: 'short', timeStyle: 'short' });
 
-const paymentStatusColor = (status?: string) => ({
+const statusColor = (status?: string) => ({
   pending: 'orange',
   validated: 'success',
   accepted: 'success',
@@ -869,21 +846,19 @@ const paymentStatusColor = (status?: string) => ({
   cancel: 'error',
 } as Record<string, string>)[status ?? ''] ?? 'default';
 
-const paymentStatusLabel = (status?: string) => ({
-  pending: 'En attente',
-  validated: 'Payé',
-  accepted: 'Accepté',
-  signed: 'Signé',
-  sent: 'Envoyé',
-  draft: 'Brouillon',
-  cancel: 'Annulé',
+const statusLabel = (status?: string) => ({
+  pending: t('invoices.status.awaitingPayment'),
+  validated: t('invoices.status.paid'),
+  accepted: t('invoices.status.accepted'),
+  signed: t('invoices.status.signed'),
+  sent: t('invoices.status.sent'),
+  draft: t('invoices.status.draft'),
+  cancel: t('invoices.status.cancelled'),
 } as Record<string, string>)[status ?? ''] ?? (status ?? '');
 
 // ── Handlers form ─────────────────────────────────────────────────────────────
 const onSelectTechnician = (t: OrganizationMemberViewModel) => selectTechnician(t);
 const onSelectGarage = (g: GarageViewModel) => selectGarage(g);
-const onEditCustomerBtnClick = () => garageDialogRef.value?.open();
-const onGarageValidated = (g: GarageViewModel) => setGarage(g);
 const onCarImmatriculationUpdated = (v: string) => setCarImmatriculation(v);
 const onCarBrandUpdated = (v: string) => setCarBrand(v);
 const onCarYearUpdated = (v: string) => setCarDateEntryCirculation(v);
@@ -894,33 +869,58 @@ const onUpdateIsComputeCommissionWithoutDentRemoval = (v: boolean | null) => set
 const onSelectCountry = (c: CountryViewModel | undefined) => { if (c) selectCountry(c); };
 
 // ── Handlers lignes ───────────────────────────────────────────────────────────
-const onAddItemBtnClick = () => addLineItemDialogRef.value?.open();
-const onRemoveItemBtnClick = (item: LineItemViewModel) => removeLine(item.id);
-const onAddLineItem = (item: LineItemViewModel) => addLine(item);
+// La gestion des éléments se fait sur une page dédiée (mêmes écrans que pour un devis)
+const onManageItemsBtnClick = () => router.push('/invoices/edit/items');
 
-// ── Handlers statut ──────────────────────────────────────────────────────────
-const onUpdateStatus = async (status: InvoiceStatusViewType) => {
+// ── Handlers actions ──────────────────────────────────────────────────────────
+const getInvoiceId = () => getSelectedInvoiceGuid() ?? '';
+
+const onMarkPaid = async () => {
   statusLoading.value = true;
   try {
-    await updateInvoiceStatus(status);
+    await updateInvoiceStatus('validated');
+    showSnack(t('invoices.messages.markedPaid'));
   } catch (e) {
-    console.error('Error updating invoice status:', e);
+    showSnack(e instanceof Error ? e.message : t('invoices.edit.updateStatusError'), 'error');
   } finally {
     statusLoading.value = false;
   }
 };
 
-// ── Handlers actions ──────────────────────────────────────────────────────────
-const onFinalizeBtnClick = () => console.log('finalize invoice');
-const onSendBtnClick = async () => {
+const onAskSend = () => sendInvoiceConfirmDialogRef.value?.open();
+const onAskFinalize = () => finalizeInvoiceConfirmDialogRef.value?.open();
+
+// Sauvegarde le brouillon, finalise sans email, puis recharge en lecture seule
+const onFinalizeBtnClick = async () => {
+  sending.value = true;
   try {
-    await sendInvoice();
-    showSnack('Facture envoyée avec succès.');
-  } catch {
-    showSnack("Erreur lors de l'envoi de la facture.", 'error');
+    await updateInvoice();
+    await finalizeInvoice();
+    await init(getInvoiceId());
+    showSnack(t('invoices.messages.finalized'));
+  } catch (e) {
+    showSnack(e instanceof Error ? (e.message === EMPTY_INVOICE_ERROR ? t('invoices.messages.emptyInvoice') : e.message) : t('invoices.edit.finalizeError'), 'error');
+  } finally {
+    sending.value = false;
   }
 };
-const onViewPdfBtnClick = () => router.push(`/invoices/view/${route.params.id}`);
+
+// Sauvegarde le brouillon, envoie, puis recharge pour passer en lecture seule
+const onSendBtnClick = async () => {
+  sending.value = true;
+  try {
+    await updateInvoice();
+    await sendInvoice();
+    await init(getInvoiceId());
+    showSnack(t('invoices.messages.sent'));
+  } catch (e) {
+    showSnack(e instanceof Error ? (e.message === EMPTY_INVOICE_ERROR ? t('invoices.messages.emptyInvoice') : e.message) : t('invoices.edit.sendError'), 'error');
+  } finally {
+    sending.value = false;
+  }
+};
+
+const onViewPdfBtnClick = () => router.push('/invoices/preview');
 const onDeleteBtnClick = () => deleteInvoiceConfirmDialogRef.value?.open();
 const onConfirmDeleteInvoice = () => {
   deleteInvoice();
@@ -929,37 +929,83 @@ const onConfirmDeleteInvoice = () => {
 const onUpdateBtnClick = async () => {
   try {
     await updateInvoice();
-    router.push('/invoices/');
-  } catch {
+    showSnack(t('invoices.messages.saved'));
+  } catch (e) {
     // validation errors — stay on page
+    showSnack(e instanceof Error ? e.message : t('invoices.edit.saveError'), 'error');
   }
 };
 
 onMounted(async () => {
-  const id = route.params.id;
-  await init(Array.isArray(id) ? id[0] : id);
+  await init(getInvoiceId());
 });
 </script>
 
 <style scoped>
 .edit-invoice-container {
+  --q-bg: #f4f5fa;
+  --q-card: #fff;
+  --q-border: #e6e8f0;
+  --q-border-strong: #d5d8e3;
+  --q-soft: #eef0f4;
+  --q-text: #1f2330;
+  --q-muted: #4b5563;
+
   min-height: 100dvh;
-  background: rgb(var(--v-theme-background));
+  background: var(--q-bg);
+}
+
+.edit-invoice-container.is-dark {
+  --q-bg: transparent;
+  --q-card: rgb(var(--v-theme-surface));
+  --q-border: rgb(255 255 255 / 6%);
+  --q-border-strong: rgb(255 255 255 / 20%);
+  --q-soft: rgb(255 255 255 / 10%);
+  --q-text: rgb(255 255 255 / 92%);
+  --q-muted: rgb(255 255 255 / 70%);
+}
+
+.sent-info {
+  padding: 8px 12px;
+  border: 1px solid var(--q-border-strong);
+  border-radius: 10px;
+  background: var(--q-soft);
+}
+
+.header-btn {
+  border-radius: 10px;
+  border: 1px solid var(--q-border-strong);
+  background: var(--q-card);
+  color: var(--q-text);
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.header-btn:hover {
+  background: var(--q-soft);
+}
+
+.header-back {
+  background: var(--q-soft) !important;
+  border-color: var(--q-border) !important;
+  color: var(--q-muted);
 }
 
 .page-header {
-  background: rgb(var(--v-theme-surface));
-  border-bottom: 1px solid rgba(var(--v-border-color), 0.12);
+  background: var(--q-card);
+  border: 1px solid var(--q-border);
+  border-radius: 14px;
   position: sticky;
-  top: 0;
+  top: 8px;
   z-index: 10;
 }
 
 .section-card {
-  background: rgb(var(--v-theme-surface));
-  border-radius: 16px;
+  background: var(--q-card);
+  border-radius: 14px;
   padding: 16px;
-  border: 1px solid rgba(var(--v-border-color), 0.08);
+  border: 1px solid var(--q-border);
 }
 
 .section-header {
@@ -972,24 +1018,26 @@ onMounted(async () => {
   width: 32px;
   height: 32px;
   border-radius: 8px;
-  background: rgba(var(--v-theme-primary), 0.1);
+  background: rgb(var(--v-theme-primary), 0.1);
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
 }
 
+.line-summary + .line-summary {
+  border-top: 1px solid rgb(var(--v-border-color), 0.08);
+}
+
 .line-items-list {
   display: flex;
   flex-direction: column;
-  gap: 8px;
 }
 
 .line-item-card {
-  border: 1px solid rgba(var(--v-border-color), 0.15);
   border-radius: 12px;
   padding: 12px;
-  background: rgba(var(--v-theme-surface-variant), 0.3);
+  background: rgb(var(--v-theme-surface-variant), 0.1);
 }
 
 .totals-list {
@@ -1005,8 +1053,10 @@ onMounted(async () => {
   padding: 6px 0;
 }
 
-.total-row--final {
-  padding-top: 8px;
+.recap-total {
+  font-size: 30px;
+  font-weight: 800;
+  line-height: 1.2;
 }
 
 .sticky-bottom-bar {
@@ -1016,7 +1066,20 @@ onMounted(async () => {
   padding: 12px 16px;
   padding-bottom: max(12px, env(safe-area-inset-bottom));
   background: rgb(var(--v-theme-surface));
-  border-top: 1px solid rgba(var(--v-border-color), 0.12);
+  border-top: 1px solid rgb(var(--v-border-color), 0.12);
+}
+
+.equal-height-row > .v-col {
+  display: flex;
+}
+
+.equal-height-row > .v-col > .section-card {
+  flex: 1;
+}
+
+.side-sticky {
+  position: sticky;
+  top: 88px;
 }
 
 .pb-28 {
@@ -1025,11 +1088,5 @@ onMounted(async () => {
 
 .min-w-0 {
   min-width: 0;
-}
-
-.status-btn {
-  height: 48px !important;
-  font-weight: 600;
-  letter-spacing: 0.01em;
 }
 </style>

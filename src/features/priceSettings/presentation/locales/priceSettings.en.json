@@ -1,0 +1,40 @@
+{
+  "priceSettings": {
+    "breadcrumb": {
+      "pricing": "Pricing"
+    },
+    "title": "Pricing",
+    "subtitle": "Hourly rate, time units and coefficients applied to your estimates.",
+    "saved": "Saved",
+    "tabs": {
+      "general": "General",
+      "impact-unit-time": "Time units",
+      "technicity-coefficients": "Technicity",
+      "variation-coefficients": "Variations"
+    },
+    "fields": {
+      "unitTime": "Unit time"
+    },
+    "general": {
+      "info": "The hourly rate is applied to the calculation of the items",
+      "hourlyRate": "Hourly rate"
+    },
+    "impact": {
+      "info": "The number of dents is converted into configurable time units (UT): 1 UT = 6 minutes",
+      "count": "{count} impact | {count} impacts",
+      "range": "{min} - {max} impacts"
+    },
+    "technicity": {
+      "info": "Difficulty index 1 is a PDR on sheet metal. Aluminium is increased here by a multiplier and PDR-on-panel work (DAP) is reduced. Diameter 2 is the reference diameter; diameter 1 lowers the reference price, whatever the pricing method.",
+      "dap": "DAP coefficient",
+      "dsp": "DSP coefficient",
+      "diameter25": "Diameter 25 coefficient",
+      "diameter35": "Diameter 35 coefficient",
+      "aluminium": "Aluminium coefficient"
+    },
+    "variation": {
+      "info": "Difficulty index 1 is a dent on a roof. You can decide that a dent on another body part is X times harder to repair.",
+      "difficulty": "Difficulty coefficient"
+    }
+  }
+}

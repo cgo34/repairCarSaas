@@ -45,7 +45,7 @@
             fill="#F5871F"
           />
         </svg>
-        <span style="font-family:'Space Grotesk',sans-serif; font-size:1.25rem; font-weight:700; color:#ffffff; letter-spacing:-0.01em;">CarDentRepair</span>
+        <span style="font-family:'Space Grotesk',sans-serif; font-size:1.25rem; font-weight:700; color:#fff; letter-spacing:-0.01em;">CarDentRepair</span>
       </div>
 
       <!-- Card -->
@@ -86,7 +86,7 @@
 .auth-blob-1 {
   width: 400px;
   height: 400px;
-  background: rgba(43, 84, 224, 0.25);
+  background: rgb(43 84 224 / 25%);
   top: -100px;
   right: -100px;
 }
@@ -94,7 +94,7 @@
 .auth-blob-2 {
   width: 300px;
   height: 300px;
-  background: rgba(245, 135, 31, 0.1);
+  background: rgb(245 135 31 / 10%);
   bottom: -80px;
   left: -80px;
 }
@@ -107,10 +107,10 @@
 }
 
 .auth-card {
-  background: #ffffff;
+  background: #fff;
   border-radius: 20px;
   padding: 36px 32px 28px;
-  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 24px 64px rgb(0 0 0 / 40%);
 }
 
 .auth-title {
@@ -122,7 +122,7 @@
 }
 
 .auth-subtitle {
-  font-family: 'Manrope', sans-serif;
+  font-family: Manrope, sans-serif;
   font-size: 0.9rem;
   color: #9AA2B1;
   margin: 0;

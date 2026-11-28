@@ -15,10 +15,10 @@
       <div class="d-flex align-center mb-4">
         <div>
           <div class="text-h5 font-weight-bold">
-            Garages
+            {{ t('garages.title') }}
           </div>
           <div class="text-body-2 text-medium-emphasis">
-            Gérez les garages de votre organisation
+            {{ t('garages.subtitle') }}
           </div>
         </div>
         <v-spacer />
@@ -30,9 +30,10 @@
             <v-btn
               color="primary"
               prepend-icon="mdi-plus"
+              :disabled="garagesLimitReached"
               v-bind="props"
             >
-              Ajouter un garage
+              {{ t('garages.add') }}
             </v-btn>
           </template>
 
@@ -49,7 +50,7 @@
                   <v-col cols="12">
                     <v-text-field
                       v-model="selectedGarageForm.name"
-                      label="Nom du garage"
+                      :label="t('garages.form.name')"
                     />
                   </v-col>
 
@@ -59,7 +60,7 @@
                   >
                     <v-text-field
                       v-model="selectedGarageForm.phone"
-                      label="Téléphone"
+                      :label="t('garages.form.phone')"
                     />
                   </v-col>
 
@@ -69,14 +70,14 @@
                   >
                     <v-text-field
                       v-model="selectedGarageForm.email"
-                      label="Email"
+                      :label="t('garages.form.email')"
                     />
                   </v-col>
 
                   <v-col cols="12">
                     <v-text-field
                       v-model="selectedGarageForm.address"
-                      label="Adresse"
+                      :label="t('garages.form.address')"
                     />
                   </v-col>
 
@@ -86,7 +87,7 @@
                   >
                     <v-text-field
                       v-model="selectedGarageForm.zip_code"
-                      label="Code Postal"
+                      :label="t('garages.form.zipCode')"
                     />
                   </v-col>
 
@@ -96,14 +97,14 @@
                   >
                     <v-text-field
                       v-model="selectedGarageForm.city"
-                      label="Ville"
+                      :label="t('garages.form.city')"
                     />
                   </v-col>
 
                   <v-col cols="12">
                     <v-text-field
                       v-model.number="selectedGarageForm.percentageCommission"
-                      label="Commission (%)"
+                      :label="t('garages.form.commission')"
                       type="number"
                       :min="0"
                       :max="100"
@@ -124,7 +125,7 @@
                   onCloseEditDialogBtnClick
                 "
               >
-                Annuler
+                {{ t('common.cancel') }}
               </v-btn>
 
               <v-btn
@@ -134,12 +135,19 @@
                   onSaveEditDialogBtnClick
                 "
               >
-                Sauvegarder
+                {{ t('common.save') }}
               </v-btn>
             </v-card-actions>
           </v-card>
         </v-dialog>
       </div>
+
+      <PlanLimitAlert
+        class="mb-4"
+        limit-key="max_garages"
+        kind="garages"
+        :used="garages.length"
+      />
 
       <v-row
         dense
@@ -168,12 +176,12 @@
             </v-avatar>
             <div>
               <div
-                class="text-h6 font-weight-bold"
+                class="stat-value"
                 :class="`text-${stat.color}`"
               >
                 {{ stat.value }}
               </div>
-              <div class="text-caption text-medium-emphasis">
+              <div class="stat-sub">
                 {{ stat.label }}
               </div>
             </div>
@@ -189,7 +197,7 @@
           <v-text-field
             v-model="search"
             prepend-inner-icon="mdi-magnify"
-            placeholder="Rechercher un nom, une ville…"
+            :placeholder="t('garages.searchPlaceholder')"
             density="compact"
             variant="outlined"
             hide-details
@@ -219,8 +227,8 @@
           :items="filteredGarages"
           :sort-by="[{ key: 'name', order: 'asc' }]"
           :row-props="{ style: 'cursor: pointer;' }"
-          items-per-page-text="Lignes par page"
-          no-data-text="Aucun garage"
+          :items-per-page-text="t('common.table.itemsPerPage')"
+          :no-data-text="t('garages.empty')"
           hover
           @click:row="onRowClick"
         >
@@ -264,7 +272,7 @@
               size="small"
               variant="tonal"
             >
-              {{ getGarageStatus(item) === 'active' ? 'Actif' : 'Archivé' }}
+              {{ getGarageStatus(item) === 'active' ? t('garages.status.active') : t('garages.status.archived') }}
             </v-chip>
           </template>
 
@@ -279,7 +287,7 @@
                     icon
                     size="small"
                     variant="text"
-                    aria-label="Actions"
+                    :aria-label="t('garages.actions.label')"
                     v-bind="props"
                   >
                     <v-icon>mdi-dots-vertical</v-icon>
@@ -291,13 +299,13 @@
                 >
                   <v-list-item
                     prepend-icon="mdi-pencil-outline"
-                    title="Modifier"
+                    :title="t('garages.actions.edit')"
                     @click="onEditBtnClick(item)"
                   />
                   <v-divider class="my-1" />
                   <v-list-item
                     prepend-icon="mdi-delete-outline"
-                    title="Supprimer"
+                    :title="t('garages.actions.delete')"
                     base-color="error"
                     @click="onDeleteBtnClick(item)"
                   />
@@ -310,21 +318,33 @@
 
       <ConfirmDialog
         ref="confirmDialogRef"
-        title="Supprimer le garage"
-        confirm-label="Supprimer"
+        :title="t('garages.delete.title')"
+        :confirm-label="t('common.delete')"
         :message="confirmMessage"
-        cancel-label="Annuler"
+        :cancel-label="t('common.cancel')"
         type="warning"
         @confirm="onConfirmDelete"
         @cancel="pendingGarage = null"
       />
+
+      <v-snackbar
+        v-model="snackbar.show"
+        color="error"
+        timeout="5000"
+      >
+        {{ snackbar.message }}
+      </v-snackbar>
     </v-container>
   </MainLayout>
 </template>
 
 <script setup lang="ts">
 import { useGaragesPageDependencies } from '@/features/garages/composition/useGaragesPageDependencies';
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted, reactive, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import PlanLimitAlert from '@/features/featureAccess/presentation/components/PlanLimitAlert.vue';
+import { useFeatureAccess } from '@/features/featureAccess/composition/useFeatureAccess';
+import { planLimitMessage } from '@/features/featureAccess/presentation/utils/planLimitMessage';
 
 
 
@@ -345,6 +365,8 @@ import { GarageViewModel } from '@/features/garages/presentation/models/GarageVi
 
 
 const { isFreePlan } = authState;
+const { t } = useI18n();
+const { isLimitReached } = useFeatureAccess();
 
 const {
   garages,
@@ -364,6 +386,8 @@ const {
   resetSelectedGarageForm,
 } = useGarageState;
 
+const garagesLimitReached = computed(() => isLimitReached('max_garages', garages.value.length));
+
 /**
  * ============================================================
  * UI
@@ -378,29 +402,29 @@ const dialog = ref<boolean>(false);
  * ============================================================
  */
 
-const headers = [
-  { title: 'Garage', align: 'start', key: 'name' },
-  { title: 'Contact', key: 'phone' },
-  { title: 'Adresse', key: 'address' },
-  { title: 'Code postal', key: 'zip_code' },
-  { title: 'Ville', key: 'city' },
-  { title: 'Commission', key: 'percentageCommission', align: 'end' },
-  { title: 'Statut', key: 'archived_at' },
+const headers = computed(() => [
+  { title: t('garages.table.garage'), align: 'start', key: 'name' },
+  { title: t('garages.table.contact'), key: 'phone' },
+  { title: t('garages.form.address'), key: 'address' },
+  { title: t('garages.form.zipCode'), key: 'zip_code' },
+  { title: t('garages.form.city'), key: 'city' },
+  { title: t('garages.table.commission'), key: 'percentageCommission', align: 'end' },
+  { title: t('garages.table.status'), key: 'archived_at' },
   { title: '', key: 'actions', sortable: false, align: 'end', width: 56 },
-] as const;
+] as const);
 
 const search = ref<string | null>('');
 const cityFilter = ref<string>('all');
 const statusFilter = ref<string>('all');
 
-const statusFilterOptions = [
-  { title: 'Tous les statuts', value: 'all' },
-  { title: 'Actif', value: 'active' },
-  { title: 'Archivé', value: 'archived' },
-];
+const statusFilterOptions = computed(() => [
+  { title: t('garages.filters.allStatuses'), value: 'all' },
+  { title: t('garages.status.active'), value: 'active' },
+  { title: t('garages.status.archived'), value: 'archived' },
+]);
 
 const cityFilterOptions = computed(() => [
-  { title: 'Toutes les villes', value: 'all' },
+  { title: t('garages.filters.allCities'), value: 'all' },
   ...[...new Set(garages.value.map(g => g.city).filter(Boolean))]
     .sort()
     .map(city => ({ title: city, value: city })),
@@ -423,10 +447,10 @@ const statCards = computed(() => {
     ? list.reduce((sum, g) => sum + (g.percentageCommission || 0), 0) / list.length
     : 0;
   return [
-    { label: 'Garages', value: list.length, icon: 'mdi-warehouse', color: 'primary' },
-    { label: 'Actifs', value: list.length - archived, icon: 'mdi-check-circle-outline', color: 'success' },
-    { label: 'Archivés', value: archived, icon: 'mdi-archive-outline', color: 'grey' },
-    { label: 'Commission moyenne', value: `${Math.round(avg * 10) / 10} %`, icon: 'mdi-percent-outline', color: 'warning' },
+    { label: t('garages.stats.garages'), value: list.length, icon: 'mdi-warehouse', color: 'primary' },
+    { label: t('garages.stats.active'), value: list.length - archived, icon: 'mdi-check-circle-outline', color: 'success' },
+    { label: t('garages.stats.archived'), value: archived, icon: 'mdi-archive-outline', color: 'grey' },
+    { label: t('garages.stats.avgCommission'), value: `${Math.round(avg * 10) / 10} %`, icon: 'mdi-percent-outline', color: 'warning' },
   ];
 });
 
@@ -438,8 +462,8 @@ const statCards = computed(() => {
 
 const formTitle = computed(() =>
   selectedGarageForm.value?.id
-    ? 'Modifier le Garage'
-    : 'Nouveau Garage'
+    ? t('garages.dialog.edit')
+    : t('garages.dialog.new')
 );
 
 const getGarageStatus = (
@@ -486,18 +510,26 @@ const onCloseEditDialogBtnClick =
     dialog.value = false;
   };
 
+const snackbar = reactive({ show: false, message: '' });
+
 const onSaveEditDialogBtnClick =
   async () => {
-    if (
-      selectedGarageForm.value?.id
-    ) {
-      await updateGarage(
-        selectedGarageForm.value
-      );
-    } else {
-      await addGarage(
-        selectedGarageForm.value
-      );
+    try {
+      if (
+        selectedGarageForm.value?.id
+      ) {
+        await updateGarage(
+          selectedGarageForm.value
+        );
+      } else {
+        await addGarage(
+          selectedGarageForm.value
+        );
+      }
+    } catch (e) {
+      snackbar.message = planLimitMessage(e, t) ?? (e instanceof Error ? e.message : String(e));
+      snackbar.show = true;
+      return;
     }
 
     dialog.value = false;
@@ -506,7 +538,7 @@ const onSaveEditDialogBtnClick =
 const confirmDialogRef = ref<ConfirmDialogExposed>();
 const pendingGarage = ref<GarageViewModel | null>(null);
 const confirmMessage = computed(() =>
-  `Êtes-vous sûr de vouloir supprimer le garage "${pendingGarage.value?.name ?? ''}" ?`
+  t('garages.delete.message', { name: pendingGarage.value?.name ?? '' })
 );
 
 const onRowClick = (_event: Event, { item }: { item: GarageViewModel }) => {

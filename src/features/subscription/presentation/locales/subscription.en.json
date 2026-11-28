@@ -1,0 +1,137 @@
+{
+  "subscription": {
+    "breadcrumb": {
+      "root": "Subscription",
+      "mine": "My subscription",
+      "usage": "Usage",
+      "invoices": "Invoices"
+    },
+    "page": {
+      "title": "My subscription",
+      "subtitle": "Manage your subscription, update your payment details and view your invoice history.",
+      "currentPlan": "Your current plan",
+      "plan": {
+        "freeName": "Free plan",
+        "essentialName": "Essential plan",
+        "freeBadge": "Free plan",
+        "essentialBadge": "Base plan",
+        "freeDescription": "Sign-up plan with limited features.",
+        "essentialDescription": "All the essential features to manage your quotes, invoices and garages."
+      },
+      "changePlan": "Change plan",
+      "pricing": "Pricing",
+      "seatsIncluded": "{count} users included",
+      "extraSeatPrice": "{price} / month / additional user",
+      "perUserMonth": "per user / month",
+      "noBilling": "No billing",
+      "monthlyBilling": "Monthly billing",
+      "compare": "Compare plans",
+      "included": "Included in your plan",
+      "perMonthShort": " / month",
+      "alert": {
+        "title": "Quota almost reached",
+        "text": "You are approaching your plan limit: {items}."
+      },
+      "feature": {
+        "user": "user",
+        "users": "users",
+        "garage": "garage",
+        "garages": "garages",
+        "quote": "quote",
+        "quotes": "quotes",
+        "invoice": "invoice",
+        "invoices": "invoices",
+        "perMonth": "per month",
+        "conversion": "quote-to-invoice conversion",
+        "conversions": "quote-to-invoice conversions",
+        "invoiceEmailSending": "Send invoices by email",
+        "quoteToInvoice": "Convert a quote into an invoice",
+        "emailSending": "Send quotes by email",
+        "carView": "Vehicle view"
+      },
+      "yourPlan": "Your plan",
+      "comingSoon": "Coming soon",
+      "help": {
+        "title": "Need help?",
+        "text": "Our team is here to help you.",
+        "contact": "Contact support"
+      },
+      "invoices": {
+        "title": "Invoice history",
+        "date": "Date",
+        "number": "Invoice no.",
+        "period": "Period",
+        "amount": "Amount excl. tax",
+        "status": "Status",
+        "action": "Action",
+        "paid": "Paid",
+        "viewAll": "View all invoices"
+      },
+      "payment": {
+        "title": "Payment method",
+        "expires": "Expires {date}",
+        "update": "Update"
+      },
+      "secure": "100% secure payment. Your data is protected.",
+      "details": {
+        "type": "Subscription type",
+        "free": "Free",
+        "monthly": "Monthly",
+        "start": "Start date",
+        "end": "End date",
+        "none": "None",
+        "noneMasc": "None",
+        "nextDebit": "Next payment"
+      },
+      "plans": {
+        "quotesInvoices": "Quotes & invoices",
+        "free": {
+          "name": "Free",
+          "unit": "forever",
+          "badge": "Current plan",
+          "f1": "3 users included",
+          "f3": "Unlimited garages"
+        },
+        "essential": {
+          "name": "Essential",
+          "f1": "Unlimited users",
+          "f3": "Email support"
+        },
+        "premium": {
+          "name": "Premium",
+          "f1": "Everything in Essential",
+          "f2": "Advanced statistics",
+          "f3": "Priority support"
+        }
+      },
+      "kpi": {
+        "users": "Users",
+        "activeUsers": "active users",
+        "manageUsers": "Manage users",
+        "extraUser": "Additional user",
+        "extraUserLimit": "per month, beyond {count} included users",
+        "garages": "Garages",
+        "unlimited": "Unlimited",
+        "noGarageLimit": "no garage limit",
+        "garagesLimit": "registered garages",
+        "quotesMonth": "Quotes this month",
+        "invoicesMonth": "Invoices this month",
+        "createdThisMonth": "created this month",
+        "conversionsMonth": "Conversions this month",
+        "convertedThisMonth": "quotes converted this month",
+        "billing": "Billing",
+        "noneFem": "None",
+        "freeCaption": "Free plan · {price} / month",
+        "monthlyCost": "Monthly cost",
+        "exclTaxMonth": "excl. tax / month",
+        "seeDetail": "View details",
+        "amountExclTax": "{amount} excl. tax",
+        "seePayment": "View payment method"
+      },
+      "overlay": {
+        "message": "This feature is reserved for users with a paid subscription.",
+        "upgrade": "Upgrade"
+      }
+    }
+  }
+}

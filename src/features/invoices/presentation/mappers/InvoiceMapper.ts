@@ -16,8 +16,9 @@ const _dbCodeToViewStatus = (
     status?.code;
 
   return ({
-    processing: 'pending',
-    finalized: 'validated',
+    draft: 'draft',
+    pending: 'pending',
+    paid: 'validated',
     accepted: 'accepted',
     refused: 'cancel',
     cancelled: 'cancel',

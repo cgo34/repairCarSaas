@@ -58,7 +58,8 @@ export class SubscriptionRepository implements ISubscriptionRepository {
       throw error
     }
 
-    return SubscriptionMapper.apiToDto(data)
+    const features = await this.getEffectiveFeatures(data.organization_id);
+    return SubscriptionMapper.apiToDto(data, features)
   }
 
   async getSubscriptionByOrganizationId(organizationId: string): Promise<SubscriptionDto | null> {
@@ -78,7 +79,27 @@ export class SubscriptionRepository implements ISubscriptionRepository {
 
     if (!data) return null;
 
-    const dto = SubscriptionMapper.apiToDto(data);
-    return dto;
+    const features = await this.getEffectiveFeatures(organizationId);
+    return SubscriptionMapper.apiToDto(data, features);
+  }
+
+  private async getEffectiveFeatures(
+    organizationId: string,
+  ): Promise<Record<string, number | boolean | null>> {
+    const { data, error } = await this.clientProvider.getClient()
+      .fromView('organization_effective_features')
+      .select('feature_key, value')
+      .eq('organization_id', organizationId);
+
+    if (error) {
+      console.error('[SubscriptionRepo] getEffectiveFeatures error:', error);
+      return {};
+    }
+
+    const features: Record<string, number | boolean | null> = {};
+    for (const row of data ?? []) {
+      if (row.feature_key) features[row.feature_key] = row.value as number | boolean | null;
+    }
+    return features;
   }
 }

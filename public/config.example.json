@@ -1,0 +1,7 @@
+{
+  "environment": "development",
+  "supabase": {
+    "url": "https://YOUR-PROJECT.supabase.co",
+    "publishableKey": "sb_publishable_YOUR_KEY"
+  }
+}

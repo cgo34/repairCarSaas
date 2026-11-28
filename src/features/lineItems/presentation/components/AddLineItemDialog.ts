@@ -8,6 +8,7 @@ export type AddLineItemDialogProps = {
 
 export type AddLineItemDialogEmits = {
   (event: 'add', lineItem: LineItemViewModel): AnyVoid
+  (event: 'update', lineItem: LineItemViewModel): AnyVoid
   (event: 'cancel') : void
 }
 

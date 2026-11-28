@@ -3,7 +3,7 @@
 ## 1. Architecture
 ```
 src/
-|-- app/                  # Composition root: bootstrap (main.ts), router, plugins, theme, layouts
+|-- app/                  # Composition root: entry (main.ts: loads runtime config) and app creation (app.ts), router, plugins, theme, layouts
 |   `-- di/               # Unique InversifyJS container (container.ts) + tokens
 |-- features/<feature>/   # auth, quotes, invoices, garages, ...
 |   |-- domain/           # Entities, value objects, pure rules

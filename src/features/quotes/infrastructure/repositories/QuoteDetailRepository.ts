@@ -69,6 +69,27 @@ export class QuoteDetailRepository implements IQuoteDetailRepository {
     return data.map(LineItemMapper.apiToDto);
   }
 
+  async updateOne(item: LineItemDto): Promise<LineItemDto> {
+    if (!item.id) throw new Error('Quote detail ID is required');
+
+    const { data, error } = await this.clientProvider.getClient()
+      .from('quote_details')
+      .update(LineItemMapper.dtoToApi(item))
+      .eq('id', item.id)
+      .select(`
+        *,
+        bodyPart:body_parts(*),
+        bodyMaterial:body_materials(*),
+        repairType:repair_types(*)
+      `)
+      .returns<LineItemApiModel[]>();
+
+    if (error || !data?.length)
+      throw new Error('Error updating quote detail');
+
+    return LineItemMapper.apiToDto(data[0]);
+  }
+
   async delete(id: string): Promise<void> {
     const { error } = await this.clientProvider.getClient()
       .from('quote_details')

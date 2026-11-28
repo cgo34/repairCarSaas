@@ -1,0 +1,174 @@
+{
+  "platformAdmin": {
+    "nav": {
+      "dashboard": "Dashboard",
+      "organizations": "Organizations",
+      "users": "Users",
+      "subscriptions": "Plans & features",
+      "demoProfiles": "Demo profiles"
+    },
+    "plans": {
+      "title": "Plans & features",
+      "subtitle": "Limits and feature availability per plan. Changes only apply after confirmation.",
+      "unlimited": "Unlimited",
+      "organizations": "{n} organization(s)",
+      "perMonth": "/ month",
+      "tabs": { "compare": "Comparison", "log": "Change log" },
+      "groups": { "limits": "Limits", "features": "Features", "addons": "Add-ons" },
+      "edit": "Edit plans",
+      "editBanner": "Edit mode: changes are drafted and applied to all organizations of the plan only after confirmation.",
+      "readOnlyInfo": "Changes apply to all organizations of a plan. Lowering a limit deletes nothing: organizations already at the limit just can't create new items.",
+      "modified": "modified",
+      "pending": "{n} pending change(s)",
+      "cancel": "Cancel",
+      "review": "Check impact",
+      "save": "Save",
+      "confirm": {
+        "title": "Confirm plan changes",
+        "affected": "{n} of {total} organization(s) already reach or exceed this limit and will be blocked until next month.",
+        "lostFeature": "{n} organization(s) will lose access to this feature immediately.",
+        "typeToConfirm": "Type {word} to confirm",
+        "apply": "Apply changes",
+        "cancel": "Cancel",
+        "close": "Close",
+        "previewTitle": "Impact of the changes (preview, nothing is saved)",
+        "word": "CONFIRM",
+        "on": "On", "off": "Off",
+        "noImpact": "No organization affected (0 of {total}: none has reached this limit yet this month)."
+      },
+      "saved": "Plans updated.",
+      "log": {
+        "empty": "No change recorded.",
+        "when": "Date",
+        "by": "By",
+        "plan": "Plan",
+        "change": "Change",
+        "impact": "Impact"
+      }
+    },
+    "comingSoon": {
+      "title": "Coming soon",
+      "message": "This page is under construction."
+    },
+    "organizations": {
+      "title": "Organizations",
+      "subtitle": "Real platform customers (demo organizations excluded).",
+      "searchPlaceholder": "Search an organization…",
+      "allPlans": "All plans",
+      "demo": "Demo",
+      "hideDemo": "Hide demos",
+      "empty": "No organizations.",
+      "loadError": "Unable to load organizations",
+      "actions": "Actions",
+      "totalShort": "total {n}",
+      "demoToggle": {
+        "mark": "Mark as demo",
+        "unmark": "Remove demo status",
+        "markedSuccess": "{name} is now a demo organization.",
+        "unmarkedSuccess": "{name} is no longer a demo organization."
+      },
+      "grantPremium": {
+        "menu": "Offer Premium",
+        "title": "Offer Premium",
+        "description": "Choose how long {name} gets the Premium plan for free.",
+        "durations": {
+          "minute": "1 minute (test)",
+          "week": "1 week",
+          "month": "1 month",
+          "unlimited": "Unlimited"
+        },
+        "confirm": "Offer",
+        "cancel": "Cancel",
+        "success": "Premium offered to {name}."
+      },
+      "grantFeature": {
+        "menu": "Offer a feature",
+        "title": "Offer a feature",
+        "description": "Choose the feature and how long {name} gets it for free.",
+        "feature": "Feature",
+        "duration": "Duration",
+        "features": {
+          "quote_email_sending": "Quote email sending",
+          "invoice_email_sending": "Invoice email sending",
+          "car_view": "Car view"
+        },
+        "durations": {
+          "minutes5": "5 minutes (test)",
+          "week": "1 week",
+          "month": "1 month",
+          "unlimited": "Unlimited"
+        },
+        "confirm": "Offer",
+        "cancel": "Cancel",
+        "success": "Feature offered to {name}."
+      }
+    },
+    "users": {
+      "title": "Users",
+      "subtitle": "All platform users (demo accounts and super admin included).",
+      "hideDemo": "Hide demos",
+      "demo": "Demo",
+      "superAdmin": "Super admin",
+      "searchPlaceholder": "Search a user…",
+      "allStatuses": "All statuses",
+      "active": "Active",
+      "blocked": "Blocked",
+      "user": "User",
+      "organization": "Organization",
+      "role": "Role",
+      "status": "Status",
+      "createdAt": "Signed up",
+      "empty": "No users.",
+      "loadError": "Unable to load users"
+    },
+    "dashboard": {
+      "breadcrumb": "Platform dashboard",
+      "title": "Platform dashboard",
+      "subtitle": "Overview of real customers (demo organizations excluded).",
+      "loadError": "Unable to load statistics",
+      "stats": {
+        "organizations": "Organizations",
+        "users": "Users",
+        "blockedUsers": "Blocked users",
+        "newOrganizations": "New organizations (30 d)",
+        "freeOrganizations": "Free organizations",
+        "premiumOrganizations": "Premium organizations",
+        "garages": "Garages",
+        "newUsers": "New users (30 d)",
+        "mrr": "Estimated MRR",
+        "quotes": "Quotes",
+        "invoices": "Invoices"
+      },
+      "recent": {
+        "title": "Latest organizations",
+        "empty": "No organization yet.",
+        "created": "Created on",
+        "viewAll": "View all →",
+        "name": "Organization",
+        "plan": "Plan",
+        "members": "Members",
+        "garages": "Garages"
+      },
+      "demo": {
+        "title": "Quick access — demo",
+        "empty": "No demo profile.",
+        "hint": "One click = \"View as\" this profile."
+      },
+      "plans": {
+        "title": "Plan distribution",
+        "free": "Free",
+        "premium": "Premium"
+      },
+      "signups": {
+        "title": "Sign-ups (6 months)"
+      },
+      "alerts": {
+        "title": "Watch list",
+        "none": "Nothing to report.",
+        "blockedUsers": "{count} blocked user | {count} blocked users",
+        "nearQuota": "{count} organization close to its seat quota | {count} organizations close to their seat quota",
+        "expiring": "{count} subscription expires within 7 days | {count} subscriptions expire within 7 days"
+      }
+    }
+  }
+}

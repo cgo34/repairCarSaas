@@ -57,20 +57,6 @@ export function createUseUserState(deps: UseUserStateDependencies): IUseUserStat
     };
   };
 
-  const addUser = async (user: UserViewModel) => {
-    loading.value = true;
-    try {
-      return userUseCase.createUser(UserMapper.viewToDto(user)).then((data) => {
-        const newUser = UserMapper.dtoToView(data);
-        _users.value.push(newUser);
-        resetSelectedUser();
-        return newUser;
-      });
-    } finally {
-      loading.value = false;
-    }
-  };
-
   const updateUser = async (user: UserViewModel): Promise<UserViewModel> => {
     loading.value = true;
     try {
@@ -102,7 +88,6 @@ export function createUseUserState(deps: UseUserStateDependencies): IUseUserStat
     init,
     getUsers,
     selectUser,
-    addUser,
     updateUser,
     deleteUser,
     resetSelectedUser,

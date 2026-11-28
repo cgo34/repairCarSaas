@@ -4,13 +4,13 @@ const PurpleDarkTheme: ThemeTypes = {
   name: 'dark',
   dark: true,
   variables: {
-    'border-color': '#2B54E0',
+    'border-color': '#0070FD',
     'carousel-control-size': 10
   },
   colors: {
-    primary:         '#2B54E0',  // Bleu précision
+    primary:         '#0070FD',  // Bleu précision
     secondary:       '#9AA2B1',  // Neutre
-    info:            '#2B54E0',
+    info:            '#0070FD',
     success:         '#15915F',
     accent:          '#F5871F',
     warning:         '#F5871F',
@@ -22,7 +22,7 @@ const PurpleDarkTheme: ThemeTypes = {
     lighterror:      '#2A1A1A',
     lightwarning:    '#2A1F0E',
 
-    darkprimary:     '#1D3DB5',
+    darkprimary:     '#0058C9',
     darksecondary:   '#3D4F6E',
 
     darkText:        '#D7DCEC',

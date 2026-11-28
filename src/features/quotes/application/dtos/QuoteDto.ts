@@ -129,6 +129,10 @@ export interface QuoteDto {
 
   convertToInvoice?: boolean;
 
+  acceptedAt?: string | null;
+
+  convertedAt?: string | null;
+
   /**
    * ============================================================
    * SNAPSHOT GARAGE

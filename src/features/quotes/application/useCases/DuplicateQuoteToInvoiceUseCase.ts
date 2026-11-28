@@ -26,7 +26,8 @@ export class DuplicateQuoteToInvoiceUseCase {
   ) {}
 
   async execute(quote: QuoteDto, quoteLines: LineItemDto[]): Promise<InvoiceDto> {
-      const pendingStatus = (await this.getDocumentStatusUseCase.execute()).find(s => s.code === 'processing')
+      // Une facture issue d'un devis démarre en brouillon : elle reste modifiable jusqu'à son envoi
+      const draftStatus = (await this.getDocumentStatusUseCase.execute()).find(s => s.code === 'draft')
     
     const userContext = this.authState.userContext.value;
     if (!userContext) throw new Error('User not found');
@@ -34,18 +35,27 @@ export class DuplicateQuoteToInvoiceUseCase {
     if (!quote.id) throw new Error('Quote id is required to duplicate it to an invoice');
     if (quote.status?.code !== 'accepted') throw new Error('Seul un devis accepté peut être converti en facture');
     if (quote.convertToInvoice) throw new Error('Ce devis a déjà été converti en facture');
-    if (!pendingStatus) throw new Error('Document statuses not found');
+    if (!draftStatus) throw new Error('Document statuses not found');
 
     const invoiceNumber = await this.invoiceRepository.generateInvoiceNumber(userContext.organization.id);
     
     let invoice = QuoteMapper.quoteToInvoice(quote, invoiceNumber)
 
+    // La facture démarre aujourd'hui (et non à la date du devis) ; on conserve la durée de validité
+    const now = new Date();
+    const quoteStart = new Date(quote.startDate);
+    const quoteEnd = new Date(quote.endDate);
+    const validityMs = quoteEnd.getTime() - quoteStart.getTime();
+
     invoice = {
       ...invoice,
       invoiceNumber: invoiceNumber,
+      startDate: now.toISOString(),
+      endDate: new Date(now.getTime() + (Number.isFinite(validityMs) && validityMs > 0 ? validityMs : 0)).toISOString(),
+      createdAt: now.toISOString(),
       // Set new status for invoice
-      status_id: pendingStatus.id,
-      status: pendingStatus
+      status_id: draftStatus.id,
+      status: draftStatus
     }
     
     // const invoiceLines = QuoteMapper.quoteLinesToInvoiceLines(quoteLines)

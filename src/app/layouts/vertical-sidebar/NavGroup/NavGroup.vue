@@ -7,6 +7,6 @@ const props = defineProps({ item: { type: Object, default: undefined } });
     color="darkText"
     class="smallCap"
   >
-    {{ props.item.header }}
+    {{ $t(props.item.header) }}
   </v-list-subheader>
 </template>

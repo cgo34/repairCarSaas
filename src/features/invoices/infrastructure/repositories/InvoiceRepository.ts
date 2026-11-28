@@ -4,6 +4,7 @@ import { SupabaseClient } from '@/shared/infrastructure/supabase/SupabaseClient'
 import { InvoiceDto } from '@/features/invoices/application/dtos/InvoiceDto';
 import { IClientProvider } from '@/shared/infrastructure/supabase/IClientProvider';
 import { InvoiceMapper } from '@/features/invoices/infrastructure/mappers/InvoiceMapper';
+import { PlanLimitError } from '@/features/featureAccess/domain/errors/PlanLimitError';
 
 export class InvoiceRepository implements IInvoiceRepository {
   constructor(private clientProvider: IClientProvider<SupabaseClient>) {}
@@ -40,6 +41,33 @@ export class InvoiceRepository implements IInvoiceRepository {
     return invoiceNumber;
   }
 
+  async countCreatedSince(organizationId: string, sinceIso: string): Promise<number> {
+    const { count, error } = await this.clientProvider.getClient()
+      .from('invoices')
+      .select('*', { count: 'exact', head: true })
+      .eq('organization_id', organizationId)
+      .gte('created_at', sinceIso);
+
+    if (error)
+      throw new Error('Error counting invoices');
+
+    return count ?? 0;
+  }
+
+  async countConversionsSince(organizationId: string, sinceIso: string): Promise<number> {
+    const { count, error } = await this.clientProvider.getClient()
+      .from('invoices')
+      .select('*', { count: 'exact', head: true })
+      .eq('organization_id', organizationId)
+      .not('quote_id', 'is', null)
+      .gte('created_at', sinceIso);
+
+    if (error)
+      throw new Error('Error counting conversions');
+
+    return count ?? 0;
+  }
+
   /**
    * ============================================================
    * GET ALL BY ORGANIZATION MEMBER
@@ -60,12 +88,12 @@ export class InvoiceRepository implements IInvoiceRepository {
 
         assigned_member:organization_members!invoices_assigned_member_id_fkey(
           *,
-          users(*)
+          users!organization_members_user_id_fkey(*)
         ),
 
         created_by_member:organization_members!invoices_created_by_member_id_fkey(
           *,
-          users(*)
+          users!organization_members_user_id_fkey(*)
         ),
 
         garage:garages(*),
@@ -90,10 +118,7 @@ export class InvoiceRepository implements IInvoiceRepository {
     if (role === 'technician') {
 
       query = query.or(
-        `
-        assigned_member_id.eq.${memberId},
-        created_by_member_id.eq.${memberId}
-        `
+        `assigned_member_id.eq.${memberId},created_by_member_id.eq.${memberId}`
       );
     }
 
@@ -160,12 +185,12 @@ export class InvoiceRepository implements IInvoiceRepository {
 
           created_by_member:organization_members!invoices_created_by_member_id_fkey(
             *,
-            users(*)
+            users!organization_members_user_id_fkey(*)
           ),
 
           assigned_member:organization_members!invoices_assigned_member_id_fkey(
             *,
-            users(*)
+            users!organization_members_user_id_fkey(*)
           ),
 
           garage:garages(*),
@@ -228,7 +253,7 @@ export class InvoiceRepository implements IInvoiceRepository {
       .single<InvoiceApiModel>();
 
     if (error)
-      throw new Error('Error creating invoice');
+      throw PlanLimitError.from(error) ?? new Error('Error creating invoice');
 
     return InvoiceMapper.apiToDto(data);
   }

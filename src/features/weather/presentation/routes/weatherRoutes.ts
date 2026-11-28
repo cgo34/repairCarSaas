@@ -9,7 +9,7 @@ export const weatherRoutes: RouteRecordRaw[] = [
     meta: {
       requiresAuth: true,
       breadcrumb: [
-        { title: 'Surveillance grêle', href: '/weather' },
+        { title: 'weather.breadcrumb.monitoring', href: '/weather' },
       ]
     },
   },

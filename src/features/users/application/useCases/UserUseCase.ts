@@ -4,7 +4,6 @@ import { UserDto } from '@/features/users/application/dtos/UserDto';
 export interface IUserUseCase {
   getUsers(): Promise<UserDto[]>;
   getUserById(id: string): Promise<UserDto | null>;
-  createUser(user: UserDto): Promise<UserDto>;
   updateUser(id: string, user: Partial<UserDto>): Promise<void>;
   deleteUser(id: string): Promise<void>;
 }
@@ -20,10 +19,6 @@ export class UserUseCase implements IUserUseCase {
 
   async getUserById(id: string): Promise<UserDto | null> {
     return this.userService.getUserById(id);
-  }
-
-  async createUser(user: UserDto): Promise<UserDto> {
-    return this.userService.createUser(user);
   }
 
   async updateUser(id: string, user: Partial<UserDto>): Promise<void> {

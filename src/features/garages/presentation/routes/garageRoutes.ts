@@ -8,10 +8,10 @@ export const garageRoutes: RouteRecordRaw[] = [
     component: GaragesPage,
     meta: {
       requiresAuth: true,
-      roles: ['technician', 'admin'],
+      roles: ['technician', 'manager', 'admin'],
       subtitle: 'Manage your garages',
       breadcrumb: [
-        { title: 'Garages', href: '/organization/garages' },
+        { title: 'garages.breadcrumb.list', href: '/organization/garages' },
       ]
     },
   },

@@ -71,7 +71,7 @@ const handleForgotPassword = async () => {
 
   const { error } = await supabase.auth.resetPasswordForEmail(
     email.value,
-    { redirectTo: 'http://localhost:3000/reset-password' }
+    { redirectTo: `${window.location.origin}/reset-password` }
   );
 
 
@@ -94,6 +94,7 @@ const handleForgotPassword = async () => {
   align-items: center;
   height: 100vh;
 }
+
 .forgot-password-card {
   padding: 20px;
   width: 100%;

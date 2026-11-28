@@ -15,7 +15,7 @@
       <v-list-item>
         <v-text-field
           v-model="searchQuery"
-          label="Rechercher"
+          :label="t('common.search')"
           clearable
           @input="onSearch"
         />
@@ -26,14 +26,17 @@
 
 <script setup lang="ts" generic="TModel extends { name: string }">
 import { computed, defineEmits, defineProps, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 // Définition des props
 const props = defineProps<{
   modelValue?: TModel | undefined;
   items: TModel[];
   label: string;
-  itemTitle: string
+  itemTitle: string | ((item: TModel) => string)
 }>();
+
+const { t } = useI18n();
 
 // Stocke la valeur sélectionnée localement
 const model = ref<TModel | undefined>(props.modelValue);
@@ -52,9 +55,11 @@ const emit = defineEmits<{
 const searchQuery = ref('');
 const filteredItems = computed(() => {
   if (!searchQuery.value) return props.items;
-  return props.items.filter(item =>
-    item.name.toLowerCase().includes(searchQuery.value.toLowerCase())
-  );
+  const query = searchQuery.value.toLowerCase();
+  return props.items.filter(item => {
+    const title = typeof props.itemTitle === 'function' ? props.itemTitle(item) : item.name;
+    return title.toLowerCase().includes(query);
+  });
 });
 
 const onClearItem = () => {

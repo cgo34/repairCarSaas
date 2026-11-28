@@ -1,11 +1,23 @@
 // Setup type definitions for built-in Supabase Runtime APIs
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
 };
+
+const FEATURE_BY_DOCUMENT_TYPE: Record<string, string> = {
+  quote: 'quote_email_sending',
+  invoice: 'invoice_email_sending',
+};
+
+const jsonResponse = (body: unknown, status: number) =>
+  new Response(JSON.stringify(body), {
+    status,
+    headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+  });
 
 Deno.serve(async (req) => {
   // Handle CORS preflight request
@@ -14,7 +26,37 @@ Deno.serve(async (req) => {
   }
 
   try {
-    const { to, subject, textContent, htmlContent, attachments } = await req.json();
+    const { to, subject, textContent, htmlContent, attachments, documentType, organizationId } = await req.json();
+
+    // Server-side plan guard: the UI hides the buttons, this makes the rule unbypassable
+    const feature = FEATURE_BY_DOCUMENT_TYPE[documentType];
+    if (!feature || !organizationId) {
+      return jsonResponse({ error: 'documentType and organizationId are required' }, 400);
+    }
+
+    const supabase = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_ANON_KEY') ?? '',
+      { global: { headers: { Authorization: req.headers.get('Authorization') ?? '' } } },
+    );
+
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      return jsonResponse({ error: 'Unauthorized' }, 401);
+    }
+
+    const { data: allowed, error: accessError } = await supabase.rpc('can_use_feature', {
+      p_organization_id: organizationId,
+      p_feature: feature,
+    });
+    if (accessError) {
+      console.error('Feature check error:', accessError);
+      return jsonResponse({ error: 'Feature check failed' }, 500);
+    }
+    if (!allowed) {
+      return jsonResponse({ error: `FEATURE_NOT_AVAILABLE: ${feature}` }, 403);
+    }
+
     const MAILJET_API_KEY = Deno.env.get('MAILJET_API_KEY');
     const MAILJET_API_SECRET = Deno.env.get('MAILJET_API_SECRET');
     const FROM_EMAIL = Deno.env.get('MAILJET_FROM_EMAIL') || 'sandbox@mailjet.com';

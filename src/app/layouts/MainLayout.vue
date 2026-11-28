@@ -70,19 +70,20 @@
             to="/dashboard"
           >
             <v-icon>mdi-view-dashboard-outline</v-icon>
-            <span>Accueil</span>
+            <span>{{ $t('common.nav.home') }}</span>
           </v-btn>
           <v-btn
             value="quotes"
             to="/quotes"
           >
             <v-icon>mdi-file-document-outline</v-icon>
-            <span>Devis</span>
+            <span>{{ $t('common.nav.quotes') }}</span>
           </v-btn>
           <v-btn
             value="new-quote"
-            to="/quotes/add"
+            to="/quotes/new"
             class="fab-btn"
+            :disabled="newQuoteDisabled"
           >
             <v-icon size="28">
               mdi-plus
@@ -93,7 +94,7 @@
             to="/invoices"
           >
             <v-icon>mdi-receipt-outline</v-icon>
-            <span>Factures</span>
+            <span>{{ $t('common.nav.invoices') }}</span>
           </v-btn>
           <v-btn
             value="weather"
@@ -110,7 +111,7 @@
             <v-icon v-else>
               mdi-weather-hail
             </v-icon>
-            <span>Météo</span>
+            <span>{{ $t('common.nav.weather') }}</span>
           </v-btn>
         </v-bottom-navigation>
       </v-main>
@@ -119,9 +120,11 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import { useDisplay } from 'vuetify';
+import { useFeatureAccess } from '@/features/featureAccess/composition/useFeatureAccess';
+import { usePlanUsage } from '@/features/featureAccess/composition/usePlanUsage';
 import { hailActiveCount } from '@/features/weather/presentation/composables/useHailMonitoringState';
 
 
@@ -153,12 +156,22 @@ const {
 
 const { mobile } = useDisplay();
 const activeBottomNav = ref(route.name);
+
+const { isLimitReached } = useFeatureAccess();
+const { quotesUsed, invoicesUsed, load: loadPlanUsage } = usePlanUsage();
+const newQuoteDisabled = computed(() =>
+  isLimitReached('max_quotes_per_month', quotesUsed.value)
+  || isLimitReached('max_invoices_per_month', invoicesUsed.value));
+
+// Les compteurs changent après chaque création : on les relit à chaque navigation
+watch(() => route.fullPath, () => { void loadPlanUsage(); }, { immediate: true });
 </script>
 
 <style>
 .mobile-bottom-nav {
   padding-bottom: env(safe-area-inset-bottom);
 }
+
 .mobile-bottom-nav .fab-btn .v-btn__content {
   background: rgb(var(--v-theme-primary));
   border-radius: 50%;
@@ -169,6 +182,6 @@ const activeBottomNav = ref(route.name);
   justify-content: center;
   color: white;
   margin-bottom: 4px;
-  box-shadow: 0 4px 12px rgba(var(--v-theme-primary), 0.4);
+  box-shadow: 0 4px 12px rgb(var(--v-theme-primary), 0.4);
 }
 </style>

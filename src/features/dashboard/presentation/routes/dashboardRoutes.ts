@@ -10,7 +10,7 @@ export const dashboardRoutes: RouteRecordRaw[] = [
     meta: { 
       requiresAuth: true,
       breadcrumb: [
-        { title: 'Dashboard', href: '/dashboard' },
+        { title: 'dashboard.breadcrumb.home', href: '/dashboard' },
       ]
     },
   },

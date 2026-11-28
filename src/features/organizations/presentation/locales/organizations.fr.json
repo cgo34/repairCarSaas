@@ -1,0 +1,133 @@
+{
+  "organizations": {
+    "breadcrumb": {
+      "profile": "Organisation"
+    },
+    "members": {
+      "title": "Membres",
+      "subtitle": "Gérez les membres de votre organisation",
+      "add": "Ajouter un membre",
+      "searchPlaceholder": "Rechercher un nom, un email…",
+      "empty": "Aucun membre",
+      "manageSubscription": "Gérer l'abonnement",
+      "seatLimit": "Limite d'utilisateurs atteinte ({used} / {limit}). Passez à un abonnement supérieur pour ajouter des membres.",
+      "form": {
+        "firstName": "Prénom",
+        "lastName": "Nom",
+        "email": "Email",
+        "role": "Rôle",
+        "commission": "Commission (%)"
+      },
+      "table": {
+        "member": "Membre",
+        "commission": "Commission",
+        "status": "Statut",
+        "accountType": "Type de compte",
+        "accountTypeUser": "Utilisateur",
+        "accountTypePlatform": "Super admin (plateforme)"
+      },
+      "roles": {
+        "technician": "Technicien",
+        "manager": "Manager",
+        "admin": "Admin"
+      },
+      "status": {
+        "active": "Actif",
+        "pending": "En attente",
+        "blocked": "Bloqué",
+        "archived": "Archivé"
+      },
+      "filters": {
+        "allStatuses": "Tous les statuts",
+        "allRoles": "Tous les rôles"
+      },
+      "stats": {
+        "members": "Membres",
+        "active": "Actifs",
+        "blocked": "Bloqués",
+        "avgCommission": "Commission moyenne"
+      },
+      "actions": {
+        "label": "Actions",
+        "edit": "Modifier",
+        "assignGarages": "Assigner des garages",
+        "block": "Bloquer",
+        "unblock": "Débloquer",
+        "delete": "Supprimer"
+      },
+      "dialog": {
+        "edit": "Modifier le membre",
+        "new": "Nouveau membre"
+      },
+      "block": {
+        "blockTitle": "Bloquer le membre",
+        "unblockTitle": "Débloquer le membre",
+        "blockMessage": "{name} n'aura plus accès à l'application. Continuer ?",
+        "unblockMessage": "{name} retrouvera l'accès à l'application. Continuer ?"
+      },
+      "delete": {
+        "title": "Supprimer le membre",
+        "message": "Êtes-vous sûr de vouloir supprimer \"{name}\" ?"
+      },
+      "messages": {
+        "error": "Une erreur est survenue.",
+        "loadGaragesError": "Impossible de charger les garages assignés.",
+        "garagesAssigned": "Garages assignés.",
+        "assignError": "Erreur lors de l'assignation des garages.",
+        "seatLimit": "Limite d'utilisateurs de l'abonnement atteinte"
+      }
+    },
+    "profile": {
+      "title": "Paramètres de l'organisation",
+      "subtitle": "Informations légales, coordonnées et conditions affichées sur vos documents.",
+      "saved": "Enregistré",
+      "tabs": {
+        "legal": "Identité légale",
+        "contact": "Coordonnées",
+        "bank": "Coordonnées bancaires",
+        "payment": "Conditions de paiement"
+      },
+      "fields": {
+        "companyName": "Nom de l'entreprise *",
+        "legalForm": "Forme juridique *",
+        "siren": "N° d'identification (SIREN, IDE...)",
+        "siret": "N° établissement (SIRET, UID...)",
+        "tvaNumber": "N° TVA intracommunautaire",
+        "capital": "Capital social",
+        "address": "Adresse *",
+        "zipCode": "Code postal *",
+        "city": "Ville *",
+        "country": "Pays",
+        "phone": "Téléphone",
+        "email": "Email",
+        "website": "Site web",
+        "iban": "IBAN",
+        "bic": "BIC / SWIFT",
+        "paymentDelay": "Délai de paiement *",
+        "latePaymentPenalty": "Pénalités de retard",
+        "recoveryFee": "Indemnité forfaitaire de recouvrement"
+      },
+      "hints": {
+        "capital": "Requis pour SARL/SAS",
+        "iban": "Affiché en pied de facture",
+        "latePaymentPenalty": "Mention légale obligatoire",
+        "recoveryFee": "Obligatoire entre professionnels"
+      },
+      "placeholders": {
+        "latePaymentPenalty": "3 fois le taux légal"
+      },
+      "delays": {
+        "cash": "Comptant (0 jour)",
+        "days": "{count} jours"
+      },
+      "validation": {
+        "required": "Champ obligatoire",
+        "invalidEmail": "Email invalide"
+      },
+      "messages": {
+        "saved": "Paramètres enregistrés avec succès.",
+        "saveError": "Une erreur est survenue lors de l'enregistrement."
+      }
+    }
+  }
+}
