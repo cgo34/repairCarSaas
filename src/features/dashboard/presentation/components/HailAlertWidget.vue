@@ -16,33 +16,33 @@
     </v-avatar>
     <div class="min-w-0">
       <div class="d-flex align-center ga-2">
-        <span class="text-body-2 font-weight-bold">Surveillance grêle</span>
+        <span class="text-body-2 font-weight-bold">{{ t('dashboard.hail.title') }}</span>
         <div
           v-if="!loading"
           class="en-direct-badge"
         >
           <span class="blink-dot blink-dot--green" />
-          <span class="text-caption font-weight-medium">EN DIRECT</span>
+          <span class="text-caption font-weight-medium">{{ t('dashboard.hail.live') }}</span>
         </div>
       </div>
       <div class="text-caption text-medium-emphasis">
         <template v-if="loading">
-          Chargement des données météo…
+          {{ t('dashboard.hail.loading') }}
         </template>
         <template v-else-if="!hasActiveAlerts">
-          Aucune alerte en cours
+          {{ t('dashboard.hail.noAlert') }}
         </template>
         <template v-else>
-          département{{ activeAlerts.length > 1 ? 's' : '' }} en alerte ·
+          {{ t('dashboard.hail.departmentsInAlert', activeAlerts.length) }} ·
           {{ activeAlerts.slice(0, 4).map(a => a.departmentName).join(', ') }}
           <template v-if="countActive > 0">
-            · {{ countActive }} critique{{ countActive > 1 ? 's' : '' }}
+            · {{ t('dashboard.hail.critical', countActive) }}
           </template>
           <template v-if="countHigh > 0">
-            · {{ countHigh }} élevé{{ countHigh > 1 ? 's' : '' }}
+            · {{ t('dashboard.hail.high', countHigh) }}
           </template>
           <template v-if="countModerate > 0">
-            · {{ countModerate }} modéré{{ countModerate > 1 ? 's' : '' }}
+            · {{ t('dashboard.hail.moderate', countModerate) }}
           </template>
         </template>
       </div>
@@ -55,7 +55,7 @@
       append-icon="mdi-arrow-right"
       class="ml-auto"
     >
-      Voir tout
+      {{ t('dashboard.hail.seeAll') }}
     </v-btn>
   </v-card>
   <v-card
@@ -80,13 +80,13 @@
               mdi-weather-hail
             </v-icon>
           </div>
-          <span class="text-body-2 font-weight-semibold">Surveillance grêle</span>
+          <span class="text-body-2 font-weight-semibold">{{ t('dashboard.hail.title') }}</span>
           <div
             v-if="!loading"
             class="en-direct-badge ml-1"
           >
             <span class="blink-dot blink-dot--green" />
-            <span class="text-caption font-weight-medium">EN DIRECT</span>
+            <span class="text-caption font-weight-medium">{{ t('dashboard.hail.live') }}</span>
           </div>
         </div>
         <v-btn
@@ -96,7 +96,7 @@
           to="/weather"
           append-icon="mdi-arrow-right"
         >
-          Voir tout
+          {{ t('dashboard.hail.seeAll') }}
         </v-btn>
       </div>
 
@@ -111,7 +111,7 @@
           width="2"
           color="primary"
         />
-        <span class="text-caption text-medium-emphasis">Chargement des données météo…</span>
+        <span class="text-caption text-medium-emphasis">{{ t('dashboard.hail.loading') }}</span>
       </div>
 
       <template v-else>
@@ -127,7 +127,7 @@
               {{ activeAlerts.length }}
             </div>
             <div class="text-body-2 text-medium-emphasis mb-3">
-              département{{ activeAlerts.length > 1 ? 's' : '' }} en alerte
+              {{ t('dashboard.hail.departmentsInAlert', activeAlerts.length) }}
             </div>
 
             <!-- Barre de répartition -->
@@ -159,21 +159,21 @@
                 class="d-flex align-center gap-1"
               >
                 <span class="legend-dot legend-dot--red" />
-                <span class="text-error font-weight-medium">{{ countActive }} critiques</span>
+                <span class="text-error font-weight-medium">{{ t('dashboard.hail.critical', countActive) }}</span>
               </span>
               <span
                 v-if="countHigh > 0"
                 class="d-flex align-center gap-1"
               >
                 <span class="legend-dot legend-dot--orange" />
-                <span class="text-warning font-weight-medium">{{ countHigh }} élevés</span>
+                <span class="text-warning font-weight-medium">{{ t('dashboard.hail.high', countHigh) }}</span>
               </span>
               <span
                 v-if="countModerate > 0"
                 class="d-flex align-center gap-1"
               >
                 <span class="legend-dot legend-dot--yellow" />
-                <span class="text-medium-emphasis">{{ countModerate }} modérés</span>
+                <span class="text-medium-emphasis">{{ t('dashboard.hail.moderate', countModerate) }}</span>
               </span>
             </div>
           </div>
@@ -191,13 +191,13 @@
                 class="text-caption font-weight-medium"
                 style="text-transform:uppercase; letter-spacing:.05em; margin:0"
               >
-                Zones les plus touchées
+                {{ t('dashboard.hail.zones') }}
               </p>
               <p
                 class="text-caption text-disabled"
                 style="margin:0"
               >
-                dernières 24h
+                {{ t('dashboard.hail.last24h') }}
               </p>
             </div>
 
@@ -211,7 +211,7 @@
               >
                 mdi-check-circle
               </v-icon>
-              <span class="text-body-2 text-medium-emphasis">Aucune alerte en cours</span>
+              <span class="text-body-2 text-medium-emphasis">{{ t('dashboard.hail.noAlert') }}</span>
             </div>
 
             <div
@@ -258,12 +258,12 @@
           <v-icon size="12">
             mdi-clock-outline
           </v-icon>
-          <span>{{ formatCheckedAt ? `Mis à jour ${formatCheckedAt}` : 'Non synchronisé' }}</span>
+          <span>{{ formatCheckedAt ? t('dashboard.hail.updatedAt', formatCheckedAt) : t('dashboard.hail.notSynced') }}</span>
           <span>·</span>
-          <span>source Open-Meteo</span>
+          <span>{{ t('dashboard.hail.source') }}</span>
           <template v-if="activeAlerts.length > 4">
             <span>·</span>
-            <span>+ {{ activeAlerts.length - 4 }} autres départements</span>
+            <span>{{ t('dashboard.hail.moreDepartments', { count: activeAlerts.length - 4 }) }}</span>
           </template>
         </div>
       </template>
@@ -273,11 +273,13 @@
 
 <script setup lang="ts">
 import { computed, onMounted } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useHailMonitoringState } from '@/features/weather/composition/useHailMonitoringState';
 import { timeAgo } from '@/shared/presentation/utils/timeAgo';
 import type { HailRiskLevel } from '@/features/weather/application/dtos/HailAlertDto';
 
 defineProps<{ compact?: boolean }>();
+const { t } = useI18n();
 
 const { alerts, activeAlerts, hasActiveAlerts, loading, fetchAlerts } = useHailMonitoringState();
 
@@ -294,7 +296,7 @@ const formatCheckedAt = computed(() => {
   const month = String(d.getMonth() + 1).padStart(2, '0');
   const hours = String(d.getHours()).padStart(2, '0');
   const mins = String(d.getMinutes()).padStart(2, '0');
-  return `${day}/${month} à ${hours}:${mins}`;
+  return { date: `${day}/${month}`, time: `${hours}:${mins}` };
 });
 
 function riskColor(level: HailRiskLevel): string {
@@ -303,7 +305,7 @@ function riskColor(level: HailRiskLevel): string {
 }
 
 function riskLabel(level: HailRiskLevel): string {
-  const map: Record<HailRiskLevel, string> = { active: 'Critique', high: 'Élevé', moderate: 'Modéré', none: 'OK' };
+  const map: Record<HailRiskLevel, string> = { active: t('dashboard.hail.riskCritical'), high: t('dashboard.hail.riskHigh'), moderate: t('dashboard.hail.riskModerate'), none: t('dashboard.hail.riskNone') };
   return map[level];
 }
 
@@ -314,11 +316,13 @@ onMounted(fetchAlerts);
 .hail-widget {
   transition: border-color 0.3s ease;
 }
+
 .hail-widget--alert {
   border-color: rgb(var(--v-theme-error)) !important;
 }
+
 .hail-widget--compact.hail-widget--alert {
-  background: rgba(var(--v-theme-error), 0.06) !important;
+  background: rgb(var(--v-theme-error), 0.06) !important;
 }
 
 /* Layout deux colonnes */
@@ -326,10 +330,12 @@ onMounted(fetchAlerts);
   display: flex;
   align-items: flex-start;
 }
+
 .hail-left {
   flex: 0 0 220px;
   min-width: 180px;
 }
+
 .hail-right {
   flex: 1;
   min-width: 0;
@@ -347,7 +353,7 @@ onMounted(fetchAlerts);
 .bar-seg--red    { background: rgb(var(--v-theme-error)); }
 .bar-seg--orange { background: rgb(var(--v-theme-warning)); }
 .bar-seg--yellow { background: #f59e0b; }
-.bar-seg--green  { background: rgba(var(--v-theme-success), 0.25); }
+.bar-seg--green  { background: rgb(var(--v-theme-success), 0.25); }
 
 /* Zones */
 .zones-grid {
@@ -355,6 +361,7 @@ onMounted(fetchAlerts);
   grid-template-columns: 1fr 1fr;
   gap: 6px 16px;
 }
+
 .zone-item {
   padding: 4px 0;
 }
@@ -367,15 +374,17 @@ onMounted(fetchAlerts);
   width: 30px;
   height: 30px;
   border-radius: 8px;
-  background: rgba(var(--v-theme-warning), 0.12);
+  background: rgb(var(--v-theme-warning), 0.12);
   flex-shrink: 0;
 }
+
 .hail-icon-wrapper--pulse {
   animation: icon-pulse 2s ease-in-out infinite;
 }
+
 @keyframes icon-pulse {
-  0%, 100% { background: rgba(var(--v-theme-warning), 0.10); }
-  50%       { background: rgba(var(--v-theme-warning), 0.25); }
+  0%, 100% { background: rgb(var(--v-theme-warning), 0.10); }
+  50%       { background: rgb(var(--v-theme-warning), 0.25); }
 }
 
 /* Légende points colorés */
@@ -397,10 +406,11 @@ onMounted(fetchAlerts);
   gap: 5px;
   padding: 2px 8px;
   border-radius: 20px;
-  border: 1px solid rgba(var(--v-theme-success), 0.3);
-  background: rgba(var(--v-theme-success), 0.08);
+  border: 1px solid rgb(var(--v-theme-success), 0.3);
+  background: rgb(var(--v-theme-success), 0.08);
   color: rgb(var(--v-theme-success));
 }
+
 .blink-dot {
   display: inline-block;
   width: 6px;
@@ -408,10 +418,12 @@ onMounted(fetchAlerts);
   border-radius: 50%;
   flex-shrink: 0;
 }
+
 .blink-dot--green {
   background-color: rgb(var(--v-theme-success));
   animation: blink-pulse 1.5s infinite;
 }
+
 @keyframes blink-pulse {
   0%, 100% { opacity: 1; }
   50%       { opacity: 0.2; }
@@ -426,7 +438,7 @@ onMounted(fetchAlerts);
 }
 
 /* Mobile : passer en une colonne */
-@media (max-width: 600px) {
+@media (width <= 600px) {
   .hail-body { flex-direction: column; }
   .hail-left { flex: none; width: 100%; margin-bottom: 16px; }
   .zones-grid { grid-template-columns: 1fr; }

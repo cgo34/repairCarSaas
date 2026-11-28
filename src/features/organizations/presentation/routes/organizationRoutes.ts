@@ -3,13 +3,13 @@ import { RouteRecordRaw } from 'vue-router';
 
 export const organizationRoutes: RouteRecordRaw[] = [
   {
-    path: '/organization/settings',
+    path: '/organization/profile',
     name: 'Settings',
     component: OrganizationProfilePage,
     meta: {
       requiresAuth: true,
       breadcrumb: [
-        { title: 'Paramètres', href: '/organization/settings' },
+        { title: 'organizations.breadcrumb.profile', href: '/organization/profile' },
       ]
     },
   }

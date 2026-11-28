@@ -11,5 +11,10 @@ export interface IUseViewInvoiceState {
 
   pdfUrl: ComputedRef<string>;
   filename: ComputedRef<string>;
+  subtotal: ComputedRef<number>;
+  totalDegarnissage: ComputedRef<number>;
+  taxRate: ComputedRef<number>;
+  totalTax: ComputedRef<number>;
+  total: ComputedRef<number>;
   invoice: ComputedRef<InvoiceViewModel | undefined>;
 }

@@ -1,0 +1,15 @@
+{
+  "profileSwitcher": {
+    "breadcrumb": "Demo profiles",
+    "title": "Choose a demo profile",
+    "subtitle": "Explore the app as an administrator, a manager or a technician.",
+    "empty": "No demo profiles. Run the seed script.",
+    "loadError": "Unable to load profiles",
+    "switchError": "Unable to switch profile",
+    "plan": { "FREE": "Free", "PREMIUM": "Premium" },
+    "roles": { "admin": "Administrator", "manager": "Manager", "technician": "Technician" },
+    "actions": { "enter": "Enter", "backToGlobal": "Super Admin", "delete": "Delete profile" },
+    "add": { "role": "Role", "label": "Profile name (optional)", "submit": "Add a profile" },
+    "members": { "title": "Demo profiles", "subtitle": "Same account, one profile per role. Click to switch.", "active": "Active" }
+  }
+}

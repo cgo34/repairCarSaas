@@ -6,6 +6,7 @@ export interface IAuthService {
     logout(): Promise<void>;
     getCurrentUser(): Promise<UserDto | null>;
     updateEmail(newEmail: string): Promise<void>;
+    changePassword(currentPassword: string, newPassword: string): Promise<void>;
     onAuthStateChange(callback: (event: string, session: unknown) => void): void;
   }
   

@@ -4,6 +4,7 @@ import { SupabaseClient } from '@/shared/infrastructure/supabase/SupabaseClient'
 import { QuoteDto } from '@/features/quotes/application/dtos/QuoteDto';
 import { IClientProvider } from '@/shared/infrastructure/supabase/IClientProvider';
 import { QuoteMapper } from '@/features/quotes/infrastructure/mappers/QuoteMapper';
+import { PlanLimitError } from '@/features/featureAccess/domain/errors/PlanLimitError';
 
 export class QuoteRepository implements IQuoteRepository {
   constructor(private clientProvider: IClientProvider<SupabaseClient>) {}
@@ -25,6 +26,19 @@ export class QuoteRepository implements IQuoteRepository {
     const month = (new Date().getMonth() + 1).toString().padStart(2, '0');
     const quoteNumber = `D${year}${month}-${((count ?? 0) + 1).toString().padStart(4, '0')}`;
     return quoteNumber;
+  }
+
+  async countCreatedSince(organizationId: string, sinceIso: string): Promise<number> {
+    const { count, error } = await this.clientProvider.getClient()
+      .from('quotes')
+      .select('*', { count: 'exact', head: true })
+      .eq('organization_id', organizationId)
+      .gte('created_at', sinceIso);
+
+    if (error)
+      throw new Error('Error counting quotes');
+
+    return count ?? 0;
   }
 
   /**
@@ -84,12 +98,12 @@ export class QuoteRepository implements IQuoteRepository {
 
         assigned_member:organization_members!quotes_assigned_member_id_fkey(
           *,
-          users(*)
+          users!organization_members_user_id_fkey(*)
         ),
 
         created_by_member:organization_members!quotes_created_by_member_id_fkey(
           *,
-          users(*)
+          users!organization_members_user_id_fkey(*)
         ),
 
         garage:garages(*),
@@ -136,12 +150,12 @@ export class QuoteRepository implements IQuoteRepository {
 
           created_by_member:organization_members!quotes_created_by_member_id_fkey(
             *,
-            users(*)
+            users!organization_members_user_id_fkey(*)
           ),
 
           assigned_member:organization_members!quotes_assigned_member_id_fkey(
             *,
-            users(*)
+            users!organization_members_user_id_fkey(*)
           ),
 
           garage:garages(*),
@@ -187,7 +201,7 @@ export class QuoteRepository implements IQuoteRepository {
       .single<QuoteApiModel>();
 
     if (error)
-      throw new Error('Error creating quote');
+      throw PlanLimitError.from(error) ?? new Error('Error creating quote');
 
     return QuoteMapper.apiToDto(data);
   }
@@ -222,12 +236,12 @@ export class QuoteRepository implements IQuoteRepository {
 
           assigned_member:organization_members!quotes_assigned_member_id_fkey(
             *,
-            users(*)
+            users!organization_members_user_id_fkey(*)
           ),
 
           created_by_member:organization_members!quotes_created_by_member_id_fkey(
             *,
-            users(*)
+            users!organization_members_user_id_fkey(*)
           ),
 
           garage:garages(*),
@@ -330,9 +344,28 @@ export class QuoteRepository implements IQuoteRepository {
   async markAsConverted(quoteId: string): Promise<void> {
     const { error } = await this.clientProvider.getClient()
       .from('quotes')
-      .update({ convert_to_invoice: true })
+      .update({ convert_to_invoice: true, converted_at: new Date().toISOString() })
       .eq('id', quoteId);
 
     if (error) throw new Error(`Error marking quote as converted: ${error.message}`);
+  }
+
+  // Rend le devis à nouveau convertible (facture brouillon supprimée)
+  async unmarkAsConverted(quoteId: string): Promise<void> {
+    const { error } = await this.clientProvider.getClient()
+      .from('quotes')
+      .update({ convert_to_invoice: false, converted_at: null })
+      .eq('id', quoteId);
+
+    if (error) throw new Error(`Error unmarking quote as converted: ${error.message}`);
+  }
+
+  async markAsAccepted(quoteId: string): Promise<void> {
+    const { error } = await this.clientProvider.getClient()
+      .from('quotes')
+      .update({ accepted_at: new Date().toISOString() })
+      .eq('id', quoteId);
+
+    if (error) throw new Error(`Error marking quote as accepted: ${error.message}`);
   }
 }

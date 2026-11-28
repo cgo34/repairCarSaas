@@ -2,18 +2,13 @@ import { IInvoiceDetailRepository } from '@/features/invoices/application/ports/
 import { LineItemDto } from '@/features/lineItems/application/dtos/LineItemDto';
 
 export interface IUpdateInvoiceLineItemUseCase {
-  execute(lineItems: LineItemDto[]): Promise<LineItemDto[]>;
+  execute(lineItem: LineItemDto): Promise<LineItemDto>;
 }
 
 export class UpdateInvoiceLineItemUseCase implements IUpdateInvoiceLineItemUseCase {
-  constructor(
-    private invoiceDetailRepository: IInvoiceDetailRepository
-  ) {}
+  constructor(private invoiceDetailRepository: IInvoiceDetailRepository) {}
 
-  async execute(lineItems: LineItemDto[]): Promise<LineItemDto[]> {
-    
-    const updatedInvoiceDto = await this.invoiceDetailRepository.update(lineItems);
-
-    return updatedInvoiceDto;
+  async execute(lineItem: LineItemDto): Promise<LineItemDto> {
+    return this.invoiceDetailRepository.updateOne(lineItem);
   }
 }

@@ -5,6 +5,8 @@ import { PurpleDarkTheme } from '@/app/theme/PurpleDarkTheme';
 import { PurpleLightTheme } from '@/app/theme/PurpleLightTheme';
 import YellowLightTheme from '@/app/theme/YellowLightTheme';
 import { createVuetify } from 'vuetify';
+import { en, fr } from 'vuetify/locale';
+import { getInitialLocale } from '@/app/i18n';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
 import { aliases } from 'vuetify/iconsets/mdi-svg';
@@ -13,6 +15,11 @@ import { icons } from './mdi-icon'; // Import icons from separate file
 export default createVuetify({
   components,
   directives,
+  locale: {
+    locale: getInitialLocale(),
+    fallback: 'fr',
+    messages: { fr, en },
+  },
   icons: {
     defaultSet: 'mdi',
     aliases: {

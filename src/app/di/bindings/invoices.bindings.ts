@@ -14,6 +14,7 @@ import { ViewInvoiceUseCase } from '@/features/invoices/application/useCases/Vie
 import { IInvoiceDetailRepository } from '@/features/invoices/application/ports/repositories/IInvoiceDetailRepository';
 import { IInvoiceRepository } from '@/features/invoices/application/ports/repositories/IInvoiceRepository';
 import { IAddInvoiceLineItemUseCase } from '@/features/invoices/application/useCases/AddInvoiceLineItemUseCase';
+import { IUpdateInvoiceLineItemUseCase, UpdateInvoiceLineItemUseCase } from '@/features/invoices/application/useCases/UpdateInvoiceLineItemUseCase';
 import { ICreateInvoiceUseCase } from '@/features/invoices/application/useCases/CreateInvoiceUseCase';
 import { IDeleteInvoiceUseCase } from '@/features/invoices/application/useCases/DeleteInvoiceUseCase';
 import { MarkInvoiceAsPaidUseCase, IMarkInvoiceAsPaidUseCase } from '@/features/invoices/application/useCases/MarkInvoiceAsPaidUseCase';
@@ -22,7 +23,10 @@ import { IGetInvoiceDetailUseCase } from '@/features/invoices/application/useCas
 import { IGetInvoiceUseCase } from '@/features/invoices/application/useCases/GetInvoiceUseCase';
 import { IInsertInvoiceUseCase } from '@/features/invoices/application/useCases/InsertInvoiceUseCase';
 import { IInvoicesUseCase } from '@/features/invoices/application/useCases/GetInvoicesUseCase';
+import { CountInvoicesThisMonthUseCase, ICountInvoicesThisMonthUseCase } from '@/features/invoices/application/useCases/CountInvoicesThisMonthUseCase';
+import { CountConversionsThisMonthUseCase, ICountConversionsThisMonthUseCase } from '@/features/invoices/application/useCases/CountConversionsThisMonthUseCase';
 import { ISendInvoiceUseCase } from '@/features/invoices/application/useCases/SendInvoiceUseCase';
+import { FinalizeInvoiceUseCase, IFinalizeInvoiceUseCase } from '@/features/invoices/application/useCases/FinalizeInvoiceUseCase';
 import { IUpdateInvoiceUseCase } from '@/features/invoices/application/useCases/UpdateInvoiceUseCase';
 import { IViewInvoiceUseCase } from '@/features/invoices/application/useCases/ViewInvoiceUseCase';
 import { useCreateInvoiceState } from '@/features/invoices/composition/useCreateInvoiceState';
@@ -39,18 +43,22 @@ import { InvoiceRepository } from '@/features/invoices/infrastructure/repositori
 export function registerInvoicesBindings(container: Container): void {
   container.bind<IInvoiceRepository>(SYMBOLS.Repositories.InvoiceRepository).toDynamicValue(ctx => new InvoiceRepository(ctx.container.get(SYMBOLS.Providers.ClientProvider))).inSingletonScope();
   container.bind<IInvoiceDetailRepository>(SYMBOLS.Repositories.InvoiceDetailRepository).toDynamicValue(ctx => new InvoiceDetailRepository(ctx.container.get(SYMBOLS.Providers.ClientProvider))).inSingletonScope();
+  container.bind<ICountInvoicesThisMonthUseCase>(SYMBOLS.UseCases.Invoice.CountInvoicesThisMonthUseCase).toDynamicValue(ctx => new CountInvoicesThisMonthUseCase(ctx.container.get(SYMBOLS.Repositories.InvoiceRepository))).inSingletonScope();
+  container.bind<ICountConversionsThisMonthUseCase>(SYMBOLS.UseCases.Invoice.CountConversionsThisMonthUseCase).toDynamicValue(ctx => new CountConversionsThisMonthUseCase(ctx.container.get(SYMBOLS.Repositories.InvoiceRepository))).inSingletonScope();
   container.bind<IInvoicesUseCase>(SYMBOLS.UseCases.Invoice.GetInvoicesUseCase).toDynamicValue(ctx => new GetInvoicesUseCase(ctx.container.get(SYMBOLS.Repositories.InvoiceRepository))).inSingletonScope();
   container.bind<IViewInvoiceUseCase>(SYMBOLS.UseCases.Invoice.ViewInvoiceUseCase).toDynamicValue(ctx => new ViewInvoiceUseCase(ctx.container.get(SYMBOLS.UseCases.Invoice.GetInvoiceUseCase), ctx.container.get(SYMBOLS.UseCases.Invoice.GetInvoiceDetailsUseCase))).inSingletonScope();
   container.bind<ICreateInvoiceUseCase>(SYMBOLS.UseCases.Invoice.CreateInvoiceUseCase).toDynamicValue(ctx => new CreateInvoiceUseCase(ctx.container.get(SYMBOLS.Repositories.InvoiceRepository))).inSingletonScope();
   container.bind<IInsertInvoiceUseCase>(SYMBOLS.UseCases.Invoice.InsertInvoiceUseCase).toDynamicValue(ctx => new InsertInvoiceUseCase(ctx.container.get(SYMBOLS.Repositories.InvoiceRepository))).inSingletonScope();
   container.bind<IUpdateInvoiceUseCase>(SYMBOLS.UseCases.Invoice.UpdateInvoiceUseCase).toDynamicValue(ctx => new UpdateInvoiceUseCase(ctx.container.get(SYMBOLS.Repositories.InvoiceRepository))).inSingletonScope();
   container.bind<IMarkInvoiceAsPaidUseCase>(SYMBOLS.UseCases.Invoice.MarkInvoiceAsPaidUseCase).toDynamicValue(ctx => new MarkInvoiceAsPaidUseCase(ctx.container.get(SYMBOLS.Repositories.InvoiceRepository), ctx.container.get(SYMBOLS.UseCases.GetDocumentStatus))).inSingletonScope();
-  container.bind<IDeleteInvoiceUseCase>(SYMBOLS.UseCases.Invoice.DeleteInvoiceUseCase).toDynamicValue(ctx => new DeleteInvoiceUseCase(ctx.container.get(SYMBOLS.Repositories.InvoiceRepository))).inSingletonScope();
+  container.bind<IDeleteInvoiceUseCase>(SYMBOLS.UseCases.Invoice.DeleteInvoiceUseCase).toDynamicValue(ctx => new DeleteInvoiceUseCase(ctx.container.get(SYMBOLS.Repositories.InvoiceRepository), ctx.container.get(SYMBOLS.Repositories.QuoteRepository))).inSingletonScope();
+  container.bind<IUpdateInvoiceLineItemUseCase>(SYMBOLS.UseCases.Invoice.UpdateLineItemUseCase).toDynamicValue(ctx => new UpdateInvoiceLineItemUseCase(ctx.container.get(SYMBOLS.Repositories.InvoiceDetailRepository))).inSingletonScope();
   container.bind<IGetInvoiceUseCase>(SYMBOLS.UseCases.Invoice.GetInvoiceUseCase).toDynamicValue(ctx => new GetInvoiceUseCase(ctx.container.get(SYMBOLS.Repositories.InvoiceRepository))).inSingletonScope();
   container.bind<IGetInvoiceDetailUseCase>(SYMBOLS.UseCases.Invoice.GetInvoiceDetailsUseCase).toDynamicValue(ctx => new GetInvoiceDetailUseCase(ctx.container.get(SYMBOLS.Repositories.InvoiceDetailRepository))).inSingletonScope();
   container.bind<IAddInvoiceLineItemUseCase>(SYMBOLS.UseCases.Invoice.AddLineItemUseCase).toDynamicValue(ctx => new AddInvoiceLineItemUseCase(ctx.container.get(SYMBOLS.Repositories.InvoiceRepository), ctx.container.get(SYMBOLS.Repositories.InvoiceDetailRepository))).inSingletonScope();
   container.bind<IGenerateInvoicePdfUseCase>(SYMBOLS.UseCases.Invoice.GenerateInvoicePdfUseCase).toDynamicValue(ctx => new GenerateInvoicePdfUseCase(ctx.container.get(SYMBOLS.Services.PdfGeneratorService))).inSingletonScope();
-  container.bind<ISendInvoiceUseCase>(SYMBOLS.UseCases.Invoice.SendInvoiceUseCase).toDynamicValue(ctx => new SendInvoiceUseCase(ctx.container.get(SYMBOLS.UseCases.Invoice.ViewInvoiceUseCase), ctx.container.get(SYMBOLS.UseCases.Invoice.GenerateInvoicePdfUseCase), ctx.container.get(SYMBOLS.Services.EmailService), ctx.container.get(SYMBOLS.Repositories.InvoiceRepository), ctx.container.get(SYMBOLS.UseCases.OrganizationProfileUseCase)));
+  container.bind<IFinalizeInvoiceUseCase>(SYMBOLS.UseCases.Invoice.FinalizeInvoiceUseCase).toDynamicValue(ctx => new FinalizeInvoiceUseCase(ctx.container.get(SYMBOLS.UseCases.Invoice.ViewInvoiceUseCase), ctx.container.get(SYMBOLS.Repositories.InvoiceRepository), ctx.container.get(SYMBOLS.UseCases.GetDocumentStatus)));
+  container.bind<ISendInvoiceUseCase>(SYMBOLS.UseCases.Invoice.SendInvoiceUseCase).toDynamicValue(ctx => new SendInvoiceUseCase(ctx.container.get(SYMBOLS.UseCases.Invoice.ViewInvoiceUseCase), ctx.container.get(SYMBOLS.UseCases.Invoice.GenerateInvoicePdfUseCase), ctx.container.get(SYMBOLS.Services.EmailService), ctx.container.get(SYMBOLS.Repositories.InvoiceRepository), ctx.container.get(SYMBOLS.UseCases.OrganizationProfileUseCase), ctx.container.get(SYMBOLS.UseCases.GetDocumentStatus)));
   container.bind<IUseCreateInvoiceState>(SYMBOLS.States.Invoice.CreateInvoiceState).toDynamicValue(() => {
     return useCreateInvoiceState();
   });

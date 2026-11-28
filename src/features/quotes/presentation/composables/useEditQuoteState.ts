@@ -7,6 +7,10 @@ import { IBodyMaterialUseCase } from '@/features/carRepairSettings/application/u
 import { IBodyPartUseCase } from '@/features/carRepairSettings/application/useCases/BodyPartUseCase';
 import { IDentRepairTypeUseCase } from '@/features/carRepairSettings/application/useCases/DentRepairTypeUSeCase';
 import { ICalculateLineCostUseCase } from '@/features/costCalculation/application/useCases/CalculateLineCostUseCase';
+import { ISendQuoteUseCase } from '@/features/quotes/application/useCases/SendQuoteUseCase';
+import { IFinalizeQuoteUseCase } from '@/features/quotes/application/useCases/FinalizeQuoteUseCase';
+import { DocumentStatusDto } from '@/features/documentStatuses/application/dtos/DocumentStatusDto';
+import { IUpdateQuoteLineItemUseCase } from '@/features/quotes/application/useCases/UpdateQuoteLineItemUseCase';
 import { IDeleteLineItemUseCase } from '@/features/lineItems/application/useCases/DeleteLineItemUseCase';
 import { IAddQuoteLineItemUseCase } from '@/features/quotes/application/useCases/AddQuoteLineItemUseCase';
 import { IDeleteQuoteUseCase } from '@/features/quotes/application/useCases/DeleteQuoteUseCase';
@@ -56,12 +60,15 @@ export interface UseEditQuoteStateDependencies {
   calculateLineCostUseCase: ICalculateLineCostUseCase;
   addQuoteDetailsUseCase: IAddQuoteLineItemUseCase;
   deleteLineItemUseCase: IDeleteLineItemUseCase;
+  updateLineItemUseCase: IUpdateQuoteLineItemUseCase;
+  sendQuoteUseCase: ISendQuoteUseCase;
+  finalizeQuoteUseCase: IFinalizeQuoteUseCase;
   duplicateQuoteToInvoiceUseCase: IDuplicateQuoteToInvoiceUseCase;
 }
 
 export function createUseEditQuoteState(deps: UseEditQuoteStateDependencies) {
   // #region -> DEPENDENCIES
-  const { authState, getDocumentStatuseUseCase, getQuoteUseCase, getQuoteDetailUseCase, deleteQuoteUseCase, garageUseCase, technicianUseCase, bodyPartUseCase, bodyMaterialUseCase, repairTypeUseCase, priceParamsUseCase, updateQuoteUseCase, calculateLineCostUseCase, addQuoteDetailsUseCase, deleteLineItemUseCase, duplicateQuoteToInvoiceUseCase } = deps;
+  const { authState, getDocumentStatuseUseCase, getQuoteUseCase, getQuoteDetailUseCase, deleteQuoteUseCase, garageUseCase, technicianUseCase, bodyPartUseCase, bodyMaterialUseCase, repairTypeUseCase, priceParamsUseCase, updateQuoteUseCase, calculateLineCostUseCase, addQuoteDetailsUseCase, deleteLineItemUseCase, updateLineItemUseCase, sendQuoteUseCase, finalizeQuoteUseCase, duplicateQuoteToInvoiceUseCase } = deps;
 
 
 
@@ -134,11 +141,9 @@ export function createUseEditQuoteState(deps: UseEditQuoteStateDependencies) {
       _bodyMaterials.value = bodyMaterialResult.map(BodyMaterialMapper.dtoToView);
       _repairTypes.value = repairTypeResult.map(RepairTypeMapper.dtoToView);
 
-      if (!_quote.value.garage) {
-        return;
+      if (_quote.value.garage) {
+        addGarage(_quote.value.garage)
       }
-      
-      addGarage(_quote.value.garage)
 
       if (priceParamsResult) {
         _priceParams.value = SettingPriceMapper.dtoToView(priceParamsResult);
@@ -168,6 +173,7 @@ export function createUseEditQuoteState(deps: UseEditQuoteStateDependencies) {
     date: _quote.value?.startDate ? new Date(_quote.value.startDate).toISOString().split('T')[0] : '',
     expirationDate: _quote.value?.endDate ? new Date(_quote.value.endDate).toISOString().split('T')[0] : '',
     status: _quote.value?.status,
+    isSent: Boolean(_quote.value?.isSent),
   }));
   
   const expirationDate = computed(() => {
@@ -202,6 +208,16 @@ export function createUseEditQuoteState(deps: UseEditQuoteStateDependencies) {
     const code = _quote.value?.status?.code;
     return code === 'accepted' || code === 'refused' || code === 'invoiced' || Boolean(_quote.value?.convertToInvoice);
   });
+
+  const isSent = computed(() => Boolean(_quote.value?.isSent));
+  const sentAt = computed(() => _quote.value?.sentAt);
+  const hasItems = computed(() =>
+    _quote.value?.isForfait ? Number(_quote.value?.forfaitAmount ?? 0) > 0 : _quoteLines.value.length > 0,
+  );
+  const canSend = computed(() => !isReadOnly.value && hasItems.value);
+  const canDecide = computed(() => !isReadOnly.value && isSent.value);
+  // A quote that has been sent at least once keeps its trace and can no longer be deleted.
+  const canDelete = computed(() => !isReadOnly.value && !isSent.value && !_quote.value?.sentAt);
 
   const isAccepted = computed(() => _quote.value?.status?.code === 'accepted');
   const isRefused = computed(() => _quote.value?.status?.code === 'refused');
@@ -427,18 +443,51 @@ export function createUseEditQuoteState(deps: UseEditQuoteStateDependencies) {
 
     const quoteAdded =  LineItemMapper.dtoToView(quoteLinesDto);
 
-    _quoteLines.value.push({...quoteAdded});    
+    _quoteLines.value.push({...quoteAdded});
+    await persistTotals();
   }
 
-  const removeLine = (lineId: string | undefined) => {
+  const updateLine = async (line: LineItemViewModel) => {
+    if (!line.id) {
+      return;
+    }
+
+    line.quoteId = _quote.value?.id;
+    computePrice(line);
+
+    const updatedDto = await updateLineItemUseCase.execute(LineItemMapper.viewToDto(line));
+    const index = _quoteLines.value.findIndex((l) => l.id === line.id);
+    if (index >= 0) {
+      _quoteLines.value[index] = { ...LineItemMapper.dtoToView(updatedDto), lineId: _quoteLines.value[index].lineId };
+    }
+    await persistTotals();
+  }
+
+  const removeLine = async (lineId: string | undefined) => {
     if (!lineId) {
       return;
     };
 
-    deleteLineItemUseCase.execute(lineId)
+    await deleteLineItemUseCase.execute(lineId)
     const index = _quoteLines.value.findIndex((line) => line.id === lineId);
     if (index >= 0) {
       _quoteLines.value.splice(index, 1);
+    }
+    await persistTotals();
+  }
+
+  // Keeps the quote total in sync after each line change; a sent quote goes back to draft.
+  const persistTotals = async () => {
+    if (!_quote.value) {
+      return;
+    }
+
+    _quote.value.totalHt = subTotalWithDegarnissage.value;
+    const updated = await updateQuoteUseCase.execute(QuoteMapper.viewToDto(_quote.value));
+    _quote.value.isSent = updated.isSent;
+    if (updated.status && updated.status_id) {
+      _quote.value.status = DocumentStatuseMapper.dtoToView(updated.status);
+      _quote.value.status_id = updated.status_id;
     }
   }
 
@@ -480,6 +529,26 @@ export function createUseEditQuoteState(deps: UseEditQuoteStateDependencies) {
     _quote.value.status_id = statusObject.id;
 
     await updateQuoteUseCase.execute(QuoteMapper.viewToDto(_quote.value));
+  }
+
+  const sendQuote = async () => {
+    if (!_quote.value?.id || !canSend.value) return;
+    const status = await sendQuoteUseCase.execute(_quote.value.id);
+    applySentStatus(status);
+  }
+
+  const finalizeQuote = async () => {
+    if (!_quote.value?.id || !canSend.value) return;
+    const status = await finalizeQuoteUseCase.execute(_quote.value.id);
+    applySentStatus(status);
+  }
+
+  const applySentStatus = (status: DocumentStatusDto) => {
+    if (!_quote.value) return;
+    _quote.value.isSent = true;
+    _quote.value.sentAt = new Date();
+    _quote.value.status_id = status.id;
+    _quote.value.status = { ...(_quote.value.status ?? {}), ...status } as QuoteViewModel['status'];
   }
 
   const duplicateQuoteToInvoice = async (): Promise<string | undefined> => {
@@ -540,8 +609,8 @@ export function createUseEditQuoteState(deps: UseEditQuoteStateDependencies) {
 
     quoteLines: computed(() => _quoteLines.value),
     addLine,
+    updateLine,
     removeLine,
-
     subtotal,
     totalDegarnissage,
     subTotalWithDegarnissage,
@@ -555,6 +624,14 @@ export function createUseEditQuoteState(deps: UseEditQuoteStateDependencies) {
     duplicateQuoteToInvoice,
 
     isReadOnly,
+    isSent,
+    sentAt,
+    hasItems,
+    canSend,
+    canDecide,
+    canDelete,
+    sendQuote,
+    finalizeQuote,
     isAccepted,
     isRefused
   };

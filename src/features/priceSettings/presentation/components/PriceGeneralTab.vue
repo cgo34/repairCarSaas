@@ -5,7 +5,7 @@
       type="info"
       icon="$info"
       variant="tonal"
-      text="Le montant du taux horaire est appliqué aux calculs des éléments"
+      :text="t('priceSettings.general.info')"
     />
     <v-form>
       <v-row>
@@ -15,7 +15,7 @@
         >
           <v-text-field
             v-model="settings.hourlyRate"
-            label="Hourly rate"
+            :label="t('priceSettings.general.hourlyRate')"
             required
           />
         </v-col>
@@ -26,7 +26,7 @@
         >
           <v-text-field
             v-model="settings.unitTime"
-            label="Unit time"
+            :label="t('priceSettings.fields.unitTime')"
             required
           />
         </v-col>
@@ -37,8 +37,11 @@
 
 <script setup lang="ts">
 import { usePriceSettingsDependencies } from '@/features/priceSettings/composition/usePriceSettingsDependencies';
+import { useI18n } from 'vue-i18n';
 import { usePriceTabForm } from '@/features/priceSettings/presentation/composables/usePriceTabForm';
 import { onMounted } from 'vue';
+
+const { t } = useI18n();
 
 const { useSettingPriceGeneralState } = usePriceSettingsDependencies();
 

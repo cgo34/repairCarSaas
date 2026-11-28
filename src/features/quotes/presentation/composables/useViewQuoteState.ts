@@ -28,6 +28,7 @@ export function createUseViewQuoteState(deps: UseViewQuoteStateDependencies) {
   const error = ref<Error | null>(null);
   const _quote = ref<QuoteViewModel | undefined>(undefined);
   const _pdfUrl = ref<string>('');
+  const _lines = ref<{ price?: number; dentRemovalPrice?: number }[]>([]);
   const _company = ref<import('@/features/organizations/application/dtos/OrganizationProfileDto').OrganizationProfileDto | null>(null);
   // #endregion
 
@@ -47,6 +48,7 @@ export function createUseViewQuoteState(deps: UseViewQuoteStateDependencies) {
         throw new Error('Quote or quote details not found');
       }
 
+      _lines.value = lines;
       _quote.value = QuoteMapper.dtoToView(quote);
       _pdfUrl.value = await generatePdfUseCase.execute(QuoteMapper.viewToDto(_quote.value), lines, company);
     } catch (e) {
@@ -61,6 +63,21 @@ export function createUseViewQuoteState(deps: UseViewQuoteStateDependencies) {
   const filename = computed(() => {
     return `quote-${_quote.value?.quoteNumber || 'document'}.pdf`;
   });
+
+  const subtotal = computed(() =>
+    _quote.value?.isForfait
+      ? (_quote.value.forfaitAmount ?? 0)
+      : _lines.value.reduce((sum, l) => sum + (l.price ?? 0), 0)
+  );
+  const totalDegarnissage = computed(() =>
+    _quote.value?.isForfait ? 0 : _lines.value.reduce((sum, l) => sum + (l.dentRemovalPrice ?? 0), 0)
+  );
+  const taxRate = computed(() => {
+    const country = _quote.value?.country;
+    return typeof country === 'object' && country ? (country.taxRate ?? 0) : 0;
+  });
+  const totalTax = computed(() => (subtotal.value + totalDegarnissage.value) * (taxRate.value / 100));
+  const total = computed(() => subtotal.value + totalDegarnissage.value + totalTax.value);
   // #endregion
 
   // #region -> METHODS
@@ -97,6 +114,11 @@ export function createUseViewQuoteState(deps: UseViewQuoteStateDependencies) {
     downloadPdf,
     sendQuote,
     filename,
+    subtotal,
+    totalDegarnissage,
+    taxRate,
+    totalTax,
+    total,
 
     quote: computed(() => _quote.value),
     pdfUrl: computed(() => _pdfUrl.value),

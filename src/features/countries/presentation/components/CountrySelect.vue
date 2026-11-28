@@ -103,6 +103,6 @@ onUpdated(() => {
   align-items: center;
   font-size: 0.8rem;
   color: rgb(var(--v-theme-lightText));
-  font-family: 'Manrope', sans-serif;
+  font-family: Manrope, sans-serif;
 }
 </style>

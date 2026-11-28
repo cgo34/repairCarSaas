@@ -1,0 +1,117 @@
+{
+  "dashboard": {
+    "breadcrumb": {
+      "home": "Dashboard"
+    },
+    "hail": {
+      "title": "Hail monitoring",
+      "live": "LIVE",
+      "loading": "Loading weather data…",
+      "noAlert": "No active alert",
+      "seeAll": "See all",
+      "departmentsInAlert": "department on alert | departments on alert",
+      "critical": "{count} critical | {count} critical",
+      "high": "{count} high | {count} high",
+      "moderate": "{count} moderate | {count} moderate",
+      "zones": "Most affected areas",
+      "last24h": "last 24h",
+      "updatedAt": "Updated {date} at {time}",
+      "notSynced": "Not synced",
+      "source": "source Open-Meteo",
+      "moreDepartments": "+ {count} more departments",
+      "riskCritical": "Critical",
+      "riskHigh": "High",
+      "riskModerate": "Moderate",
+      "riskNone": "OK"
+    },
+    "status": {
+      "draft": "Draft",
+      "processing": "In progress",
+      "pending": "Pending",
+      "finalized": "Finalized",
+      "accepted": "Accepted",
+      "signed": "Signed",
+      "invoiced": "Invoiced",
+      "refused": "Refused",
+      "cancelled": "Cancelled",
+      "paid": "Paid",
+      "sent": "Sent",
+      "cancelledInvoice": "Cancelled"
+    },
+    "missing": {
+      "vatNumber": "VAT no."
+    },
+    "paymentDays": "{days} days",
+    "recent": "Recent activity",
+    "tabs": {
+      "quotes": "Quotes ({count})",
+      "invoices": "Invoices ({count})"
+    },
+    "table": {
+      "number": "No.",
+      "client": "Client",
+      "vehicle": "Vehicle",
+      "date": "Date",
+      "technician": "Technician",
+      "amountHt": "Amount excl. tax",
+      "sent": "Sent",
+      "status": "Status",
+      "converted": "Converted to invoice",
+      "notConverted": "Not converted to invoice",
+      "notSent": "Not sent"
+    },
+    "loading": "Loading…",
+    "noQuote": "No quotes",
+    "noInvoice": "No invoices",
+    "actions": {
+      "viewPdf": "View PDF",
+      "editQuote": "Edit quote",
+      "addItems": "Add items",
+      "view": "View"
+    },
+    "seeAll": "See all →",
+    "company": {
+      "summary": "Company summary",
+      "notProvided": "Not provided",
+      "address": "Address",
+      "vatNumber": "VAT no.",
+      "paymentDelay": "Payment terms"
+    },
+    "organization": {
+      "title": "My organization",
+      "quickAccess": "Quick access",
+      "toComplete": "To complete",
+      "missing": "Missing"
+    },
+    "subscription": {
+      "title": "My subscription",
+      "plan": "Plan",
+      "users": "Users",
+      "limitReached": "Limit reached",
+      "manage": "Manage subscription"
+    },
+    "hero": {
+      "received": "Payments received",
+      "paidInvoices": "{count} paid invoice | {count} paid invoices",
+      "toCollect": "To collect",
+      "unpaidInvoices": "{count} unpaid invoice | {count} unpaid invoices",
+      "sentCount": "{count} sent | {count} sent",
+      "toSend": "{count} to send",
+      "quotes": "Quotes",
+      "inProgress": "{count} in progress",
+      "acceptedCount": "{count} accepted | {count} accepted"
+    },
+    "counters": {
+      "quotesPending": "Pending quotes",
+      "quotesFinalized": "Finalized quotes",
+      "invoicesPending": "Pending invoices",
+      "invoicesPaid": "Paid invoices"
+    },
+    "shortcuts": {
+      "users": "Users",
+      "garages": "Garages",
+      "settings": "Settings",
+      "pricing": "Pricing"
+    }
+  }
+}

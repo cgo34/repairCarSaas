@@ -1,0 +1,29 @@
+{
+  "lineItems": {
+    "view": {
+      "list": "Vue éléments",
+      "car": "Vue voiture"
+    },
+    "notAdded": "Non ajouté",
+    "added1": "Ajouté",
+    "noBodyParts": "Aucun élément de carrosserie n'est configuré.",
+    "listHint": "Clique sur un élément pour l'ajouter. Les éléments déjà ajoutés sont en bleu ; clique dessus pour les modifier.",
+    "carAlt": "Voiture vue de dessus",
+    "added": "Éléments ajoutés",
+    "empty": "Aucun élément pour l'instant.",
+    "others": "Autres éléments",
+    "carHint": "Clique sur une pastille grise pour ajouter un élément, ou sur une pastille bleue pour le modifier.",
+    "saveError": "Une erreur est survenue lors de la sauvegarde.",
+    "dialog": {
+      "subtitle": "Renseigne les détails de la réparation",
+      "impacts25": "Nombre d'impacts Ø25",
+      "impacts35": "Nombre d'impacts Ø35",
+      "strippingAmount": "Montant dégarnissage (€)",
+      "confirm": "Valider",
+      "add": "Ajouter",
+      "edit": "Modifier",
+      "addItem": "Ajouter un élément",
+      "editItem": "Modifier un élément"
+    }
+  }
+}

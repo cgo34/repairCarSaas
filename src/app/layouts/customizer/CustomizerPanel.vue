@@ -216,18 +216,14 @@ const drawer = computed({
     .v-selection-control {
       width: 48px;
       height: 48px;
-
       align-items: center;
       justify-content: center;
-
       flex: unset;
-
-      border: 2px solid rgba(var(--v-theme-borderLight), 0.36);
-
+      border: 2px solid rgb(var(--v-theme-borderLight), 0.36);
       border-radius: 4px;
 
       &.v-selection-control--dirty {
-        border: 2px solid rgba(var(--v-theme-primary), 1);
+        border: 2px solid rgb(var(--v-theme-primary), 1);
       }
 
       .v-selection-control__wrapper {
@@ -264,43 +260,30 @@ const drawer = computed({
   .v-selection-control-group {
     .v-selection-control {
       position: relative;
-
-      border: 2px solid rgba(var(--v-theme-borderLight), 0.36);
-
-      outline: 6px solid rgba(var(--v-theme-borderLight), 0.1);
-
+      border: 2px solid rgb(var(--v-theme-borderLight), 0.36);
+      outline: 6px solid rgb(var(--v-theme-borderLight), 0.1);
       border-radius: 4px;
-
       margin: 6px;
-
       padding: 12px 16px;
 
       &.v-selection-control--dirty {
-        border: 1px solid rgba(var(--v-theme-primary), 1);
-
-        outline: 6px solid rgba(var(--v-theme-primary), 0.1);
+        border: 1px solid rgb(var(--v-theme-primary), 1);
+        outline: 6px solid rgb(var(--v-theme-primary), 0.1);
       }
 
       .v-selection-control__wrapper {
         position: absolute;
-
         inset: 0;
-
         width: 100%;
         height: 100%;
 
         .v-selection-control__input {
           position: absolute;
-
           inset: 0;
-
           opacity: 0;
-
           width: 100%;
           height: 100%;
-
           cursor: pointer;
-
           margin: 0;
         }
       }

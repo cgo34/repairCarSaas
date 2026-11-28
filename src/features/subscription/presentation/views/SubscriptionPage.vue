@@ -7,12 +7,22 @@
       <!-- HEADER -->
       <div class="mb-4">
         <div class="text-h5 font-weight-bold">
-          Mon abonnement
+          {{ t('subscription.page.title') }}
         </div>
         <div class="text-body-2 text-medium-emphasis">
-          Gérez votre abonnement, mettez à jour vos informations de paiement et consultez l'historique de vos factures.
+          {{ t('subscription.page.subtitle') }}
         </div>
       </div>
+
+      <v-alert
+        v-if="nearLimitLabels.length"
+        type="warning"
+        variant="tonal"
+        density="comfortable"
+        class="mb-4"
+        :title="t('subscription.page.alert.title')"
+        :text="t('subscription.page.alert.text', { items: nearLimitLabels.join(', ') })"
+      />
 
       <!-- KPI CARDS -->
       <v-row
@@ -40,19 +50,19 @@
               <v-icon :icon="kpi.icon" />
             </v-avatar>
             <div class="flex-grow-1">
-              <div class="text-body-2 text-medium-emphasis">
+              <div class="stat-label">
                 {{ kpi.label }}
               </div>
-              <div class="text-h5 font-weight-bold">
+              <div class="stat-value">
                 {{ kpi.value }}
               </div>
-              <div class="text-caption text-medium-emphasis">
+              <div class="stat-sub">
                 {{ kpi.caption }}
               </div>
               <v-progress-linear
                 v-if="kpi.progress !== undefined"
                 :model-value="kpi.progress"
-                :color="seatLimitReached ? 'warning' : 'primary'"
+                :color="kpi.barColor"
                 height="6"
                 rounded
                 class="my-2"
@@ -81,13 +91,13 @@
         class="mb-4 pa-5"
       >
         <div class="text-subtitle-1 font-weight-bold mb-4">
-          Votre offre actuelle
+          {{ t('subscription.page.currentPlan') }}
         </div>
         <v-row align="center">
           <!-- Gauche : logo + description + bouton -->
           <v-col
             cols="12"
-            md="5"
+            md="4"
           >
             <div class="d-flex align-center ga-4 mb-3">
               <v-avatar
@@ -104,25 +114,25 @@
               </v-avatar>
               <div>
                 <div class="d-flex align-center ga-2 mb-1">
-                  <span class="text-h6 font-weight-bold">{{ isFreePlan ? 'Offre Free' : 'Offre Essentielle' }}</span>
+                  <span class="text-h6 font-weight-bold">{{ isFreePlan ? t('subscription.page.plan.freeName') : t('subscription.page.plan.essentialName') }}</span>
                   <v-chip
                     size="x-small"
                     color="primary"
                     variant="tonal"
                   >
-                    {{ isFreePlan ? 'Offre gratuite' : 'Offre de base' }}
+                    {{ isFreePlan ? t('subscription.page.plan.freeBadge') : t('subscription.page.plan.essentialBadge') }}
                   </v-chip>
                 </div>
                 <div class="text-body-2 text-medium-emphasis">
-                  {{ isFreePlan ? 'Offre d\'inscription avec fonctionnalités limitées.' : 'Toutes les fonctionnalités essentielles pour gérer vos devis, factures et garages.' }}
+                  {{ isFreePlan ? t('subscription.page.plan.freeDescription') : t('subscription.page.plan.essentialDescription') }}
                 </div>
                 <v-btn
                   class="mt-3"
-                  variant="outlined"
-                  color="default"
+                  variant="flat"
+                  color="primary"
                   size="small"
                 >
-                  Changer d'offre
+                  {{ t('subscription.page.changePlan') }}
                 </v-btn>
               </div>
             </div>
@@ -131,19 +141,27 @@
           <!-- Milieu : tarification -->
           <v-col
             cols="12"
-            md="3"
+            md="4"
           >
-            <div class="text-body-2 text-medium-emphasis mb-1">
-              Tarification
+            <div class="text-h6 font-weight-bold mb-1">
+              {{ t('subscription.page.pricing') }}
             </div>
             <div class="text-h4 font-weight-bold mb-1">
-              {{ isFreePlan ? '0,00 €' : '15,00 €' }}
+              {{ isFreePlan ? formatCurrency(0) : formatCurrency(15) }}
             </div>
             <div class="text-caption text-medium-emphasis mb-1">
-              {{ isFreePlan ? `${seatsLimit} utilisateurs inclus · 15,00 € / utilisateur supplémentaire` : 'par utilisateur / mois' }}
+              <template v-if="isFreePlan">
+                <div>{{ t('subscription.page.seatsIncluded', { count: seatsLimit }) }}</div>
+                <div class="text-no-wrap">
+                  {{ t('subscription.page.extraSeatPrice', { price: formatCurrency(15) }) }}
+                </div>
+              </template>
+              <template v-else>
+                {{ t('subscription.page.perUserMonth') }}
+              </template>
             </div>
             <div class="text-caption text-medium-emphasis">
-              {{ isFreePlan ? 'Sans facturation' : 'Facturation mensuelle' }}
+              {{ isFreePlan ? t('subscription.page.noBilling') : t('subscription.page.monthlyBilling') }}
             </div>
           </v-col>
 
@@ -178,6 +196,40 @@
         </v-row>
       </v-card>
 
+      <!-- INCLUS DANS VOTRE OFFRE -->
+      <v-card
+        flat
+        border
+        class="mb-4 pa-5"
+      >
+        <div class="text-subtitle-1 font-weight-bold mb-4">
+          {{ t('subscription.page.included') }}
+        </div>
+        <div class="included-list">
+          <div
+            v-for="item in includedFeatures"
+            :key="item.key"
+            class="d-flex align-center ga-2 text-body-2 mb-2"
+          >
+            <v-icon
+              size="18"
+              :color="item.enabled ? 'success' : 'grey'"
+            >
+              {{ item.enabled ? 'mdi-check-circle' : 'mdi-close-circle-outline' }}
+            </v-icon>
+            <span :class="item.enabled ? '' : 'text-medium-emphasis text-decoration-line-through'">{{ item.label }}</span>
+            <v-chip
+              v-if="!item.enabled"
+              size="x-small"
+              color="warning"
+              variant="tonal"
+            >
+              Premium
+            </v-chip>
+          </div>
+        </div>
+      </v-card>
+
       <!-- PLAN FREE : COMPARATIF DES OFFRES + AIDE -->
       <template v-if="isFreePlan">
         <v-card
@@ -186,66 +238,57 @@
           class="mb-4 pa-5"
         >
           <div class="text-subtitle-1 font-weight-bold mb-4">
-            Comparer les offres
+            {{ t('subscription.page.compare') }}
           </div>
-          <v-row>
-            <v-col
-              v-for="plan in plans"
-              :key="plan.code"
-              cols="12"
-              md="4"
-            >
-              <v-card
-                flat
-                class="pa-5 h-100 d-flex flex-column"
-                :class="plan.code === 'FREE' ? '' : 'border text-medium-emphasis'"
-                :style="plan.code === 'FREE'
-                  ? 'border: 2px solid rgb(var(--v-theme-primary)); background: rgba(var(--v-theme-primary), 0.08)'
-                  : 'background: rgba(var(--v-theme-on-surface), 0.04)'"
-              >
-                <div class="d-flex align-center justify-space-between">
-                  <span class="text-h6 font-weight-bold">{{ plan.name }}</span>
+          <v-table density="comfortable">
+            <thead>
+              <tr>
+                <th />
+                <th class="text-center">
+                  Free
                   <v-chip
-                    v-if="plan.badge"
                     size="x-small"
-                    :color="plan.code === 'FREE' ? 'primary' : 'warning'"
+                    color="primary"
                     variant="tonal"
+                    class="ml-1"
                   >
-                    {{ plan.badge }}
+                    {{ t('subscription.page.yourPlan') }}
                   </v-chip>
-                </div>
-                <div class="text-h4 font-weight-bold mt-2">
-                  {{ plan.price }}
-                </div>
-                <div class="text-caption text-medium-emphasis mb-3">
-                  {{ plan.unit }}
-                </div>
-                <div
-                  v-for="feature in plan.features"
-                  :key="feature"
-                  class="d-flex align-center ga-2 text-body-2 mb-1"
-                >
+                </th>
+                <th class="text-center">
+                  Premium · {{ formatCurrency(49) }}{{ t('subscription.page.perMonthShort') }}
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                v-for="row in compareRows"
+                :key="row.label"
+              >
+                <td>{{ row.label }}</td>
+                <td class="text-center">
                   <v-icon
-                    size="16"
-                    color="success"
+                    v-if="typeof row.free === 'boolean'"
+                    size="18"
+                    :color="row.free ? 'success' : 'grey'"
                   >
-                    mdi-check
+                    {{ row.free ? 'mdi-check' : 'mdi-close' }}
                   </v-icon>
-                  {{ feature }}
-                </div>
-                <v-spacer />
-                <v-btn
-                  class="mt-4"
-                  block
-                  size="small"
-                  :disabled="true"
-                  variant="outlined"
-                >
-                  {{ plan.code === 'FREE' ? 'Votre offre' : 'Bientôt disponible' }}
-                </v-btn>
-              </v-card>
-            </v-col>
-          </v-row>
+                  <span v-else>{{ row.free }}</span>
+                </td>
+                <td class="text-center">
+                  <v-icon
+                    v-if="typeof row.premium === 'boolean'"
+                    size="18"
+                    :color="row.premium ? 'success' : 'grey'"
+                  >
+                    {{ row.premium ? 'mdi-check' : 'mdi-close' }}
+                  </v-icon>
+                  <span v-else>{{ row.premium }}</span>
+                </td>
+              </tr>
+            </tbody>
+          </v-table>
         </v-card>
 
         <v-card
@@ -255,10 +298,10 @@
         >
           <div>
             <div class="text-subtitle-2 font-weight-bold mb-1">
-              Besoin d'aide ?
+              {{ t('subscription.page.help.title') }}
             </div>
             <div class="text-caption text-medium-emphasis">
-              Notre équipe est là pour vous accompagner.
+              {{ t('subscription.page.help.text') }}
             </div>
           </div>
           <v-btn
@@ -267,7 +310,7 @@
             size="small"
             prepend-icon="mdi-headset"
           >
-            Contacter le support
+            {{ t('subscription.page.help.contact') }}
           </v-btn>
         </v-card>
       </template>
@@ -285,28 +328,28 @@
             class="pa-4"
           >
             <div class="text-subtitle-1 font-weight-bold mb-3">
-              Historique de factures
+              {{ t('subscription.page.invoices.title') }}
             </div>
             <v-table density="compact">
               <thead>
                 <tr>
                   <th class="text-body-2">
-                    Date
+                    {{ t('subscription.page.invoices.date') }}
                   </th>
                   <th class="text-body-2">
-                    N° de facture
+                    {{ t('subscription.page.invoices.number') }}
                   </th>
                   <th class="text-body-2">
-                    Période
+                    {{ t('subscription.page.invoices.period') }}
                   </th>
                   <th class="text-body-2">
-                    Montant HT
+                    {{ t('subscription.page.invoices.amount') }}
                   </th>
                   <th class="text-body-2">
-                    Statut
+                    {{ t('subscription.page.invoices.status') }}
                   </th>
                   <th class="text-body-2">
-                    Action
+                    {{ t('subscription.page.invoices.action') }}
                   </th>
                 </tr>
               </thead>
@@ -333,7 +376,7 @@
                       color="success"
                       variant="tonal"
                     >
-                      Payée
+                      {{ t('subscription.page.invoices.paid') }}
                     </v-chip>
                   </td>
                   <td>
@@ -351,7 +394,7 @@
               </tbody>
             </v-table>
             <a class="text-primary text-body-2 text-decoration-none d-flex align-center ga-1 mt-3">
-              Voir toutes les factures <v-icon size="16">mdi-arrow-right</v-icon>
+              {{ t('subscription.page.invoices.viewAll') }} <v-icon size="16">mdi-arrow-right</v-icon>
             </a>
           </v-card>
         </v-col>
@@ -368,7 +411,7 @@
             class="pa-4 mb-4"
           >
             <div class="text-subtitle-1 font-weight-bold mb-3">
-              Mode de paiement
+              {{ t('subscription.page.payment.title') }}
             </div>
             <div class="d-flex align-center justify-space-between">
               <div class="d-flex align-center ga-3">
@@ -387,7 +430,7 @@
                     Visa **** **** **** 4242
                   </div>
                   <div class="text-caption text-medium-emphasis">
-                    Expire 06/2027
+                    {{ t('subscription.page.payment.expires', { date: '06/2027' }) }}
                   </div>
                 </div>
               </div>
@@ -396,7 +439,7 @@
                 color="primary"
                 size="small"
               >
-                Mettre à jour
+                {{ t('subscription.page.payment.update') }}
               </v-btn>
             </div>
           </v-card>
@@ -410,10 +453,10 @@
             <div class="d-flex align-start justify-space-between">
               <div>
                 <div class="text-subtitle-2 font-weight-bold mb-1">
-                  Besoin d'aide ?
+                  {{ t('subscription.page.help.title') }}
                 </div>
                 <div class="text-caption text-medium-emphasis mb-3">
-                  Notre équipe est là pour vous accompagner.
+                  {{ t('subscription.page.help.text') }}
                 </div>
                 <v-btn
                   variant="text"
@@ -421,7 +464,7 @@
                   size="small"
                   prepend-icon="mdi-headset"
                 >
-                  Contacter le support
+                  {{ t('subscription.page.help.contact') }}
                 </v-btn>
               </div>
               <v-icon
@@ -443,7 +486,7 @@
         <v-icon size="14">
           mdi-shield-check-outline
         </v-icon>
-        Paiement 100% sécurisé. Vos données sont protégées.
+        {{ t('subscription.page.secure') }}
       </div>
     </v-container>
   </MainLayout>
@@ -451,87 +494,123 @@
 
 <script setup lang="ts">
 import MainLayout from '@/app/layouts/MainLayout.vue'
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { formatCurrency, formatDate } from '@/app/i18n/formatters'
 import { useSubscriptionSeats } from '@/features/subscription/composition/useSubscriptionSeats'
 
-const factures = ref([
-  { id: 1, date: '15 mai 2025',  numero: 'FAC-2025-0005', periode: '15 avr. – 14 mai 2025',  montant: '120,00 €' },
-  { id: 2, date: '15 avr. 2025', numero: 'FAC-2025-0004', periode: '15 mars – 14 avr. 2025', montant: '120,00 €' },
-  { id: 3, date: '15 mars 2025', numero: 'FAC-2025-0003', periode: '15 févr. – 14 mars 2025', montant: '120,00 €' },
-  { id: 4, date: '15 févr. 2025',numero: 'FAC-2025-0002', periode: '15 janv. – 14 févr. 2025',montant: '120,00 €' },
-  { id: 5, date: '15 janv. 2025',numero: 'FAC-2025-0001', periode: '15 déc. – 14 janv. 2025', montant: '120,00 €' },
-])
+const { t } = useI18n()
 
-const offerDetails = computed(() => [
-  { icon: 'mdi-calendar-outline',       label: 'Type d\'abonnement', value: isFreePlan.value ? 'Gratuit' : 'Mensuel' },
-  { icon: 'mdi-calendar-start-outline', label: 'Date de début',      value: '15 mars 2025'  },
-  { icon: 'mdi-calendar-end-outline',   label: 'Date de fin',        value: isFreePlan.value ? 'Aucune' : '14 juin 2025' },
-  { icon: 'mdi-clock-outline',          label: 'Prochain prélèvement', value: isFreePlan.value ? 'Aucun' : '15 juin 2025' },
-])
+const longDate = (value: string) => formatDate(value, { day: 'numeric', month: 'long', year: 'numeric' })
+const shortDate = (value: string) => formatDate(value, { day: 'numeric', month: 'short', year: 'numeric' })
 
-const plans = [
-  { code: 'FREE', name: 'Free', price: '0 €', unit: 'pour toujours', badge: 'Offre actuelle', features: ['3 utilisateurs inclus', 'Devis & factures', 'Garages illimités'] },
-  { code: 'ESSENTIAL', name: 'Essentielle', price: '15 €', unit: 'par utilisateur / mois', features: ['Utilisateurs illimités', 'Devis & factures', 'Support par e-mail'] },
-  { code: 'PREMIUM', name: 'Premium', price: '25 €', unit: 'par utilisateur / mois', features: ['Tout Essentielle', 'Statistiques avancées', 'Support prioritaire'] },
+const invoiceSamples = [
+  { id: 1, date: '2025-05-15', numero: 'FAC-2025-0005', from: '2025-04-15', to: '2025-05-14' },
+  { id: 2, date: '2025-04-15', numero: 'FAC-2025-0004', from: '2025-03-15', to: '2025-04-14' },
+  { id: 3, date: '2025-03-15', numero: 'FAC-2025-0003', from: '2025-02-15', to: '2025-03-14' },
+  { id: 4, date: '2025-02-15', numero: 'FAC-2025-0002', from: '2025-01-15', to: '2025-02-14' },
+  { id: 5, date: '2025-01-15', numero: 'FAC-2025-0001', from: '2024-12-15', to: '2025-01-14' },
 ]
 
-const { seatsUsed, seatsLimit, seatsPercent, seatLimitReached, isFreePlan, load } = useSubscriptionSeats()
+const factures = computed(() => invoiceSamples.map(invoice => ({
+  id: invoice.id,
+  numero: invoice.numero,
+  date: shortDate(invoice.date),
+  periode: `${shortDate(invoice.from)} – ${shortDate(invoice.to)}`,
+  montant: formatCurrency(120),
+})))
 
-// Seule la jauge d'utilisateurs est réelle ; le reste est mocké en attendant l'intégration de paiement.
+const offerDetails = computed(() => [
+  { icon: 'mdi-calendar-outline',       label: t('subscription.page.details.type'), value: isFreePlan.value ? t('subscription.page.details.free') : t('subscription.page.details.monthly') },
+  { icon: 'mdi-calendar-start-outline', label: t('subscription.page.details.start'),      value: longDate('2025-03-15') },
+  { icon: 'mdi-calendar-end-outline',   label: t('subscription.page.details.end'),        value: isFreePlan.value ? t('subscription.page.details.none') : longDate('2025-06-14') },
+  { icon: 'mdi-clock-outline',          label: t('subscription.page.details.nextDebit'), value: isFreePlan.value ? t('subscription.page.details.noneMasc') : longDate('2025-06-15') },
+])
+
+const {
+  seatsUsed, seatsLimit, garagesUsed, garagesLimit,
+  quotesUsed, quotesLimit, invoicesUsed, invoicesLimit, conversionsUsed, conversionsLimit,
+  features, isFreePlan, load,
+} = useSubscriptionSeats()
+
+const NEAR_LIMIT_PERCENT = 80
+
+const quotaKpi = (label: string, icon: string, used: number, limit: number, caption: string) => {
+  const percent = limit > 0 ? Math.min(100, (used / limit) * 100) : undefined
+  const barColor = percent === undefined ? 'primary' : percent >= 100 ? 'error' : percent >= NEAR_LIMIT_PERCENT ? 'warning' : 'primary'
+  return {
+    label,
+    icon,
+    color: barColor,
+    value: limit > 0 ? `${used} / ${limit}` : `${used} · ${t('subscription.page.kpi.unlimited')}`,
+    caption,
+    progress: percent,
+    barColor,
+    link: undefined as { label: string; to: string; arrow: boolean } | undefined,
+  }
+}
+
 const kpis = computed(() => [
   {
-    label: 'Utilisateurs',
-    icon: 'mdi-account-group-outline',
-    color: 'primary',
-    value: `${seatsUsed.value} / ${seatsLimit.value || '—'}`,
-    caption: 'utilisateurs actifs',
-    progress: seatsPercent.value,
-    link: { label: 'Gérer les utilisateurs', to: '/organization/members', arrow: true },
+    ...quotaKpi(t('subscription.page.kpi.users'), 'mdi-account-group-outline', seatsUsed.value, seatsLimit.value, t('subscription.page.kpi.activeUsers')),
+    link: { label: t('subscription.page.kpi.manageUsers'), to: '/organization/members', arrow: true },
   },
-  {
-    label: 'Utilisateur supplémentaire',
-    icon: 'mdi-tag-outline',
-    color: 'success',
-    value: '15,00 €',
-    caption: isFreePlan.value && seatsLimit.value
-      ? `par mois, au-delà de ${seatsLimit.value} utilisateurs inclus`
-      : 'par utilisateur / mois',
-  },
-  ...(isFreePlan.value
-    ? [
-      {
-        label: 'Garages',
-        icon: 'mdi-warehouse',
-        color: 'warning',
-        value: 'Illimités',
-        caption: 'aucune limite de garages',
-      },
-      {
-        label: 'Facturation',
-        icon: 'mdi-file-document-outline',
-        color: 'purple',
-        value: 'Aucune',
-        caption: 'Plan gratuit · 0,00 € / mois',
-      },
-    ]
-    : [
-      {
-        label: 'Coût mensuel',
-        icon: 'mdi-file-document-outline',
-        color: 'purple',
-        value: '120,00 €',
-        caption: 'HT / mois',
-        link: { label: 'Voir le détail', to: '/subscription' },
-      },
-      {
-        label: 'Prochain prélèvement',
-        icon: 'mdi-calendar-outline',
-        color: 'warning',
-        value: '15 juin 2025',
-        caption: '120,00 € HT',
-        link: { label: 'Voir le mode de paiement', to: '/subscription' },
-      },
-    ]),
+  quotaKpi(t('subscription.page.kpi.garages'), 'mdi-warehouse', garagesUsed.value, garagesLimit.value, t('subscription.page.kpi.garagesLimit')),
+  quotaKpi(t('subscription.page.kpi.quotesMonth'), 'mdi-file-document-edit-outline', quotesUsed.value, quotesLimit.value, t('subscription.page.kpi.createdThisMonth')),
+  quotaKpi(t('subscription.page.kpi.invoicesMonth'), 'mdi-file-document-outline', invoicesUsed.value, invoicesLimit.value, t('subscription.page.kpi.createdThisMonth')),
+    quotaKpi(t('subscription.page.kpi.conversionsMonth'), 'mdi-swap-horizontal', conversionsUsed.value, conversionsLimit.value, t('subscription.page.kpi.convertedThisMonth')),
+])
+
+const nearLimitLabels = computed(() =>
+  kpis.value.filter(kpi => (kpi.progress ?? 0) >= NEAR_LIMIT_PERCENT).map(kpi => kpi.label.toLowerCase()),
+)
+
+// null = illimité
+const limitText = (key: string, singular: string, plural: string) => {
+  const value = features.value[key]
+  if (typeof value === 'number') return `${value} ${value > 1 ? plural : singular}`
+  return `${t('subscription.page.kpi.unlimited')} ${plural}`
+}
+
+const includedFeatures = computed(() => [
+  { key: 'max_seats', enabled: true, label: limitText('max_seats', t('subscription.page.feature.user'), t('subscription.page.feature.users')) },
+  { key: 'max_garages', enabled: true, label: limitText('max_garages', t('subscription.page.feature.garage'), t('subscription.page.feature.garages')) },
+  { key: 'max_quotes_per_month', enabled: true, label: `${limitText('max_quotes_per_month', t('subscription.page.feature.quote'), t('subscription.page.feature.quotes'))} ${t('subscription.page.feature.perMonth')}` },
+  { key: 'max_invoices_per_month', enabled: true, label: `${limitText('max_invoices_per_month', t('subscription.page.feature.invoice'), t('subscription.page.feature.invoices'))} ${t('subscription.page.feature.perMonth')}` },
+  { key: 'quote_to_invoice', enabled: features.value.quote_to_invoice === true, label: t('subscription.page.feature.quoteToInvoice') },
+  { key: 'max_conversions_per_month', enabled: features.value.quote_to_invoice === true, label: `${limitText('max_conversions_per_month', t('subscription.page.feature.conversion'), t('subscription.page.feature.conversions'))} ${t('subscription.page.feature.perMonth')}` },
+  { key: 'quote_email_sending', enabled: features.value.quote_email_sending === true, label: t('subscription.page.feature.emailSending') },
+  { key: 'invoice_email_sending', enabled: features.value.invoice_email_sending === true, label: t('subscription.page.feature.invoiceEmailSending') },
+  { key: 'car_view', enabled: features.value.car_view === true, label: t('subscription.page.feature.carView') },
+].sort((a, b) => Number(b.enabled) - Number(a.enabled)))
+
+const unlimited = computed(() => t('subscription.page.kpi.unlimited'))
+const compareRows = computed(() => [
+  { label: t('subscription.page.feature.users'), free: 2, premium: 10 },
+  { label: t('subscription.page.feature.garages'), free: 1, premium: unlimited.value },
+  { label: t('subscription.page.kpi.quotesMonth'), free: 10, premium: unlimited.value },
+  { label: t('subscription.page.kpi.invoicesMonth'), free: 5, premium: unlimited.value },
+  { label: t('subscription.page.kpi.conversionsMonth'), free: 3, premium: unlimited.value },
+  { label: t('subscription.page.feature.emailSending'), free: false, premium: true },
+  { label: t('subscription.page.feature.invoiceEmailSending'), free: false, premium: true },
+  { label: t('subscription.page.feature.carView'), free: false, premium: true },
 ])
 
 onMounted(load)</script>
+
+<style scoped>
+.included-list {
+  column-count: 2;
+  column-gap: 32px;
+}
+
+.included-list > div {
+  break-inside: avoid;
+}
+
+@media (width <= 959px) {
+  .included-list {
+    column-count: 1;
+  }
+}
+</style>

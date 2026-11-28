@@ -6,6 +6,6 @@ export type GenericDialogExposed = {
 }
 
 export type AddLineItemDialogExposed = {
-  open: () => void
+  open: (item?: import('@/features/lineItems/presentation/models/LineItemViewModel').LineItemViewModel, bodyPart?: import('@/features/carRepairSettings/presentation/models/BodyPartViewModel').BodyPartViewModel) => void
   close: () => void
 }

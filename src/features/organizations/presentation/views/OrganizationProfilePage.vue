@@ -7,10 +7,10 @@
       <div class="d-flex align-center flex-wrap ga-3 mb-4">
         <div>
           <h1 class="text-h5 font-weight-bold">
-            Paramètres de l'organisation
+            {{ t('organizations.profile.title') }}
           </h1>
           <div class="text-body-2 text-medium-emphasis">
-            Informations légales, coordonnées et conditions affichées sur vos documents.
+            {{ t('organizations.profile.subtitle') }}
           </div>
         </div>
 
@@ -22,7 +22,7 @@
           variant="tonal"
           prepend-icon="mdi-check"
         >
-          Enregistré
+          {{ t('organizations.profile.saved') }}
         </v-chip>
 
         <v-btn
@@ -30,7 +30,7 @@
           :disabled="loading || !hasChanges"
           @click="onReset"
         >
-          Annuler
+          {{ t('common.cancel') }}
         </v-btn>
 
         <v-btn
@@ -41,7 +41,7 @@
           :disabled="!hasChanges"
           @click="onSave"
         >
-          Enregistrer
+          {{ t('common.save') }}
         </v-btn>
       </div>
 
@@ -98,7 +98,7 @@
                 >
                   <v-text-field
                     v-model="profile.company_name"
-                    label="Nom de l'entreprise *"
+                    :label="t('organizations.profile.fields.companyName')"
                     :rules="[required]"
                     variant="outlined"
                     density="comfortable"
@@ -111,7 +111,7 @@
                 >
                   <v-select
                     v-model="profile.legal_form"
-                    label="Forme juridique *"
+                    :label="t('organizations.profile.fields.legalForm')"
                     :items="legalForms"
                     :rules="[required]"
                     variant="outlined"
@@ -125,7 +125,7 @@
                 >
                   <v-text-field
                     v-model="profile.siren"
-                    label="N° d'identification (SIREN, IDE...)"
+                    :label="t('organizations.profile.fields.siren')"
                     variant="outlined"
                     density="comfortable"
                   />
@@ -137,7 +137,7 @@
                 >
                   <v-text-field
                     v-model="profile.siret"
-                    label="N° établissement (SIRET, UID...)"
+                    :label="t('organizations.profile.fields.siret')"
                     variant="outlined"
                     density="comfortable"
                   />
@@ -149,7 +149,7 @@
                 >
                   <v-text-field
                     v-model="profile.tva_number"
-                    label="N° TVA intracommunautaire"
+                    :label="t('organizations.profile.fields.tvaNumber')"
                     variant="outlined"
                     density="comfortable"
                     placeholder="FR12345678901"
@@ -162,11 +162,11 @@
                 >
                   <v-text-field
                     v-model="profile.capital"
-                    label="Capital social"
+                    :label="t('organizations.profile.fields.capital')"
                     variant="outlined"
                     density="comfortable"
                     placeholder="10 000 €"
-                    hint="Requis pour SARL/SAS"
+                    :hint="t('organizations.profile.hints.capital')"
                     persistent-hint
                   />
                 </v-col>
@@ -181,7 +181,7 @@
                 <v-col cols="12">
                   <v-text-field
                     v-model="profile.address"
-                    label="Adresse *"
+                    :label="t('organizations.profile.fields.address')"
                     :rules="[required]"
                     variant="outlined"
                     density="comfortable"
@@ -194,7 +194,7 @@
                 >
                   <v-text-field
                     v-model="profile.zip_code"
-                    label="Code postal *"
+                    :label="t('organizations.profile.fields.zipCode')"
                     :rules="[required]"
                     variant="outlined"
                     density="comfortable"
@@ -207,7 +207,7 @@
                 >
                   <v-text-field
                     v-model="profile.city"
-                    label="Ville *"
+                    :label="t('organizations.profile.fields.city')"
                     :rules="[required]"
                     variant="outlined"
                     density="comfortable"
@@ -220,7 +220,7 @@
                 >
                   <v-text-field
                     v-model="profile.country"
-                    label="Pays"
+                    :label="t('organizations.profile.fields.country')"
                     variant="outlined"
                     density="comfortable"
                   />
@@ -232,7 +232,7 @@
                 >
                   <v-text-field
                     v-model="profile.phone"
-                    label="Téléphone"
+                    :label="t('organizations.profile.fields.phone')"
                     variant="outlined"
                     density="comfortable"
                     prepend-inner-icon="mdi-phone"
@@ -245,7 +245,7 @@
                 >
                   <v-text-field
                     v-model="profile.email"
-                    label="Email"
+                    :label="t('organizations.profile.fields.email')"
                     variant="outlined"
                     density="comfortable"
                     prepend-inner-icon="mdi-email"
@@ -259,7 +259,7 @@
                 >
                   <v-text-field
                     v-model="profile.website"
-                    label="Site web"
+                    :label="t('organizations.profile.fields.website')"
                     variant="outlined"
                     density="comfortable"
                     prepend-inner-icon="mdi-web"
@@ -280,11 +280,11 @@
                 >
                   <v-text-field
                     v-model="profile.iban"
-                    label="IBAN"
+                    :label="t('organizations.profile.fields.iban')"
                     variant="outlined"
                     density="comfortable"
                     placeholder="FR76 XXXX XXXX XXXX XXXX XXXX XXX"
-                    hint="Affiché en pied de facture"
+                    :hint="t('organizations.profile.hints.iban')"
                     persistent-hint
                   />
                 </v-col>
@@ -295,7 +295,7 @@
                 >
                   <v-text-field
                     v-model="profile.bic"
-                    label="BIC / SWIFT"
+                    :label="t('organizations.profile.fields.bic')"
                     variant="outlined"
                     density="comfortable"
                     placeholder="BNPAFRPP"
@@ -315,7 +315,7 @@
                 >
                   <v-select
                     v-model="profile.payment_delay"
-                    label="Délai de paiement *"
+                    :label="t('organizations.profile.fields.paymentDelay')"
                     :items="paymentDelays"
                     item-title="label"
                     item-value="value"
@@ -331,11 +331,11 @@
                 >
                   <v-text-field
                     v-model="profile.late_payment_penalty"
-                    label="Pénalités de retard"
+                    :label="t('organizations.profile.fields.latePaymentPenalty')"
                     variant="outlined"
                     density="comfortable"
-                    placeholder="3 fois le taux légal"
-                    hint="Mention légale obligatoire"
+                    :placeholder="t('organizations.profile.placeholders.latePaymentPenalty')"
+                    :hint="t('organizations.profile.hints.latePaymentPenalty')"
                     persistent-hint
                   />
                 </v-col>
@@ -346,11 +346,11 @@
                 >
                   <v-text-field
                     v-model="profile.recovery_fee"
-                    label="Indemnité forfaitaire de recouvrement"
+                    :label="t('organizations.profile.fields.recoveryFee')"
                     variant="outlined"
                     density="comfortable"
                     placeholder="40 €"
-                    hint="Obligatoire entre professionnels"
+                    :hint="t('organizations.profile.hints.recoveryFee')"
                     persistent-hint
                   />
                 </v-col>
@@ -380,10 +380,16 @@ import {
   ref,
 } from 'vue';
 
+import { useI18n } from 'vue-i18n';
+
 import MainLayout from '@/app/layouts/MainLayout.vue';
 
 import { OrganizationProfileViewModel } from '@/features/organizations/presentation/models/OrganizationProfileViewModel';
 import { useOrganizationProfilePageDependencies } from '@/features/organizations/composition/useOrganizationProfilePageDependencies';
+import { useOrganizationProfileCompleteness } from '@/features/organizations/composition/useOrganizationProfileCompleteness';
+
+const { t } = useI18n();
+const { update: updateCompleteness } = useOrganizationProfileCompleteness();
 
 const { useOrganizationProfileState } = useOrganizationProfilePageDependencies();
 
@@ -396,12 +402,12 @@ const {
 
 type TabKey = 'legal' | 'contact' | 'bank' | 'payment';
 
-const tabs: { value: TabKey; label: string; icon: string }[] = [
-  { value: 'legal', label: 'Identité légale', icon: 'mdi-office-building' },
-  { value: 'contact', label: 'Coordonnées', icon: 'mdi-map-marker' },
-  { value: 'bank', label: 'Coordonnées bancaires', icon: 'mdi-bank' },
-  { value: 'payment', label: 'Conditions de paiement', icon: 'mdi-clock-outline' },
-];
+const tabs = computed<{ value: TabKey; label: string; icon: string }[]>(() => [
+  { value: 'legal', label: t('organizations.profile.tabs.legal'), icon: 'mdi-office-building' },
+  { value: 'contact', label: t('organizations.profile.tabs.contact'), icon: 'mdi-map-marker' },
+  { value: 'bank', label: t('organizations.profile.tabs.bank'), icon: 'mdi-bank' },
+  { value: 'payment', label: t('organizations.profile.tabs.payment'), icon: 'mdi-clock-outline' },
+]);
 
 const tabFields: Record<TabKey, (keyof OrganizationProfileViewModel)[]> = {
   legal: ['company_name', 'legal_form', 'siren', 'siret', 'tva_number', 'capital'],
@@ -449,19 +455,16 @@ const legalForms = [
   'Auto-entrepreneur',
 ];
 
-const paymentDelays = [
-  { label: 'Comptant (0 jour)', value: 0 },
-  { label: '15 jours', value: 15 },
-  { label: '30 jours', value: 30 },
-  { label: '45 jours', value: 45 },
-  { label: '60 jours', value: 60 },
-];
+const paymentDelays = computed(() => [
+  { label: t('organizations.profile.delays.cash'), value: 0 },
+  ...[15, 30, 45, 60].map((days) => ({ label: t('organizations.profile.delays.days', { count: days }), value: days })),
+]);
 
 const required = (v: unknown) =>
-  (v !== '' && v !== null && v !== undefined) || 'Champ obligatoire';
+  (v !== '' && v !== null && v !== undefined) || t('organizations.profile.validation.required');
 
 const emailRule = (v: string) =>
-  !v || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) || 'Email invalide';
+  !v || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) || t('organizations.profile.validation.invalidEmail');
 
 const takeSnapshot = () => {
   snapshot.value = { ...profile.value };
@@ -470,10 +473,10 @@ const takeSnapshot = () => {
 const isTabDirty = (key: TabKey) =>
   tabFields[key].some((field) => profile.value[field] !== snapshot.value[field]);
 
-const hasChanges = computed(() => tabs.some((item) => isTabDirty(item.value)));
+const hasChanges = computed(() => tabs.value.some((item) => isTabDirty(item.value)));
 
 const refreshTabErrors = () => {
-  tabs.forEach(({ value }) => {
+  tabs.value.forEach(({ value }) => {
     const fields = requiredFields[value] ?? [];
 
     tabErrors[value] =
@@ -494,7 +497,7 @@ const onSave = async () => {
   refreshTabErrors();
 
   if (!valid) {
-    const firstInvalid = tabs.find((item) => tabErrors[item.value]);
+    const firstInvalid = tabs.value.find((item) => tabErrors[item.value]);
 
     if (firstInvalid) tab.value = firstInvalid.value;
 
@@ -505,6 +508,7 @@ const onSave = async () => {
     await updateProfile();
 
     takeSnapshot();
+    updateCompleteness(profile.value);
 
     saved.value = true;
 
@@ -512,9 +516,9 @@ const onSave = async () => {
       saved.value = false;
     }, 3000);
 
-    showSnack('Paramètres enregistrés avec succès.');
+    showSnack(t('organizations.profile.messages.saved'));
   } catch {
-    showSnack("Une erreur est survenue lors de l'enregistrement.", 'error');
+    showSnack(t('organizations.profile.messages.saveError'), 'error');
   }
 };
 
@@ -523,7 +527,7 @@ const onReset = () => {
 
   formRef.value?.resetValidation();
 
-  tabs.forEach(({ value }) => {
+  tabs.value.forEach(({ value }) => {
     tabErrors[value] = false;
   });
 };

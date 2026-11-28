@@ -11,14 +11,14 @@
             class="text-h5 font-weight-bold mb-0"
             style="font-family:'Space Grotesk',sans-serif"
           >
-            Surveillance grêle
+            {{ t('weather.page.title') }}
           </h1>
           <p class="text-body-2 text-medium-emphasis mb-0">
-            France · {{ alerts.length }} département{{ alerts.length > 1 ? 's' : '' }} surveillé{{ alerts.length > 1 ? 's' : '' }}
+            {{ t('weather.page.subtitle', alerts.length) }}
             <span
               v-if="lastChecked"
               class="ml-1"
-            >· mis à jour {{ lastChecked }}</span>
+            >· {{ t('weather.page.updatedAt', { date: lastChecked }) }}</span>
           </p>
         </div>
         <v-btn
@@ -27,7 +27,7 @@
           :loading="loading"
           @click="fetchAlerts"
         >
-          Actualiser
+          {{ t('weather.page.refresh') }}
         </v-btn>
       </div>
 
@@ -46,7 +46,7 @@
             class="pa-4"
           >
             <p class="text-caption text-medium-emphasis mb-1">
-              Alertes actives
+              {{ t('weather.page.kpi.active') }}
             </p>
             <div
               class="text-h5 font-weight-bold mb-1"
@@ -60,7 +60,7 @@
               :color="countActive > 0 ? 'error' : 'default'"
               variant="tonal"
             >
-              grêle confirmée
+              {{ t('weather.page.kpi.activeHint') }}
             </v-chip>
           </v-card>
         </v-col>
@@ -74,7 +74,7 @@
             class="pa-4"
           >
             <p class="text-caption text-medium-emphasis mb-1">
-              Risque élevé
+              {{ t('weather.page.kpi.high') }}
             </p>
             <div
               class="text-h5 font-weight-bold mb-1"
@@ -88,7 +88,7 @@
               :color="countHigh > 0 ? 'warning' : 'default'"
               variant="tonal"
             >
-              orages intenses
+              {{ t('weather.page.kpi.highHint') }}
             </v-chip>
           </v-card>
         </v-col>
@@ -102,7 +102,7 @@
             class="pa-4"
           >
             <p class="text-caption text-medium-emphasis mb-1">
-              Risque modéré
+              {{ t('weather.page.kpi.moderate') }}
             </p>
             <div
               class="text-h5 font-weight-bold mb-1"
@@ -115,7 +115,7 @@
               color="default"
               variant="tonal"
             >
-              averses/orages
+              {{ t('weather.page.kpi.moderateHint') }}
             </v-chip>
           </v-card>
         </v-col>
@@ -129,7 +129,7 @@
             class="pa-4"
           >
             <p class="text-caption text-medium-emphasis mb-1">
-              Sans risque
+              {{ t('weather.page.kpi.none') }}
             </p>
             <div
               class="text-h5 font-weight-bold mb-1 text-success"
@@ -142,7 +142,7 @@
               color="success"
               variant="tonal"
             >
-              temps calme
+              {{ t('weather.page.kpi.noneHint') }}
             </v-chip>
           </v-card>
         </v-col>
@@ -160,7 +160,7 @@
           density="compact"
         >
           <v-tab value="all">
-            Tous ({{ alerts.length }})
+            {{ t('weather.page.tabs.all', { count: alerts.length }) }}
           </v-tab>
           <v-tab value="alert">
             <v-badge
@@ -170,13 +170,13 @@
               inline
               class="mr-1"
             />
-            Alertes actives
+            {{ t('weather.page.kpi.active') }}
           </v-tab>
           <v-tab value="risk">
-            Risque élevé ({{ countHigh }})
+            {{ t('weather.page.tabs.high', { count: countHigh }) }}
           </v-tab>
           <v-tab value="none">
-            Sans risque
+            {{ t('weather.page.kpi.none') }}
           </v-tab>
         </v-tabs>
 
@@ -188,7 +188,7 @@
             v-model="search"
             density="compact"
             variant="outlined"
-            placeholder="Rechercher un département..."
+            :placeholder="t('weather.page.search')"
             prepend-inner-icon="mdi-magnify"
             clearable
             hide-details
@@ -207,22 +207,22 @@
                 class="text-left"
                 style="width:80px"
               >
-                Code
+                {{ t('weather.page.table.code') }}
               </th>
               <th class="text-left">
-                Département
+                {{ t('weather.page.table.department') }}
               </th>
               <th class="text-left">
-                Niveau de risque
+                {{ t('weather.page.table.riskLevel') }}
               </th>
               <th
                 class="text-left"
                 style="width:120px"
               >
-                CAPE (J/kg)
+                {{ t('weather.page.table.cape') }}
               </th>
               <th class="text-left">
-                Dernière vérification
+                {{ t('weather.page.table.lastChecked') }}
               </th>
             </tr>
           </thead>
@@ -244,7 +244,7 @@
                 colspan="5"
                 class="text-center text-medium-emphasis pa-6"
               >
-                Aucun département trouvé
+                {{ t('weather.page.table.empty') }}
               </td>
             </tr>
             <tr
@@ -296,11 +296,14 @@
 
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { intlLocale } from '@/app/i18n/formatters';
 import MainLayout from '@/app/layouts/MainLayout.vue';
 import { useHailMonitoringState } from '@/features/weather/composition/useHailMonitoringState';
 import type { HailRiskLevel } from '@/features/weather/application/dtos/HailAlertDto';
 
 const { alerts, loading, fetchAlerts } = useHailMonitoringState();
+const { t } = useI18n();
 
 const activeTab = ref('all');
 const search = ref('');
@@ -347,17 +350,17 @@ function riskColor(level: HailRiskLevel): string {
 
 function riskLabel(level: HailRiskLevel): string {
   switch (level) {
-    case 'active':   return '⚡ Grêle active';
-    case 'high':     return '🔴 Risque élevé';
-    case 'moderate': return '🟡 Risque modéré';
-    default:         return '🟢 Aucun risque';
+    case 'active':   return t('weather.page.risk.active');
+    case 'high':     return t('weather.page.risk.high');
+    case 'moderate': return t('weather.page.risk.moderate');
+    default:         return t('weather.page.risk.none');
   }
 }
 
 function formatDate(iso: string): string {
   if (!iso) return '—';
   const d = new Date(iso);
-  return d.toLocaleString('fr-FR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
+  return d.toLocaleString(intlLocale(), { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
 }
 
 onMounted(fetchAlerts);

@@ -6,10 +6,14 @@ import { IViewQuoteUseCase } from '@/features/quotes/application/useCases/ViewQu
 import { IEmailService } from '@/shared/application/ports/IEmailService';
 import { IQuoteRepository } from '@/features/quotes/application/ports/repositories/IQuoteRepository';
 import { IOrganizationProfileUseCase } from '@/features/organizations/application/useCases/OrganizationProfileUseCase';
+import { DocumentStatusDto } from '@/features/documentStatuses/application/dtos/DocumentStatusDto';
+import { IGetDocumentStatusUseCase } from '@/features/documentStatuses/application/useCases/GetDocumentStatusUseCase';
 
 export interface ISendQuoteUseCase {
-  execute(quoteId: string, company?: OrganizationProfileDto | null): Promise<void>;
+  execute(quoteId: string, company?: OrganizationProfileDto | null): Promise<DocumentStatusDto>;
 }
+
+export const EMPTY_QUOTE_ERROR = "Ajoutez au moins un élément avant d'envoyer le devis.";
 
 export class SendQuoteUseCase implements ISendQuoteUseCase {
   constructor(
@@ -22,13 +26,20 @@ export class SendQuoteUseCase implements ISendQuoteUseCase {
     private readonly quoteRepository: IQuoteRepository,
 
     private readonly organizationProfileUseCase: IOrganizationProfileUseCase,
+
+    private readonly getDocumentStatusUseCase: IGetDocumentStatusUseCase,
   ) {}
 
-  async execute(quoteId: string, _company?: OrganizationProfileDto | null): Promise<void> {
+  async execute(quoteId: string, _company?: OrganizationProfileDto | null): Promise<DocumentStatusDto> {
     const { quote, lines } = await this.viewQuoteUseCase.execute(quoteId);
 
     if (!quote || !lines) {
       throw new Error('Quote or quote details not found');
+    }
+
+    const hasItems = quote.isForfait ? Number(quote.forfaitAmount ?? 0) > 0 : lines.length > 0;
+    if (!hasItems) {
+      throw new Error(EMPTY_QUOTE_ERROR);
     }
 
     const company = quote.organization_id
@@ -45,9 +56,18 @@ export class SendQuoteUseCase implements ISendQuoteUseCase {
       throw new Error('Garage email not found');
     }
 
+    if (!quote.organization_id) {
+      throw new Error('Organization not found');
+    }
+
     const pdfBase64 = await this.urlToBase64(pdfDataUrl);
-    await this.emailService.sendQuoteEmail(recipientEmail, quote.quoteNumber, pdfBase64);
+    await this.emailService.sendQuoteEmail(recipientEmail, quote.quoteNumber, pdfBase64, quote.organization_id);
     await this.quoteRepository.markAsSent(quoteId);
+
+    const pendingStatus = await this.getDocumentStatusUseCase.getByCode('pending');
+    if (!pendingStatus?.id) throw new Error('Statut introuvable : pending');
+    await this.quoteRepository.updateStatus(quoteId, pendingStatus.id);
+    return pendingStatus;
   }
 
   private async urlToBase64(url: string): Promise<string> {

@@ -7,7 +7,7 @@ import { Session } from '@supabase/supabase-js';
 import { SupabaseClient } from '@/shared/infrastructure/supabase/SupabaseClient';
 import { UserApiModel } from '@/features/users/infrastructure/api/UserApiModel';
 
-const USER_PROFILE_SELECT = 'id, email, full_name, first_name, last_name, is_blocked';
+const USER_PROFILE_SELECT = 'id, email, full_name, first_name, last_name, is_blocked, platform_role';
 
 export class AuthSupabaseRepository implements IAuthRepository {
   constructor(private clientProvider: IClientProvider<SupabaseClient>) {}
@@ -123,12 +123,26 @@ export class AuthSupabaseRepository implements IAuthRepository {
       first_name: userProfile?.first_name,
       last_name: userProfile?.last_name,
       is_blocked: userProfile?.is_blocked,
+     platform_role: userProfile?.platform_role,
     })
   }
 
   async updateEmail(newEmail: string): Promise<void> {
     const { error } = await this.clientProvider.getClient().auth.updateUser({ email: newEmail });
     if (error) throw new Error(`Error updating email in auth.users: ${error.message}`);
+  }
+
+  async changePassword(currentPassword: string, newPassword: string): Promise<void> {
+    const auth = this.clientProvider.getClient().auth;
+    const { data: authData } = await auth.getUser();
+    const email = authData?.user?.email;
+    if (!email) throw new Error('INVALID_SESSION');
+
+    const { error: verifyError } = await auth.signInWithPassword({ email, password: currentPassword });
+    if (verifyError) throw new Error('INVALID_CURRENT_PASSWORD');
+
+    const { error } = await auth.updateUser({ password: newPassword });
+    if (error) throw new Error(error.message);
   }
 
   async deleteUser(userId: string): Promise<void> {

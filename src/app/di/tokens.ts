@@ -16,6 +16,12 @@ const SYMBOLS = {
     UserRepository: Symbol.for(SYMBOL_NAMES.USER_REPOSITORY),
     // Subscription Repositories
     SubscriptionRepository: Symbol.for(SYMBOL_NAMES.SUBSCRIPTION_REPOSITORY),
+    FeatureAccessRepository: Symbol.for(SYMBOL_NAMES.FEATURE_ACCESS_REPOSITORY),
+    DemoProfileRepository: Symbol.for(SYMBOL_NAMES.DEMO_PROFILE_REPOSITORY),
+    PlatformStatsRepository: Symbol.for(SYMBOL_NAMES.PLATFORM_STATS_REPOSITORY),
+    PlatformOrganizationRepository: Symbol.for(SYMBOL_NAMES.PLATFORM_ORGANIZATION_REPOSITORY),
+    PlatformUserRepository: Symbol.for(SYMBOL_NAMES.PLATFORM_USER_REPOSITORY),
+    PlatformPlanRepository: Symbol.for(SYMBOL_NAMES.PLATFORM_PLAN_REPOSITORY),
     GarageRepository: Symbol.for(SYMBOL_NAMES.GARAGE_REPOSITORY),
     VehicleRepository: Symbol.for(SYMBOL_NAMES.VEHICLE_REPOSITORY),
 
@@ -82,6 +88,29 @@ const SYMBOLS = {
       LogoutUseCase: Symbol.for(SYMBOL_NAMES.LOGOUT_USE_CASE),
       RegisterUseCase: Symbol.for(SYMBOL_NAMES.REGISTER_USE_CASE),
       GetAuthenticatedUserContextUseCase: Symbol.for(SYMBOL_NAMES.GET_AUTHENTICATED_USER_CONTEXT_USE_CASE),
+      ProvisionOrganizationUseCase: Symbol.for(SYMBOL_NAMES.PROVISION_ORGANIZATION_USE_CASE),
+    },
+    ProfileSwitcher: {
+      ListDemoProfilesUseCase: Symbol.for(SYMBOL_NAMES.LIST_DEMO_PROFILES_USE_CASE),
+      SwitchDemoProfileUseCase: Symbol.for(SYMBOL_NAMES.SWITCH_DEMO_PROFILE_USE_CASE),
+      ClearDemoProfileUseCase: Symbol.for(SYMBOL_NAMES.CLEAR_DEMO_PROFILE_USE_CASE),
+      CreateDemoProfileUseCase: Symbol.for(SYMBOL_NAMES.CREATE_DEMO_PROFILE_USE_CASE),
+      DeleteDemoProfileUseCase: Symbol.for(SYMBOL_NAMES.DELETE_DEMO_PROFILE_USE_CASE),
+    },
+    PlatformAdmin: {
+      GetPlatformStatsUseCase: Symbol.for(SYMBOL_NAMES.GET_PLATFORM_STATS_USE_CASE),
+      ListPlatformOrganizationsUseCase: Symbol.for(SYMBOL_NAMES.LIST_PLATFORM_ORGANIZATIONS_USE_CASE),
+      GrantPremiumUseCase: Symbol.for(SYMBOL_NAMES.GRANT_PREMIUM_USE_CASE),
+      GrantFeatureUseCase: Symbol.for(SYMBOL_NAMES.GRANT_FEATURE_USE_CASE),
+      SetOrganizationDemoUseCase: Symbol.for(SYMBOL_NAMES.SET_ORGANIZATION_DEMO_USE_CASE),
+      ListPlatformUsersUseCase: Symbol.for(SYMBOL_NAMES.LIST_PLATFORM_USERS_USE_CASE),
+      ListPlatformPlansUseCase: Symbol.for(SYMBOL_NAMES.LIST_PLATFORM_PLANS_USE_CASE),
+      PreviewPlanChangesUseCase: Symbol.for(SYMBOL_NAMES.PREVIEW_PLAN_CHANGES_USE_CASE),
+      ApplyPlanChangesUseCase: Symbol.for(SYMBOL_NAMES.APPLY_PLAN_CHANGES_USE_CASE),
+      ListPlanChangeLogUseCase: Symbol.for(SYMBOL_NAMES.LIST_PLAN_CHANGE_LOG_USE_CASE),
+    },
+    FeatureAccess: {
+      GetFeatureAccessUseCase: Symbol.for(SYMBOL_NAMES.GET_FEATURE_ACCESS_USE_CASE),
     },
     // -- Subscription UseCases
     Subscription: {
@@ -91,7 +120,6 @@ const SYMBOLS = {
     // -- User UseCases
     UserUseCase: Symbol.for(SYMBOL_NAMES.USER_USE_CASE),
     User: {
-      CreateUserUseCase: Symbol.for(SYMBOL_NAMES.CREATE_USER_USE_CASE),
       CreateUserWithOrganizationUseCase: Symbol.for(SYMBOL_NAMES.CREATE_USER_WITH_ORGANIZATION_USE_CASE),
     },
     OrganizationProfileUseCase: Symbol.for(SYMBOL_NAMES.ORGANIZATION_PROFILE_USE_CASE),
@@ -127,6 +155,7 @@ const SYMBOLS = {
       QuoteUseCase: Symbol.for(SYMBOL_NAMES.QUOTE_USE_CASE),
       GetQuoteUseCase: Symbol.for(SYMBOL_NAMES.GET_QUOTE_USE_CASE),
       GetQuotesUseCase: Symbol.for(SYMBOL_NAMES.GET_QUOTES_USE_CASE),
+      CountQuotesThisMonthUseCase: Symbol.for(SYMBOL_NAMES.COUNT_QUOTES_THIS_MONTH_USE_CASE),
       ViewQuoteUseCase: Symbol.for(SYMBOL_NAMES.VIEW_QUOTE_USE_CASE),
       CreateQuoteUseCase: Symbol.for(SYMBOL_NAMES.CREATE_QUOTE_USE_CASE),
       InsertQuoteUseCase: Symbol.for(SYMBOL_NAMES.INSERT_QUOTE_USE_CASE),
@@ -138,15 +167,19 @@ const SYMBOLS = {
       GetQuoteDetailsUseCase: Symbol.for(SYMBOL_NAMES.GET_QUOTE_DETAILS_USE_CASE),
       // AddQuoteDetailsUseCase: Symbol.for(SYMBOL_NAMES.ADD_QUOTE_DETAILS_USE_CASE),
       AddLineItemUseCase: Symbol.for(SYMBOL_NAMES.ADD_QUOTE_LINE_ITEM_USE_CASE),
+      UpdateLineItemUseCase: Symbol.for(SYMBOL_NAMES.UPDATE_QUOTE_LINE_ITEM_USE_CASE),
       DeleteLineItemUseCase: Symbol.for(SYMBOL_NAMES.DELETE_LINE_ITEM_USE_CASE),
       // -- Pdf UseCases
       GenerateQuotePdfUseCase: Symbol.for(SYMBOL_NAMES.GENERATE_QUOTE_PDF_USE_CASE),
       SendQuoteUseCase: Symbol.for(SYMBOL_NAMES.SEND_QUOTE_USE_CASE),
+      FinalizeQuoteUseCase: Symbol.for(SYMBOL_NAMES.FINALIZE_QUOTE_USE_CASE),
     },
     Invoice: {
       InvoiceUseCase: Symbol.for(SYMBOL_NAMES.INVOICE_USE_CASE),
       GetInvoiceUseCase: Symbol.for(SYMBOL_NAMES.GET_INVOICE_USE_CASE),
       GetInvoicesUseCase: Symbol.for(SYMBOL_NAMES.GET_INVOICES_USE_CASE),
+      CountInvoicesThisMonthUseCase: Symbol.for(SYMBOL_NAMES.COUNT_INVOICES_THIS_MONTH_USE_CASE),
+      CountConversionsThisMonthUseCase: Symbol.for(SYMBOL_NAMES.COUNT_CONVERSIONS_THIS_MONTH_USE_CASE),
       ViewInvoiceUseCase: Symbol.for(SYMBOL_NAMES.VIEW_INVOICE_USE_CASE),
       CreateInvoiceUseCase: Symbol.for(SYMBOL_NAMES.CREATE_INVOICE_USE_CASE),
       InsertInvoiceUseCase: Symbol.for(SYMBOL_NAMES.INSERT_INVOICE_USE_CASE),
@@ -158,15 +191,18 @@ const SYMBOLS = {
       GetInvoiceDetailsUseCase: Symbol.for(SYMBOL_NAMES.GET_INVOICE_DETAILS_USE_CASE),
       // AddInvoiceDetailsUseCase: Symbol.for(SYMBOL_NAMES.ADD_INVOICE_DETAILS_USE_CASE),
       AddLineItemUseCase: Symbol.for(SYMBOL_NAMES.ADD_INVOICE_LINE_ITEM_USE_CASE),
+      UpdateLineItemUseCase: Symbol.for(SYMBOL_NAMES.UPDATE_INVOICE_LINE_ITEM_USE_CASE),
       DeleteLineItemUseCase: Symbol.for(SYMBOL_NAMES.DELETE_LINE_ITEM_USE_CASE),
       // -- Pdf UseCases
       GenerateInvoicePdfUseCase: Symbol.for(SYMBOL_NAMES.GENERATE_INVOICE_PDF_USE_CASE),
       SendInvoiceUseCase: Symbol.for(SYMBOL_NAMES.SEND_INVOICE_USE_CASE),
+      FinalizeInvoiceUseCase: Symbol.for(SYMBOL_NAMES.FINALIZE_INVOICE_USE_CASE),
     },
   },
   States: {
     AuthState: Symbol.for(SYMBOL_NAMES.AUTH_STATE),
     SubscriptionState: Symbol.for(SYMBOL_NAMES.SUBSCRIPTION_STATE),
+    FeatureAccessState: Symbol.for(SYMBOL_NAMES.FEATURE_ACCESS_STATE),
     // -- User States
     UserState: Symbol.for(SYMBOL_NAMES.USER_STATE),
     OrganizationProfileState: Symbol.for(SYMBOL_NAMES.ORGANIZATION_PROFILE_STATE),

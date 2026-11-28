@@ -5,16 +5,16 @@ html {
 }
 
 .page-wrapper .v-container {
-  padding: 0px !important;
+  padding: 0 !important;
 }
 
 .v-row + .v-row {
-  margin-top: 0px;
+  margin-top: 0;
 }
 
 .v-divider {
   opacity: 1;
-  border-color: rgba(var(--v-theme-borderLight), 0.36);
+  border-color: rgb(var(--v-theme-borderLight), 0.36);
 }
 
 .v-selection-control {
@@ -42,22 +42,26 @@ html {
 // apexchart css
 .apexcharts-canvas {
   .apexcharts-tooltip-rangebar {
-    padding: 0px 8px 5px;
+    padding: 0 8px 5px;
   }
+
   .apexcharts-tooltip-title {
     margin-bottom: 0;
   }
+
   .apexcharts-tooltip {
     &.apexcharts-theme-light {
       color: rgb(var(--v-theme-darkText));
     }
   }
+
   .apexcharts-tooltip-series-group {
     &.apexcharts-active,
     &:last-child {
       padding-bottom: 0;
     }
   }
+
   .apexcharts-menu {
     .apexcharts-menu-item {
       &:hover {

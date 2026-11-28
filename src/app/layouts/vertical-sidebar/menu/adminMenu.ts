@@ -7,11 +7,9 @@ import {
   BuildingCommunityIcon,
   // BuildingWarehouseIcon,
   SettingsDollarIcon,
-  CircleIcon,
   DashboardIcon,
   FileInvoiceIcon,
   FileEuroIcon,
-  ToolIcon,
   UserIcon,
   SettingsIcon,
   CloudStormIcon,
@@ -30,7 +28,7 @@ export const adminMenu: MenuItem[] = [
   // Dashboard
   // ─────────────────────────────────────────────────────────
   {
-    title: 'Tableau de bord',
+    title: 'common.nav.dashboard',
     icon: DashboardIcon,
     to: '/dashboard',
   },
@@ -39,7 +37,7 @@ export const adminMenu: MenuItem[] = [
   // Surveillance grêle
   // ─────────────────────────────────────────────────────────
   {
-    title: 'Météo grêle',
+    title: 'common.nav.hail',
     icon: CloudStormIcon,
     to: '/weather',
   },
@@ -52,7 +50,7 @@ export const adminMenu: MenuItem[] = [
   // Activité
   // ─────────────────────────────────────────────────────────
   {
-    header: 'Activité',
+    header: 'common.nav.activity',
     roles: ['admin'],
   },
 
@@ -60,7 +58,7 @@ export const adminMenu: MenuItem[] = [
   // Devis
   // ─────────────────────────────────────────────────────────
   {
-    title: 'Devis',
+    title: 'common.nav.quotes',
     icon: FileInvoiceIcon,
     to: '/quotes',
   },
@@ -69,7 +67,7 @@ export const adminMenu: MenuItem[] = [
   // Factures
   // ─────────────────────────────────────────────────────────
   {
-    title: 'Factures',
+    title: 'common.nav.invoices',
     icon: FileEuroIcon,
     to: '/invoices',
   },
@@ -82,23 +80,23 @@ export const adminMenu: MenuItem[] = [
   // Organisation
   // ─────────────────────────────────────────────────────────
   {
-    header: 'Organisation',
-    roles: ['admin'],
+    header: 'common.nav.organization',
+    roles: ['admin', 'manager'],
   },
 
   {
-    title: 'Garages',
-    icon: BuildingCommunityIcon,
-    to: '/organization/garages',
-    chip: isFreePlan ? 'Premium' : '',
-  },
-
-  {
-    title: 'Utilisateurs',
+    title: 'common.nav.members',
     icon: UserIcon,
     to: '/organization/members',
-    chip: isFreePlan ? 'Premium' : '',
-    roles: ['admin'],
+    chip: isFreePlan ? 'common.nav.premium' : '',
+    roles: ['admin', 'manager'],
+  },
+
+  {
+    title: 'common.nav.garages',
+    icon: BuildingCommunityIcon,
+    to: '/organization/garages',
+    chip: isFreePlan ? 'common.nav.premium' : '',
   },
 
   // {
@@ -109,52 +107,28 @@ export const adminMenu: MenuItem[] = [
   // Paramètres
   // ─────────────────────────────────────────────────────────
   {
-    header: 'Paramètres',
+    header: 'common.nav.settings',
     roles: ['admin'],
   },
 
   {
-    title: 'Organisation',
+    title: 'common.nav.organizationSettings',
     icon: SettingsIcon,
-    to: '/organization/settings',
+    to: '/organization/profile',
     roles: ['admin'],
   },
 
   {
-    title: 'Tarification',
+    title: 'common.nav.pricing',
     icon: SettingsDollarIcon,
-    to: '/organization/pricing/general',
+    to: '/organization/pricing',
     roles: ['admin'],
   },
 
   {
-    title: 'Référentiels',
-    icon: SettingsDollarIcon,
-    roles: ['superadmin'],
-    children: [
-      {
-        title: 'Pièces carrosserie',
-        icon: CircleIcon,
-        to: '/organization/pricing/body-parts',
-      },
-
-      {
-        title: 'Matériaux carrosserie',
-        icon: CircleIcon,
-        to: '/organization/pricing/body-materials',
-      },
-
-      {
-        title: 'Types de réparation',
-        icon: ToolIcon,
-        to: '/organization/pricing/repair-types',
-      },
-    ],
-  },
-  {
-    title: 'Abonnement',
+    title: 'common.nav.subscription',
     icon: CreditCardIcon,
-    to: '/subscription/overview',
+    to: '/subscription',
     roles: ['admin'],
   },
 
@@ -175,7 +149,7 @@ export const adminMenu: MenuItem[] = [
   //   icon: CreditCardIcon,
   //   roles: ['admin'],
   //   children: [
-  //     { title: 'Mon abonnement', icon: CircleIcon, to: '/subscription/overview' },
+  //     { title: 'Mon abonnement', icon: CircleIcon, to: '/subscription' },
   //     { title: 'Utilisation',    icon: CircleIcon, to: '/subscription/usage'    },
   //     { title: 'Factures abonnement', icon: CircleIcon, to: '/subscription/invoices' },
   //   ],

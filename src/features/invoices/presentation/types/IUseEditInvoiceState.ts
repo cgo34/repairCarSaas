@@ -16,7 +16,7 @@ export interface IUseEditInvoiceState {
 
   init(id: string): Promise<void>;
   invoice: ComputedRef<InvoiceViewModel | undefined>;
-  invoiceInformations: ComputedRef<{ number: string; date: string, expirationDate: string; status: InvoiceStatusViewType; }>;
+  invoiceInformations: ComputedRef<{ number: string; quoteNumber: string; date: string, expirationDate: string; status: InvoiceStatusViewType; }>;
   expirationDate: ComputedRef<string>;
 
   technicians: ComputedRef<OrganizationMemberViewModel[]>;
@@ -58,7 +58,8 @@ export interface IUseEditInvoiceState {
 
   invoiceLines: ComputedRef<LineItemViewModel[]>;
   addLine(line: LineItemViewModel): Promise<void>;
-  removeLine(lineId: string | undefined): void;
+  updateLine(line: LineItemViewModel): Promise<void>;
+  removeLine(lineId: string | undefined): Promise<void>;
 
   subtotal: ComputedRef<number>;
   subTotalWithDegarnissage: ComputedRef<number>;
@@ -67,8 +68,14 @@ export interface IUseEditInvoiceState {
   totalCommission: ComputedRef<number>;
   total: ComputedRef<number>;
   invoiceStatus: ComputedRef<InvoiceStatusViewType>;
+  isReadOnly: ComputedRef<boolean>;
+  canDelete: ComputedRef<boolean>;
+  isSent: ComputedRef<boolean>;
+  sentAt: ComputedRef<Date | undefined>;
+  hasItems: ComputedRef<boolean>;
   updateInvoice(): Promise<void>;
   updateInvoiceStatus(status: InvoiceStatusViewType): Promise<void>;
   deleteInvoice(): void;
   sendInvoice(): Promise<void>;
+  finalizeInvoice(): Promise<void>;
 }

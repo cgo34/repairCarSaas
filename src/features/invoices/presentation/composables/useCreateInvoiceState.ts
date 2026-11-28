@@ -132,7 +132,7 @@ export function createUseCreateInvoiceState(deps: UseCreateInvoiceStateDependenc
         ),
 
         getDocumentStatusUseCase.getByCode(
-          'processing'
+          'draft'
         ),
 
         garageUseCase
@@ -189,7 +189,7 @@ export function createUseCreateInvoiceState(deps: UseCreateInvoiceStateDependenc
         status_id:
           status.id,
 
-        status: 'pending',
+        status: 'draft',
 
         /**
          * ============================================================
@@ -596,6 +596,7 @@ export function createUseCreateInvoiceState(deps: UseCreateInvoiceStateDependenc
   };
 
   const save = async () => {
+    error.value = undefined;
 
     if (
       !authState.userContext.value

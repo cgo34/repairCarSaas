@@ -2,7 +2,7 @@ import { IGetDocumentStatusUseCase } from '@/features/documentStatuses/applicati
 import { DocumentStatusDto } from '@/features/documentStatuses/application/dtos/DocumentStatusDto';
 import { IInvoiceRepository } from '@/features/invoices/application/ports/repositories/IInvoiceRepository';
 
-export const PAID_INVOICE_STATUS_CODE = 'validated';
+export const PAID_INVOICE_STATUS_CODE = 'paid';
 
 export interface IMarkInvoiceAsPaidUseCase {
   execute(invoiceId: string): Promise<DocumentStatusDto>;

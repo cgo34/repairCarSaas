@@ -216,6 +216,10 @@ export class QuoteMapper {
       convertToInvoice:
         view.convertToInvoice,
 
+      acceptedAt: view.acceptedAt ? view.acceptedAt.toISOString() : null,
+
+      convertedAt: view.convertedAt ? view.convertedAt.toISOString() : null,
+
       /**
        * ============================================================
        * SNAPSHOT GARAGE
@@ -459,6 +463,10 @@ export class QuoteMapper {
 
       convertToInvoice:
         dto.convertToInvoice ?? false,
+
+      acceptedAt: dto.acceptedAt ? new Date(dto.acceptedAt) : undefined,
+
+      convertedAt: dto.convertedAt ? new Date(dto.convertedAt) : undefined,
 
       /**
        * ============================================================

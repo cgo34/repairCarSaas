@@ -21,7 +21,7 @@ const props = defineProps<{
 }>()
 
 const downloadService = inject(DOWNLOAD_SERVICE_KEY)
-if (!downloadService) throw new Error('DownloadService non fourni (voir app/main.ts)')
+if (!downloadService) throw new Error('DownloadService non fourni (voir app/app.ts)')
 
 const handleClick = () => {
   if (!props.url || !props.filename) return

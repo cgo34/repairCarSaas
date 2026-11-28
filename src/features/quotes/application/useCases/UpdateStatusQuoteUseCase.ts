@@ -17,6 +17,7 @@ export class UpdateStatusQuoteUseCase implements IUpdateStatusQuoteUseCase {
     const status = await this.getDocumentStatusUseCase.getByCode(statusCode);
     if (!status?.id) throw new Error(`Statut introuvable : ${statusCode}`);
     await this.quoteRepository.updateStatus(quoteId, status.id);
+    if (statusCode === 'accepted') await this.quoteRepository.markAsAccepted(quoteId);
     return status;
   }
 }

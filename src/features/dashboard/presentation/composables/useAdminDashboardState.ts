@@ -11,6 +11,7 @@ import { QuoteMapper } from '@/features/quotes/presentation/mappers/QuoteMapper'
 import { InvoiceViewModel } from '@/features/invoices/presentation/models/InvoiceViewModel';
 import { QuoteViewModel } from '@/features/quotes/presentation/models/QuoteViewModel';
 import { computed, ref } from 'vue';
+import { i18n } from '@/app/i18n';
 
 export interface UseAdminDashboardStateDependencies {
   authState: IAuthState;
@@ -41,8 +42,9 @@ export function createUseAdminDashboardState(deps: UseAdminDashboardStateDepende
   const totalQuotes = computed(() => _quotes.value.length);
   const totalQuotesHt = computed(() => fmt(sumHt(_quotes.value)));
 
-  const quotesProcessing = computed(() => _quotes.value.filter(q => q.status?.code === 'processing').length);
-  const quotesProcessingHt = computed(() => fmt(sumHt(_quotes.value.filter(q => q.status?.code === 'processing'))));
+  const OPEN_QUOTE_CODES = ['draft', 'pending'];
+  const quotesProcessing = computed(() => _quotes.value.filter(q => OPEN_QUOTE_CODES.includes(q.status?.code ?? '')).length);
+  const quotesProcessingHt = computed(() => fmt(sumHt(_quotes.value.filter(q => OPEN_QUOTE_CODES.includes(q.status?.code ?? '')))));
 
   const quotesFinalized = computed(() => _quotes.value.filter(q => q.status?.code === 'finalized').length);
   const quotesFinalizedHt = computed(() => fmt(sumHt(_quotes.value.filter(q => q.status?.code === 'finalized'))));
@@ -88,11 +90,11 @@ export function createUseAdminDashboardState(deps: UseAdminDashboardStateDepende
   const invoicedQuoteIds = computed(() => new Set(_invoices.value.map(i => i.quote_id).filter(Boolean)));
   const openQuotes = computed(() =>
     _quotes.value.filter(q =>
-      ['processing', 'accepted'].includes(q.status?.code ?? '') && !invoicedQuoteIds.value.has(q.id)
+      [...OPEN_QUOTE_CODES, 'accepted'].includes(q.status?.code ?? '') && !invoicedQuoteIds.value.has(q.id)
     )
   );
   const openQuotesAmount = computed(() => sumHt(openQuotes.value));
-  const openQuotesProcessingCount = computed(() => openQuotes.value.filter(q => q.status?.code === 'processing').length);
+  const openQuotesProcessingCount = computed(() => openQuotes.value.filter(q => OPEN_QUOTE_CODES.includes(q.status?.code ?? '')).length);
   const openQuotesAcceptedCount = computed(() => openQuotes.value.filter(q => q.status?.code === 'accepted').length);
 
   // -- organization card
@@ -101,15 +103,14 @@ export function createUseAdminDashboardState(deps: UseAdminDashboardStateDepende
   const subscription = computed(() => subscriptionState.subscription.value);
   const planName = computed(() => subscription.value?.subscriptionPlan?.name ?? 'Free');
   const isFreePlan = computed(() => (subscription.value?.subscriptionPlan?.code ?? 'FREE') === 'FREE');
-  const seatsLimit = computed(() => subscription.value?.maxSeats ?? ((subscription.value?.includedSeats ?? 0) + (subscription.value?.extraSeats ?? 0)));
+  const seatsLimit = computed(() => subscription.value?.seatsLimit ?? 0);
   const seatsUsed = computed(() => totalUsers.value);
   const seatLimitReached = computed(() => seatsLimit.value > 0 && seatsUsed.value >= seatsLimit.value);
-  const extraSeatPrice = computed(() => subscription.value?.extraSeatPrice ?? 0);
   const missingProfileFields = computed(() => {
     const p = profileState.profile.value;
     const missing: string[] = [];
     if (!p.iban || !p.bic) missing.push('IBAN / BIC');
-    if (!p.tva_number) missing.push('N° TVA');
+    if (!p.tva_number) missing.push(i18n.global.t('dashboard.missing.vatNumber') as string);
     return missing;
   });
 
@@ -121,7 +122,7 @@ export function createUseAdminDashboardState(deps: UseAdminDashboardStateDepende
       tva: p.tva_number,
       iban: p.iban,
       address: [p.address, [p.zip_code, p.city].filter(Boolean).join(' ')].filter(Boolean).join(', '),
-      paymentDelay: p.payment_delay ? `${p.payment_delay} jours` : '',
+      paymentDelay: p.payment_delay ? i18n.global.t('dashboard.paymentDays', { days: p.payment_delay }) as string : '',
     };
   });
   const fetchDashboardStats = async () => {
@@ -151,7 +152,13 @@ export function createUseAdminDashboardState(deps: UseAdminDashboardStateDepende
       ]);
 
       if (garagesResult.status === 'fulfilled') totalGarages.value = garagesResult.value.length;
-      if (usersResult.status === 'fulfilled') totalUsers.value = usersResult.value.length;
+      // The platform super_admin only borrows a membership: it does not use a seat
+      if (usersResult.status === 'fulfilled') {
+        totalUsers.value = usersResult.value.filter((m) => {
+          const user = m.users as { platformRole?: string; platform_role?: string } | undefined;
+          return (user?.platformRole ?? user?.platform_role) !== 'super_admin';
+        }).length;
+      }
       if (quotesResult.status === 'fulfilled') _quotes.value = quotesResult.value.map(QuoteMapper.dtoToView);
       if (invoicesResult.status === 'fulfilled') _invoices.value = invoicesResult.value.map(InvoiceMapper.dtoToView);
 
@@ -199,7 +206,6 @@ export function createUseAdminDashboardState(deps: UseAdminDashboardStateDepende
     seatsLimit,
     seatsUsed,
     seatLimitReached,
-    extraSeatPrice,
     missingProfileFields,
     companySummary,
     loading,

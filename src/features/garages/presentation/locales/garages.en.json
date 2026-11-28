@@ -1,0 +1,57 @@
+{
+  "garages": {
+    "breadcrumb": {
+      "list": "Garages"
+    },
+    "title": "Garages",
+    "subtitle": "Manage your organization’s garages",
+    "add": "Add garage",
+    "searchPlaceholder": "Search by name or city…",
+    "empty": "No garages",
+    "form": {
+      "name": "Garage name",
+      "phone": "Phone",
+      "email": "Email",
+      "address": "Address",
+      "zipCode": "Zip code",
+      "city": "City",
+      "commission": "Commission (%)",
+      "commissionPercent": "Commission percentage"
+    },
+    "table": {
+      "garage": "Garage",
+      "contact": "Contact",
+      "commission": "Commission",
+      "status": "Status"
+    },
+    "status": {
+      "active": "Active",
+      "archived": "Archived"
+    },
+    "filters": {
+      "allStatuses": "All statuses",
+      "allCities": "All cities"
+    },
+    "stats": {
+      "garages": "Garages",
+      "active": "Active",
+      "archived": "Archived",
+      "avgCommission": "Average commission"
+    },
+    "actions": {
+      "label": "Actions",
+      "edit": "Edit",
+      "delete": "Delete"
+    },
+    "dialog": {
+      "edit": "Edit garage",
+      "new": "New garage",
+      "add": "Add garage",
+      "validate": "Confirm"
+    },
+    "delete": {
+      "title": "Delete garage",
+      "message": "Are you sure you want to delete the garage \"{name}\"?"
+    }
+  }
+}

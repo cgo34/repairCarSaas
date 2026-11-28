@@ -1,0 +1,40 @@
+{
+  "weather": {
+    "breadcrumb": { "monitoring": "Hail monitoring" },
+    "page": {
+      "title": "Hail monitoring",
+      "subtitle": "France · {count} department monitored | France · {count} departments monitored",
+      "updatedAt": "updated {date}",
+      "refresh": "Refresh",
+      "search": "Search a department...",
+      "kpi": {
+        "active": "Active alerts",
+        "activeHint": "confirmed hail",
+        "high": "High risk",
+        "highHint": "severe storms",
+        "moderate": "Moderate risk",
+        "moderateHint": "showers/storms",
+        "none": "No risk",
+        "noneHint": "calm weather"
+      },
+      "tabs": {
+        "all": "All ({count})",
+        "high": "High risk ({count})"
+      },
+      "risk": {
+        "active": "⚡ Active hail",
+        "high": "🔴 High risk",
+        "moderate": "🟡 Moderate risk",
+        "none": "🟢 No risk"
+      },
+      "table": {
+        "code": "Code",
+        "department": "Department",
+        "riskLevel": "Risk level",
+        "cape": "CAPE (J/kg)",
+        "lastChecked": "Last checked",
+        "empty": "No department found"
+      }
+    }
+  }
+}

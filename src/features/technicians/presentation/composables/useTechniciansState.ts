@@ -24,7 +24,7 @@ export function createUseTechniciansState(deps: UseTechniciansStateDependencies)
     try {
       const allUsers = await userUseCase.getUsers();
       const technicians = allUsers.filter(u =>
-        u.role === 'technician' || u.role === 'independant_technician'
+        u.role === 'technician'
       );
       _technicians.value = technicians.map(UserMapper.dtoToView);
 

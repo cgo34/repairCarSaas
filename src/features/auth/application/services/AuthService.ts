@@ -26,6 +26,10 @@ export class AuthService implements IAuthService {
     return await this.authRepository.updateEmail(newEmail);
   }
 
+  async changePassword(currentPassword: string, newPassword: string): Promise<void> {
+    return await this.authRepository.changePassword(currentPassword, newPassword);
+  }
+
   onAuthStateChange(callback: (event: string, session: unknown) => void): void {
     this.authRepository.onAuthStateChange(callback);
   }

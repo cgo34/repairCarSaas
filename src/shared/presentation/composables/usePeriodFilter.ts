@@ -1,4 +1,5 @@
 import { computed, ref, Ref } from 'vue';
+import { i18n } from '@/app/i18n';
 
 export type PeriodPreset = 'all' | 'today' | 'week' | 'month' | 'year' | 'custom';
 
@@ -41,11 +42,11 @@ export function usePeriodFilter<T>(options: UsePeriodFilterOptions<T>): UsePerio
   const activePreset = ref<PeriodPreset>('all');
 
   const datePresets: PeriodPresetOption[] = [
-    { key: 'all', label: 'Tout' },
-    { key: 'today', label: "Aujourd'hui" },
-    { key: 'week', label: 'Cette semaine' },
-    { key: 'month', label: 'Ce mois' },
-    { key: 'year', label: 'Cette année' },
+    { key: 'all', get label() { return i18n.global.t('common.period.all'); } },
+    { key: 'today', get label() { return i18n.global.t('common.period.today'); } },
+    { key: 'week', get label() { return i18n.global.t('common.period.week'); } },
+    { key: 'month', get label() { return i18n.global.t('common.period.month'); } },
+    { key: 'year', get label() { return i18n.global.t('common.period.year'); } },
   ];
 
   const formatDate = (d: Date): string => d.toISOString().split('T')[0];

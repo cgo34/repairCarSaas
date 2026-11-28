@@ -1,0 +1,133 @@
+{
+  "organizations": {
+    "breadcrumb": {
+      "profile": "Organization"
+    },
+    "members": {
+      "title": "Members",
+      "subtitle": "Manage your organization’s members",
+      "add": "Add member",
+      "searchPlaceholder": "Search by name or email…",
+      "empty": "No members",
+      "manageSubscription": "Manage subscription",
+      "seatLimit": "User limit reached ({used} / {limit}). Upgrade your subscription to add more members.",
+      "form": {
+        "firstName": "First name",
+        "lastName": "Last name",
+        "email": "Email",
+        "role": "Role",
+        "commission": "Commission (%)"
+      },
+      "table": {
+        "member": "Member",
+        "commission": "Commission",
+        "status": "Status",
+        "accountType": "Account type",
+        "accountTypeUser": "User",
+        "accountTypePlatform": "Super admin (platform)"
+      },
+      "roles": {
+        "technician": "Technician",
+        "manager": "Manager",
+        "admin": "Admin"
+      },
+      "status": {
+        "active": "Active",
+        "pending": "Pending",
+        "blocked": "Blocked",
+        "archived": "Archived"
+      },
+      "filters": {
+        "allStatuses": "All statuses",
+        "allRoles": "All roles"
+      },
+      "stats": {
+        "members": "Members",
+        "active": "Active",
+        "blocked": "Blocked",
+        "avgCommission": "Average commission"
+      },
+      "actions": {
+        "label": "Actions",
+        "edit": "Edit",
+        "assignGarages": "Assign garages",
+        "block": "Block",
+        "unblock": "Unblock",
+        "delete": "Delete"
+      },
+      "dialog": {
+        "edit": "Edit member",
+        "new": "New member"
+      },
+      "block": {
+        "blockTitle": "Block member",
+        "unblockTitle": "Unblock member",
+        "blockMessage": "{name} will no longer have access to the application. Continue?",
+        "unblockMessage": "{name} will regain access to the application. Continue?"
+      },
+      "delete": {
+        "title": "Delete member",
+        "message": "Are you sure you want to delete \"{name}\"?"
+      },
+      "messages": {
+        "error": "An error occurred.",
+        "loadGaragesError": "Unable to load assigned garages.",
+        "garagesAssigned": "Garages assigned.",
+        "assignError": "Error while assigning garages.",
+        "seatLimit": "Subscription user limit reached"
+      }
+    },
+    "profile": {
+      "title": "Organization settings",
+      "subtitle": "Legal information, contact details and terms shown on your documents.",
+      "saved": "Saved",
+      "tabs": {
+        "legal": "Legal identity",
+        "contact": "Contact details",
+        "bank": "Bank details",
+        "payment": "Payment terms"
+      },
+      "fields": {
+        "companyName": "Company name *",
+        "legalForm": "Legal form *",
+        "siren": "Registration no. (SIREN, IDE...)",
+        "siret": "Establishment no. (SIRET, UID...)",
+        "tvaNumber": "Intra-community VAT number",
+        "capital": "Share capital",
+        "address": "Address *",
+        "zipCode": "Postal code *",
+        "city": "City *",
+        "country": "Country",
+        "phone": "Phone",
+        "email": "Email",
+        "website": "Website",
+        "iban": "IBAN",
+        "bic": "BIC / SWIFT",
+        "paymentDelay": "Payment term *",
+        "latePaymentPenalty": "Late payment penalties",
+        "recoveryFee": "Fixed recovery fee"
+      },
+      "hints": {
+        "capital": "Required for SARL/SAS",
+        "iban": "Displayed in the invoice footer",
+        "latePaymentPenalty": "Mandatory legal notice",
+        "recoveryFee": "Mandatory between professionals"
+      },
+      "placeholders": {
+        "latePaymentPenalty": "3 times the legal rate"
+      },
+      "delays": {
+        "cash": "Cash (0 days)",
+        "days": "{count} days"
+      },
+      "validation": {
+        "required": "Required field",
+        "invalidEmail": "Invalid email"
+      },
+      "messages": {
+        "saved": "Settings saved successfully.",
+        "saveError": "An error occurred while saving."
+      }
+    }
+  }
+}

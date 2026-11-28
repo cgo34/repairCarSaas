@@ -10,12 +10,14 @@ import { IDentRepairTypeUseCase } from '@/features/carRepairSettings/application
 
 import { ICalculateLineCostUseCase } from '@/features/costCalculation/application/useCases/CalculateLineCostUseCase';
 import { IDeleteLineItemUseCase } from '@/features/lineItems/application/useCases/DeleteLineItemUseCase';
+import { IUpdateInvoiceLineItemUseCase } from '@/features/invoices/application/useCases/UpdateInvoiceLineItemUseCase';
 
 import { IAddInvoiceLineItemUseCase } from '@/features/invoices/application/useCases/AddInvoiceLineItemUseCase';
 import { IDeleteInvoiceUseCase } from '@/features/invoices/application/useCases/DeleteInvoiceUseCase';
 import { IGetInvoiceDetailUseCase } from '@/features/invoices/application/useCases/GetInvoiceDetailUseCase';
 import { IGetInvoiceUseCase } from '@/features/invoices/application/useCases/GetInvoiceUseCase';
 import { ISendInvoiceUseCase } from '@/features/invoices/application/useCases/SendInvoiceUseCase';
+import { IFinalizeInvoiceUseCase } from '@/features/invoices/application/useCases/FinalizeInvoiceUseCase';
 import { IUpdateInvoiceUseCase } from '@/features/invoices/application/useCases/UpdateInvoiceUseCase';
 
 import { IOrganizationMemberUseCase } from '@/features/organizations/application/useCases/OrganizationMemberUseCase';
@@ -57,6 +59,7 @@ export interface UseEditInvoiceStateDependencies {
   getInvoiceDetailUseCase: IGetInvoiceDetailUseCase;
   deleteInvoiceUseCase: IDeleteInvoiceUseCase;
   sendInvoiceUseCase: ISendInvoiceUseCase;
+  finalizeInvoiceUseCase: IFinalizeInvoiceUseCase;
   updateInvoiceUseCase: IUpdateInvoiceUseCase;
   garageUseCase: IGarageUseCase;
   technicianUseCase: IOrganizationMemberUseCase;
@@ -68,11 +71,12 @@ export interface UseEditInvoiceStateDependencies {
   calculateLineCostUseCase: ICalculateLineCostUseCase;
   addInvoiceDetailsUseCase: IAddInvoiceLineItemUseCase;
   deleteLineItemUseCase: IDeleteLineItemUseCase;
+  updateLineItemUseCase: IUpdateInvoiceLineItemUseCase;
 }
 
 export function createUseEditInvoiceState(deps: UseEditInvoiceStateDependencies) {
   // #region -> DEPENDENCIES
-  const { authState, getInvoiceUseCase, getInvoiceDetailUseCase, deleteInvoiceUseCase, sendInvoiceUseCase, updateInvoiceUseCase, garageUseCase, technicianUseCase, bodyPartUseCase, bodyMaterialUseCase, repairTypeUseCase, priceParamsUseCase, getDocumentStatuseUseCase, calculateLineCostUseCase, addInvoiceDetailsUseCase, deleteLineItemUseCase } = deps;
+  const { authState, getInvoiceUseCase, getInvoiceDetailUseCase, deleteInvoiceUseCase, sendInvoiceUseCase, finalizeInvoiceUseCase, updateInvoiceUseCase, garageUseCase, technicianUseCase, bodyPartUseCase, bodyMaterialUseCase, repairTypeUseCase, priceParamsUseCase, getDocumentStatuseUseCase, calculateLineCostUseCase, addInvoiceDetailsUseCase, deleteLineItemUseCase, updateLineItemUseCase } = deps;
 
 
 
@@ -199,6 +203,7 @@ export function createUseEditInvoiceState(deps: UseEditInvoiceStateDependencies)
   // #region -> COMPUTED
   const invoiceInformations = computed(() => ({
     number: _invoice.value?.invoiceNumber ?? '',
+    quoteNumber: _invoice.value?.quoteNumber ?? '',
     date: _invoice.value?.startDate ? new Date(_invoice.value.startDate).toISOString().split('T')[0] : '',
     expirationDate: _invoice.value?.endDate ? new Date(_invoice.value.endDate).toISOString().split('T')[0] : '',
     status: _invoice.value?.status ?? 'pending',
@@ -308,6 +313,16 @@ export function createUseEditInvoiceState(deps: UseEditInvoiceStateDependencies)
   });
 
   const invoiceStatus = computed(() => invoiceInformations.value.status as InvoiceStatusViewType);
+
+  // Seul un brouillon est modifiable ; dès l'envoi la facture est verrouillée
+  const isReadOnly = computed(() => !!_invoice.value && _invoice.value.status !== 'draft');
+  const canDelete = computed(() => !!_invoice.value && _invoice.value.status === 'draft');
+  const isSent = computed(() => !!_invoice.value?.isSent);
+  const sentAt = computed(() => _invoice.value?.sentAt);
+  // Au moins un élément (ou un montant forfaitaire) est requis pour envoyer
+  const hasItems = computed(() =>
+    isForfait.value ? (forfaitAmount.value ?? 0) > 0 : _invoiceLines.value.length > 0,
+  );
   // #endregion
 
   // #region -> METHODS
@@ -461,20 +476,55 @@ export function createUseEditInvoiceState(deps: UseEditInvoiceStateDependencies)
     _invoiceLines.value.push({
       ...LineItemMapper.dtoToView(invoiceLineDto),
     });
+    await persistTotals();
   };
 
-  const removeLine = (lineId: string | undefined) => {
+  const updateLine = async (line: LineItemViewModel) => {
+    if (!line.id) {
+      return;
+    }
+
+    line.invoiceId = _invoice.value?.id;
+    computePrice(line);
+
+    const updatedDto = await updateLineItemUseCase.execute(LineItemMapper.viewToDto(line));
+    const index = _invoiceLines.value.findIndex((l) => l.id === line.id);
+
+    if (index >= 0) {
+      _invoiceLines.value[index] = {
+        ...LineItemMapper.dtoToView(updatedDto),
+        lineId: _invoiceLines.value[index].lineId,
+      };
+    }
+    await persistTotals();
+  };
+
+  const removeLine = async (lineId: string | undefined) => {
     if (!lineId) {
       return;
     }
 
-    deleteLineItemUseCase.execute(lineId);
+    await deleteLineItemUseCase.execute(lineId);
 
     const index = _invoiceLines.value.findIndex((line) => line.id === lineId);
 
     if (index >= 0) {
       _invoiceLines.value.splice(index, 1);
     }
+    await persistTotals();
+  };
+
+  // Garde le total H.T de la facture synchronisé après chaque changement de ligne
+  const persistTotals = async () => {
+    if (!_invoice.value) {
+      return;
+    }
+
+    _invoice.value.totalHt = subTotalWithDegarnissage.value;
+    _invoice.value.totalTtc = total.value;
+    _invoice.value.totalCommission = totalCommission.value;
+
+    await updateInvoiceUseCase.execute(InvoiceMapper.viewToDto(_invoice.value));
   };
 
   const selectBodyPart = (lineId: number, bodyPart: BodyPartViewModel) => {
@@ -569,6 +619,7 @@ export function createUseEditInvoiceState(deps: UseEditInvoiceStateDependencies)
       );
     } catch (e) {
       error.value = e;
+      throw e;
     } finally {
       loading.value = false;
     }
@@ -576,14 +627,14 @@ export function createUseEditInvoiceState(deps: UseEditInvoiceStateDependencies)
 
   const _viewStatusToDbCode = (status: InvoiceStatusViewType): string =>
     ({
-      pending: 'processing',
-      validated: 'finalized',
+      pending: 'pending',
+      validated: 'paid',
       accepted: 'accepted',
-      signed: 'finalized',
-      sent: 'finalized',
-      draft: 'processing',
+      signed: 'paid',
+      sent: 'paid',
+      draft: 'draft',
       cancel: 'cancelled',
-    } as Record<string, string>)[status] ?? 'processing';
+    } as Record<string, string>)[status] ?? 'pending';
 
   const updateInvoiceStatus = async (status: InvoiceStatusViewType) => {
     if (!_invoice.value) {
@@ -606,7 +657,8 @@ export function createUseEditInvoiceState(deps: UseEditInvoiceStateDependencies)
   };
 
   const deleteInvoice = () => {
-    if (!_invoiceId.value) {
+    // Une facture émise ne peut jamais être supprimée (obligation légale) : seul un brouillon l'est
+    if (!_invoiceId.value || !canDelete.value) {
       return;
     }
 
@@ -619,6 +671,14 @@ export function createUseEditInvoiceState(deps: UseEditInvoiceStateDependencies)
     }
 
     await sendInvoiceUseCase.execute(_invoiceId.value);
+  };
+
+  const finalizeInvoice = async () => {
+    if (!_invoiceId.value) {
+      throw new Error('Invoice ID not found');
+    }
+
+    await finalizeInvoiceUseCase.execute(_invoiceId.value);
   };
   // #endregion
 
@@ -672,6 +732,7 @@ export function createUseEditInvoiceState(deps: UseEditInvoiceStateDependencies)
 
     invoiceLines: computed(() => _invoiceLines.value),
     addLine,
+    updateLine,
     removeLine,
 
     subtotal,
@@ -682,9 +743,15 @@ export function createUseEditInvoiceState(deps: UseEditInvoiceStateDependencies)
     total,
 
     invoiceStatus,
+    isReadOnly,
+    canDelete,
+    isSent,
+    sentAt,
+    hasItems,
     updateInvoice,
     updateInvoiceStatus,
     deleteInvoice,
     sendInvoice,
+    finalizeInvoice,
   };
 }

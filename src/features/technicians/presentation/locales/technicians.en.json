@@ -1,0 +1,58 @@
+{
+  "technicians": {
+    "detail": {
+      "back": "Back",
+      "active": "Active",
+      "blocked": "Blocked",
+      "block": "Block",
+      "unblock": "Unblock",
+      "quotes": "Quotes",
+      "invoices": "Invoices",
+      "searchPlaceholder": "Search by number or vehicle…",
+      "empty": "No documents",
+      "paid": "Paid",
+      "pending": "Pending",
+      "saveRate": "Save rate",
+      "assignedGarages": "Assigned garages",
+      "assign": "Assign",
+      "remove": "Remove",
+      "noGarage": "No assigned garage.",
+      "thisMember": "this member",
+      "filters": {
+        "all": "All payments"
+      },
+      "table": {
+        "quoteNumber": "Quote no.",
+        "invoiceNumber": "Invoice no.",
+        "vehicle": "Vehicle",
+        "date": "Date",
+        "amountHt": "Amount excl. tax",
+        "commissionRate": "Commission %",
+        "payment": "Payment",
+        "actions": "Actions"
+      },
+      "stats": {
+        "quotesInProgress": "Quotes in progress",
+        "invoices": "Invoices",
+        "commissionDue": "Commission due",
+        "commissionPaid": "Commission paid"
+      },
+      "blockTitle": "Block member",
+      "unblockTitle": "Unblock member",
+      "blockMessage": "{name} will no longer have access to the application. Continue?",
+      "unblockMessage": "{name} will regain access to the application. Continue?",
+      "removeTitle": "Remove garage",
+      "removeMessage": "The garage {name} will no longer be assigned to this member. Continue?",
+      "messages": {
+        "assignError": "Error while assigning garages.",
+        "unblocked": "Technician unblocked successfully.",
+        "blocked": "Technician blocked successfully.",
+        "statusError": "Error while updating status."
+      }
+    },
+    "assignDialog": {
+      "title": "Assign garages",
+      "select": "Select garages"
+    }
+  }
+}

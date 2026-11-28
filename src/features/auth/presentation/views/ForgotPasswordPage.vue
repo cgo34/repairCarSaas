@@ -1,45 +1,70 @@
 <template>
-  <AuthLayout>
-    <v-container class="forgot-password-container">
-      <v-card class="forgot-password-card">
-        <v-card-title class="text-h5">
-          Mot de passe oublié
-        </v-card-title>
+  <AuthLayout
+    title="Mot de passe oublié"
+    subtitle="Recevez un lien pour réinitialiser votre mot de passe"
+  >
+    <v-form @submit.prevent="handleForgotPassword">
+      <v-alert
+        v-if="errorMessage"
+        type="error"
+        variant="tonal"
+        density="comfortable"
+        class="mb-4"
+      >
+        {{ errorMessage }}
+      </v-alert>
+      <v-alert
+        v-if="successMessage"
+        type="success"
+        variant="tonal"
+        density="comfortable"
+        class="mb-4"
+      >
+        {{ successMessage }}
+      </v-alert>
 
-        <v-card-text>
-          <v-alert
-            v-if="errorMessage"
-            type="error"
-          >
-            {{ errorMessage }}
-          </v-alert>
-          <v-alert
-            v-if="successMessage"
-            type="success"
-          >
-            {{ successMessage }}
-          </v-alert>
+      <v-text-field
+        v-model="email"
+        label="Adresse e-mail"
+        type="email"
+        required
+        :rules="[emailRule]"
+        class="mb-5"
+        density="comfortable"
+        hide-details="auto"
+        variant="outlined"
+        color="primary"
+        prepend-inner-icon="mdi-email-outline"
+      />
 
-          <v-text-field
-            v-model="email"
-            label="Adresse e-mail"
-            type="email"
-            required
-            :rules="[emailRule]"
-          />
-        </v-card-text>
+      <v-btn
+        color="primary"
+        block
+        variant="flat"
+        size="large"
+        type="submit"
+        rounded="lg"
+        :loading="loading"
+        style="font-family:Manrope,sans-serif; font-weight:600; letter-spacing:0.01em;"
+      >
+        Envoyer le lien
+      </v-btn>
+    </v-form>
 
-        <v-card-actions>
-          <v-btn
-            color="primary"
-            :loading="loading"
-            @click="handleForgotPassword"
-          >
-            Envoyer le lien de réinitialisation
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-container>
+    <div class="mt-5">
+      <v-divider class="mb-4" />
+      <div class="d-flex justify-center">
+        <v-btn
+          variant="text"
+          color="primary"
+          size="small"
+          to="/login"
+          prepend-icon="mdi-arrow-left"
+        >
+          Retour à la connexion
+        </v-btn>
+      </div>
+    </div>
   </AuthLayout>
 </template>
 
@@ -71,7 +96,7 @@ const handleForgotPassword = async () => {
 
   const { error } = await supabase.auth.resetPasswordForEmail(
     email.value,
-    { redirectTo: 'http://localhost:3000/reset-password' }
+    { redirectTo: `${window.location.origin}/reset-password` }
   );
 
 
@@ -84,18 +109,3 @@ const handleForgotPassword = async () => {
   loading.value = false;
 };
 </script>
-
-<style scoped>
-.forgot-password-container {
-  max-width: 400px;
-  margin: auto;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-}
-.forgot-password-card {
-  padding: 20px;
-  width: 100%;
-}
-</style>

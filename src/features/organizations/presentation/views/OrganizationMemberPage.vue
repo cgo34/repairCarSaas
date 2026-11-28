@@ -10,10 +10,10 @@
       <div class="d-flex align-center mb-4">
         <div>
           <div class="text-h5 font-weight-bold">
-            Membres
+            {{ t('organizations.members.title') }}
           </div>
           <div class="text-body-2 text-medium-emphasis">
-            Gérez les membres de votre organisation
+            {{ t('organizations.members.subtitle') }}
           </div>
         </div>
         <v-spacer />
@@ -28,7 +28,7 @@
               :disabled="seatLimitReached"
               v-bind="props"
             >
-              Ajouter un membre
+              {{ t('organizations.members.add') }}
             </v-btn>
           </template>
           <v-card>
@@ -41,19 +41,19 @@
                   <v-col cols="6">
                     <v-text-field
                       v-model="selectedMemberForm.first_name"
-                      label="Prénom"
+                      :label="t('organizations.members.form.firstName')"
                     />
                   </v-col>
                   <v-col cols="6">
                     <v-text-field
                       v-model="selectedMemberForm.last_name"
-                      label="Nom"
+                      :label="t('organizations.members.form.lastName')"
                     />
                   </v-col>
                   <v-col cols="12">
                     <v-text-field
                       v-model="selectedMemberForm.email"
-                      label="Email"
+                      :label="t('organizations.members.form.email')"
                     />
                   </v-col>
                   <v-col
@@ -65,7 +65,7 @@
                       :items="roleOptions"
                       item-title="label"
                       item-value="value"
-                      label="Rôle"
+                      :label="t('organizations.members.form.role')"
                     />
                   </v-col>
                   <v-col
@@ -74,7 +74,7 @@
                   >
                     <v-text-field
                       v-model.number="selectedMemberForm.percentage_commission"
-                      label="Commission (%)"
+                      :label="t('organizations.members.form.commission')"
                       type="number"
                       min="0"
                       max="100"
@@ -91,38 +91,27 @@
                 variant="text"
                 @click="onCloseEditDialogBtnClick"
               >
-                Annuler
+                {{ t('common.cancel') }}
               </v-btn>
               <v-btn
                 color="blue-darken-1"
                 variant="text"
                 @click="onSaveEditDialogBtnClick"
               >
-                Sauvegarder
+                {{ t('common.save') }}
               </v-btn>
             </v-card-actions>
           </v-card>
         </v-dialog>
       </div>
 
-      <v-alert
-        v-if="seatLimitReached"
-        type="warning"
-        variant="tonal"
-        density="compact"
+      <PlanLimitAlert
+        v-if="seatsLimit > 0"
         class="mb-4"
-      >
-        Limite d'utilisateurs atteinte ({{ members.length }} / {{ seatsLimit }}). Passez à un abonnement supérieur pour ajouter des membres.
-        <template #append>
-          <v-btn
-            size="small"
-            variant="text"
-            to="/subscription"
-          >
-            Gérer l'abonnement
-          </v-btn>
-        </template>
-      </v-alert>
+        kind="members"
+        :used="realMembers.length"
+        :limit-override="seatsLimit"
+      />
       <!-- STATS -->
       <v-row
         dense
@@ -151,12 +140,12 @@
             </v-avatar>
             <div>
               <div
-                class="text-h6 font-weight-bold"
+                class="stat-value"
                 :class="`text-${stat.color}`"
               >
                 {{ stat.value }}
               </div>
-              <div class="text-caption text-medium-emphasis">
+              <div class="stat-sub">
                 {{ stat.label }}
               </div>
             </div>
@@ -172,7 +161,7 @@
           <v-text-field
             v-model="search"
             prepend-inner-icon="mdi-magnify"
-            placeholder="Rechercher un nom, un email…"
+            :placeholder="t('organizations.members.searchPlaceholder')"
             density="compact"
             variant="outlined"
             hide-details
@@ -202,8 +191,8 @@
           :items="filteredMembers"
           :sort-by="[{ key: 'users.first_name', order: 'asc' }]"
           :row-props="{ style: 'cursor: pointer;' }"
-          items-per-page-text="Lignes par page"
-          no-data-text="Aucun membre"
+          :items-per-page-text="t('common.table.itemsPerPage')"
+          :no-data-text="t('organizations.members.empty')"
           hover
           @click:row="onRowClick"
         >
@@ -234,6 +223,18 @@
           </template>
           <!-- #ENDREGION -->
 
+          <!-- #REGION -> ACCOUNT TYPE -->
+          <template #item.accountType="{ item }">
+            <v-chip
+              :color="isDemoRow(item) ? 'purple' : 'default'"
+              size="small"
+              variant="tonal"
+            >
+              {{ isDemoRow(item) ? t('organizations.members.table.accountTypePlatform') : t('organizations.members.table.accountTypeUser') }}
+            </v-chip>
+          </template>
+          <!-- #ENDREGION -->
+
           <!-- #REGION -> COMMISSION -->
           <template #item.percentage_commission="{ item }">
             {{ item.percentage_commission ? `${item.percentage_commission} %` : '—' }}
@@ -255,6 +256,7 @@
           <!-- #REGION -> ITEM ACTIONS -->
           <template #item.actions="{ item }">
             <div
+              v-if="!isDemoRow(item)"
               class="d-flex justify-end"
               @click.stop
             >
@@ -264,7 +266,7 @@
                     icon
                     size="small"
                     variant="text"
-                    aria-label="Actions"
+                    :aria-label="t('organizations.members.actions.label')"
                     v-bind="props"
                   >
                     <v-icon>mdi-dots-vertical</v-icon>
@@ -276,24 +278,24 @@
                 >
                   <v-list-item
                     prepend-icon="mdi-pencil-outline"
-                    title="Modifier"
+                    :title="t('organizations.members.actions.edit')"
                     @click="onEditBtnClick(item)"
                   />
                   <v-list-item
                     prepend-icon="mdi-office-building-plus-outline"
-                    title="Assigner des garages"
+                    :title="t('organizations.members.actions.assignGarages')"
                     @click="onAssignGaragesBtnClick(item)"
                   />
                   <v-divider class="my-1" />
                   <v-list-item
                     :prepend-icon="item.users?.isBlocked ? 'mdi-lock-open-outline' : 'mdi-lock-outline'"
-                    :title="item.users?.isBlocked ? 'Débloquer' : 'Bloquer'"
+                    :title="item.users?.isBlocked ? t('organizations.members.actions.unblock') : t('organizations.members.actions.block')"
                     :base-color="item.users?.isBlocked ? 'success' : 'warning'"
                     @click="onToggleBlockBtnClick(item)"
                   />
                   <v-list-item
                     prepend-icon="mdi-delete-outline"
-                    title="Supprimer"
+                    :title="t('organizations.members.actions.delete')"
                     base-color="error"
                     @click="onDeleteBtnClick(item)"
                   />
@@ -318,7 +320,7 @@
         :title="confirmState.title"
         :message="confirmState.message"
         :confirm-label="confirmState.confirmLabel"
-        cancel-label="Annuler"
+        :cancel-label="t('common.cancel')"
         type="warning"
         @confirm="onConfirmAction"
         @cancel="pendingAction = null"
@@ -340,20 +342,59 @@
 import { useOrganizationMemberPageDependencies } from '@/features/organizations/composition/useOrganizationMemberPageDependencies';
 import SubscriptionOverlay from '@/features/subscription/presentation/components/SubscriptionOverlay.vue';
 import MainLayout from '@/app/layouts/MainLayout.vue';
+import PlanLimitAlert from '@/features/featureAccess/presentation/components/PlanLimitAlert.vue';
 import { OrganizationMemberViewModel } from '@/features/organizations/presentation/models/OrganizationMemberViewmodel';
 import router from '@/app/router/index';
 import ConfirmDialog from '@/shared/presentation/ui/components/ConfirmDialog.vue';
 import type { ConfirmDialogExposed } from '@/shared/presentation/ui/components/ConfirmDialog';
 import AssignGarageDialog from '@/features/technicians/presentation/components/AssignGarageDialog.vue';
 import { computed, onMounted, reactive, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { setSelectedMemberId } from '@/features/technicians/presentation/utils/memberSelection';
+import { useProfileSwitcher } from '@/features/profileSwitcher/composition/useProfileSwitcher';
 
 // Injection du state depuis Inversify
   const { useOrganizationMember, authState, subscriptionState } = useOrganizationMemberPageDependencies();
 const { isFreePlan } = authState
+const { t, te } = useI18n();
+const isSuperAdmin = computed(() => authState.userContext.value?.platformRole === 'super_admin');
 
+// Super admin in a demo organization: the switch profiles stand in for the members
+const profileSwitcher = useProfileSwitcher();
+const demoProfiles = computed(() => isSuperAdmin.value
+  ? profileSwitcher.profiles.value.filter(p => p.organizationId === authState.userContext.value?.organization.id)
+  : []);
+const isDemoMode = computed(() => demoProfiles.value.length > 0);
+const isDemoRow = (m: OrganizationMemberViewModel) => demoProfiles.value.some(p => p.profileId === m.id);
+
+const members = computed<OrganizationMemberViewModel[]>(() => {
+  if (!isDemoMode.value) return realMembers.value;
+  const activeRole = authState.userContext.value?.membership.role;
+  const email = authState.userContext.value?.email ?? '';
+  const visibleProfiles = activeRole === 'manager'
+    ? demoProfiles.value.filter(p => p.role !== 'admin')
+    : demoProfiles.value;
+  const profileRows: OrganizationMemberViewModel[] = visibleProfiles.map(p => ({
+    id: p.profileId,
+    organization_id: p.organizationId,
+    user_id: '',
+    role: p.role,
+    percentage_commission: 0,
+    status: 'active',
+    users: {
+      id: '',
+      full_name: p.label,
+      first_name: p.role === activeRole ? `${p.label} (${t('profileSwitcher.members.active')})` : p.label,
+      last_name: '',
+      email,
+    },
+  }));
+  // Real members (e.g. the organization owner) stay visible next to the demo profiles
+  return [...realMembers.value, ...profileRows];
+});
 
 const {
-  members,
+  members: realMembers,
   garages,
   selectedMemberForm,
 
@@ -372,29 +413,26 @@ const {
 
 const dialog = ref<boolean>(false);
 
-const seatsLimit = computed(() => {
-  const sub = subscriptionState.subscription.value;
-  return sub?.maxSeats ?? ((sub?.includedSeats ?? 0) + (sub?.extraSeats ?? 0));
-});
-const seatLimitReached = computed(() => seatsLimit.value > 0 && members.value.length >= seatsLimit.value);
+const seatsLimit = computed(() => subscriptionState.subscription.value?.seatsLimit ?? 0);
+const seatLimitReached = computed(() => seatsLimit.value > 0 && realMembers.value.length >= seatsLimit.value);
 
 const search = ref<string | null>('');
 const roleFilter = ref<string>('all');
 const statusFilter = ref<string>('all');
 
-const roleLabels: Record<string, string> = {
-  technician: 'Technicien',
-  manager: 'Manager',
-  admin: 'Admin',
-};
+const roleLabels = computed<Record<string, string>>(() => ({
+  technician: t('organizations.members.roles.technician'),
+  manager: t('organizations.members.roles.manager'),
+  admin: t('organizations.members.roles.admin'),
+}));
 
-const statusFilterOptions = [
-  { title: 'Tous les statuts', value: 'all' },
-  { title: 'Actif', value: 'active' },
-  { title: 'En attente', value: 'pending' },
-  { title: 'Bloqué', value: 'blocked' },
-  { title: 'Archivé', value: 'archived' },
-];
+const statusFilterOptions = computed(() => [
+  { title: t('organizations.members.filters.allStatuses'), value: 'all' },
+  { title: t('organizations.members.status.active'), value: 'active' },
+  { title: t('organizations.members.status.pending'), value: 'pending' },
+  { title: t('organizations.members.status.blocked'), value: 'blocked' },
+  { title: t('organizations.members.status.archived'), value: 'archived' },
+]);
 
 const memberName = (m: OrganizationMemberViewModel) =>
   `${m.users?.first_name ?? ''} ${m.users?.last_name ?? ''}`.trim() || m.users?.email || '—';
@@ -403,8 +441,8 @@ const initials = (m: OrganizationMemberViewModel) =>
   `${m.users?.first_name?.[0] ?? ''}${m.users?.last_name?.[0] ?? ''}`.toUpperCase() || '?';
 
 const memberStatus = (m: OrganizationMemberViewModel) => {
-  if (m.users?.isBlocked) return { key: 'blocked', label: 'bloqué', color: 'error' };
-  return { key: m.status, label: m.status, color: getStatusColor(m.status) };
+  if (m.users?.isBlocked) return { key: 'blocked', label: t('organizations.members.status.blocked'), color: 'error' };
+  return { key: m.status, label: te(`organizations.members.status.${m.status}`) ? t(`organizations.members.status.${m.status}`) : m.status, color: getStatusColor(m.status) };
 };
 
 const filteredMembers = computed(() => {
@@ -418,37 +456,38 @@ const filteredMembers = computed(() => {
 });
 
 const statCards = computed(() => {
-  const list = members.value;
+  const list = realMembers.value;
   const blocked = list.filter(m => m.users?.isBlocked).length;
   const active = list.filter(m => !m.users?.isBlocked && m.status === 'active').length;
   const avg = list.length
     ? list.reduce((sum, m) => sum + (m.percentage_commission || 0), 0) / list.length
     : 0;
   return [
-    { label: 'Membres', value: list.length, icon: 'mdi-account-group-outline', color: 'primary' },
-    { label: 'Actifs', value: active, icon: 'mdi-check-circle-outline', color: 'success' },
-    { label: 'Bloqués', value: blocked, icon: 'mdi-lock-outline', color: 'error' },
-    { label: 'Commission moyenne', value: `${Math.round(avg * 10) / 10} %`, icon: 'mdi-percent-outline', color: 'warning' },
+    { label: t('organizations.members.stats.members'), value: list.length, icon: 'mdi-account-group-outline', color: 'primary' },
+    { label: t('organizations.members.stats.active'), value: active, icon: 'mdi-check-circle-outline', color: 'success' },
+    { label: t('organizations.members.stats.blocked'), value: blocked, icon: 'mdi-lock-outline', color: 'error' },
+    { label: t('organizations.members.stats.avgCommission'), value: `${Math.round(avg * 10) / 10} %`, icon: 'mdi-percent-outline', color: 'warning' },
   ];
 });
 
-const headers = [
-  { title: 'Membre', align: 'start', key: 'users.first_name' },
-  { title: 'Email', key: 'users.email' },
-  { title: 'Rôle', key: 'role', sortable: false },
-  { title: 'Commission', key: 'percentage_commission', align: 'end', sortable: false },
-  { title: 'Statut', key: 'status', sortable: false },
+const headers = computed(() => [
+  { title: t('organizations.members.table.member'), align: 'start', key: 'users.first_name' },
+  { title: t('organizations.members.form.email'), key: 'users.email' },
+  { title: t('organizations.members.form.role'), key: 'role', sortable: false },
+  ...(isDemoMode.value ? [{ title: t('organizations.members.table.accountType'), key: 'accountType', sortable: false }] : []),
+  { title: t('organizations.members.table.commission'), key: 'percentage_commission', align: 'end', sortable: false },
+  { title: t('organizations.members.table.status'), key: 'status', sortable: false },
   { title: '', sortable: false, key: 'actions', align: 'end', width: 56 },
-] as const;
+] as const);
 
-const roleOptions = [
-  { label: 'Technicien', value: 'technician' }
-];
+const roleOptions = computed(() => [
+  { label: t('organizations.members.roles.technician'), value: 'technician' },
+]);
 
-const roleLabel = (role?: string) => (role && roleLabels[role]) || role || '—';
+const roleLabel = (role?: string) => (role && roleLabels.value[role]) || role || '—';
 
 const roleFilterOptions = computed(() => [
-  { title: 'Tous les rôles', value: 'all' },
+  { title: t('organizations.members.filters.allRoles'), value: 'all' },
   ...[...new Set(members.value.map(m => m.role))].map(role => ({ title: roleLabel(role), value: role })),
 ]);
 
@@ -456,9 +495,8 @@ const roleFilterOptions = computed(() => [
 const roleColor = (role?: string) => {
   switch (role) {
     case 'admin': return 'red';
-    case 'garage': return 'blue';
+    case 'manager': return 'blue';
     case 'technician': return 'green';
-    case 'independant_technician': return 'orange';
     default: return 'grey';
   }
 };
@@ -475,16 +513,19 @@ const getStatusColor = (status?: string) => {
 
 const formTitle = computed(() =>
   selectedMemberForm.value?.id
-    ? 'Modifier le membre'
-    : 'Nouveau membre'
+    ? t('organizations.members.dialog.edit')
+    : t('organizations.members.dialog.new')
 );
 
 const onRowClick = (_event: Event, { item }: { item: OrganizationMemberViewModel }) => {
-  router.push(`/organization/members/${item.user_id}`);
+  // Demo profile rows are read-only; switching is done from the user menu
+  if (isDemoRow(item)) return;
+  setSelectedMemberId(item.user_id);
+  router.push('/organization/members/detail');
 };
 
 const confirmDialogRef = ref<ConfirmDialogExposed>();
-const confirmState = reactive({ title: '', message: '', confirmLabel: 'Confirmer' });
+const confirmState = reactive({ title: '', message: '', confirmLabel: t('common.confirm') });
 const pendingAction = ref<(() => void | Promise<void>) | null>(null);
 const snackbar = reactive({ show: false, message: '', color: 'success' });
 
@@ -504,7 +545,7 @@ const onConfirmAction = async () => {
   try {
     await action?.();
   } catch {
-    showSnack("Une erreur est survenue.", 'error');
+    showSnack(t('organizations.members.messages.error'), 'error');
   }
 };
 
@@ -512,11 +553,11 @@ const onToggleBlockBtnClick = (item: OrganizationMemberViewModel) => {
   const blocked = !!item.users?.isBlocked;
   const name = memberName(item);
   askConfirmation(
-    blocked ? 'Débloquer le membre' : 'Bloquer le membre',
+    blocked ? t('organizations.members.block.unblockTitle') : t('organizations.members.block.blockTitle'),
     blocked
-      ? `${name} retrouvera l'accès à l'application. Continuer ?`
-      : `${name} n'aura plus accès à l'application. Continuer ?`,
-    blocked ? 'Débloquer' : 'Bloquer',
+      ? t('organizations.members.block.unblockMessage', { name })
+      : t('organizations.members.block.blockMessage', { name }),
+    blocked ? t('organizations.members.actions.unblock') : t('organizations.members.actions.block'),
     () => setMemberBlocked(item.user_id, !blocked),
   );
 };
@@ -533,7 +574,7 @@ const onAssignGaragesBtnClick = async (item: OrganizationMemberViewModel) => {
     assignedGarages.value = garages.value.filter(g => g.id && ids.includes(g.id));
     assignDialog.value = true;
   } catch {
-    showSnack('Impossible de charger les garages assignés.', 'error');
+    showSnack(t('organizations.members.messages.loadGaragesError'), 'error');
   }
 };
 
@@ -543,9 +584,9 @@ const onAssignGarages = async (garageIds: string[]) => {
     for (const id of garageIds) {
       await toggleGarageAccess(assignTarget.value.user_id, id, true);
     }
-    showSnack('Garages assignés.');
+    showSnack(t('organizations.members.messages.garagesAssigned'));
   } catch {
-    showSnack("Erreur lors de l'assignation des garages.", 'error');
+    showSnack(t('organizations.members.messages.assignError'), 'error');
   }
 };
 
@@ -561,7 +602,7 @@ const onCloseEditDialogBtnClick = () => {
 
 const onSaveEditDialogBtnClick = async () => {
   if (selectedMemberForm.value?.id) await updateMember(selectedMemberForm.value);
-  else if (seatLimitReached.value) showSnack('Limite d\'utilisateurs de l\'abonnement atteinte', 'warning');
+  else if (seatLimitReached.value) showSnack(t('organizations.members.messages.seatLimit'), 'warning');
   else await addMember(selectedMemberForm.value);
   dialog.value = false;
 };
@@ -569,9 +610,9 @@ const onSaveEditDialogBtnClick = async () => {
 const onDeleteBtnClick = (item: OrganizationMemberViewModel) => {
   if (!item.id) return;
   askConfirmation(
-    'Supprimer le membre',
-    `Êtes-vous sûr de vouloir supprimer "${memberName(item)}" ?`,
-    'Supprimer',
+    t('organizations.members.delete.title'),
+    t('organizations.members.delete.message', { name: memberName(item) }),
+    t('common.delete'),
     () => archiveMember(item.id),
   );
 };
@@ -579,6 +620,7 @@ const onDeleteBtnClick = (item: OrganizationMemberViewModel) => {
 onMounted(async () => {
   const orgId = authState.userContext.value?.organization.id;
   if (orgId) subscriptionState.loadForOrganization(orgId);
+  if (isSuperAdmin.value) profileSwitcher.load();
   await init();
 });
 </script>

@@ -1,0 +1,29 @@
+{
+  "carRepairSettings": {
+    "bodyPart": "Part",
+    "material": "Material",
+    "repair": "Repair"
+  },
+  "bodyParts": {
+    "porte-arriere-gauche": "Rear left door",
+    "porte-arriere-droite": "Rear right door",
+    "porte-avant-gauche": "Front left door",
+    "porte-avant-droite": "Front right door",
+    "aile-arriere-gauche": "Rear left wing",
+    "aile-arriere-droite": "Rear right wing",
+    "aile-avant-gauche": "Front left wing",
+    "aile-avant-droite": "Front right wing",
+    "capot": "Bonnet",
+    "coffre": "Boot",
+    "toit": "Roof"
+  },
+  "bodyMaterials": {
+    "aluminium": "Aluminium",
+    "tole": "Steel"
+  },
+  "repairTypes": {
+    "echange": "Replacement",
+    "dsp": "PDR",
+    "dap": "DAP"
+  }
+}

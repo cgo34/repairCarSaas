@@ -3,18 +3,14 @@ import { RouteRecordRaw } from 'vue-router';
 
 export const settingPriceRoutes: RouteRecordRaw[] = [
   {
-    path: '/organization/pricing',
-    redirect: '/organization/pricing/general'
-  },
-  {
-    path: '/organization/pricing/:tab(general|impact-unit-time|technicity-coefficients|variation-coefficients)',
+    path: '/organization/pricing/:tab(impact-unit-time|technicity-coefficients|variation-coefficients)?',
     name: 'PricingSettings',
     component: PricingSettingsPage,
     meta: {
       requiresAuth: true,
       breadcrumb: [
-        { title: 'Dashboard', href: '/dashboard' },
-        { title: 'Tarification', href: '/organization/pricing/general' }
+        { title: 'dashboard.breadcrumb.home', href: '/dashboard' },
+        { title: 'priceSettings.breadcrumb.pricing', href: '/organization/pricing' }
       ]
     }
   },

@@ -2,7 +2,7 @@
   <GenericSelect
     :model-value="modelValue"
     :items="repairTypes"
-    label="Réparation"
+    :label="t('carRepairSettings.repair')"
     :item-title="itemTitle"
     @update:model-value="onSelectRepairType"
     @select="onSelectRepairType"
@@ -13,6 +13,8 @@
 import GenericSelect from '@/shared/presentation/ui/components/GenericSelect.vue';
 import { DentRepairTypeViewModel as RepairTypeViewModel } from '@/features/carRepairSettings/presentation/models/DentRepairTypeViewModel';
 import { ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { repairTypeLabel } from '@/features/carRepairSettings/presentation/utils/carRepairLabels';
 
 const props = defineProps<{
   modelValue?: RepairTypeViewModel;
@@ -20,7 +22,8 @@ const props = defineProps<{
 }>();
 
 const model = ref<RepairTypeViewModel | undefined>(props.modelValue);
-const itemTitle = 'name'
+const itemTitle = repairTypeLabel;
+const { t } = useI18n();
 
 const emit = defineEmits<{
   (e: 'update:modelValue', value: RepairTypeViewModel | undefined): void;

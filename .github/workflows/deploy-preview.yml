@@ -1,0 +1,119 @@
+name: Deploy Preview
+
+# Deploie une preview par PR (alias pr-<numero>) a partir de l'artefact de la CI.
+# Aucun rebuild. Backend DEV partage : la preview n'est pas isolee au niveau des donnees.
+# Les PR provenant de forks sont ignorees (aucun secret ne doit atteindre du code non approuve).
+on:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+
+permissions:
+  contents: read
+  actions: read
+  pull-requests: write
+
+env:
+  NODE_VERSION: 22
+  WRANGLER_VERSION: 4.169.0
+
+jobs:
+  deploy:
+    name: Deploy preview
+    if: >-
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.event == 'pull_request' &&
+      github.event.workflow_run.head_repository.full_name == github.repository &&
+      github.event.workflow_run.pull_requests[0].number != null
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment: preview
+    # Une seule preview a la fois par PR ; la plus recente remplace la precedente.
+    concurrency:
+      group: deploy-preview-${{ github.event.workflow_run.pull_requests[0].number }}
+      cancel-in-progress: true
+    env:
+      PR_NUMBER: ${{ github.event.workflow_run.pull_requests[0].number }}
+      SOURCE_RUN_ID: ${{ github.event.workflow_run.id }}
+      SOURCE_SHA: ${{ github.event.workflow_run.head_sha }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ env.SOURCE_SHA }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Download release candidate
+        uses: actions/download-artifact@v4
+        with:
+          name: release-candidate
+          path: release-candidate
+          run-id: ${{ env.SOURCE_RUN_ID }}
+          github-token: ${{ github.token }}
+
+      - name: Verify release candidate
+        run: |
+          (cd release-candidate && sha256sum -c dist.tar.gz.sha256)
+          mkdir site
+          tar -xzf release-candidate/dist.tar.gz -C site
+          bash scripts/verify-artifact.sh site release-candidate/manifest.json
+          test "$(jq -r .runId release-candidate/manifest.json)" = "$SOURCE_RUN_ID"
+
+      - name: Generate preview runtime config
+        env:
+          APP_ENV: ${{ vars.APP_ENV }}
+          SUPABASE_URL: ${{ vars.SUPABASE_URL }}
+          SUPABASE_PUBLISHABLE_KEY: ${{ vars.SUPABASE_PUBLISHABLE_KEY }}
+        run: bash scripts/generate-runtime-config.sh site && bash scripts/apply-noindex.sh site
+
+      - name: Deploy to Cloudflare Pages (branch pr-N)
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_PROJECT_NAME: ${{ vars.CLOUDFLARE_PROJECT_NAME }}
+        run: >-
+          npx --yes wrangler@${{ env.WRANGLER_VERSION }} pages deploy site
+          --project-name="$CLOUDFLARE_PROJECT_NAME"
+          --branch="pr-${PR_NUMBER}"
+          --commit-hash="$SOURCE_SHA"
+          --commit-dirty=true
+
+      - name: Smoke test
+        env:
+          CLOUDFLARE_PROJECT_NAME: ${{ vars.CLOUDFLARE_PROJECT_NAME }}
+          APP_ENV: ${{ vars.APP_ENV }}
+        run: |
+          base="https://pr-${PR_NUMBER}.${CLOUDFLARE_PROJECT_NAME}.pages.dev"
+          for attempt in 1 2 3 4 5 6; do
+            if curl -fsS "$base/" -o /dev/null \
+              && curl -fsS "$base/config.json" | jq -e --arg env "$APP_ENV" '.environment == $env and (.supabase.url | startswith("https://"))' > /dev/null; then
+              echo "Smoke test OK on $base"
+              exit 0
+            fi
+            echo "Attempt $attempt failed, retrying in 10s"
+            sleep 10
+          done
+          echo "Smoke test failed on $base" >&2
+          exit 1
+
+      - name: Comment preview URL on the PR
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CLOUDFLARE_PROJECT_NAME: ${{ vars.CLOUDFLARE_PROJECT_NAME }}
+        run: |
+          marker="<!-- preview-deployment -->"
+          url="https://pr-${PR_NUMBER}.${CLOUDFLARE_PROJECT_NAME}.pages.dev"
+          body="${marker}
+          **Preview** : ${url}
+          Commit : \`${SOURCE_SHA:0:7}\`
+          Backend : DEV partage (donnees non isolees)."
+          body="$(printf '%s' "$body" | sed 's/^ *//')"
+          existing="$(gh api "repos/${GITHUB_REPOSITORY}/issues/${PR_NUMBER}/comments" --paginate \
+            --jq "[.[] | select(.body | startswith(\"${marker}\"))][0].id // empty")"
+          if [ -n "$existing" ]; then
+            gh api -X PATCH "repos/${GITHUB_REPOSITORY}/issues/comments/${existing}" -f body="$body" > /dev/null
+          else
+            gh api -X POST "repos/${GITHUB_REPOSITORY}/issues/${PR_NUMBER}/comments" -f body="$body" > /dev/null
+          fi

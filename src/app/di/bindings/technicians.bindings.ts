@@ -13,7 +13,7 @@ import { ICreateOrganizationTechnicianUseCase } from '@/features/technicians/app
 
 export function registerTechniciansBindings(container: Container): void {
   container.bind<ITechnicianGarageAccessRepository>(SYMBOLS.Repositories.TechnicianGarageAccessRepository).toDynamicValue(ctx => new TechnicianGarageAccessRepository(ctx.container.get(SYMBOLS.Providers.ClientProvider))).inSingletonScope();
-  container.bind<ICreateOrganizationTechnicianUseCase>(SYMBOLS.UseCases.CreateOrganizationTechnicianUseCase).toDynamicValue(ctx => new CreateOrganizationTechnicianUseCase(ctx.container.get(SYMBOLS.Repositories.AuthRepository), ctx.container.get(SYMBOLS.Repositories.UserRepository), ctx.container.get(SYMBOLS.Repositories.OrganizationMemberRepository))).inSingletonScope();
+  container.bind<ICreateOrganizationTechnicianUseCase>(SYMBOLS.UseCases.CreateOrganizationTechnicianUseCase).toDynamicValue(ctx => new CreateOrganizationTechnicianUseCase(ctx.container.get(SYMBOLS.Repositories.OrganizationMemberRepository))).inSingletonScope();
   container.bind<IGetTechnicianStatsUseCase>(SYMBOLS.UseCases.TechnicianStats).toDynamicValue(ctx => new GetTechnicianStatsUseCase(ctx.container.get(SYMBOLS.Providers.ClientProvider))).inSingletonScope();
   container.bind<IUseTechniciansState>(SYMBOLS.States.TechniciansState).toDynamicValue(() => {
     return useTechniciansState();

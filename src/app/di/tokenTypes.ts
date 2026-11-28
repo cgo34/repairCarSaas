@@ -18,6 +18,7 @@ export enum SYMBOL_NAMES {
     ORGANIZATION_MEMBER_REPOSITORY = 'OrganizationMemberRepository',
     // -- Subscription REPOSITORIES
     SUBSCRIPTION_REPOSITORY = 'SubscriptionRepository',
+    FEATURE_ACCESS_REPOSITORY = 'FeatureAccessRepository',
 
     GARAGE_REPOSITORY = 'GarageRepository',
     VEHICLE_REPOSITORY = 'VehicleRepository',
@@ -73,9 +74,31 @@ export enum SYMBOL_NAMES {
     LOGOUT_USE_CASE = 'LogoutUseCase',
     REGISTER_USE_CASE = 'RegisterUseCase',
     GET_AUTHENTICATED_USER_CONTEXT_USE_CASE = 'GetAuthenticatedUserContextUseCase',
+    PROVISION_ORGANIZATION_USE_CASE = 'ProvisionOrganizationUseCase',
+    // -- Profile switcher (super_admin demo profiles)
+    DEMO_PROFILE_REPOSITORY = 'DemoProfileRepository',
+    LIST_DEMO_PROFILES_USE_CASE = 'ListDemoProfilesUseCase',
+    SWITCH_DEMO_PROFILE_USE_CASE = 'SwitchDemoProfileUseCase',
+    CLEAR_DEMO_PROFILE_USE_CASE = 'ClearDemoProfileUseCase',
+    CREATE_DEMO_PROFILE_USE_CASE = 'CreateDemoProfileUseCase',
+    DELETE_DEMO_PROFILE_USE_CASE = 'DeleteDemoProfileUseCase',
+    // -- Platform admin (super_admin)
+    PLATFORM_STATS_REPOSITORY = 'PlatformStatsRepository',
+    GET_PLATFORM_STATS_USE_CASE = 'GetPlatformStatsUseCase',
+    PLATFORM_ORGANIZATION_REPOSITORY = 'PlatformOrganizationRepository',
+    PLATFORM_USER_REPOSITORY = 'PlatformUserRepository',
+    LIST_PLATFORM_ORGANIZATIONS_USE_CASE = 'ListPlatformOrganizationsUseCase',
+    GRANT_PREMIUM_USE_CASE = 'GrantPremiumUseCase',
+    GRANT_FEATURE_USE_CASE = 'GrantFeatureUseCase',
+    SET_ORGANIZATION_DEMO_USE_CASE = 'SetOrganizationDemoUseCase',
+    LIST_PLATFORM_USERS_USE_CASE = 'ListPlatformUsersUseCase',
+    PLATFORM_PLAN_REPOSITORY = 'PlatformPlanRepository',
+    LIST_PLATFORM_PLANS_USE_CASE = 'ListPlatformPlansUseCase',
+    PREVIEW_PLAN_CHANGES_USE_CASE = 'PreviewPlanChangesUseCase',
+    APPLY_PLAN_CHANGES_USE_CASE = 'ApplyPlanChangesUseCase',
+    LIST_PLAN_CHANGE_LOG_USE_CASE = 'ListPlanChangeLogUseCase',
     // -- User UseCases
     USER_USE_CASE = 'UserUseCase',
-    CREATE_USER_USE_CASE = 'CreateUserUseCase',
     CREATE_USER_WITH_ORGANIZATION_USE_CASE = 'CreateUserWithOrganizationUseCase',
     // -- Organization Member UseCases
     ORGANIZATION_PROFILE_USE_CASE = 'OrganizationProfileUseCase',
@@ -104,6 +127,7 @@ export enum SYMBOL_NAMES {
     QUOTE_USE_CASE = 'QuoteUseCase',
     GET_QUOTE_USE_CASE = 'GetQuoteUseCase',
     GET_QUOTES_USE_CASE = 'GetQuotesUseCase',
+    COUNT_QUOTES_THIS_MONTH_USE_CASE = 'CountQuotesThisMonthUseCase',
     VIEW_QUOTE_USE_CASE = 'ViewQuoteUseCase',
     CREATE_QUOTE_USE_CASE = 'CreateQuoteUseCase',
     INSERT_QUOTE_USE_CASE = 'InsertQuoteUseCase',
@@ -114,6 +138,7 @@ export enum SYMBOL_NAMES {
     GET_QUOTE_DETAILS_USE_CASE = 'GetQuoteDetailsUseCase',
     ADD_QUOTE_DETAILS_USE_CASE = 'AddQuoteDetailsUseCase',
     ADD_QUOTE_LINE_ITEM_USE_CASE = 'AddQuoteLineItemUseCase',
+    UPDATE_QUOTE_LINE_ITEM_USE_CASE = 'UpdateQuoteLineItemUseCase',
     DELETE_LINE_ITEM_USE_CASE = 'DeleteLineItemUseCase',
 
     DUPLICATE_QUOTE_TO_INVOICE = 'DuplicateQuoteToInvoice',
@@ -121,11 +146,14 @@ export enum SYMBOL_NAMES {
     // -- Pdf UseCases
     GENERATE_QUOTE_PDF_USE_CASE = 'GenerateQuotePdfUseCase',
     SEND_QUOTE_USE_CASE = 'SendQuoteUseCase',
+    FINALIZE_QUOTE_USE_CASE = 'FinalizeQuoteUseCase',
 
     // -- Invoice UseCases
     INVOICE_USE_CASE = 'InvoiceUseCase',
     GET_INVOICE_USE_CASE = 'GetInvoiceUseCase',
     GET_INVOICES_USE_CASE = 'GetInvoicesUseCase',
+    COUNT_INVOICES_THIS_MONTH_USE_CASE = 'CountInvoicesThisMonthUseCase',
+    COUNT_CONVERSIONS_THIS_MONTH_USE_CASE = 'CountConversionsThisMonthUseCase',
     VIEW_INVOICE_USE_CASE = 'ViewInvoiceUseCase',
     CREATE_INVOICE_USE_CASE = 'CreateInvoiceUseCase',
     INSERT_INVOICE_USE_CASE = 'InsertInvoiceUseCase',
@@ -137,19 +165,24 @@ export enum SYMBOL_NAMES {
     GET_INVOICE_DETAILS_USE_CASE = 'GetInvoiceDetailsUseCase',
     ADD_INVOICE_DETAILS_USE_CASE = 'AddInvoiceDetailsUseCase',
     ADD_INVOICE_LINE_ITEM_USE_CASE = 'AddInvoiceLineItemUseCase',
+    UPDATE_INVOICE_LINE_ITEM_USE_CASE = 'UpdateInvoiceLineItemUseCase',
     // DELETE_LINE_ITEM_USE_CASE = 'DeleteLineItemUseCase',
     // -- Pdf UseCases
     GENERATE_INVOICE_PDF_USE_CASE = 'GenerateInvoicePdfUseCase',
     SEND_INVOICE_USE_CASE = 'SendInvoiceUseCase',
+    FINALIZE_INVOICE_USE_CASE = 'FinalizeInvoiceUseCase',
     
     // -- Subscription UseCases
     SUBSCRIBE_TO_FREE_PLAN_USE_CASE = 'SubscribeToFreePlan',
     GET_CURRENT_SUBSCRIPTION_USE_CASE = 'GetCurrentSubscriptionUseCase',
+    // -- Feature access UseCases
+    GET_FEATURE_ACCESS_USE_CASE = 'GetFeatureAccessUseCase',
     // #endregion
 
     // #region -> STATES
     AUTH_STATE = 'AuthState',
     SUBSCRIPTION_STATE = 'SubscriptionState',
+    FEATURE_ACCESS_STATE = 'FeatureAccessState',
     // -- User States
     USER_STATE = 'UserState',
     ORGANIZATION_PROFILE_STATE = 'OrganizationProfileState',

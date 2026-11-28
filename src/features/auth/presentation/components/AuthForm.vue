@@ -35,7 +35,7 @@
       size="large"
       type="submit"
       rounded="lg"
-      style="font-family:'Manrope',sans-serif; font-weight:600; letter-spacing:0.01em;"
+      style="font-family:Manrope,sans-serif; font-weight:600; letter-spacing:0.01em;"
     >
       Se connecter
     </v-btn>

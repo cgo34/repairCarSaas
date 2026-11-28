@@ -9,6 +9,7 @@ export interface IAuthRepository {
   getCurrentUser(): Promise<UserDto | null>;
   getUserSession(): Promise<{ data: { session: Session | null } }>;
   updateEmail(newEmail: string): Promise<void>;
+  changePassword(currentPassword: string, newPassword: string): Promise<void>;
   deleteUser(userId: string): Promise<void>;
   onAuthStateChange(callback: (event: string, session: Session | null) => void): void;
 }

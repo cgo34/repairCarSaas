@@ -6,10 +6,8 @@ export type SubscriptionViewModel = {
   planId: string;
   stripeSubscriptionId?: string;
   status: string;
-  includedSeats: number;
-  extraSeats: number;
-  extraSeatPrice: number;
-  maxSeats: number | null;
+  features: Record<string, number | boolean | null>;
+  seatsLimit: number;
   startDate: string;
   endDate: string | null;
   createdAt: string | null;

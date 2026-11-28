@@ -7,4 +7,5 @@ export interface IUseProfileState {
   error: Ref<unknown>;
   init(userId: string): Promise<void>;
   save(vm: Partial<UserViewModel>): Promise<void>;
+  changePassword(currentPassword: string, newPassword: string): Promise<void>;
 }
