@@ -573,7 +573,7 @@ const displayedInvoices = computed(() => {
 });
 
 // ─── Technicien ───────────────────────────────────────────────
-const TECH_COLORS = ['#2B54E0','#15915F','#F5871F','#D8443A','#9AA2B1'];
+const TECH_COLORS = ['#0070FD','#15915F','#F5871F','#D8443A','#9AA2B1'];
 type TechSource = Pick<InvoiceViewModel, 'assignedMember'> & {
   technician?: { first_name?: string; last_name?: string };
 };
