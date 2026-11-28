@@ -1,160 +1,61 @@
-name: CI Pipeline
+name: CI
 
-# =========================================================
-# TRIGGERS
-# =========================================================
-# Le workflow se lance :
-#
-# - lors d'un push sur main/develop
-# - lors d'une Pull Request vers main/develop
-# - manuellement depuis GitHub Actions
-# =========================================================
+# Lint, type-check et build sur chaque push / PR vers main et develop.
+# Les deploiements (DEV, PROD) seront ajoutes dans des workflows dedies.
 on:
   push:
-    branches:
-      - main
-      - develop
-
+    branches: [main, develop]
   pull_request:
-    branches:
-      - main
-      - develop
-
+    branches: [main, develop]
   workflow_dispatch:
 
-# =========================================================
-# VARIABLES GLOBALES
-# =========================================================
+permissions:
+  contents: read
+
+# Annule les runs obsoletes d'une meme branche / PR.
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 env:
-  NODE_VERSION: 18
+  NODE_VERSION: 22
 
-# =========================================================
-# JOBS
-# =========================================================
 jobs:
-
-  # =======================================================
-  # LINT + TYPE CHECK
-  # =======================================================
   lint_and_typecheck:
     name: Lint & Type Check
     runs-on: ubuntu-latest
-
+    timeout-minutes: 15
     steps:
-      # Checkout du repository
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      # Setup Node.js
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: npm
 
-      # Installation des dépendances
-      - name: Install dependencies
-        run: npm ci
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run type-check
 
-      # ESLint
-      - name: Run ESLint
-        run: npm run lint
-
-      # TypeScript type-check
-      - name: Run Type Check
-        run: npm run type-check
-
-  # =======================================================
-  # BUILD
-  # =======================================================
   build:
-    name: Build Application
+    name: Build
     needs: lint_and_typecheck
     runs-on: ubuntu-latest
-    if: always()
-
+    timeout-minutes: 15
     steps:
-      # Checkout du repository
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      # Setup Node.js
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: npm
 
-      # Installation des dépendances
-      - name: Install dependencies
-        run: npm ci
+      - run: npm ci
+      - run: npm run build
 
-      # Build du projet
-      - name: Build Project
-        run: npm run build
-
-      # Upload du build
-      - name: Upload Build Artifact
-        uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v4
         with:
           name: dist
           path: dist/
-          retention-days: 1
-
-  # =======================================================
-  # DEPLOY DEV
-  # =======================================================
-  # Déploiement automatique sur develop
-  # =======================================================
-  deploy_dev:
-    name: Deploy to Development
-    needs: build
-    runs-on: ubuntu-latest
-
-    if: always() && github.ref == 'refs/heads/develop'
-
-    environment:
-      name: development
-
-    steps:
-      # Download du build
-      - name: Download Build Artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: dist
-          path: dist
-
-      # Placeholder deployment
-      - name: Deploy to Development
-        run: |
-          echo "Deploy DEV..."
-
-  # =======================================================
-  # DEPLOY PRODUCTION
-  # =======================================================
-  # Déploiement manuel uniquement :
-  # - depuis main
-  # - via workflow_dispatch
-  # =======================================================
-  deploy_prod:
-    name: Deploy to Production
-    needs: build
-    runs-on: ubuntu-latest
-
-    if: github.ref == 'refs/heads/main' && github.event_name == 'workflow_dispatch'
-
-    environment:
-      name: production
-
-    steps:
-      # Download du build
-      - name: Download Build Artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: dist
-          path: dist
-
-      # Placeholder deployment
-      - name: Deploy to Production
-        run: |
-          echo "Deploy PROD..."
+          retention-days: 7
+          if-no-files-found: error
