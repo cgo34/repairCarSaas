@@ -16,8 +16,6 @@ import vuetify from '@/app/plugins/vuetify';
 import router from '@/app/router/index';
 import { i18n } from '@/app/i18n';
 
-// import { initAuth } from '@/app/plugins/auth';
-
 // Styles globaux
 import '@mdi/font/css/materialdesignicons.css';
 import '@/shared/presentation/ui/styles/main.scss';
@@ -26,7 +24,6 @@ import '@/assets/scss/style.scss';
 const app = createApp(App);
 
 // Initialiser l'auth avant le router
-// await initAuth();
 app.provide(DOWNLOAD_SERVICE_KEY, container.get<IDownloadService>(SYMBOLS.Services.DownloadService));
 registerCompanyProfileDependencies();
 app.use(router);
