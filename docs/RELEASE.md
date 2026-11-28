@@ -23,6 +23,24 @@ Le déploiement PROD déploie uniquement le front (Cloudflare Pages). **Les migr
 6. Approuver le déploiement dans l'environnement `production` (onglet Actions → Deploy PROD).
 7. Le smoke test vérifie `config.json` (`environment: production`) et l'absence de noindex.
 
+## Hotfix (correctif urgent en PROD)
+
+1. Partir de `main` : `git switch -c hotfix/<nom> origin/main --no-track`, corriger, pousser.
+2. PR vers `main` : la CI tourne et la preview `pr-N` est déployée (backend DEV), pour tester avant le merge.
+3. Merger en **Merge commit**, attendre la CI verte sur `main`.
+4. Bumper `package.json` si besoin (PATCH, ex. `1.0.2`), puis suivre « Publier une version » à partir de l'étape 5 (tag, approbation du déploiement).
+5. **Rétro-merge dans `develop`** pour ne pas perdre le correctif :
+   ```
+   git fetch origin
+   git switch -c chore/backmerge-vX.Y.Z origin/develop --no-track
+   git merge origin/main
+   git push -u origin HEAD
+   ```
+   Puis PR `chore/backmerge-vX.Y.Z` → `develop` (la branche part de `develop`, les conflits éventuels se règlent dedans).
+   - Ruleset `develop` en Squash only : le correctif entre avec un commit unique. Le contenu étant identique des deux côtés, la prochaine PR `develop` → `main` reste propre.
+   - Pour garder l'historique lié, autoriser temporairement **Merge commit** sur « Protect develop ».
+6. Ne pas utiliser `cherry-pick` : il duplique le commit avec un autre SHA et fait diverger les branches.
+
 ## Rollback
 
 - Front : Actions → Deploy PROD → Run workflow depuis la branche `main`, avec le tag précédent (ex. `v1.0.0`). Si l'artefact a expiré (7 jours), relancer la CI sur ce commit.

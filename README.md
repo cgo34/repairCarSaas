@@ -55,6 +55,14 @@ revert: annule le commit précédent
 5. Après review et tests, merger dans `develop`
 6. Périodiquement, merger `develop` dans `main` pour les releases
 
+| PR | Méthode de merge |
+|---|---|
+| feature / fix / chore → `develop` | **Squash** |
+| `develop` → `main` (release), hotfix → `main` | **Merge commit** |
+
+Chaque PR déploie une preview (`pr-N`). La version affichée dans l'app est le tag Git (PROD), `dev-<sha>` (DEV) ou `pr-<n>-<sha>` (preview).
+Release, hotfix et rollback : voir [docs/RELEASE.md](docs/RELEASE.md).
+
 
 
 ### Exemples détaillés :
