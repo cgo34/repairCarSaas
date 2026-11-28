@@ -1,0 +1,120 @@
+name: Deploy PROD
+
+# Deploie en PRODUCTION l'artefact candidat produit par la CI pour le commit tague.
+# Declenche par un tag vX.Y.Z pose sur main. Aucun rebuild, aucune migration de base :
+# les migrations PROD restent manuelles (voir docs/RELEASE.md).
+# L'environnement "production" exige une approbation avant que le job demarre.
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Tag a (re)deployer, ex. v1.0.0 (rollback = tag precedent)"
+        required: true
+
+permissions:
+  contents: read
+  actions: read
+
+# Un seul deploiement PROD a la fois, sans interrompre celui en cours.
+concurrency:
+  group: deploy-prod
+  cancel-in-progress: false
+
+env:
+  NODE_VERSION: 22
+  WRANGLER_VERSION: 4.169.0
+
+jobs:
+  deploy:
+    name: Deploy to PROD
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment: production
+    env:
+      TAG: ${{ inputs.tag || github.ref_name }}
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: refs/tags/${{ inputs.tag || github.ref_name }}
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Check tag format and origin
+        run: |
+          echo "$TAG" | grep -Eq '^v[0-9]+\.[0-9]+\.[0-9]+$' \
+            || { echo "Tag '$TAG' must look like vX.Y.Z" >&2; exit 1; }
+          git merge-base --is-ancestor HEAD origin/main \
+            || { echo "Tag '$TAG' is not on main" >&2; exit 1; }
+          echo "SOURCE_SHA=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
+
+      - name: Find CI run of the tagged commit
+        run: |
+          run_id=$(gh run list --repo "$GITHUB_REPOSITORY" --workflow ci.yml \
+            --branch main --event push --commit "$SOURCE_SHA" --status success \
+            --json databaseId --jq '.[0].databaseId')
+          if [ -z "$run_id" ] || [ "$run_id" = "null" ]; then
+            echo "No successful CI run on main for $SOURCE_SHA (artifact expired after 7 days? re-run CI)" >&2
+            exit 1
+          fi
+          echo "SOURCE_RUN_ID=$run_id" >> "$GITHUB_ENV"
+
+      - name: Download release candidate
+        uses: actions/download-artifact@v4
+        with:
+          name: release-candidate
+          path: release-candidate
+          run-id: ${{ env.SOURCE_RUN_ID }}
+          github-token: ${{ github.token }}
+
+      - name: Verify release candidate
+        run: |
+          (cd release-candidate && sha256sum -c dist.tar.gz.sha256)
+          mkdir site
+          tar -xzf release-candidate/dist.tar.gz -C site
+          bash scripts/verify-artifact.sh site release-candidate/manifest.json
+          test "$(jq -r .commit release-candidate/manifest.json)" = "$SOURCE_SHA"
+
+      - name: Generate PROD runtime config
+        env:
+          APP_ENV: ${{ vars.APP_ENV }}
+          SUPABASE_URL: ${{ vars.SUPABASE_URL }}
+          SUPABASE_PUBLISHABLE_KEY: ${{ vars.SUPABASE_PUBLISHABLE_KEY }}
+        run: |
+          test "$APP_ENV" = "production" || { echo "APP_ENV must be 'production'" >&2; exit 1; }
+          bash scripts/generate-runtime-config.sh site
+
+      - name: Deploy to Cloudflare Pages (branch main)
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_PROJECT_NAME: ${{ vars.CLOUDFLARE_PROJECT_NAME }}
+        run: >-
+          npx --yes wrangler@${{ env.WRANGLER_VERSION }} pages deploy site
+          --project-name="$CLOUDFLARE_PROJECT_NAME"
+          --branch=main
+          --commit-hash="$SOURCE_SHA"
+          --commit-dirty=true
+
+      - name: Smoke test
+        env:
+          CLOUDFLARE_PROJECT_NAME: ${{ vars.CLOUDFLARE_PROJECT_NAME }}
+        run: |
+          base="https://${CLOUDFLARE_PROJECT_NAME}.pages.dev"
+          for attempt in 1 2 3 4 5 6; do
+            if curl -fsS "$base/" -o /dev/null \
+              && curl -fsS "$base/config.json" | jq -e '.environment == "production" and (.supabase.url | startswith("https://"))' > /dev/null \
+              && ! curl -fsS "$base/robots.txt" | grep -q 'Disallow: /$'; then
+              echo "Smoke test OK on $base ($TAG)"
+              exit 0
+            fi
+            echo "Attempt $attempt failed, retrying in 10s"
+            sleep 10
+          done
+          echo "Smoke test failed on $base" >&2
+          exit 1
