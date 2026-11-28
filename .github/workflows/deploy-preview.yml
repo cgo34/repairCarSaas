@@ -66,7 +66,7 @@ jobs:
           APP_ENV: ${{ vars.APP_ENV }}
           SUPABASE_URL: ${{ vars.SUPABASE_URL }}
           SUPABASE_PUBLISHABLE_KEY: ${{ vars.SUPABASE_PUBLISHABLE_KEY }}
-        run: bash scripts/generate-runtime-config.sh site
+        run: bash scripts/generate-runtime-config.sh site && bash scripts/apply-noindex.sh site
 
       - name: Deploy to Cloudflare Pages (branch pr-N)
         env:
