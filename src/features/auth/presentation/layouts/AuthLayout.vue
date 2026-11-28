@@ -6,46 +6,12 @@
 
     <div class="auth-wrapper">
       <!-- Logo -->
-      <div class="d-flex align-center justify-center gap-2 mb-8">
-        <svg
-          width="40"
-          height="40"
-          viewBox="0 0 36 36"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
+      <div class="d-flex align-center justify-center mb-8">
+        <img
+          :src="logoUrl"
+          alt="CarDentRepair"
+          class="auth-logo"
         >
-          <circle
-            cx="18"
-            cy="18"
-            r="17"
-            stroke="rgba(255,255,255,0.15)"
-            stroke-width="1.5"
-            fill="none"
-          />
-          <circle
-            cx="18"
-            cy="18"
-            r="12"
-            stroke="rgba(255,255,255,0.25)"
-            stroke-width="1.5"
-            fill="none"
-          />
-          <circle
-            cx="18"
-            cy="18"
-            r="7"
-            stroke="rgba(255,255,255,0.45)"
-            stroke-width="1.5"
-            fill="none"
-          />
-          <circle
-            cx="18"
-            cy="18"
-            r="4"
-            fill="#F5871F"
-          />
-        </svg>
-        <span style="font-family:'Space Grotesk',sans-serif; font-size:1.25rem; font-weight:700; color:#fff; letter-spacing:-0.01em;">CarDentRepair</span>
       </div>
 
       <!-- Card -->
@@ -64,7 +30,17 @@
   </div>
 </template>
 
+<script setup lang="ts">
+import logoUrl from '@/assets/images/logos/logo_car-dent-repair.png'
+</script>
+
 <style scoped>
+.auth-logo {
+  width: 260px;
+  max-width: 100%;
+  height: auto;
+}
+
 .auth-page {
   min-height: 100dvh;
   background: #0F1626;
