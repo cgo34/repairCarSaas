@@ -21,3 +21,10 @@ jq -n --arg environment "$APP_ENV" \
   > "$dist_dir/config.json"
 
 echo "config.json generated for environment '$APP_ENV'"
+
+# Keep every non-production environment out of search engines.
+if [ "$APP_ENV" != "production" ]; then
+  printf 'User-agent: *\nDisallow: /\n' > "$dist_dir/robots.txt"
+  printf '\n/*\n  X-Robots-Tag: noindex, nofollow\n' >> "$dist_dir/_headers"
+  echo "noindex enabled (robots.txt + X-Robots-Tag) for environment '$APP_ENV'"
+fi
