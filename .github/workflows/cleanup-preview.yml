@@ -1,0 +1,37 @@
+name: Cleanup Preview
+
+# Supprime les deploiements Cloudflare Pages de la branche pr-<numero> a la fermeture de la PR.
+on:
+  pull_request:
+    types: [closed]
+
+permissions:
+  contents: read
+
+jobs:
+  cleanup:
+    name: Delete preview deployments
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment: preview
+    env:
+      PR_NUMBER: ${{ github.event.pull_request.number }}
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+      CLOUDFLARE_PROJECT_NAME: ${{ vars.CLOUDFLARE_PROJECT_NAME }}
+    steps:
+      - name: Delete deployments of pr-N
+        run: |
+          api="https://api.cloudflare.com/client/v4/accounts/${CLOUDFLARE_ACCOUNT_ID}/pages/projects/${CLOUDFLARE_PROJECT_NAME}/deployments"
+          branch="pr-${PR_NUMBER}"
+          ids="$(curl -fsS -H "Authorization: Bearer ${CLOUDFLARE_API_TOKEN}" "${api}?env=preview&per_page=100" \
+            | jq -r --arg b "$branch" '.result[] | select(.deployment_trigger.metadata.branch == $b) | .id')"
+          if [ -z "$ids" ]; then
+            echo "Aucun deploiement a supprimer pour $branch"
+            exit 0
+          fi
+          for id in $ids; do
+            echo "Suppression du deploiement $id"
+            curl -fsS -X DELETE -H "Authorization: Bearer ${CLOUDFLARE_API_TOKEN}" "${api}/${id}?force=true" > /dev/null
+          done
