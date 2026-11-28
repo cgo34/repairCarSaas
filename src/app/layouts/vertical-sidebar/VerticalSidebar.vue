@@ -106,7 +106,7 @@
           color="inputBorder"
           size="small"
         >
-          v1.0.0
+          {{ appVersion }}
         </v-chip>
       </div>
     </template>
@@ -123,6 +123,7 @@ import { useDisplay } from 'vuetify'
 import { IAuthState } from '@/features/auth/presentation/state/IAuthState';
 
 import { container } from '@/app/di/container';
+import { getRuntimeConfig } from '@/shared/infrastructure/config/RuntimeConfig';
 import { SYMBOLS } from '@/app/di/tokens';
 
 import { useCustomizerState } from '@/app/layouts/useCustomizerState';
@@ -149,6 +150,8 @@ const { userContext } = authState;
 const { isComplete: profileComplete, refresh: refreshProfileCompleteness } = useOrganizationProfileCompleteness();
 
 const { mobile } = useDisplay()
+
+const appVersion = getRuntimeConfig().version ?? 'local';
 
 const isHovered = ref(false);
 

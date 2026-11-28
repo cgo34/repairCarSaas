@@ -26,6 +26,15 @@ describe('RuntimeConfig', () => {
     expect(fetchFn).toHaveBeenCalledWith('/config.json', { cache: 'no-store' });
   });
 
+  it('exposes the optional deployed version', async () => {
+    const withVersion = { ...validConfig, version: 'v1.2.3' };
+    const fetchFn = vi.fn().mockResolvedValue(jsonResponse(withVersion));
+
+    const config = await loadRuntimeConfig(fetchFn);
+
+    expect(config.version).toBe('v1.2.3');
+  });
+
   it('rejects a configuration with a missing key or invalid url', async () => {
     const fetchFn = vi.fn().mockResolvedValue(
       jsonResponse({ environment: 'development', supabase: { url: 'not-a-url' } }),
